@@ -97,3 +97,4 @@ def animate(i):
 ani = animation.FuncAnimation(fig, animate, range(1, len(y)),
                               interval=dt*1000, blit=True, init_func=init)
 plt.show()
+ani.save("./double_pendulum_sgskip.gif", writer="pillow")
