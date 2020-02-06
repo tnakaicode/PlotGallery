@@ -153,8 +153,7 @@ if __name__ == "__main__":
     glutInitWindowSize(340, 340)
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE)
-    glutCreateWindow("pyOpenGL TEST")
-    # ctypes.ArgumentError: argument 1: <class 'TypeError'>: wrong type
+    glutCreateWindow("pyOpenGL TEST".encode('utf-8'))
     glutDisplayFunc(draw)
     glutReshapeFunc(reshape)
     glutMotionFunc(motion)
@@ -162,4 +161,5 @@ if __name__ == "__main__":
     glutIdleFunc(idle)
     glutMainLoop()
 
-# end
+    # "./img/20200206180433.png"
+    # "./img/20200206180445.png"
