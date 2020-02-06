@@ -35,6 +35,14 @@ def main():
 
     image_buffer = glReadPixels(
         0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, OpenGL.GL.GL_RGB, OpenGL.GL.GL_UNSIGNED_BYTE)
+    # AttributeError: module 'numpy' has no attribute 'float128'
+    # glReadPixesls -> array = imageData = images.SetupPixelRead( format, (width,height), type )
+    # SetupPixelRead -> createTargetArray( format, dims, type )
+    # File "src/arraydatatype.pyx", line 219, in OpenGL_accelerate.arraydatatype.ArrayDatatype.zeros
+    # File "src/arraydatatype.pyx", line 224, in OpenGL_accelerate.arraydatatype.ArrayDatatype.c_zeros
+    # File "src/arraydatatype.pyx", line 69, in OpenGL_accelerate.arraydatatype.HandlerRegistry.c_get_output_handler
+    # File "src/arraydatatype.pyx", line 80, in OpenGL_accelerate.arraydatatype.HandlerRegistry.c_handler_by_plugin_name
+    # createTargetArray -> arrayType.zeros( dims )
     image = np.frombuffer(image_buffer, dtype=np.uint8).reshape(
         DISPLAY_WIDTH, DISPLAY_HEIGHT, 3)
 
