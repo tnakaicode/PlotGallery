@@ -32,12 +32,12 @@ ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
 
 # To save the animation, use e.g.
 #
-# ani.save("movie.mp4")
+ani.save("./dynamic_image.mp4", writer="pillow")
 #
 # or
 #
 # from matplotlib.animation import FFMpegWriter
 # writer = FFMpegWriter(fps=15, metadata=dict(artist='Me'), bitrate=1800)
-# ani.save("movie.mp4", writer=writer)
+# ani.save("./dynamic_image.mp4", writer=writer)
 
 plt.show()
