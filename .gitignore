@@ -1,0 +1,14 @@
+*.pdf
+*.html
+.vscode/*
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+py_src/displacement_*.png
+py_src/motion_*.png
+py_src/voronoi.png
+py_src/field/*
+script/field/*
+
+script/tmp/*
