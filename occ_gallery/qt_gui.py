@@ -20,20 +20,17 @@
 import logging
 import os
 import sys
+from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+log = logging.getLogger(__name__)
 
 from OCC import VERSION
 from OCC.Display.backend import load_backend, get_qt_modules
 from OCC.Display.OCCViewer import OffscreenRenderer
 
-log = logging.getLogger(__name__)
-
 
 def check_callable(_callable):
     if not callable(_callable):
         raise AssertionError("The function supplied is not callable")
-
-
-from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -97,7 +94,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
 class InitDisplay (MainWindow):
 
-    def __init__(self, backend_str=None,
+    def __init__(self,
+                 backend_str=None,
                  size=(1024, 768),
                  display_triedron=True,
                  background_gradient_color1=[206, 215, 222],
@@ -122,6 +120,10 @@ class InitDisplay (MainWindow):
 
     def add_menu(self, *args, **kwargs):
         self._add_menu(*args, **kwargs)
+
+    def add_menu_shortcut(self, menu_name):
+        _menu = self.menu_bar.addMenu("&" + menu_name)
+        self._menus[menu_name] = _menu
 
     def add_function_to_menu(self, *args, **kwargs):
         self._add_function_to_menu(*args, **kwargs)
@@ -150,4 +152,8 @@ if __name__ == '__main__':
     qtGui.add_function_to_menu('primitives', sphere)
     qtGui.add_function_to_menu('primitives', cube)
     qtGui.add_function_to_menu('primitives', quit)
+    qtGui.add_menu('primitives-1')
+    qtGui.add_function_to_menu('primitives-1', sphere)
+    qtGui.add_function_to_menu('primitives-1', cube)
+    qtGui.add_function_to_menu('primitives-1', quit)
     qtGui.start_display()
