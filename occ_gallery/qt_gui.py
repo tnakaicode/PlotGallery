@@ -33,156 +33,121 @@ def check_callable(_callable):
         raise AssertionError("The function supplied is not callable")
 
 
-def init_display(backend_str=None,
+from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+
+
+class MainWindow(QtWidgets.QMainWindow):
+
+    def __init__(self, backend_str=None, *args):
+        used_backend = load_backend(backend_str)
+        log.info("GUI backend set to: %s", used_backend)
+        from OCC.Display.qtDisplay import qtViewer3d
+
+        # following couple of lines is a tweak to enable ipython --gui='qt'
+        # checks if QApplication already exists
+        self.app = QtWidgets.QApplication.instance()
+        if not self.app:  # create QApplication if it doesnt exist
+            self.app = QtWidgets.QApplication(sys.argv)
+
+        QtWidgets.QMainWindow.__init__(self, *args)
+        self.canva = qtViewer3d(self)
+        self.setWindowTitle(
+            "pythonOCC-%s 3d viewer ('%s' backend)" % (VERSION, used_backend))
+        self.setCentralWidget(self.canva)
+        if sys.platform != 'darwin':
+            self.menu_bar = self.menuBar()
+        else:
+            # create a parentless menubar
+            # see: http://stackoverflow.com/questions/11375176/qmenubar-and-qmenu-doesnt-show-in-mac-os-x?lq=1
+            # noticeable is that the menu ( alas ) is created in the
+            # topleft of the screen, just
+            # next to the apple icon
+            # still does ugly things like showing the "Python" menu in
+            # bold
+            self.menu_bar = QtWidgets.QMenuBar()
+        self._menus = {}
+        self._menu_methods = {}
+        # place the window in the center of the screen, at half the
+        # screen size
+        self.centerOnScreen()
+
+    def centerOnScreen(self):
+        '''Centers the window on the screen.'''
+        resolution = QtWidgets.QApplication.desktop().screenGeometry()
+        x = (resolution.width() - self.frameSize().width()) / 2
+        y = (resolution.height() - self.frameSize().height()) / 2
+        self.move(x, y)
+
+    def _add_menu(self, menu_name):
+        _menu = self.menu_bar.addMenu("&" + menu_name)
+        self._menus[menu_name] = _menu
+
+    def _add_function_to_menu(self, menu_name, _callable):
+        check_callable(_callable)
+        try:
+            _action = QtWidgets.QAction(
+                _callable.__name__.replace('_', ' ').lower(), self)
+            # if not, the "exit" action is now shown...
+            _action.setMenuRole(QtWidgets.QAction.NoRole)
+            _action.triggered.connect(_callable)
+            self._menus[menu_name].addAction(_action)
+        except KeyError:
+            raise ValueError('the menu item %s does not exist' % menu_name)
+
+
+class InitDisplay (MainWindow):
+
+    def __init__(self, backend_str=None,
                  size=(1024, 768),
                  display_triedron=True,
                  background_gradient_color1=[206, 215, 222],
                  background_gradient_color2=[128, 128, 128]):
-    """ 
-    This function loads and initialize a GUI using either wx, pyq4, pyqt5 or pyside.
-    If ever the environment variable PYTHONOCC_OFFSCREEN_RENDERER, then the GUI is simply
-    ignored and an offscreen renderer is returned.
-    init_display returns 4 objects :
-    * display : an instance of Viewer3d ;
-    * start_display : a function (the GUI mainloop) ;
-    * add_menu : a function that creates a menu in the GUI
-    * add_function_to_menu : adds a menu option
+        MainWindow.__init__(self, backend_str)
 
-    In case an offscreen renderer is returned, start_display and add_menu are ignored, i.e.
-    an empty function is returned (named do_nothing). add_function_to_menu just execute the
-    function taken as a paramter.
+        self.resize(size[0] - 1, size[1] - 1)
+        self.show()
+        self.centerOnScreen()
+        self.canva.InitDriver()
+        self.resize(size[0], size[1])
+        self.canva.qApp = self.app
+        self.display = self.canva._display
 
-    Note : the offscreen renderer is used on the travis side.
-    """
-    if os.getenv("PYTHONOCC_OFFSCREEN_RENDERER") == "1":
-        # create the offscreen renderer
-        offscreen_renderer = OffscreenRenderer()
+        if display_triedron:
+            self.display.display_triedron()
 
-        def do_nothing(*kargs, **kwargs):
-            """ takes as many parameters as you want,
-            ans does nothing
-            """
-            pass
+        if background_gradient_color1 and background_gradient_color2:
+            # background gradient
+            self.display.set_bg_gradient_color(
+                background_gradient_color1, background_gradient_color2)
 
-        def call_function(s, func):
-            """ A function that calls another function.
-            Helpfull to bypass add_function_to_menu. s should be a string
-            """
-            check_callable(func)
-            log.info("Execute %s :: %s menu fonction" % (s, func.__name__))
-            func()
-            log.info("done")
+    def add_menu(self, *args, **kwargs):
+        self._add_menu(*args, **kwargs)
 
-        # returns empty classes and functions
-        return offscreen_renderer, do_nothing, do_nothing, call_function
-    used_backend = load_backend(backend_str)
-    log.info("GUI backend set to: %s", used_backend)
+    def add_function_to_menu(self, *args, **kwargs):
+        self._add_function_to_menu(*args, **kwargs)
 
-    # Qt based simple GUI
-    from OCC.Display.qtDisplay import qtViewer3d
-    QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
-
-    class MainWindow(QtWidgets.QMainWindow):
-
-        def __init__(self, *args):
-            QtWidgets.QMainWindow.__init__(self, *args)
-            self.canva = qtViewer3d(self)
-            self.setWindowTitle(
-                "pythonOCC-%s 3d viewer ('%s' backend)" % (VERSION, used_backend))
-            self.setCentralWidget(self.canva)
-            if sys.platform != 'darwin':
-                self.menu_bar = self.menuBar()
-            else:
-                # create a parentless menubar
-                # see: http://stackoverflow.com/questions/11375176/qmenubar-and-qmenu-doesnt-show-in-mac-os-x?lq=1
-                # noticeable is that the menu ( alas ) is created in the
-                # topleft of the screen, just
-                # next to the apple icon
-                # still does ugly things like showing the "Python" menu in
-                # bold
-                self.menu_bar = QtWidgets.QMenuBar()
-            self._menus = {}
-            self._menu_methods = {}
-            # place the window in the center of the screen, at half the
-            # screen size
-            self.centerOnScreen()
-
-        def centerOnScreen(self):
-            '''Centers the window on the screen.'''
-            resolution = QtWidgets.QApplication.desktop().screenGeometry()
-            x = (resolution.width() - self.frameSize().width()) / 2
-            y = (resolution.height() - self.frameSize().height()) / 2
-            self.move(x, y)
-
-        def add_menu(self, menu_name):
-            _menu = self.menu_bar.addMenu("&" + menu_name)
-            self._menus[menu_name] = _menu
-
-        def add_function_to_menu(self, menu_name, _callable):
-            check_callable(_callable)
-            try:
-                _action = QtWidgets.QAction(
-                    _callable.__name__.replace('_', ' ').lower(), self)
-                # if not, the "exit" action is now shown...
-                _action.setMenuRole(QtWidgets.QAction.NoRole)
-                _action.triggered.connect(_callable)
-
-                self._menus[menu_name].addAction(_action)
-            except KeyError:
-                raise ValueError(
-                    'the menu item %s does not exist' % menu_name)
-
-    # following couple of lines is a tweak to enable ipython --gui='qt'
-    # checks if QApplication already exists
-    app = QtWidgets.QApplication.instance()
-    if not app:  # create QApplication if it doesnt exist
-        app = QtWidgets.QApplication(sys.argv)
-    win = MainWindow()
-    win.resize(size[0] - 1, size[1] - 1)
-    win.show()
-    win.centerOnScreen()
-    win.canva.InitDriver()
-    win.resize(size[0], size[1])
-    win.canva.qApp = app
-    display = win.canva._display
-
-    def add_menu(*args, **kwargs):
-        win.add_menu(*args, **kwargs)
-
-    def add_function_to_menu(*args, **kwargs):
-        win.add_function_to_menu(*args, **kwargs)
-
-    def start_display():
-        win.raise_()  # make the application float to the top
-        app.exec_()
-
-    if display_triedron:
-        display.display_triedron()
-
-    if background_gradient_color1 and background_gradient_color2:
-        # background gradient
-        display.set_bg_gradient_color(
-            background_gradient_color1, background_gradient_color2)
-
-    return display, start_display, add_menu, add_function_to_menu
+    def start_display(self):
+        self.raise_()  # make the application float to the top
+        self.app.exec_()
 
 
 if __name__ == '__main__':
-    display, start_display, add_menu, add_function_to_menu = init_display(
-        "qt-pyqt5")
+    qtGui = InitDisplay("qt-pyqt5")
     from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeSphere, BRepPrimAPI_MakeBox
 
     def sphere(event=None):
-        display.DisplayShape(BRepPrimAPI_MakeSphere(100).Shape(), update=True)
+        qtGui.display.DisplayShape(
+            BRepPrimAPI_MakeSphere(100).Shape(), update=True)
 
     def cube(event=None):
-        display.DisplayShape(BRepPrimAPI_MakeBox(1, 1, 1).Shape(), update=True)
+        qtGui.display.DisplayShape(
+            BRepPrimAPI_MakeBox(1, 1, 1).Shape(), update=True)
 
     def quit(event=None):
         sys.exit()
 
-    add_menu('primitives')
-    add_function_to_menu('primitives', sphere)
-    add_function_to_menu('primitives', cube)
-    add_function_to_menu('primitives', quit)
-    start_display()
+    qtGui.add_menu('primitives')
+    qtGui.add_function_to_menu('primitives', sphere)
+    qtGui.add_function_to_menu('primitives', cube)
+    qtGui.add_function_to_menu('primitives', quit)
+    qtGui.start_display()
