@@ -26,6 +26,8 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
     ax.add_wmts(url, layer)
+    # error
+    # KeyError: 'TileMatrixLimits with tileMatrix "1" already exists'
     ax.set_extent([-15, 25, 35, 60], crs=ccrs.PlateCarree())
 
     ax.set_title('Suomi NPP Earth at night April/October 2012')

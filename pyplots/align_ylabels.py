@@ -17,7 +17,7 @@ def make_plot(axs):
     # Fixing random state for reproducibility
     np.random.seed(19680801)
     ax1 = axs[0, 0]
-    ax1.plot(2000*np.random.rand(10))
+    ax1.plot(2000 * np.random.rand(10))
     ax1.set_title('ylabels not aligned')
     ax1.set_ylabel('misaligned 1', bbox=box)
     ax1.set_ylim(0, 2000)
@@ -28,7 +28,7 @@ def make_plot(axs):
 
     ax2 = axs[0, 1]
     ax2.set_title('ylabels aligned')
-    ax2.plot(2000*np.random.rand(10))
+    ax2.plot(2000 * np.random.rand(10))
     ax2.set_ylabel('aligned 1', bbox=box)
     ax2.set_ylim(0, 2000)
 
