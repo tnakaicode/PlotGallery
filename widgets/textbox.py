@@ -27,6 +27,7 @@ def submit(text):
     ax.set_ylim(np.min(ydata), np.max(ydata))
     plt.draw()
 
+
 axbox = plt.axes([0.1, 0.05, 0.8, 0.075])
 text_box = TextBox(axbox, 'Evaluate', initial=initial_text)
 text_box.on_submit(submit)
