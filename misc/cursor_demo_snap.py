@@ -29,7 +29,8 @@ class SnaptoCursor(object):
 
     def __init__(self, x, y):
         self.fig, self.axs = plt.subplots()
-        self.axs.plot(x, y)
+        self.l1, = self.axs.plot(x, y)
+        self.l2, = self.axs.plot(2 * x, y)
         self.lx = self.axs.axhline(color='k')  # the horiz line
         self.ly = self.axs.axvline(color='k')  # the vert line
         self.x = x
@@ -42,7 +43,9 @@ class SnaptoCursor(object):
             return
 
         x, y = event.xdata, event.ydata
-        indx = min(np.searchsorted(self.x, x), len(self.x) - 1)
+        ln_xdata = self.l1._x
+        ln_ydata = self.l1._y
+        indx = min(np.searchsorted(ln_xdata, x), ln_xdata.shape[0])
         x = self.x[indx]
         y = self.y[indx]
         # update the line positions
@@ -58,5 +61,6 @@ t = np.linspace(-1, 1, 200) * np.pi
 s = np.sin(2 * t)
 
 cursor = SnaptoCursor(t, s)
-cursor.fig.canvas.mpl_connect('motion_notify_event', cursor.mouse_move)
+#cursor.fig.canvas.mpl_connect('motion_notify_event', cursor.mouse_move)
+cursor.fig.canvas.mpl_connect('button_press_event', cursor.mouse_move)
 plt.show()
