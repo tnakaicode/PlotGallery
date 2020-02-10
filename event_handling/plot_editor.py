@@ -80,7 +80,8 @@ class PolygonInteractor(object):
         canvas.mpl_connect('draw_event', self.draw_callback)
         canvas.mpl_connect('button_press_event', self.button_press_callback)
         canvas.mpl_connect('key_press_event', self.key_press_callback)
-        canvas.mpl_connect('button_release_event', self.button_release_callback)
+        canvas.mpl_connect('button_release_event',
+                           self.button_release_callback)
         canvas.mpl_connect('motion_notify_event', self.motion_notify_callback)
         self.canvas = canvas
 
@@ -156,7 +157,7 @@ class PolygonInteractor(object):
                 d = dist_point_to_segment(p, s0, s1)
                 if d <= self.epsilon:
                     self.poly.xy = np.insert(
-                        self.poly.xy, i+1,
+                        self.poly.xy, i + 1,
                         [event.xdata, event.ydata],
                         axis=0)
                     self.line.set_data(zip(*self.poly.xy))
@@ -190,7 +191,7 @@ class PolygonInteractor(object):
 
 
 if __name__ == '__main__':
-    theta = np.linspace(0, 2*np.pi, 30)
+    theta = np.linspace(0, 2 * np.pi, 30)
     r = 1.5
 
     xs = r * np.cos(theta)
@@ -198,7 +199,7 @@ if __name__ == '__main__':
 
     poly = Polygon(np.column_stack([xs, ys]), animated=True)
     print(poly)
-    poly = Arc((0,0), 10, 10, animated=True)
+    #poly = Arc((0,0), 10, 10, animated=True)
     print(poly)
 
     fig, ax = plt.subplots()
