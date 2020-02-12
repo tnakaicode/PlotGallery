@@ -32,10 +32,11 @@ def mathtext_to_wxbitmap(s):
         ftimage.as_rgba_str())
 ############################################################
 
+
 functions = [
-    (r'$\sin(2 \pi x)$', lambda x: np.sin(2*np.pi*x)),
-    (r'$\frac{4}{3}\pi x^3$', lambda x: (4.0/3.0)*np.pi*x**3),
-    (r'$\cos(2 \pi x)$', lambda x: np.cos(2*np.pi*x)),
+    (r'$\sin(2 \pi x)$', lambda x: np.sin(2 * np.pi * x)),
+    (r'$\frac{4}{3}\pi x^3$', lambda x: (4.0 / 3.0) * np.pi * x**3),
+    (r'$\cos(2 \pi x)$', lambda x: np.cos(2 * np.pi * x)),
     (r'$\log(x)$', lambda x: np.log(x))
 ]
 
@@ -60,7 +61,8 @@ class CanvasFrame(wx.Frame):
 
         # File Menu
         menu = wx.Menu()
-        m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Exit this simple sample")
+        m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X",
+                             "Exit this simple sample")
         menuBar.Append(menu, "&File")
         self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
 
@@ -123,6 +125,7 @@ class MyApp(wx.App):
         self.SetTopWindow(frame)
         frame.Show(True)
         return True
+
 
 app = MyApp()
 app.MainLoop()

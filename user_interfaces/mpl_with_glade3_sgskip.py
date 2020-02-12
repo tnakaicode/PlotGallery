@@ -35,7 +35,7 @@ def main():
     figure = Figure(figsize=(8, 6), dpi=71)
     axis = figure.add_subplot(111)
     t = np.arange(0.0, 3.0, 0.01)
-    s = np.sin(2*np.pi*t)
+    s = np.sin(2 * np.pi * t)
     axis.plot(t, s)
 
     axis.set_xlabel('time [s]')
@@ -48,6 +48,7 @@ def main():
 
     window.show_all()
     Gtk.main()
+
 
 if __name__ == "__main__":
     main()

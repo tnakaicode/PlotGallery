@@ -37,7 +37,8 @@ ax.annotate("",
             xy=(x1, y1), xycoords='data',
             xytext=(x2, y2), textcoords='data',
             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=0.3"))
-ax.text(.05, .95, "connectionstyle=arc3", transform=ax.transAxes, ha="left", va="top")
+ax.text(.05, .95, "connectionstyle=arc3",
+        transform=ax.transAxes, ha="left", va="top")
 
 ax = axs.flat[4]
 ax.plot([x1, x2], [y1, y2], "o")
