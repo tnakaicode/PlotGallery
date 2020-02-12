@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 x = np.arange(-5, 5, 0.01)
-y1 = -5 * x * x + x + 10
-y2 = 5 * x * x + x
+y1 = -3 * x**3 - 7 * x**2 + x + 5
+y2 = 5 * x**2 + x
 
 fig, ax = plt.subplots()
 ax.plot(x, y1, x, y2, color='black')
