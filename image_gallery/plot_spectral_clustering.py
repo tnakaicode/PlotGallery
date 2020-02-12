@@ -33,7 +33,7 @@ img = circle1 + circle2 + circle3 + circle4
 mask = img.astype(bool)
 img = img.astype(float)
 
-img += 1 + 0.2*np.random.randn(*img.shape)
+img += 1 + 0.2 * np.random.randn(*img.shape)
 
 # Convert the image into a graph with the value of the gradient on the
 # edges.
@@ -57,5 +57,6 @@ plt.subplot(122)
 plt.imshow(label_im, cmap=plt.cm.nipy_spectral, interpolation='nearest')
 plt.axis('off')
 
-plt.subplots_adjust(wspace=0, hspace=0., top=0.99, bottom=0.01, left=0.01, right=0.99)
+plt.subplots_adjust(wspace=0, hspace=0., top=0.99,
+                    bottom=0.01, left=0.01, right=0.99)
 plt.show()

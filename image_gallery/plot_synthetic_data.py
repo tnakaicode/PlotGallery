@@ -13,15 +13,15 @@ np.random.seed(1)
 n = 10
 l = 256
 im = np.zeros((l, l))
-points = l*np.random.random((2, n**2))
+points = l * np.random.random((2, n**2))
 im[(points[0]).astype(np.int), (points[1]).astype(np.int)] = 1
-im = ndimage.gaussian_filter(im, sigma=l/(4.*n))
+im = ndimage.gaussian_filter(im, sigma=l / (4. * n))
 
 mask = im > im.mean()
 
 label_im, nb_labels = ndimage.label(mask)
 
-plt.figure(figsize=(9,3))
+plt.figure(figsize=(9, 3))
 
 plt.subplot(131)
 plt.imshow(im)
