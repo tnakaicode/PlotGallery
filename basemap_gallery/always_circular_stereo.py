@@ -28,7 +28,7 @@ def main():
                         left=0.04, right=0.95, wspace=0.02)
 
     # Limit the map to -60 degrees latitude and below.
-    ax1.set_extent([-180, 180, -90, -60], ccrs.PlateCarree())
+    ax1.set_extent([-180, 180, -90, -75], ccrs.PlateCarree())
 
     ax1.add_feature(cfeature.LAND)
     ax1.add_feature(cfeature.OCEAN)

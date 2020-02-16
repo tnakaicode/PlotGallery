@@ -35,6 +35,7 @@ class GeoAxes(Axes):
         Used to format the theta tick labels.  Converts the native
         unit of radians into degrees and adds a degree symbol.
         """
+
         def __init__(self, round_to=1.0):
             self._round_to = round_to
 
@@ -154,7 +155,7 @@ class GeoAxes(Axes):
         # (1, ymax).  The goal of these transforms is to go from that
         # space to display space.  The tick labels will be offset 4
         # pixels from the edge of the axes ellipse.
-        yaxis_stretch = Affine2D().scale(np.pi*2, 1).translate(-np.pi, 0)
+        yaxis_stretch = Affine2D().scale(np.pi * 2, 1).translate(-np.pi, 0)
         yaxis_space = Affine2D().scale(1.0, 1.1)
         self._yaxis_transform = \
             yaxis_stretch + \
@@ -428,7 +429,7 @@ class HammerAxes(GeoAxes):
             x, y = xy.T
             z = np.sqrt(1 - (x / 4) ** 2 - (y / 2) ** 2)
             longitude = 2 * np.arctan((z * x) / (2 * (2 * z ** 2 - 1)))
-            latitude = np.arcsin(y*z)
+            latitude = np.arcsin(y * z)
             return np.column_stack([longitude, latitude])
 
         def inverted(self):
