@@ -1,0 +1,239 @@
+edge meshing
+nvertices = 8
+nedges = 12
+different vertices = 8
+faces = 6
+edge nr 1
+add meshpoint (0, 0, 1)
+add meshpoint (0, 0, 2)
+add meshpoint (0, 0, 3)
+add meshpoint (0, 0, 4)
+add meshpoint (0, 0, 5)
+add meshpoint (0, 0, 6)
+add meshpoint (0, 0, 7)
+add meshpoint (0, 0, 8)
+add meshpoint (0, 0, 9)
+NP = 17
+edge nr 2
+add meshpoint (0, 1, 10)
+add meshpoint (0, 2, 10)
+add meshpoint (0, 3, 10)
+add meshpoint (0, 4, 10)
+add meshpoint (0, 5, 10)
+add meshpoint (0, 6, 10)
+add meshpoint (0, 7, 10)
+add meshpoint (0, 8, 10)
+add meshpoint (0, 9, 10)
+NP = 26
+edge nr 3
+add meshpoint (0, 10, 1)
+add meshpoint (0, 10, 2)
+add meshpoint (0, 10, 3)
+add meshpoint (0, 10, 4)
+add meshpoint (0, 10, 5)
+add meshpoint (0, 10, 6)
+add meshpoint (0, 10, 7)
+add meshpoint (0, 10, 8)
+add meshpoint (0, 10, 9)
+NP = 35
+edge nr 4
+add meshpoint (0, 1, 0)
+add meshpoint (0, 2, 0)
+add meshpoint (0, 3, 0)
+add meshpoint (0, 4, 0)
+add meshpoint (0, 5, 0)
+add meshpoint (0, 6, 0)
+add meshpoint (0, 7, 0)
+add meshpoint (0, 8, 0)
+add meshpoint (0, 9, 0)
+NP = 44
+edge nr 5
+add meshpoint (10, 0, 1)
+add meshpoint (10, 0, 2)
+add meshpoint (10, 0, 3)
+add meshpoint (10, 0, 4)
+add meshpoint (10, 0, 5)
+add meshpoint (10, 0, 6)
+add meshpoint (10, 0, 7)
+add meshpoint (10, 0, 8)
+add meshpoint (10, 0, 9)
+NP = 53
+edge nr 6
+add meshpoint (10, 1, 10)
+add meshpoint (10, 2, 10)
+add meshpoint (10, 3, 10)
+add meshpoint (10, 4, 10)
+add meshpoint (10, 5, 10)
+add meshpoint (10, 6, 10)
+add meshpoint (10, 7, 10)
+add meshpoint (10, 8, 10)
+add meshpoint (10, 9, 10)
+NP = 62
+edge nr 7
+add meshpoint (10, 10, 1)
+add meshpoint (10, 10, 2)
+add meshpoint (10, 10, 3)
+add meshpoint (10, 10, 4)
+add meshpoint (10, 10, 5)
+add meshpoint (10, 10, 6)
+add meshpoint (10, 10, 7)
+add meshpoint (10, 10, 8)
+add meshpoint (10, 10, 9)
+NP = 71
+edge nr 8
+add meshpoint (10, 1, 0)
+add meshpoint (10, 2, 0)
+add meshpoint (10, 3, 0)
+add meshpoint (10, 4, 0)
+add meshpoint (10, 5, 0)
+add meshpoint (10, 6, 0)
+add meshpoint (10, 7, 0)
+add meshpoint (10, 8, 0)
+add meshpoint (10, 9, 0)
+NP = 80
+edge nr 9
+add meshpoint (1, 0, 0)
+add meshpoint (2, 0, 0)
+add meshpoint (3, 0, 0)
+add meshpoint (4, 0, 0)
+add meshpoint (5, 0, 0)
+add meshpoint (6, 0, 0)
+add meshpoint (7, 0, 0)
+add meshpoint (8, 0, 0)
+add meshpoint (9, 0, 0)
+NP = 89
+edge nr 10
+NP = 89
+edge nr 11
+add meshpoint (1, 0, 10)
+add meshpoint (2, 0, 10)
+add meshpoint (3, 0, 10)
+add meshpoint (4, 0, 10)
+add meshpoint (5, 0, 10)
+add meshpoint (6, 0, 10)
+add meshpoint (7, 0, 10)
+add meshpoint (8, 0, 10)
+add meshpoint (9, 0, 10)
+NP = 98
+edge nr 12
+NP = 98
+edge nr 13
+add meshpoint (1, 10, 0)
+add meshpoint (2, 10, 0)
+add meshpoint (3, 10, 0)
+add meshpoint (4, 10, 0)
+add meshpoint (5, 10, 0)
+add meshpoint (6, 10, 0)
+add meshpoint (7, 10, 0)
+add meshpoint (8, 10, 0)
+add meshpoint (9, 10, 0)
+NP = 107
+edge nr 14
+NP = 107
+edge nr 15
+add meshpoint (1, 10, 10)
+add meshpoint (2, 10, 10)
+add meshpoint (3, 10, 10)
+add meshpoint (4, 10, 10)
+add meshpoint (5, 10, 10)
+add meshpoint (6, 10, 10)
+add meshpoint (7, 10, 10)
+add meshpoint (8, 10, 10)
+add meshpoint (9, 10, 10)
+NP = 116
+edge nr 16
+NP = 116
+edge nr 17
+NP = 116
+edge nr 18
+NP = 116
+edge nr 19
+NP = 116
+edge nr 20
+NP = 116
+edge nr 21
+NP = 116
+edge nr 22
+NP = 116
+edge nr 23
+NP = 116
+edge nr 24
+NP = 116
+mesh face 1
+  18 times used rule Free Triangle (1)
+   0 times used rule Free Triangle (5)
+   0 times used rule Free Triangle (10)
+   0 times used rule Free Triangle (20)
+  21 times used rule Right 60 (1)
+  15 times used rule Left 60 (1)
+  37 times used rule Right 120 (1)
+  25 times used rule Left 120 (1)
+  17 times used rule Left Right 120 (1)
+   2 times used rule Fill Triangle
+   1 times used rule Vis A Vis (1)
+   0 times used rule 2 h Vis A Vis (1)
+mesh face 2
+  17 times used rule Free Triangle (1)
+   0 times used rule Free Triangle (5)
+   0 times used rule Free Triangle (10)
+   0 times used rule Free Triangle (20)
+  21 times used rule Right 60 (1)
+  14 times used rule Left 60 (1)
+  44 times used rule Right 120 (1)
+  24 times used rule Left 120 (1)
+  17 times used rule Left Right 120 (1)
+   2 times used rule Fill Triangle
+   1 times used rule Vis A Vis (1)
+   0 times used rule 2 h Vis A Vis (1)
+mesh face 3
+  18 times used rule Free Triangle (1)
+   0 times used rule Free Triangle (5)
+   0 times used rule Free Triangle (10)
+   0 times used rule Free Triangle (20)
+  21 times used rule Right 60 (1)
+  15 times used rule Left 60 (1)
+  37 times used rule Right 120 (1)
+  25 times used rule Left 120 (1)
+  17 times used rule Left Right 120 (1)
+   2 times used rule Fill Triangle
+   1 times used rule Vis A Vis (1)
+   0 times used rule 2 h Vis A Vis (1)
+mesh face 4
+  17 times used rule Free Triangle (1)
+   0 times used rule Free Triangle (5)
+   0 times used rule Free Triangle (10)
+   0 times used rule Free Triangle (20)
+  21 times used rule Right 60 (1)
+  14 times used rule Left 60 (1)
+  44 times used rule Right 120 (1)
+  24 times used rule Left 120 (1)
+  17 times used rule Left Right 120 (1)
+   2 times used rule Fill Triangle
+   1 times used rule Vis A Vis (1)
+   0 times used rule 2 h Vis A Vis (1)
+mesh face 5
+  18 times used rule Free Triangle (1)
+   0 times used rule Free Triangle (5)
+   0 times used rule Free Triangle (10)
+   0 times used rule Free Triangle (20)
+  21 times used rule Right 60 (1)
+  15 times used rule Left 60 (1)
+  37 times used rule Right 120 (1)
+  25 times used rule Left 120 (1)
+  17 times used rule Left Right 120 (1)
+   2 times used rule Fill Triangle
+   1 times used rule Vis A Vis (1)
+   0 times used rule 2 h Vis A Vis (1)
+mesh face 6
+  17 times used rule Free Triangle (1)
+   0 times used rule Free Triangle (5)
+   0 times used rule Free Triangle (10)
+   0 times used rule Free Triangle (20)
+  21 times used rule Right 60 (1)
+  14 times used rule Left 60 (1)
+  44 times used rule Right 120 (1)
+  24 times used rule Left 120 (1)
+  17 times used rule Left Right 120 (1)
+   2 times used rule Fill Triangle
+   1 times used rule Vis A Vis (1)
+   0 times used rule 2 h Vis A Vis (1)
