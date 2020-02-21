@@ -11,9 +11,12 @@ import string
 def EM(init_params, data, callback=None):
     def EM_update(params):
         natural_params = list(map(np.log, params))
-        loglike, E_stats = vgrad(log_partition_function)(natural_params, data)  # E step
-        if callback: callback(loglike, params)
-        return list(map(normalize, E_stats))                                    # M step
+        loglike, E_stats = vgrad(log_partition_function)(
+            natural_params, data)  # E step
+        if callback:
+            callback(loglike, params)
+        # M step
+        return list(map(normalize, E_stats))
 
     def fixed_point(f, x0):
         x1 = f(x0)
@@ -42,7 +45,7 @@ def log_partition_function(natural_params, data):
 
     log_alpha = log_pi
     for y in data:
-        log_alpha = logsumexp(log_alpha[:,None] + log_A, axis=0) + log_B[:,y]
+        log_alpha = logsumexp(log_alpha[:, None] + log_A, axis=0) + log_B[:, y]
 
     return logsumexp(log_alpha)
 
@@ -57,14 +60,17 @@ def initialize_hmm_parameters(num_states, num_outputs):
 def build_dataset(filename, max_lines=-1):
     """Loads a text file, and turns each line into an encoded sequence."""
     encodings = dict(list(map(reversed, enumerate(string.printable))))
-    digitize = lambda char: encodings[char] if char in encodings else len(encodings)
-    encode_line = lambda line: np.array(list(map(digitize, line)))
-    nonblank_line = lambda line: len(line) > 2
+    def digitize(char): return encodings[char] if char in encodings else len(
+        encodings)
+
+    def encode_line(line): return np.array(list(map(digitize, line)))
+    def nonblank_line(line): return len(line) > 2
 
     with open(filename) as f:
         lines = f.readlines()
 
-    encoded_lines = list(map(encode_line, list(filter(nonblank_line, lines))[:max_lines]))
+    encoded_lines = list(map(encode_line, list(
+        filter(nonblank_line, lines))[:max_lines]))
     num_outputs = len(encodings) + 1
 
     return encoded_lines, num_outputs
@@ -75,7 +81,7 @@ if __name__ == '__main__':
     np.seterr(divide='ignore')
 
     # callback to print log likelihoods during training
-    print_loglike = lambda loglike, params: print(loglike)
+    def print_loglike(loglike, params): return print(loglike)
 
     # load training data
     lstm_filename = join(dirname(__file__), 'lstm.py')

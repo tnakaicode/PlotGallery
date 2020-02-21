@@ -18,15 +18,18 @@ from data import make_pinwheel
 
 def init_gmm_params(num_components, D, scale, rs=npr.RandomState(0)):
     return {'log proportions': rs.randn(num_components) * scale,
-            'means':           rs.randn(num_components, D) * scale,
+            'means': rs.randn(num_components, D) * scale,
             'lower triangles': np.zeros((num_components, D, D)) + np.eye(D)}
+
 
 def log_normalize(x):
     return x - logsumexp(x)
 
+
 def unpack_gmm_params(params):
     normalized_log_proportions = log_normalize(params['log proportions'])
     return normalized_log_proportions, params['means'], params['lower triangles']
+
 
 def gmm_log_likelihood(params, data):
     cluster_lls = []
@@ -35,16 +38,19 @@ def gmm_log_likelihood(params, data):
         cluster_lls.append(log_proportion + mvn.logpdf(data, mean, cov))
     return np.sum(logsumexp(np.vstack(cluster_lls), axis=0))
 
+
 def plot_ellipse(ax, mean, cov_sqrt, alpha, num_points=100):
-    angles = np.linspace(0, 2*np.pi, num_points)
+    angles = np.linspace(0, 2 * np.pi, num_points)
     circle_pts = np.vstack([np.cos(angles), np.sin(angles)]).T * 2.0
     cur_pts = mean + np.dot(circle_pts, cov_sqrt)
     ax.plot(cur_pts[:, 0], cur_pts[:, 1], '-', alpha=alpha)
+
 
 def plot_gaussian_mixture(params, ax):
     for log_proportion, mean, cov_sqrt in zip(*unpack_gmm_params(params)):
         alpha = np.minimum(1.0, np.exp(log_proportion) * 10)
         plot_ellipse(ax, mean, cov_sqrt, alpha)
+
 
 if __name__ == '__main__':
 
@@ -59,7 +65,7 @@ if __name__ == '__main__':
     flattened_obj, unflatten, flattened_init_params =\
         flatten_func(objective, init_params)
 
-    fig = plt.figure(figsize=(12,8), facecolor='white')
+    fig = plt.figure(figsize=(12, 8), facecolor='white')
     ax = fig.add_subplot(111, frameon=False)
     plt.show(block=False)
 
@@ -72,10 +78,9 @@ if __name__ == '__main__':
         ax.set_yticks([])
         plot_gaussian_mixture(params, ax)
         plt.draw()
-        plt.pause(1.0/60.0)
+        plt.pause(1.0 / 60.0)
 
     minimize(flattened_obj, flattened_init_params,
              jac=grad(flattened_obj),
              hessp=hessian_vector_product(flattened_obj),
              method='Newton-CG', callback=callback)
-

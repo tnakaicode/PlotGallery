@@ -18,16 +18,23 @@ product simply returns the diagonal elements of the Jacobian, which is the
 function is vectorized.
 '''
 
+
 def tanh(x):
-    return (1.0 - np.exp(-x))  / (1.0 + np.exp(-x))
+    return (1.0 - np.exp(-x)) / (1.0 + np.exp(-x))
+
 
 x = np.linspace(-7, 7, 200)
 plt.plot(x, tanh(x),
-         x, egrad(tanh)(x),                                     # first derivative
-         x, egrad(egrad(tanh))(x),                              # second derivative
-         x, egrad(egrad(egrad(tanh)))(x),                       # third derivative
-         x, egrad(egrad(egrad(egrad(tanh))))(x),                # fourth derivative
-         x, egrad(egrad(egrad(egrad(egrad(tanh)))))(x),         # fifth derivative
+         # first derivative
+         x, egrad(tanh)(x),
+         # second derivative
+         x, egrad(egrad(tanh))(x),
+         # third derivative
+         x, egrad(egrad(egrad(tanh)))(x),
+         x, egrad(egrad(egrad(egrad(tanh))))(
+             x),                # fourth derivative
+         x, egrad(egrad(egrad(egrad(egrad(tanh)))))(
+             x),         # fifth derivative
          x, egrad(egrad(egrad(egrad(egrad(egrad(tanh))))))(x))  # sixth derivative
 
 plt.axis('off')

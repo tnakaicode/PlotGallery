@@ -41,8 +41,10 @@ if __name__ == '__main__':
     num_latent_params = datalen * latent_dimension
 
     def unpack_params(params):
-        gp_params = np.reshape(params[:total_gp_params], (data_dimension, params_per_gp))
-        latents   = np.reshape(params[total_gp_params:], (datalen, latent_dimension))
+        gp_params = np.reshape(
+            params[:total_gp_params], (data_dimension, params_per_gp))
+        latents = np.reshape(params[total_gp_params:],
+                             (datalen, latent_dimension))
         return gp_params, latents
 
     def objective(params):
@@ -53,7 +55,7 @@ if __name__ == '__main__':
         return -gp_likelihood - latent_prior_likelihood
 
     # Set up figure.
-    fig = plt.figure(figsize=(12,8), facecolor='white')
+    fig = plt.figure(figsize=(12, 8), facecolor='white')
     latent_ax = fig.add_subplot(121, frameon=False)
     data_ax = fig.add_subplot(122, frameon=False)
     plt.show(block=False)
@@ -69,7 +71,7 @@ if __name__ == '__main__':
         data_ax.set_title('Observed Data')
 
         latent_ax.cla()
-        latent_ax.plot(latents[:,0], latents[:,1], 'kx')
+        latent_ax.plot(latents[:, 0], latents[:, 1], 'kx')
         latent_ax.set_xticks([])
         latent_ax.set_yticks([])
         latent_ax.set_xlim([-2, 2])
@@ -77,11 +79,12 @@ if __name__ == '__main__':
         latent_ax.set_title('Latent coordinates')
 
         plt.draw()
-        plt.pause(1.0/60.0)
+        plt.pause(1.0 / 60.0)
 
     # Initialize covariance parameters
     rs = npr.RandomState(1)
     init_params = rs.randn(total_gp_params + num_latent_params) * 0.1
 
     print("Optimizing covariance parameters and latent variable locations...")
-    minimize(value_and_grad(objective), init_params, jac=True, method='CG', callback=callback)
+    minimize(value_and_grad(objective), init_params,
+             jac=True, method='CG', callback=callback)

@@ -19,20 +19,22 @@ def newton(f, x0):
 
 def negbin_loglike(r, p, x):
     # the negative binomial log likelihood we want to maximize
-    return gammaln(r+x) - gammaln(r) - gammaln(x+1) + x*np.log(p) + r*np.log(1-p)
+    return gammaln(r + x) - gammaln(r) - gammaln(x + 1) + x * np.log(p) + r * np.log(1 - p)
 
 
 def negbin_sample(r, p, size):
     # a negative binomial is a gamma-compound-Poisson
-    return npr.poisson(npr.gamma(r, p/(1-p), size=size))
+    return npr.poisson(npr.gamma(r, p / (1 - p), size=size))
 
 
 def fit_maxlike(x, r_guess):
     # follows Wikipedia's section on negative binomial max likelihood
-    assert np.var(x) > np.mean(x), "Likelihood-maximizing parameters don't exist!"
-    loglike = lambda r, p: np.sum(negbin_loglike(r, p, x))
-    p = lambda r: np.sum(x) / np.sum(r+x)
-    rprime = lambda r: grad(loglike)(r, p(r))
+    assert np.var(x) > np.mean(
+        x), "Likelihood-maximizing parameters don't exist!"
+
+    def loglike(r, p): return np.sum(negbin_loglike(r, p, x))
+    def p(r): return np.sum(x) / np.sum(r + x)
+    def rprime(r): return grad(loglike)(r, p(r))
     r = newton(rprime, r_guess)
     return r, p(r)
 
@@ -50,16 +52,18 @@ if __name__ == "__main__":
     print('r={r}, p={p}'.format(r=r, p=p))
 
     print('Check that we are at a local stationary point:')
-    loglike = lambda r, p: np.sum(negbin_loglike(r, p, data))
+    def loglike(r, p): return np.sum(negbin_loglike(r, p, data))
     grad_both = grad(loglike, argnum=(0, 1))
     print(grad_both(r, p))
 
     import matplotlib.pyplot as plt
     xm = data.max()
     plt.figure()
-    plt.hist(data, bins=np.arange(xm+1)-0.5, normed=True, label='normed data counts')
-    plt.xlim(0,xm)
-    plt.plot(np.arange(xm), np.exp(negbin_loglike(r, p, np.arange(xm))), label='maxlike fit')
+    plt.hist(data, bins=np.arange(xm + 1) - 0.5,
+             normed=True, label='normed data counts')
+    plt.xlim(0, xm)
+    plt.plot(np.arange(xm), np.exp(negbin_loglike(
+        r, p, np.arange(xm))), label='maxlike fit')
     plt.xlabel('k')
     plt.ylabel('p(k)')
     plt.legend(loc='best')
