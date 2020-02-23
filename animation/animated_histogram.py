@@ -74,6 +74,7 @@ def animate(i):
     verts[2::5, 1] = top
     return [patch, ]
 
+
 ###############################################################################
 # And now we build the `Path` and `Patch` instances for the histogram using
 # our vertices and codes. We add the patch to the `Axes` instance, and setup
@@ -88,4 +89,4 @@ ax.set_xlim(left[0], right[-1])
 ax.set_ylim(bottom.min(), top.max())
 
 ani = animation.FuncAnimation(fig, animate, 100, repeat=False, blit=True)
-plt.show()
+ani.save("./animated_histogram.gif", writer='imagemagick')

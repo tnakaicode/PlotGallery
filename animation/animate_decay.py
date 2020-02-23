@@ -17,7 +17,9 @@ def data_gen(t=0):
     cnt = 0
     while cnt < 1000:
         cnt += 1
-        t += 0.1
+        if cnt % 100 == 0:
+            print(cnt)
+        t += 0.05
         yield t, np.sin(2*np.pi*t) * np.exp(-t/10.)
 
 
@@ -28,6 +30,7 @@ def init():
     del ydata[:]
     line.set_data(xdata, ydata)
     return line,
+
 
 fig, ax = plt.subplots()
 line, = ax.plot([], [], lw=2)
@@ -43,12 +46,13 @@ def run(data):
     xmin, xmax = ax.get_xlim()
 
     if t >= xmax:
-        ax.set_xlim(xmin, 2*xmax)
+        ax.set_xlim(xmin, 1.25*xmax)
         ax.figure.canvas.draw()
     line.set_data(xdata, ydata)
 
     return line,
 
-ani = animation.FuncAnimation(fig, run, data_gen, blit=False, interval=10,
+
+ani = animation.FuncAnimation(fig, run, data_gen, blit=False, interval=0.1,
                               repeat=False, init_func=init)
-plt.show()
+ani.save("./animate_decay.gif", writer='imagemagick')
