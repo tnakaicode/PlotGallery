@@ -19,11 +19,17 @@ pearson correlation coefficients and ones) is particularly easy to handle.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse
 import matplotlib.transforms as transforms
+import json
+import sys
+import time
+import os
+import glob
+import shutil
+import datetime
+from matplotlib.patches import Ellipse
+from optparse import OptionParser
 
-
-#############################################################################
 #
 # The plotting function itself
 # """"""""""""""""""""""""""""
@@ -36,6 +42,7 @@ import matplotlib.transforms as transforms
 # of standard deviations. The default value is 3 which makes the ellipse
 # enclose 99.7% of the points (given the data is normally distributed
 # like in these examples).
+#
 
 
 def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
@@ -95,7 +102,6 @@ def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     return ax.add_patch(ellipse)
 
 
-#############################################################################
 #
 # A helper function to create a correlated dataset
 # """"""""""""""""""""""""""""""""""""""""""""""""
@@ -104,6 +110,7 @@ def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
 # two-dimensional mean (mu) and dimensions (scale).
 # The correlation can be controlled by the param 'dependency',
 # a 2x2 matrix.
+#
 
 def get_correlated_dataset(n, dependency, mu, scale):
     latent = np.random.randn(n, 2)
@@ -114,110 +121,53 @@ def get_correlated_dataset(n, dependency, mu, scale):
     return scaled_with_offset[:, 0], scaled_with_offset[:, 1]
 
 
-#############################################################################
-#
-# Positive, negative and weak correlation
-# """""""""""""""""""""""""""""""""""""""
-#
-# Note that the shape for the weak correlation (right) is an ellipse,
-# not a circle because x and y are differently scaled.
-# However, the fact that x and y are uncorrelated is shown by
-# the axes of the ellipse being aligned with the x- and y-axis
-# of the coordinate system.
-
-np.random.seed(0)
-
-PARAMETERS = {
-    'Positive correlation': np.array([[0.85, 0.35],
-                                      [0.15, -0.65]]),
-    'Negative correlation': np.array([[0.9, -0.4],
-                                      [0.1, -0.6]]),
-    'Weak correlation': np.array([[1, 0],
-                                  [0, 1]]),
-}
-
-mu = 2, 4
-scale = 3, 5
-
-fig, axs = plt.subplots(1, 3, figsize=(9, 3))
-for ax, (title, dependency) in zip(axs, PARAMETERS.items()):
-    x, y = get_correlated_dataset(800, dependency, mu, scale)
-    ax.scatter(x, y, s=0.5)
-
-    ax.axvline(c='grey', lw=1)
-    ax.axhline(c='grey', lw=1)
-
-    confidence_ellipse(x, y, ax, edgecolor='red')
-
-    ax.scatter(mu[0], mu[1], c='red', s=3)
-    ax.set_title(title)
-
-plt.show()
+def create_tempdir(flag=1):
+    print(datetime.date.today())
+    datenm = "{0:%Y%m%d}".format(datetime.date.today())
+    dirnum = len(glob.glob("./temp_" + datenm + "*/"))
+    if flag == -1 or dirnum == 0:
+        tmpdir = "./temp_{}{:03}/".format(datenm, dirnum)
+        os.makedirs(tmpdir)
+        fp = open(tmpdir + "not_ignore.txt", "w")
+        fp.close()
+    else:
+        tmpdir = "./temp_{}{:03}/".format(datenm, dirnum - 1)
+    print(tmpdir)
+    return tmpdir
 
 
-#############################################################################
-#
-# Different number of standard deviations
-# """""""""""""""""""""""""""""""""""""""
-#
-# A plot with n_std = 3 (blue), 2 (purple) and 1 (red)
+if __name__ == '__main__':
+    argvs = sys.argv
+    parser = OptionParser()
+    parser.add_option("--flag", dest="flag", default=1, type="int")
+    opt, argc = parser.parse_args(argvs)
+    print(opt, argc)
+    tmpdir = create_tempdir(opt.flag)
 
-fig, ax_nstd = plt.subplots(figsize=(6, 6))
+    #
+    # Positive, negative and weak correlation
+    # """""""""""""""""""""""""""""""""""""""
+    #
+    # Note that the shape for the weak correlation (right) is an ellipse,
+    # not a circle because x and y are differently scaled.
+    # However, the fact that x and y are uncorrelated is shown by
+    # the axes of the ellipse being aligned with the x- and y-axis
+    # of the coordinate system.
 
-dependency_nstd = np.array([
-    [0.8, 0.75],
-    [-0.2, 0.35]
-])
-mu = 0, 0
-scale = 8, 5
+    np.random.seed(0)
+    para = json.load(open("confidence_ellipse.json", "r"))
+    print(len(para.keys()))
 
-ax_nstd.axvline(c='grey', lw=1)
-ax_nstd.axhline(c='grey', lw=1)
+    mu = 2, 4
+    scale = 3, 5
 
-x, y = get_correlated_dataset(500, dependency_nstd, mu, scale)
-ax_nstd.scatter(x, y, s=0.5)
-
-confidence_ellipse(x, y, ax_nstd, n_std=1,
-                   label=r'$1\sigma$', edgecolor='firebrick')
-confidence_ellipse(x, y, ax_nstd, n_std=2,
-                   label=r'$2\sigma$', edgecolor='fuchsia', linestyle='--')
-confidence_ellipse(x, y, ax_nstd, n_std=3,
-                   label=r'$3\sigma$', edgecolor='blue', linestyle=':')
-
-ax_nstd.scatter(mu[0], mu[1], c='red', s=3)
-ax_nstd.set_title('Different standard deviations')
-ax_nstd.legend()
-plt.show()
-
-
-#############################################################################
-#
-# Using the keyword arguments
-# """""""""""""""""""""""""""
-#
-# Use the kwargs specified for matplotlib.patches.Patch in order
-# to have the ellipse rendered in different ways.
-
-fig, ax_kwargs = plt.subplots(figsize=(6, 6))
-dependency_kwargs = np.array([
-    [-0.8, 0.5],
-    [-0.2, 0.5]
-])
-mu = 2, -3
-scale = 6, 5
-
-ax_kwargs.axvline(c='grey', lw=1)
-ax_kwargs.axhline(c='grey', lw=1)
-
-x, y = get_correlated_dataset(500, dependency_kwargs, mu, scale)
-# Plot the ellipse with zorder=0 in order to demonstrate
-# its transparency (caused by the use of alpha).
-confidence_ellipse(x, y, ax_kwargs,
-                   alpha=0.5, facecolor='pink', edgecolor='purple', zorder=0)
-
-ax_kwargs.scatter(x, y, s=0.5)
-ax_kwargs.scatter(mu[0], mu[1], c='red', s=3)
-ax_kwargs.set_title(f'Using kwargs')
-
-fig.subplots_adjust(hspace=0.25)
-plt.show()
+    for (title, dependency) in para.items():
+        fig, axs = plt.subplots()
+        x, y = get_correlated_dataset(800, dependency, mu, scale)
+        axs.scatter(x, y, s=0.5)
+        axs.axvline(c='grey', lw=1)
+        axs.axhline(c='grey', lw=1)
+        axs.scatter(mu[0], mu[1], c='red', s=3)
+        axs.set_title(title)
+        confidence_ellipse(x, y, axs, edgecolor='red')
+        fig.savefig(tmpdir + "confidence_ellipse1_" + title + ".png")
