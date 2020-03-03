@@ -39,5 +39,6 @@ def onpress(event):
     axzoom.set_ylim(y - 0.1, y + 0.1)
     figzoom.canvas.draw()
 
+
 figsrc.canvas.mpl_connect('button_press_event', onpress)
 plt.show()

@@ -18,7 +18,7 @@ face[100:120] = 255
 
 lx, ly = face.shape
 X, Y = np.ogrid[0:lx, 0:ly]
-mask = (X - lx/2)**2 + (Y - ly/2)**2 > lx*ly/4
+mask = (X - lx / 2)**2 + (Y - ly / 2)**2 > lx * ly / 4
 face[mask] = 0
 face[range(400), range(400)] = 255
 

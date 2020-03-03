@@ -9,6 +9,7 @@ import numpy as np
 from scipy import ndimage
 import matplotlib.pyplot as plt
 
+
 def disk_structure(n):
     struct = np.zeros((2 * n + 1, 2 * n + 1))
     x, y = np.indices((2 * n + 1, 2 * n + 1))
@@ -20,9 +21,9 @@ def disk_structure(n):
 def granulometry(data, sizes=None):
     s = max(data.shape)
     if sizes is None:
-        sizes = range(1, s/2, 2)
-    granulo = [ndimage.binary_opening(data, \
-            structure=disk_structure(n)).sum() for n in sizes]
+        sizes = range(1, s / 2, 2)
+    granulo = [ndimage.binary_opening(data,
+                                      structure=disk_structure(n)).sum() for n in sizes]
     return granulo
 
 
@@ -30,9 +31,9 @@ np.random.seed(1)
 n = 10
 l = 256
 im = np.zeros((l, l))
-points = l*np.random.random((2, n**2))
+points = l * np.random.random((2, n**2))
 im[(points[0]).astype(np.int), (points[1]).astype(np.int)] = 1
-im = ndimage.gaussian_filter(im, sigma=l/(4.*n))
+im = ndimage.gaussian_filter(im, sigma=l / (4. * n))
 
 mask = im > im.mean()
 
@@ -51,5 +52,6 @@ plt.subplot(122)
 plt.plot(np.arange(2, 19, 4), granulo, 'ok', ms=8)
 
 
-plt.subplots_adjust(wspace=0.02, hspace=0.15, top=0.95, bottom=0.15, left=0, right=0.95)
+plt.subplots_adjust(wspace=0.02, hspace=0.15, top=0.95,
+                    bottom=0.15, left=0, right=0.95)
 plt.show()
