@@ -55,4 +55,4 @@ def run(data):
 
 ani = animation.FuncAnimation(fig, run, data_gen, blit=False, interval=0.1,
                               repeat=False, init_func=init)
-ani.save("./animate_decay.gif", writer='imagemagick')
+ani.save("./animate_decay.gif", writer='pillow')
