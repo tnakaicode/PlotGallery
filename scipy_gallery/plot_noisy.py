@@ -18,7 +18,7 @@ def f(x):
 
 
 # A smooth function
-plt.figure(1, figsize=(3, 2.5))
+plt.figure(1)
 plt.clf()
 
 plt.plot(x_, f(x_) + .2 * np.random.normal(size=31), linewidth=2)

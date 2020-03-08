@@ -13,7 +13,7 @@ x, y = np.mgrid[-2.03:4.2:.04, -1.6:3.2:.04]
 x = x.T
 y = y.T
 
-plt.figure(1, figsize=(3, 2.5))
+plt.figure(1)
 plt.clf()
 plt.axes([0, 0, 1, 1])
 

@@ -17,8 +17,8 @@ def f(x):
     return (x - x_0)**2 + epsilon * np.exp(-5 * (x - .5 - x_0)**2)
 
 
-for epsilon in (0, 1):
-    plt.figure(figsize=(3, 2.5))
+for epsilon in (0, 1, 2):
+    plt.figure()
     plt.axes([0, 0, 1, 1])
 
     # A convex function
@@ -49,7 +49,7 @@ for epsilon in (0, 1):
     plt.axis('off')
     plt.ylim(ymin=-1, ymax=8)
 
-    plt.figure(figsize=(4, 3))
+    plt.figure()
     plt.semilogy(np.abs(all_y - all_y[-1]), linewidth=2)
     plt.ylabel('Error on f(x)')
     plt.xlabel('Iteration')

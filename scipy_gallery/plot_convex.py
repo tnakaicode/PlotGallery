@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 x = np.linspace(-1, 2)
 
-plt.figure(1, figsize=(3, 2.5))
+plt.figure(1)
 plt.clf()
 
 # A convex function
@@ -18,7 +18,7 @@ plt.plot(x, x**2, linewidth=2)
 plt.text(-.7, -.6**2, '$f$', size=20)
 
 # The tangent in one point
-plt.plot(x, 2*x - 1)
+plt.plot(x, 2 * x - 1)
 plt.plot(1, 1, 'k+')
 plt.text(.3, -.75, "Tangent to $f$", size=15)
 plt.text(1, 1 - .5, 'C', size=15)
@@ -34,13 +34,12 @@ plt.axis('off')
 plt.tight_layout()
 
 # Convexity as barycenter
-plt.figure(2, figsize=(3, 2.5))
+plt.figure(2)
 plt.clf()
-plt.plot(x, x**2 + np.exp(-5*(x - .5)**2), linewidth=2)
+plt.plot(x, x**2 + np.exp(-5 * (x - .5)**2), linewidth=2)
 plt.text(-.7, -.6**2, '$f$', size=20)
 
 plt.ylim(ymin=-1)
 plt.axis('off')
 plt.tight_layout()
 plt.show()
-
