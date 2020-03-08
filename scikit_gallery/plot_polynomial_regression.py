@@ -19,9 +19,12 @@ cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
 
 
 rng = np.random.RandomState(0)
-x = 2*rng.rand(100) - 1
+x = 2 * rng.rand(100) - 1
 
-f = lambda t: 1.2 * t**2 + .1 * t**3 - .4 * t **5 - .5 * t ** 9
+
+def f(t): return 1.2 * t**2 + .1 * t**3 - .4 * t ** 5 - .5 * t ** 9
+
+
 y = f(x) + .4 * rng.normal(size=100)
 
 x_test = np.linspace(-1, 1, 100)

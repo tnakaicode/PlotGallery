@@ -41,7 +41,7 @@ titles = ['d = 1 (under-fit; high bias)',
           'd = 6 (over-fit; high variance)']
 degrees = [1, 2, 6]
 
-fig = plt.figure(figsize=(9, 3.5))
+fig = plt.figure()
 fig.subplots_adjust(left=0.06, right=0.98, bottom=0.15, top=0.85, wspace=0.05)
 
 for i, d in enumerate(degrees):
@@ -78,7 +78,7 @@ y = generating_func(x, error)
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size)
 
 # show the training and validation sets
-plt.figure(figsize=(6, 4))
+plt.figure()
 plt.scatter(x_train, y_train, color='red', label='Training set')
 plt.scatter(x_test, y_test, color='blue', label='Test set')
 plt.title('The data')
@@ -100,7 +100,7 @@ train_scores, validation_scores = validation_curve(
     param_range=degrees)
 
 # Plot the mean train error and validation error across folds
-plt.figure(figsize=(6, 4))
+plt.figure()
 plt.plot(degrees, validation_scores.mean(axis=1), lw=2,
          label='cross-validation')
 plt.plot(degrees, train_scores.mean(axis=1), lw=2, label='training')
@@ -128,7 +128,7 @@ for d in [1, 5, 15]:
         train_sizes=np.logspace(-1, 0, 20))
 
     # Plot the mean train error and validation error across folds
-    plt.figure(figsize=(6, 4))
+    plt.figure()
     plt.plot(train_sizes, validation_scores.mean(axis=1),
              lw=2, label='cross-validation')
     plt.plot(train_sizes, train_scores.mean(axis=1),

@@ -10,13 +10,12 @@ import numpy as np
 
 # Smaller figures
 from matplotlib import pyplot as plt
-plt.rcParams['figure.figsize'] = (3, 2)
 
 ############################################################
 # We consider the situation where we have only 2 data point
-X = np.c_[ .5, 1].T
+X = np.c_[.5, 1].T
 y = [.5, 1]
-X_test = np.c_[ 0, 2].T
+X_test = np.c_[0, 2].T
 
 ############################################################
 # Without noise, as linear regression fits the data perfectly

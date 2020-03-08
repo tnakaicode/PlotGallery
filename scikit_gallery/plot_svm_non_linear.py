@@ -14,6 +14,7 @@ from sklearn import svm
 ##############################################################################
 # data that is linearly separable
 
+
 def linear_model(rseed=42, n_samples=30):
     " Generate data according to a linear model"
     np.random.seed(rseed)
@@ -37,8 +38,8 @@ ax = plt.subplot(111, xticks=[], yticks=[])
 ax.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.bone)
 
 ax.scatter(clf.support_vectors_[:, 0],
-            clf.support_vectors_[:, 1],
-            s=80, edgecolors="k", facecolors="none")
+           clf.support_vectors_[:, 1],
+           s=80, edgecolors="k", facecolors="none")
 
 delta = 1
 y_min, y_max = -50, 50
@@ -95,6 +96,6 @@ Z = clf.decision_function(np.c_[X1.ravel(), X2.ravel()])
 Z = Z.reshape(X1.shape)
 
 ax.contour(X1, X2, Z, [-1.0, 0.0, 1.0], colors='k',
-            linestyles=['dashed', 'solid', 'dashed'], zorder=1)
+           linestyles=['dashed', 'solid', 'dashed'], zorder=1)
 
 plt.show()

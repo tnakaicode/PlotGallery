@@ -23,7 +23,7 @@ expected = data.target
 # Plot predicted as a function of expected
 
 from matplotlib import pyplot as plt
-plt.figure(figsize=(4, 3))
+plt.figure()
 plt.scatter(expected, predicted)
 plt.plot([0, 50], [0, 50], '--k')
 plt.axis('tight')
@@ -38,4 +38,4 @@ plt.tight_layout()
 # data, which is not a mesure of generalization.
 #
 # **The results are not valid**
-
+plt.show()
