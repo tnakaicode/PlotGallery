@@ -112,17 +112,19 @@ def single_animation(system, ex, fig_size=(8, 8), hide_axes=True, filename=None)
 
     filename = datetime.now().strftime(
         '%Y-%m-%d_%H-%M') if filename is None else filename
-    metadata = create_metadata(filename, comment=create_comment(ex))
+    # metadata = create_metadata(filename, comment=create_comment(ex))
 
     if not os.path.isdir(os.path.join(os.getcwd(), 'animations')):
         os.mkdir('animations')
 
-    try:
-        writer = animation.AVConvWriter(fps=50, bitrate=-1, metadata=metadata)
-        anim.save('./animations/{}.mp4'.format(filename), writer=writer)
-    except FileNotFoundError:
-        writer = animation.FFMpegWriter(fps=50, bitrate=-1, metadata=metadata)
-        anim.save('./animations/{}.mp4'.format(filename), writer=writer)
+    anim.save('./animations/{}.gif'.format(filename), writer='pillow')
+
+    #try:
+    #   writer = animation.AVConvWriter(fps=50, bitrate=-1, metadata=metadata)
+    #   anim.save('./animations/{}.mp4'.format(filename), writer=writer)
+    #except FileNotFoundError:
+    #   writer = animation.FFMpegWriter(fps=50, bitrate=-1, metadata=metadata)
+    #   anim.save('./animations/{}.mp4'.format(filename), writer=writer)
 
     return filename
 
@@ -202,17 +204,19 @@ def multi_animation(systems, ex, fig_size=(8, 8), hide_axes=True, filename=None)
 
     filename = datetime.now().strftime(
         '%Y-%m-%d_%H-%M') if filename is None else filename
-    metadata = create_metadata(filename, comment=create_comment(ex))
-
+    #metadata = create_metadata(filename, comment=create_comment(ex))
+    
     if not os.path.isdir(os.path.join(os.getcwd(), 'animations')):
         os.mkdir('animations')
+    
+    anim.save('./animations/{}.gif'.format(filename), writer='pillow')
 
-    try:
-        writer = animation.AVConvWriter(fps=50, bitrate=-1, metadata=metadata)
-        anim.save('./animations/{}.mp4'.format(filename), writer=writer)
-    except FileNotFoundError:
-        writer = animation.FFMpegWriter(fps=50, bitrate=-1, metadata=metadata)
-        anim.save('./animations/{}.mp4'.format(filename), writer=writer)
+    #try:
+    #    writer = animation.AVConvWriter(fps=50, bitrate=-1, metadata=metadata)
+    #    anim.save('./animations/{}.mp4'.format(filename), writer=writer)
+    #except FileNotFoundError:
+    #    writer = animation.FFMpegWriter(fps=50, bitrate=-1, metadata=metadata)
+    #    anim.save('./animations/{}.mp4'.format(filename), writer=writer)
 
     return filename
 

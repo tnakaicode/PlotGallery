@@ -1,11 +1,8 @@
 ![Double pendulum](double_pendulum.png)
 
-
 The code behind [@pendulum_bot](https://twitter.com/pendulum_bot) Twitter bot which posts animations of a double pendulum released from a random position to swing for 30 seconds.
 
-
 &nbsp;
-
 
 # Basic usage
 
@@ -56,18 +53,16 @@ To create multiple pendulums with slight perturbations of initial conditions to 
 >>> multi_animation(results, rand_ex)
 ```
 
-
 &nbsp;
-
 
 # Installation
 
-```
+```bash
 git clone https://github.com/narimiran/double_pendulum.git
 cd double_pendulum
 ```
 
-### Dependencies
+## Dependencies
 
 * Python 3
 * numpy (running simulations)
@@ -75,9 +70,7 @@ cd double_pendulum
 * ffmpeg or avconv/libavtools (saving videos)
 * twython (posting Twitter updates)
 
-
 &nbsp;
-
 
 # FAQ
 
@@ -110,9 +103,7 @@ Q: *Couldn't all/some of this be done simpler?*
 
 A: Probably.
 
-
 &nbsp;
-
 
 # License
 
