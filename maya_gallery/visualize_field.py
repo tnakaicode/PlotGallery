@@ -59,7 +59,7 @@ mlab.pipeline.vector_cut_plane(field, scale_factor=.1, colormap='hot')
 
 # Add an iso_surface of the norm of the field
 mlab.pipeline.iso_surface(mlab.pipeline.extract_vector_norm(field),
-                          contours=[0.1*Bmax, 0.4*Bmax],
+                          contours=[0.1 * Bmax, 0.4 * Bmax],
                           opacity=0.5, transparent=True)
 
 mlab.view(28, 84, 0.71)
