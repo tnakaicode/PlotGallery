@@ -148,10 +148,10 @@ if __name__ == '__main__':
     def quit(event=None):
         sys.exit()
 
-    qtGui.add_menu('primitives')
-    qtGui.add_function_to_menu('primitives', sphere)
-    qtGui.add_function_to_menu('primitives', cube)
-    qtGui.add_function_to_menu('primitives', quit)
+    qtGui.add_menu('primitives-0')
+    qtGui.add_function_to_menu('primitives-0', sphere)
+    qtGui.add_function_to_menu('primitives-0', cube)
+    qtGui.add_function_to_menu('primitives-0', quit)
     qtGui.add_menu('primitives-1')
     qtGui.add_function_to_menu('primitives-1', sphere)
     qtGui.add_function_to_menu('primitives-1', cube)
