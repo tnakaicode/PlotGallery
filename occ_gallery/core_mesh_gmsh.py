@@ -24,9 +24,9 @@ import sys
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus
 from OCC.Core.BRepTools import breptools_Write
-
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import read_stl_file
+from OCC.Extend.ShapeFactory import make_box
 
 
 def mesh_shape(a_topods_shape):
@@ -34,7 +34,7 @@ def mesh_shape(a_topods_shape):
     a topods_shp ready to be displayed
     """
     # dump the geometry to a brep file
-    breptools_Write(a_topods_shape, "shape.brep")
+    breptools_Write(a_topods_shape, "core_mesh_gmsh.brep")
 
     # create the gmesh file
     gmsh_geo_file_content = """SetFactory("OpenCASCADE");
@@ -42,26 +42,29 @@ def mesh_shape(a_topods_shape):
     Mesh.CharacteristicLengthMin = 1;
     Mesh.CharacteristicLengthMax = 5;
 
-    a() = ShapeFromFile("shape.brep");
+    a() = ShapeFromFile("core_mesh_gmsh.brep");
     """
-    gmsh_geo_file = open("shape.geo", "w")
+    gmsh_geo_file = open("core_mesh_gmsh.geo", "w")
     gmsh_geo_file.write(gmsh_geo_file_content)
     gmsh_geo_file.close()
 
     # call gmsh
-    gmsh_success = os.system("gmsh shape.geo -2 -o shape.stl -format stl")
+    gmsh_success = os.system(
+        os.getenv("GMSH") + " -tol 0.1 core_mesh_gmsh.geo -3 -o core_mesh_gmsh.stl -format stl")
     # load the stl file
-    if gmsh_success != 0 and os.path.isfile("shape.stl"):
-        return read_stl_file("shape.stl")
-    else:
-        print("Be sure gmsh is in your PATH")
-        sys.exit()
+    # if gmsh_success != 0 and os.path.isfile("shape.stl"):
+    #    return read_stl_file("shape.stl")
+    # else:
+    #    print("Be sure gmsh is in your PATH")
+    #    sys.exit()
+    return read_stl_file("core_mesh_gmsh.stl")
 
 
 # First example, a simple torus
-torus_shp = BRepPrimAPI_MakeTorus(40., 10.).Shape()
-torus_mesh_shp = mesh_shape(torus_shp)
+torus_shp = BRepPrimAPI_MakeTorus(50., 10.).Shape()
+box_shp = make_box(100, 100, 100)
+mesh_shp = mesh_shape(box_shp)
 
 display, start_display, add_menu, add_function_to_menu = init_display()
-display.DisplayShape(torus_mesh_shp, update=True)
+display.DisplayShape(mesh_shp, update=True)
 start_display()
