@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2017 Emad Dlala (emad.dlala@gmail.com)
+# Copyright 2017 Emad Dlala (emad.dlala@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
@@ -51,7 +51,7 @@ def line():
     # we can apply the same rule for other lines by just doing a for loop
     for i in range(1, 5):
         p2 = gp_Pnt(i, 2., 5.)
-        d2 = gp_Dir(4*i, 6., 9.)
+        d2 = gp_Dir(4 * i, 6., 9.)
         line2 = Geom_Line(p2, d2)
 
         ais_line2 = AIS_Line(line2)
@@ -59,7 +59,7 @@ def line():
         width = float(i)
         drawer = ais_line2.Attributes()
         # asp : first parameter color, second type, last width
-        asp = Prs3d_LineAspect(Quantity_Color(9*i), i, width)
+        asp = Prs3d_LineAspect(Quantity_Color(9 * i), i, width)
         drawer.SetLineAspect(asp)
         ais_line2.SetAttributes(drawer)
 
@@ -69,6 +69,7 @@ def line():
 
 def exit(event=None):
     sys.exit()
+
 
 if __name__ == '__main__':
     line()
