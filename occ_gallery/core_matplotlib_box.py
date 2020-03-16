@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2015 Martin Siggel (martinsiggel@gmail.com)
+# Copyright 2015 Martin Siggel (martinsiggel@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 # Small example how to use the Tesselator interface to draw
 # a shape with matplotlib
@@ -32,6 +32,7 @@ except ImportError:
     print("This example requires matplotlib.")
     sys.exit(0)
 
+
 def draw_shape_mpl(shape):
     """
     Draw a TopoDS_Shape with matplotlib
@@ -47,7 +48,8 @@ def draw_shape_mpl(shape):
     triangle_count = tess.ObjGetTriangleCount()
     for i_triangle in range(0, triangle_count):
         i1, i2, i3 = tess.GetTriangleIndex(i_triangle)
-        triangles.append([tess.GetVertex(i1), tess.GetVertex(i2), tess.GetVertex(i3)])
+        triangles.append(
+            [tess.GetVertex(i1), tess.GetVertex(i2), tess.GetVertex(i3)])
 
     # get the edges
     edge_count = tess.ObjGetEdgeCount()
@@ -72,5 +74,5 @@ def draw_shape_mpl(shape):
     plt.show()
 
 
-box = BRepPrimAPI_MakeBox(1,1,1).Shape()
+box = BRepPrimAPI_MakeBox(1, 1, 1).Shape()
 draw_shape_mpl(box)
