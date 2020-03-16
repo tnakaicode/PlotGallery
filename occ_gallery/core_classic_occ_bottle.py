@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2009-2015 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2015 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import math
 
@@ -25,7 +25,7 @@ from OCC.Core.GCE2d import GCE2d_MakeSegment
 from OCC.Core.Geom import Geom_Plane, Geom_CylindricalSurface
 from OCC.Core.Geom2d import Geom2d_Ellipse, Geom2d_TrimmedCurve
 from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire,
-	                                 BRepBuilderAPI_MakeFace, BRepBuilderAPI_Transform)
+                                     BRepBuilderAPI_MakeFace, BRepBuilderAPI_Transform)
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakePrism, BRepPrimAPI_MakeCylinder
 from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
@@ -36,6 +36,7 @@ from OCC.Core.TopoDS import topods, TopoDS_Compound
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_FACE
 from OCC.Core.TopTools import TopTools_ListOfShape
+
 
 def face_is_plane(face):
     """
@@ -158,7 +159,8 @@ while aFaceExplorer.More():
 facesToRemove = TopTools_ListOfShape()
 facesToRemove.Append(faceToRemove)
 
-myBody = BRepOffsetAPI_MakeThickSolid(myBody.Shape(), facesToRemove, -thickness / 50.0, 0.001)
+myBody = BRepOffsetAPI_MakeThickSolid(
+    myBody.Shape(), facesToRemove, -thickness / 50.0, 0.001)
 
 # Set up our surfaces for the threading on the neck
 neckAx2_Ax3 = gp_Ax3(neckLocation, gp_DZ())
@@ -190,8 +192,10 @@ anEdge2OnSurf1 = BRepBuilderAPI_MakeEdge(aSegment.Value(), aCyl1)
 anEdge1OnSurf2 = BRepBuilderAPI_MakeEdge(anArc2, aCyl2)
 anEdge2OnSurf2 = BRepBuilderAPI_MakeEdge(aSegment.Value(), aCyl2)
 
-threadingWire1 = BRepBuilderAPI_MakeWire(anEdge1OnSurf1.Edge(), anEdge2OnSurf1.Edge())
-threadingWire2 = BRepBuilderAPI_MakeWire(anEdge1OnSurf2.Edge(), anEdge2OnSurf2.Edge())
+threadingWire1 = BRepBuilderAPI_MakeWire(
+    anEdge1OnSurf1.Edge(), anEdge2OnSurf1.Edge())
+threadingWire2 = BRepBuilderAPI_MakeWire(
+    anEdge1OnSurf2.Edge(), anEdge2OnSurf2.Edge())
 
 # Compute the 3D representations of the edges/wires
 breplib.BuildCurves3d(threadingWire1.Shape())

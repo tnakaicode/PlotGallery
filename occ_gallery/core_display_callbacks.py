@@ -1,19 +1,19 @@
-##Copyright 2010-2014 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2010-2014 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeTorus
 from OCC.Core.Bnd import Bnd_Box
@@ -37,9 +37,10 @@ def compute_bbox(shp, *kwargs):
         dy = ymax - ymin
         dz = zmax - zmin
         print("Selected shape bounding box : dx=%f, dy=%f, dz=%f." % (dx, dy, dz))
-        print("               bounding box center: x=%f, y=%f, z=%f" % (xmin + dx/2.,
-                                                                        ymin + dy/2.,
-                                                                        zmin + dz/2.))
+        print("               bounding box center: x=%f, y=%f, z=%f" % (xmin + dx / 2.,
+                                                                        ymin + dy / 2.,
+                                                                        zmin + dz / 2.))
+
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 # register callbacks
