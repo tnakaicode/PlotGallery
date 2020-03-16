@@ -1,26 +1,26 @@
-##Copyright 2009-2018 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2018 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 from math import pi
 
 from OCC.Core.BRep import BRep_Tool_Surface
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Section, BRepAlgoAPI_Fuse
 from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeEdge,
-	                                 BRepBuilderAPI_MakeFace, BRepBuilderAPI_GTransform)
+                                     BRepBuilderAPI_MakeFace, BRepBuilderAPI_GTransform)
 from OCC.Core.BRepFeat import (BRepFeat_MakePrism, BRepFeat_MakeDPrism, BRepFeat_SplitShape,
                                BRepFeat_MakeLinearForm, BRepFeat_MakeRevol)
 from OCC.Core.BRepLib import breplib_BuildCurves3d
@@ -35,7 +35,7 @@ from OCC.Core.GeomAbs import GeomAbs_Arc
 from OCC.Core.TopTools import TopTools_ListOfShape
 from OCC.Core.TopoDS import TopoDS_Face
 from OCC.Core.gp import (gp_Pnt2d, gp_Circ2d, gp_Ax2d, gp_Dir2d, gp_Pnt, gp_Pln,
-	                     gp_Vec, gp_OX, gp_Trsf, gp_GTrsf)
+                         gp_Vec, gp_OX, gp_Trsf, gp_GTrsf)
 
 from OCC.Extend.TopologyUtils import TopologyExplorer
 
@@ -53,7 +53,7 @@ def extrusion(event=None):
 
     #  Make a plane from this face
     Pln = Geom_Plane.DownCast(surf)
-   
+
     # Get the normal of this plane. This will be the direction of extrusion.
     D = Pln.Axis().Direction()
 
@@ -160,7 +160,8 @@ def thick_solid(event=None):
 
 def offset_cube(event=None):
     S2 = BRepPrimAPI_MakeBox(gp_Pnt(300, 0, 0), 220, 140, 180).Shape()
-    offsetB = BRepOffsetAPI_MakeOffsetShape(S2, -20, 0.01, BRepOffset_Skin, False, False, GeomAbs_Arc)
+    offsetB = BRepOffsetAPI_MakeOffsetShape(
+        S2, -20, 0.01, BRepOffset_Skin, False, False, GeomAbs_Arc)
     offB = display.DisplayColoredShape(S2, 'BLUE')
     display.Context.SetTransparency(offB, 0.3, True)
     display.DisplayColoredShape(offsetB.Shape(), 'GREEN')
@@ -191,12 +192,18 @@ def split_shape(event=None):
 def brep_feat_rib(event=None):
     mkw = BRepBuilderAPI_MakeWire()
 
-    mkw.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(0., 0., 0.), gp_Pnt(200., 0., 0.)).Edge())
-    mkw.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(200., 0., 0.), gp_Pnt(200., 0., 50.)).Edge())
-    mkw.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(200., 0., 50.), gp_Pnt(50., 0., 50.)).Edge())
-    mkw.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(50., 0., 50.), gp_Pnt(50., 0., 200.)).Edge())
-    mkw.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(50., 0., 200.), gp_Pnt(0., 0., 200.)).Edge())
-    mkw.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(0., 0., 200.), gp_Pnt(0., 0., 0.)).Edge())
+    mkw.Add(BRepBuilderAPI_MakeEdge(
+        gp_Pnt(0., 0., 0.), gp_Pnt(200., 0., 0.)).Edge())
+    mkw.Add(BRepBuilderAPI_MakeEdge(
+        gp_Pnt(200., 0., 0.), gp_Pnt(200., 0., 50.)).Edge())
+    mkw.Add(BRepBuilderAPI_MakeEdge(
+        gp_Pnt(200., 0., 50.), gp_Pnt(50., 0., 50.)).Edge())
+    mkw.Add(BRepBuilderAPI_MakeEdge(
+        gp_Pnt(50., 0., 50.), gp_Pnt(50., 0., 200.)).Edge())
+    mkw.Add(BRepBuilderAPI_MakeEdge(
+        gp_Pnt(50., 0., 200.), gp_Pnt(0., 0., 200.)).Edge())
+    mkw.Add(BRepBuilderAPI_MakeEdge(
+        gp_Pnt(0., 0., 200.), gp_Pnt(0., 0., 0.)).Edge())
 
     S = BRepPrimAPI_MakePrism(BRepBuilderAPI_MakeFace(mkw.Wire()).Face(),
                               gp_Vec(gp_Pnt(0., 0., 0.),
@@ -336,6 +343,7 @@ def brep_feat_extrusion_protrusion(event=None):
     display.DisplayShape(fused.Shape())
     display.FitAll()
 
+
 def exit(event=None):
     sys.exit()
 
@@ -348,7 +356,9 @@ if __name__ == '__main__':
     add_function_to_menu('topology local operations', offset_cube)
     add_function_to_menu('topology local operations', split_shape)
     add_function_to_menu('topology local operations', brep_feat_rib)
-    add_function_to_menu('topology local operations', brep_feat_local_revolution)
-    add_function_to_menu('topology local operations', brep_feat_extrusion_protrusion)
+    add_function_to_menu('topology local operations',
+                         brep_feat_local_revolution)
+    add_function_to_menu('topology local operations',
+                         brep_feat_extrusion_protrusion)
     add_function_to_menu('topology local operations', exit)
     start_display()
