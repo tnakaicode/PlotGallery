@@ -22,7 +22,8 @@ from __future__ import print_function
 import os
 import sys
 
-from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus
+from OCC.Core.gp import gp_Pnt
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus, BRepPrimAPI_MakeBox
 from OCC.Core.BRepTools import breptools_Write
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import read_stl_file
@@ -35,14 +36,18 @@ def mesh_shape(a_topods_shape):
     """
     # dump the geometry to a brep file
     breptools_Write(a_topods_shape, "core_mesh_gmsh.brep")
+    breptools_Write(make_box(gp_Pnt(-200, 0, 0), 100, 100, 100),
+                    "core_mesh_gmsh_box.brep")
 
     # create the gmesh file
-    gmsh_geo_file_content = """SetFactory("OpenCASCADE");
+    gmsh_geo_file_content = """
+    SetFactory("OpenCASCADE");
 
     Mesh.CharacteristicLengthMin = 1;
     Mesh.CharacteristicLengthMax = 5;
 
     a() = ShapeFromFile("core_mesh_gmsh.brep");
+    b() = ShapeFromFile("core_mesh_gmsh_box.brep");
     """
     gmsh_geo_file = open("core_mesh_gmsh.geo", "w")
     gmsh_geo_file.write(gmsh_geo_file_content)
@@ -50,7 +55,7 @@ def mesh_shape(a_topods_shape):
 
     # call gmsh
     gmsh_success = os.system(
-        os.getenv("GMSH") + " -tol 0.1 core_mesh_gmsh.geo -3 -o core_mesh_gmsh.stl -format stl")
+        os.getenv("GMSH") + " -tol 0.01 core_mesh_gmsh.geo -3 -o core_mesh_gmsh.stl -format stl -run -cpu -log core_mesh_gmsh_log.txt -rand 100")
     # load the stl file
     # if gmsh_success != 0 and os.path.isfile("shape.stl"):
     #    return read_stl_file("shape.stl")
@@ -63,7 +68,7 @@ def mesh_shape(a_topods_shape):
 # First example, a simple torus
 torus_shp = BRepPrimAPI_MakeTorus(50., 10.).Shape()
 box_shp = make_box(100, 100, 100)
-mesh_shp = mesh_shape(box_shp)
+mesh_shp = mesh_shape(torus_shp)
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 display.DisplayShape(mesh_shp, update=True)
