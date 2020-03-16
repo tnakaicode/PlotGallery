@@ -32,7 +32,7 @@ from OCC.Core.GeomAbs import GeomAbs_C2
 from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnCurve
 
 # Read wire
-wire_filename = os.path.join('..', 'assets', 'models', 'wire.brep')
+wire_filename = "./models/wire.brep"
 shp = TopoDS_Shape()
 aBuilder = BRep_Builder()
 breptools.Read(shp, wire_filename, aBuilder)

@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2016 Jelle Feringa (jelleferinga@gmail.com)
+# Copyright 2016 Jelle Feringa (jelleferinga@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
@@ -60,8 +60,10 @@ def rotate(event=None):
     display.DisplayMessage(as_pnt(v45), 'e3')
     display.DisplayMessage(p3, 'q1*vY')
     display.DisplayMessage(p4, 'q1*v45')
-    display.DisplayVector((q1 * vY).Normalized(), as_pnt(origin + q1 * vY / 2.))
-    display.DisplayVector((q1 * v45).Normalized(), as_pnt(origin + q1 * v45 / 2.))
+    display.DisplayVector((q1 * vY).Normalized(),
+                          as_pnt(origin + q1 * vY / 2.))
+    display.DisplayVector((q1 * v45).Normalized(),
+                          as_pnt(origin + q1 * v45 / 2.))
     display.FitAll()
 
 
@@ -101,7 +103,7 @@ def interpolate(event=None):
     for i in frange(0, 1.0, 0.01):
         interp.Interpolate(i, q)
         # displace the white edges a little from the origin so not to obstruct the other edges
-        v = gp_Vec(0, -24*i, 0)
+        v = gp_Vec(0, -24 * i, 0)
         q_v_ = q * v45
         p = gp_Pnt((q_v_ + v).XYZ())
         v__as_pnt = gp_Pnt((origin + v).XYZ())
