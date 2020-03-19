@@ -38,7 +38,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, backend_str=None, *args):
         used_backend = load_backend(backend_str)
         log.info("GUI backend set to: %s", used_backend)
-        from OCC.Display.qtDisplay import qtViewer3d
+        from OCC.Display.qtDisplay import qtViewer3d, qtBaseViewer
 
         # following couple of lines is a tweak to enable ipython --gui='qt'
         # checks if QApplication already exists
@@ -47,10 +47,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.app = QtWidgets.QApplication(sys.argv)
 
         QtWidgets.QMainWindow.__init__(self, *args)
-        self.canva = qtViewer3d(self)
+        self.canvas = qtViewer3d(self)
         self.setWindowTitle(
             "pythonOCC-%s 3d viewer ('%s' backend)" % (VERSION, used_backend))
-        self.setCentralWidget(self.canva)
+        self.setCentralWidget(self.canvas)
         if sys.platform != 'darwin':
             self.menu_bar = self.menuBar()
         else:
@@ -105,10 +105,10 @@ class InitDisplay (MainWindow):
         self.resize(size[0] - 1, size[1] - 1)
         self.show()
         self.centerOnScreen()
-        self.canva.InitDriver()
+        self.canvas.InitDriver()
         self.resize(size[0], size[1])
-        self.canva.qApp = self.app
-        self.display = self.canva._display
+        self.canvas.qApp = self.app
+        self.display = self.canvas._display
 
         if display_triedron:
             self.display.display_triedron()
