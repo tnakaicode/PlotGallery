@@ -1,74 +1,75 @@
-# OCC
+"""
+base from animete_decay.py
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+import time
+import os
+from matplotlib.animation import FuncAnimation, MovieWriterRegistry, Animation
+from matplotlib import cbook, rcParams, rcParamsDefault, rc_context
+from optparse import OptionParser
 
-## SimpleGUI
+writers = MovieWriterRegistry()
 
-```Python
-class InitDisplay (MainWindow):
 
-    def __init__(self,
-                 backend_str=None,
-                 size=(1024, 768),
-                 display_triedron=True,
-                 background_gradient_color1=[206, 215, 222],
-                 background_gradient_color2=[128, 128, 128]):
-        MainWindow.__init__(self, backend_str)
+class Aniamte2D (FuncAnimation):
+    """
+    func : callable
+       The function to call at each frame.  The first argument will
+       be the next value in *frames*.   Any additional positional
+       arguments can be supplied via the *fargs* parameter.
 
-        self.resize(size[0] - 1, size[1] - 1)
-        self.show()
-        self.centerOnScreen()
-        self.canvas.InitDriver()
-        self.resize(size[0], size[1])
-        self.canvas.qApp = self.app
-        self.display = self.canvas._display
+       The required signature is::
 
-class MainWindow(QtWidgets.QMainWindow):
+          def func(frame, *fargs) -> iterable_of_artists
 
-    def __init__(self, backend_str=None, *args):
-        used_backend = load_backend(backend_str)
-        log.info("GUI backend set to: %s", used_backend)
-        from OCC.Display.qtDisplay import qtViewer3d, qtBaseViewer
+       If ``blit == True``, *func* must return an iterable of all artists
+       that were modified or created. 
+       This information is used by the blitting algorithm to determine 
+       which parts of the figure have to be updated.
+       The return value is unused 
+       if ``blit == False`` and may be omitted in that case.
+    """
 
-        # following couple of lines is a tweak to enable ipython --gui='qt'
-        # checks if QApplication already exists
-        self.app = QtWidgets.QApplication.instance()
-        if not self.app:  # create QApplication if it doesnt exist
-            self.app = QtWidgets.QApplication(sys.argv)
+    def __init__(self):
+        self.fig, self.axs = plt.subplots()
+        self.axs.grid()
+        self.axs.set_ylim(-1.1, 1.1)
+        self.axs.set_xlim(0, 10)
 
-        QtWidgets.QMainWindow.__init__(self, *args)
-        self.canvas = qtViewer3d(self)
-        self.setWindowTitle(
-            "pythonOCC-%s 3d viewer ('%s' backend)" % (VERSION, used_backend))
-        self.setCentralWidget(self.canvas)
+        self.init()
+        FuncAnimation.__init__(self, self.fig, self.run, frames=self.data_gen,
+                               blit=False, interval=0.1, repeat=False, init_func=self.init)
 
-class qtBaseViewer(QtOpenGL.QGLWidget):
-    ''' The base Qt Widget for an OCC viewer
-    '''
-    def __init__(self, parent=None):
-        super(qtBaseViewer, self).__init__(parent)
-        self._display = None
-        self._inited = False
+    def data_gen(self, t=0):
+        cnt = 0
+        while cnt < 1000:
+            cnt += 1
+            if cnt % 100 == 0:
+                print(cnt)
+            t += 0.05
+            yield t, np.sin(2 * np.pi * t) * np.exp(-t / 10.)
 
-class qtViewer3d(qtBaseViewer):
-    # emit signal when selection is changed
-    # is a list of TopoDS_*
-    if HAVE_PYQT_SIGNAL:
-        sig_topods_selected = QtCore.pyqtSignal(list)
+    def run(self, data):
+        # update the data
+        t, y = data
+        self.xdata.append(t)
+        self.ydata.append(y)
+        self.zdata.append(y / 2)
+        self.line0.set_data(self.xdata, self.ydata)
+        self.line1.set_data(self.xdata, self.zdata)
+        return
 
-    def __init__(self, *kargs):
-        qtBaseViewer.__init__(self, *kargs)
+    def init(self):
+        self.xdata = []
+        self.ydata = []
+        self.zdata = []
+        self.line0, = self.axs.plot(self.xdata, self.ydata, lw=2)
+        self.line1, = self.axs.plot(self.xdata, self.zdata, lw=2)
+        return
 
-        self.setObjectName("qt_viewer_3d")
-
-```
-
-## OCC Save PNG
-
-## plt Save GIF
-
-Animation.save
-
-```Python
-    def save(self, filename, writer="Pillow", fps=None, dpi=None, codec=None,
+    def savegif(self, filename, writer=None, fps=None, dpi=None, codec=None,
              bitrate=None, extra_args=None, metadata=None, extra_anim=None,
              savefig_kwargs=None, *, progress_callback=None):
         # If the writer is None, use the rc param to find the name of the one
@@ -114,18 +115,20 @@ Animation.save
 
         all_anim = [self]
         if extra_anim is not None:
-            all_anim.extend(anim for anim in extra_anim if anim._fig is self._fig)
+            all_anim.extend(anim
+                            for anim
+                            in extra_anim if anim._fig is self._fig)
 
-        # If we have the name of a writer,
-        # instantiate an instance of the registered class.
+        # If we have the name of a writer, instantiate an instance of the
+        # registered class.
         if isinstance(writer, str):
             if writer in writers.avail:
-                writer = writers[writer](fps, codec, bitrate, extra_args=extra_args, metadata=metadata)
+                writer = writers[writer](fps, codec, bitrate,
+                                         extra_args=extra_args,
+                                         metadata=metadata)
             else:
                 if writers.list():
                     alt_writer = writers[writers.list()[0]]
-                    _log.warning("MovieWriter %s unavailable; trying to use "
-                                 "%s instead.", writer, alt_writer)
                     writer = alt_writer(
                         fps, codec, bitrate,
                         extra_args=extra_args, metadata=metadata)
@@ -133,26 +136,18 @@ Animation.save
                     raise ValueError("Cannot save animation: no writers are "
                                      "available. Please install ffmpeg to "
                                      "save animations.")
-        _log.info('Animation.save using %s', type(writer))
 
         if 'bbox_inches' in savefig_kwargs:
-            _log.warning("Warning: discarding the 'bbox_inches' argument in "
-                         "'savefig_kwargs' as it may cause frame size "
-                         "to vary, which is inappropriate for animation.")
             savefig_kwargs.pop('bbox_inches')
 
-        # Create a new sequence of frames for saved data.
-        # This is different from new_frame_seq() to give the ability
-        # to save 'live' generated frame information to be saved later.
-        #
-        # TODO: Right now, after closing the figure,
-        # saving a movie won't work since GUI widgets are gone.
-        # Either need to remove extra code to allow for this non-existent use case or find a way to make it work.
+        # Create a new sequence of frames for saved data. This is different
+        # from new_frame_seq() to give the ability to save 'live' generated
+        # frame information to be saved later.
+        # TODO: Right now, after closing the figure, saving a movie won't work
+        # since GUI widgets are gone. Either need to remove extra code to
+        # allow for this non-existent use case or find a way to make it work.
         with rc_context():
             if rcParams['savefig.bbox'] == 'tight':
-                _log.info("Disabling savefig.bbox = 'tight', as it may cause "
-                          "frame size to vary, which is inappropriate for "
-                          "animation.")
                 rcParams['savefig.bbox'] = None
             with writer.saving(self._fig, filename, dpi):
                 for anim in all_anim:
@@ -181,4 +176,14 @@ Animation.save
             self._first_draw_id = self._fig.canvas.mpl_connect('draw_event',
                                                                self._start)
 
-```
+
+if __name__ == '__main__':
+    argvs = sys.argv
+    parser = OptionParser()
+    parser.add_option("--dir", dest="dir", default=None)
+    opt, argc = parser.parse_args(argvs)
+    print(opt, argc)
+
+    obj = Aniamte2D()
+    obj.savegif("./animate_base.gif", writer='pillow')
+    plt.show()
