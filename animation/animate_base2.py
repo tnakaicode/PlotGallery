@@ -6,11 +6,51 @@ import matplotlib.pyplot as plt
 import sys
 import time
 import os
-from matplotlib.animation import FuncAnimation, MovieWriterRegistry, Animation
+from io import BytesIO, TextIOWrapper
+from matplotlib.animation import FuncAnimation, MovieWriterRegistry, MovieWriter, Animation
 from matplotlib import cbook, rcParams, rcParamsDefault, rc_context
 from optparse import OptionParser
 
 writers = MovieWriterRegistry()
+
+
+@writers.register('pillow')
+class PillowWriter(MovieWriter):
+    @classmethod
+    def isAvailable(cls):
+        try:
+            import PIL
+        except ImportError:
+            return False
+        return True
+
+    def __init__(self, *args, **kwargs):
+        if kwargs.get("extra_args") is None:
+            kwargs["extra_args"] = ()
+        super().__init__(*args, **kwargs)
+
+    def setup(self, fig, outfile, dpi=None):
+        self._frames = []
+        self._outfile = outfile
+        self._dpi = dpi
+        self._fig = fig
+
+    def grab_frame(self, **savefig_kwargs):
+        from PIL import Image
+        buf = BytesIO()
+        self._fig.savefig(buf, **dict(savefig_kwargs, format="rgba"))
+        renderer = self._fig.canvas.get_renderer()
+        # Using frombuffer / getbuffer may be slightly more efficient, but
+        # Py3-only.
+        self._frames.append(Image.frombytes(
+            "RGBA",
+            (int(renderer.width), int(renderer.height)),
+            buf.getvalue()))
+
+    def finish(self):
+        self._frames[0].save(
+            self._outfile, save_all=True, append_images=self._frames[1:],
+            duration=int(1000 / self.fps), loop=0)
 
 
 class Aniamte2D (FuncAnimation):
@@ -70,8 +110,8 @@ class Aniamte2D (FuncAnimation):
         return
 
     def savegif(self, filename, writer=None, fps=None, dpi=None, codec=None,
-             bitrate=None, extra_args=None, metadata=None, extra_anim=None,
-             savefig_kwargs=None, *, progress_callback=None):
+                bitrate=None, extra_args=None, metadata=None, extra_anim=None,
+                savefig_kwargs=None, *, progress_callback=None):
         # If the writer is None, use the rc param to find the name of the one
         # to use
         if writer is None:
