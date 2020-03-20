@@ -1,0 +1,52 @@
+-----------------------------
+AFEM LOGGING FILE INITIALIZED
+-----------------------------
+INFO: Creating part: fwd bh
+INFO: Creating part: rear bh
+INFO: Creating part: aft bh
+INFO: Creating part: floor
+INFO: Creating part: fuselage skin
+INFO: Creating part: frame 1
+INFO: Creating part: frame 2
+INFO: Creating part: frame 3
+INFO: Creating part: frame 4
+INFO: Creating part: frame 5
+INFO: Creating part: frame 6
+INFO: Creating part: frame 7
+INFO: Creating part: frame 8
+INFO: Creating part: frame 9
+INFO: Creating part: frame 10
+INFO: Creating part: frame 11
+INFO: Creating part: frame 12
+INFO: Creating part: frame 13
+INFO: Creating part: frame 14
+INFO: Creating part: frame 15
+INFO: Creating part: frame 16
+INFO: Creating part: frame 17
+INFO: Creating part: frame 18
+INFO: Creating part: frame 19
+INFO: Creating part: frame 20
+INFO: Creating part: frame 21
+INFO: Creating part: frame 22
+INFO: Creating part: frame 23
+INFO: Creating part: frame 24
+INFO: Creating part: frame 25
+INFO: Creating part: frame 26
+INFO: Creating part: frame 27
+INFO: Creating part: root rib
+INFO: Creating part: fc spar
+INFO: Creating part: rc spar
+INFO: Creating part: tip rib
+INFO: Creating part: fspar
+INFO: Creating part: rspar
+INFO: Creating part: aux spar
+INFO: Creating part: kink rib
+INFO: Creating part: inbd rib 1
+INFO: Creating part: inbd rib 2
+INFO: Creating part: inbd rib 3
+INFO: Creating part: inbd rib 4
+INFO: Creating part: inbd rib 5
+INFO: Creating part: inbd rib 6
+INFO: Creating part: inbd rib 7
+INFO: Creating part: outbd rib 1
+INFO: Creating part: outbd rib 2
