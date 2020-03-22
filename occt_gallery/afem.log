@@ -1,3 +1,32 @@
 -----------------------------
 AFEM LOGGING FILE INITIALIZED
 -----------------------------
+INFO: ---Processing OpenVSP component: Wing
+INFO: 	Successfully generated solid with tolerance=1e-07
+INFO: Creating part: Rib 1
+INFO: Creating part: Rib 2
+INFO: Creating part: Rib 3
+INFO: Creating part: Rib 4
+INFO: Creating part: Rib 5
+INFO: Creating part: Rib 6
+INFO: Creating part: Rib 7
+INFO: Creating part: Rib 8
+INFO: Creating part: Rib 9
+INFO: Creating part: Rib 10
+INFO: Creating part: Rib 11
+INFO: Creating part: Rib 12
+INFO: Creating part: Rib 13
+INFO: Creating part: Rib 14
+INFO: Creating part: Rib 15
+INFO: Creating part: Rib 16
+INFO: Creating part: Rib 17
+INFO: Creating part: Rib 18
+INFO: Creating part: Rib 19
+INFO: Creating part: Rib 20
+INFO: Creating part: Rib 21
+INFO: Creating part: Rib 22
+INFO: Creating part: Rib 23
+INFO: Creating part: Rib 24
+INFO: Creating part: beam 1
+INFO: Creating part: beam 2
+INFO: Creating part: skin

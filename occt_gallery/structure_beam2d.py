@@ -8,7 +8,7 @@ from afem.topology import *
 Settings.log_to_console()
 
 # Import model
-fname = '../models/uniform_wing.stp'
+fname = './models/uniform_wing.stp'
 vsp = ImportVSP(fname)
 wing = vsp['Wing']
 
