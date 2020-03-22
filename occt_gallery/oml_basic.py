@@ -24,7 +24,7 @@ p3y = semispan
 
 # Create a cross section using an UIUC airfoil file
 cs = Airfoil()
-cs.read_uiuc('../models/clarky.dat')
+cs.read_uiuc('./models/clarky.dat')
 
 # Define cross section planes
 pln1 = PlaneByAxes((p1x, p1y, 0), axes='xz').plane
