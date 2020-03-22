@@ -13,7 +13,7 @@ Settings.log_to_console()
 
 # Import an OpenVSP STEP file. If generated using the modified version that
 # includes metadata, each Body will be retrievable by its component name.
-fn = '../models/777-200LR.stp'
+fn = './models/777-200LR.stp'
 
 # Import the OpenVSP STEP file
 vsp_import = ImportVSP(fn)
