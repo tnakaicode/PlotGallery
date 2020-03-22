@@ -1,17 +1,3 @@
 -----------------------------
 AFEM LOGGING FILE INITIALIZED
 -----------------------------
-INFO: ---Processing OpenVSP component: Fuselage
-INFO: 	Successfully generated solid with tolerance=1e-07
-INFO: ---Processing OpenVSP component: Gear Pod
-INFO: 	Successfully generated solid with tolerance=1e-07
-INFO: ---Processing OpenVSP component: Htail
-INFO: 	Successfully generated solid with tolerance=1e-07
-INFO: ---Processing OpenVSP component: Htail.1
-INFO: 	Successfully generated solid with tolerance=1e-07
-INFO: ---Processing OpenVSP component: Wing
-INFO: 	Successfully generated solid with tolerance=1e-07
-INFO: ---Processing OpenVSP component: Wing.2
-INFO: 	Successfully generated solid with tolerance=1e-07
-INFO: ---Processing OpenVSP component: Vtail
-INFO: 	Successfully generated solid with tolerance=1e-07

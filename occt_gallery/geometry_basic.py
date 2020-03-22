@@ -1,5 +1,7 @@
 from afem.geometry import *
+from afem.geometry import Point
 from afem.graphics import Viewer
+from afem.geometry.create import PointByArray
 
 gui = Viewer()
 
