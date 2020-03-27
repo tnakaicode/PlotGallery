@@ -76,7 +76,7 @@ def random_points(event=None):
 
 
 def bunny(event=None):
-    pcd_file_name = os.path.join('..', 'assets', 'models', 'bunny.pcd')
+    pcd_file_name = "./models/bunny.pcd"
     # compute number of lines
     nbr_of_vertices = pcd_get_number_of_vertices(pcd_file_name)
     print("Number of vertices :", nbr_of_vertices)
@@ -100,8 +100,7 @@ def bunny(event=None):
 
 
 def tabletop(event=None):
-    pcd_file = open(os.path.join('..', 'assets', 'models',
-                                 'tabletop.pcd'), 'r').readlines()[11:]
+    pcd_file = open("./models/tabletop.pcd", 'r').readlines()[11:]
     # create the point_cloud
     pc = Graphic3d_ArrayOfPoints(len(pcd_file), True)
     for line in pcd_file:
