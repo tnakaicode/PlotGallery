@@ -1,0 +1,612 @@
+ ELEMENT            1 with label "CPE8    " and with nodes:
+         13         14        191        190         33        215        216        217
+  is expanded into a "C3D20 E " element with topology:
+        435        438        969        966        437        440        971        968        495       1041
+       1044       1047        497       1043       1046       1049        436        439        970        967
+
+ ELEMENT            2 with label "CPE8    " and with nodes:
+         14         15        189        191         34        218        219        215
+  is expanded into a "C3D20 E " element with topology:
+        438        441        963        969        440        443        965        971        498       1050
+       1053       1041        500       1052       1055       1043        439        442        964        970
+
+ ELEMENT            3 with label "CPE8    " and with nodes:
+        191        189         71         72        219        220         95        221
+  is expanded into a "C3D20 E " element with topology:
+        969        963        609        612        971        965        611        614       1053       1056
+        681       1059       1055       1058        683       1061        970        964        610        613
+
+ ELEMENT            4 with label "CPE8    " and with nodes:
+        190        191         72         73        216        221         96        222
+  is expanded into a "C3D20 E " element with topology:
+        966        969        612        615        968        971        614        617       1044       1059
+        684       1062       1046       1061        686       1064        967        970        613        616
+
+ ELEMENT            5 with label "CPE8    " and with nodes:
+         25        192        194         24        223        224        225         44
+  is expanded into a "C3D20 E " element with topology:
+        471        972        978        468        473        974        980        470       1065       1068
+       1071        528       1067       1070       1073        530        472        973        979        469
+
+ ELEMENT            6 with label "CPE8    " and with nodes:
+        192         61         62        194        226         85        227        224
+  is expanded into a "C3D20 E " element with topology:
+        972        579        582        978        974        581        584        980       1074        651
+       1077       1068       1076        653       1079       1070        973        580        583        979
+
+ ELEMENT            7 with label "CPE8    " and with nodes:
+        194         62         63        193        227         86        228        229
+  is expanded into a "C3D20 E " element with topology:
+        978        582        585        975        980        584        587        977       1077        654
+       1080       1083       1079        656       1082       1085        979        583        586        976
+
+ ELEMENT            8 with label "CPE8    " and with nodes:
+         24        194        193         23        225        229        230         43
+  is expanded into a "C3D20 E " element with topology:
+        468        978        975        465        470        980        977        467       1071       1083
+       1086        525       1073       1085       1088        527        469        979        976        466
+
+ ELEMENT            9 with label "CPE8    " and with nodes:
+        104        105        197        196        108        231        232        233
+  is expanded into a "C3D20 E " element with topology:
+        708        711        987        984        710        713        989        986        720       1089
+       1092       1095        722       1091       1094       1097        709        712        988        985
+
+ ELEMENT           10 with label "CPE8    " and with nodes:
+        105          1         10        197        109         29        234        231
+  is expanded into a "C3D20 E " element with topology:
+        711        402        426        987        713        404        428        989        723        483
+       1098       1089        725        485       1100       1091        712        403        427        988
+
+ ELEMENT           11 with label "CPE8    " and with nodes:
+        197         10         11        195        234         30        235        236
+  is expanded into a "C3D20 E " element with topology:
+        987        426        429        981        989        428        431        983       1098        486
+       1101       1104       1100        488       1103       1106        988        427        430        982
+
+ ELEMENT           12 with label "CPE8    " and with nodes:
+        196        197        195        186        232        236        237        238
+  is expanded into a "C3D20 E " element with topology:
+        984        987        981        954        986        989        983        956       1092       1104
+       1107       1110       1094       1106       1109       1112        985        988        982        955
+
+ ELEMENT           13 with label "CPE8    " and with nodes:
+        104        196        199        103        233        239        240        107
+  is expanded into a "C3D20 E " element with topology:
+        708        984        993        705        710        986        995        707       1095       1113
+       1116        717       1097       1115       1118        719        709        985        994        706
+
+ ELEMENT           14 with label "CPE8    " and with nodes:
+        196        186        198        199        238        241        242        239
+  is expanded into a "C3D20 E " element with topology:
+        984        954        990        993        986        956        992        995       1110       1119
+       1122       1113       1112       1121       1124       1115        985        955        991        994
+
+ ELEMENT           15 with label "CPE8    " and with nodes:
+        199        198         77         78        242        243        101        244
+  is expanded into a "C3D20 E " element with topology:
+        993        990        627        630        995        992        629        632       1122       1125
+        699       1128       1124       1127        701       1130        994        991        628        631
+
+ ELEMENT           16 with label "CPE8    " and with nodes:
+        103        199         78          5        240        244        102        106
+  is expanded into a "C3D20 E " element with topology:
+        705        993        630        411        707        995        632        413       1116       1128
+        702        714       1118       1130        704        716        706        994        631        412
+
+ ELEMENT           17 with label "CPE8    " and with nodes:
+         73         74        201        190         97        245        246        222
+  is expanded into a "C3D20 E " element with topology:
+        615        618        999        966        617        620       1001        968        687       1131
+       1134       1062        689       1133       1136       1064        616        619       1000        967
+
+ ELEMENT           18 with label "CPE8    " and with nodes:
+         74         75        200        201         98        247        248        245
+  is expanded into a "C3D20 E " element with topology:
+        618        621        996        999        620        623        998       1001        690       1137
+       1140       1131        692       1139       1142       1133        619        622        997       1000
+
+ ELEMENT           19 with label "CPE8    " and with nodes:
+        201        200         11         12        248        249         31        250
+  is expanded into a "C3D20 E " element with topology:
+        999        996        429        432       1001        998        431        434       1140       1143
+        489       1146       1142       1145        491       1148       1000        997        430        433
+
+ ELEMENT           20 with label "CPE8    " and with nodes:
+        190        201         12         13        246        250         32        217
+  is expanded into a "C3D20 E " element with topology:
+        966        999        432        435        968       1001        434        437       1134       1146
+        492       1047       1136       1148        494       1049        967       1000        433        436
+
+ ELEMENT           21 with label "CPE8    " and with nodes:
+        186        195        202        198        237        251        252        241
+  is expanded into a "C3D20 E " element with topology:
+        954        981       1002        990        956        983       1004        992       1107       1149
+       1152       1119       1109       1151       1154       1121        955        982       1003        991
+
+ ELEMENT           22 with label "CPE8    " and with nodes:
+        195         11        200        202        235        249        253        251
+  is expanded into a "C3D20 E " element with topology:
+        981        429        996       1002        983        431        998       1004       1101       1143
+       1155       1149       1103       1145       1157       1151        982        430        997       1003
+
+ ELEMENT           23 with label "CPE8    " and with nodes:
+        202        200         75         76        253        247         99        254
+  is expanded into a "C3D20 E " element with topology:
+       1002        996        621        624       1004        998        623        626       1155       1137
+        693       1158       1157       1139        695       1160       1003        997        622        625
+
+ ELEMENT           24 with label "CPE8    " and with nodes:
+        198        202         76         77        252        254        100        243
+  is expanded into a "C3D20 E " element with topology:
+        990       1002        624        627        992       1004        626        629       1152       1158
+        696       1125       1154       1160        698       1127        991       1003        625        628
+
+ ELEMENT           25 with label "CPE8    " and with nodes:
+         15         16        204        189         35        255        256        218
+  is expanded into a "C3D20 E " element with topology:
+        441        444       1008        963        443        446       1010        965        501       1161
+       1164       1050        503       1163       1166       1052        442        445       1009        964
+
+ ELEMENT           26 with label "CPE8    " and with nodes:
+         16         17        203        204         36        257        258        255
+  is expanded into a "C3D20 E " element with topology:
+        444        447       1005       1008        446        449       1007       1010        504       1167
+       1170       1161        506       1169       1172       1163        445        448       1006       1009
+
+ ELEMENT           27 with label "CPE8    " and with nodes:
+        204        203         69         70        258        259         93        260
+  is expanded into a "C3D20 E " element with topology:
+       1008       1005        603        606       1010       1007        605        608       1170       1173
+        675       1176       1172       1175        677       1178       1009       1006        604        607
+
+ ELEMENT           28 with label "CPE8    " and with nodes:
+        189        204         70         71        256        260         94        220
+  is expanded into a "C3D20 E " element with topology:
+        963       1008        606        609        965       1010        608        611       1164       1176
+        678       1056       1166       1178        680       1058        964       1009        607        610
+
+ ELEMENT           29 with label "CPE8    " and with nodes:
+         21        205        207         20        261        262        263         40
+  is expanded into a "C3D20 E " element with topology:
+        459       1011       1017        456        461       1013       1019        458       1179       1182
+       1185        516       1181       1184       1187        518        460       1012       1018        457
+
+ ELEMENT           30 with label "CPE8    " and with nodes:
+        205         65         66        207        264         89        265        262
+  is expanded into a "C3D20 E " element with topology:
+       1011        591        594       1017       1013        593        596       1019       1188        663
+       1191       1182       1190        665       1193       1184       1012        592        595       1018
+
+ ELEMENT           31 with label "CPE8    " and with nodes:
+        207         66         67        206        265         90        266        267
+  is expanded into a "C3D20 E " element with topology:
+       1017        594        597       1014       1019        596        599       1016       1191        666
+       1194       1197       1193        668       1196       1199       1018        595        598       1015
+
+ ELEMENT           32 with label "CPE8    " and with nodes:
+         20        207        206         19        263        267        268         39
+  is expanded into a "C3D20 E " element with topology:
+        456       1017       1014        453        458       1019       1016        455       1185       1197
+       1200        513       1187       1199       1202        515        457       1018       1015        454
+
+ ELEMENT           33 with label "CPE8    " and with nodes:
+         17         18        208        203         37        269        270        257
+  is expanded into a "C3D20 E " element with topology:
+        447        450       1020       1005        449        452       1022       1007        507       1203
+       1206       1167        509       1205       1208       1169        448        451       1021       1006
+
+ ELEMENT           34 with label "CPE8    " and with nodes:
+         18         19        206        208         38        268        271        269
+  is expanded into a "C3D20 E " element with topology:
+        450        453       1014       1020        452        455       1016       1022        510       1200
+       1209       1203        512       1202       1211       1205        451        454       1015       1021
+
+ ELEMENT           35 with label "CPE8    " and with nodes:
+        208        206         67         68        271        266         91        272
+  is expanded into a "C3D20 E " element with topology:
+       1020       1014        597        600       1022       1016        599        602       1209       1194
+        669       1212       1211       1196        671       1214       1021       1015        598        601
+
+ ELEMENT           36 with label "CPE8    " and with nodes:
+        203        208         68         69        270        272         92        259
+  is expanded into a "C3D20 E " element with topology:
+       1005       1020        600        603       1007       1022        602        605       1206       1212
+        672       1173       1208       1214        674       1175       1006       1021        601        604
+
+ ELEMENT           37 with label "CPE8    " and with nodes:
+         23        193        209         22        230        273        274         42
+  is expanded into a "C3D20 E " element with topology:
+        465        975       1023        462        467        977       1025        464       1086       1215
+       1218        522       1088       1217       1220        524        466        976       1024        463
+
+ ELEMENT           38 with label "CPE8    " and with nodes:
+        193         63         64        209        228         87        275        273
+  is expanded into a "C3D20 E " element with topology:
+        975        585        588       1023        977        587        590       1025       1080        657
+       1221       1215       1082        659       1223       1217        976        586        589       1024
+
+ ELEMENT           39 with label "CPE8    " and with nodes:
+        209         64         65        205        275         88        264        276
+  is expanded into a "C3D20 E " element with topology:
+       1023        588        591       1011       1025        590        593       1013       1221        660
+       1188       1224       1223        662       1190       1226       1024        589        592       1012
+
+ ELEMENT           40 with label "CPE8    " and with nodes:
+         22        209        205         21        274        276        261         41
+  is expanded into a "C3D20 E " element with topology:
+        462       1023       1011        459        464       1025       1013        461       1218       1224
+       1179        519       1220       1226       1181        521        463       1024       1012        460
+
+ ELEMENT           41 with label "CPE8    " and with nodes:
+         61        192        211         60        226        277        278         84
+  is expanded into a "C3D20 E " element with topology:
+        579        972       1029        576        581        974       1031        578       1074       1227
+       1230        648       1076       1229       1232        650        580        973       1030        577
+
+ ELEMENT           42 with label "CPE8    " and with nodes:
+        192         25         26        211        223         45        279        277
+  is expanded into a "C3D20 E " element with topology:
+        972        471        474       1029        974        473        476       1031       1065        531
+       1233       1227       1067        533       1235       1229        973        472        475       1030
+
+ ELEMENT           43 with label "CPE8    " and with nodes:
+        211         26         27        210        279         46        280        281
+  is expanded into a "C3D20 E " element with topology:
+       1029        474        477       1026       1031        476        479       1028       1233        534
+       1236       1239       1235        536       1238       1241       1030        475        478       1027
+
+ ELEMENT           44 with label "CPE8    " and with nodes:
+         60        211        210         59        278        281        282         83
+  is expanded into a "C3D20 E " element with topology:
+        576       1029       1026        573        578       1031       1028        575       1230       1239
+       1242        645       1232       1241       1244        647        577       1030       1027        574
+
+ ELEMENT           45 with label "CPE8    " and with nodes:
+          3        188        212         28        283        284        285         48
+  is expanded into a "C3D20 E " element with topology:
+        405        960       1032        480        407        962       1034        482       1245       1248
+       1251        540       1247       1250       1253        542        406        961       1033        481
+
+ ELEMENT           46 with label "CPE8    " and with nodes:
+        188         57         58        212        286         81        287        284
+  is expanded into a "C3D20 E " element with topology:
+        960        567        570       1032        962        569        572       1034       1254        639
+       1257       1248       1256        641       1259       1250        961        568        571       1033
+
+ ELEMENT           47 with label "CPE8    " and with nodes:
+        212         58         59        210        287         82        282        288
+  is expanded into a "C3D20 E " element with topology:
+       1032        570        573       1026       1034        572        575       1028       1257        642
+       1242       1260       1259        644       1244       1262       1033        571        574       1027
+
+ ELEMENT           48 with label "CPE8    " and with nodes:
+         28        212        210         27        285        288        280         47
+  is expanded into a "C3D20 E " element with topology:
+        480       1032       1026        477        482       1034       1028        479       1251       1260
+       1236        537       1253       1262       1238        539        481       1033       1027        478
+
+ ELEMENT           49 with label "CPE8    " and with nodes:
+         50        187        213         49        289        290        291         53
+  is expanded into a "C3D20 E " element with topology:
+        546        957       1035        543        548        959       1037        545       1263       1266
+       1269        555       1265       1268       1271        557        547        958       1036        544
+
+ ELEMENT           50 with label "CPE8    " and with nodes:
+        187         57        188        213        292        286        293        290
+  is expanded into a "C3D20 E " element with topology:
+        957        567        960       1035        959        569        962       1037       1272       1254
+       1275       1266       1274       1256       1277       1268        958        568        961       1036
+
+ ELEMENT           51 with label "CPE8    " and with nodes:
+         49        213        188          3        291        293        283         52
+  is expanded into a "C3D20 E " element with topology:
+        543       1035        960        405        545       1037        962        407       1269       1275
+       1245        552       1271       1277       1247        554        544       1036        961        406
+
+ ELEMENT           52 with label "CPE8    " and with nodes:
+         57        187        214         56        292        294        295         80
+  is expanded into a "C3D20 E " element with topology:
+        567        957       1038        564        569        959       1040        566       1272       1278
+       1281        636       1274       1280       1283        638        568        958       1039        565
+
+ ELEMENT           53 with label "CPE8    " and with nodes:
+        187         50         51        214        289         54        296        294
+  is expanded into a "C3D20 E " element with topology:
+        957        546        549       1038        959        548        551       1040       1263        558
+       1284       1278       1265        560       1286       1280        958        547        550       1039
+
+ ELEMENT           54 with label "CPE8    " and with nodes:
+         56        214         51          4        295        296         55         79
+  is expanded into a "C3D20 E " element with topology:
+        564       1038        549        408        566       1040        551        410       1281       1284
+        561        633       1283       1286        563        635        565       1039        550        409
+
+ ELEMENT           55 with label "CPE8    " and with nodes:
+        111        309        311        110        326        327        328        114
+  is expanded into a "C3D20 E " element with topology:
+        729       1323       1329        726        731       1325       1331        728       1374       1377
+       1380        738       1376       1379       1382        740        730       1324       1330        727
+
+ ELEMENT           56 with label "CPE8    " and with nodes:
+        309        297        310        311        329        330        331        327
+  is expanded into a "C3D20 E " element with topology:
+       1323       1287       1326       1329       1325       1289       1328       1331       1383       1386
+       1389       1377       1385       1388       1391       1379       1324       1288       1327       1330
+
+ ELEMENT           57 with label "CPE8    " and with nodes:
+        311        310        168        169        331        332        184        333
+  is expanded into a "C3D20 E " element with topology:
+       1329       1326        900        903       1331       1328        902        905       1389       1392
+        948       1395       1391       1394        950       1397       1330       1327        901        904
+
+ ELEMENT           58 with label "CPE8    " and with nodes:
+        110        311        169          6        328        333        185        113
+  is expanded into a "C3D20 E " element with topology:
+        726       1329        903        414        728       1331        905        416       1380       1395
+        951        735       1382       1397        953        737        727       1330        904        415
+
+ ELEMENT           59 with label "CPE8    " and with nodes:
+        111        112        313        309        115        334        335        326
+  is expanded into a "C3D20 E " element with topology:
+        729        732       1335       1323        731        734       1337       1325        741       1398
+       1401       1374        743       1400       1403       1376        730        733       1336       1324
+
+ ELEMENT           60 with label "CPE8    " and with nodes:
+        112          7        117        313        116        132        336        334
+  is expanded into a "C3D20 E " element with topology:
+        732        417        747       1335        734        419        749       1337        744        792
+       1404       1398        746        794       1406       1400        733        418        748       1336
+
+ ELEMENT           61 with label "CPE8    " and with nodes:
+        313        117        118        312        336        133        337        338
+  is expanded into a "C3D20 E " element with topology:
+       1335        747        750       1332       1337        749        752       1334       1404        795
+       1407       1410       1406        797       1409       1412       1336        748        751       1333
+
+ ELEMENT           62 with label "CPE8    " and with nodes:
+        309        313        312        297        335        338        339        329
+  is expanded into a "C3D20 E " element with topology:
+       1323       1335       1332       1287       1325       1337       1334       1289       1401       1410
+       1413       1383       1403       1412       1415       1385       1324       1336       1333       1288
+
+ ELEMENT           63 with label "CPE8    " and with nodes:
+        156        300        314        298        340        341        342        343
+  is expanded into a "C3D20 E " element with topology:
+        864       1296       1338       1290        866       1298       1340       1292       1416       1419
+       1422       1425       1418       1421       1424       1427        865       1297       1339       1291
+
+ ELEMENT           64 with label "CPE8    " and with nodes:
+        300        130        131        314        344        146        345        341
+  is expanded into a "C3D20 E " element with topology:
+       1296        786        789       1338       1298        788        791       1340       1428        834
+       1431       1419       1430        836       1433       1421       1297        787        790       1339
+
+ ELEMENT           65 with label "CPE8    " and with nodes:
+        314        131          8        148        345        147        151        346
+  is expanded into a "C3D20 E " element with topology:
+       1338        789        420        840       1340        791        422        842       1431        837
+        849       1434       1433        839        851       1436       1339        790        421        841
+
+ ELEMENT           66 with label "CPE8    " and with nodes:
+        298        314        148        149        342        346        152        347
+  is expanded into a "C3D20 E " element with topology:
+       1290       1338        840        843       1292       1340        842        845       1422       1434
+        852       1437       1424       1436        854       1439       1291       1339        841        844
+
+ ELEMENT           67 with label "CPE8    " and with nodes:
+        297        312        315        310        339        348        349        330
+  is expanded into a "C3D20 E " element with topology:
+       1287       1332       1341       1326       1289       1334       1343       1328       1413       1440
+       1443       1386       1415       1442       1445       1388       1288       1333       1342       1327
+
+ ELEMENT           68 with label "CPE8    " and with nodes:
+        312        118        303        315        337        350        351        348
+  is expanded into a "C3D20 E " element with topology:
+       1332        750       1305       1341       1334        752       1307       1343       1407       1446
+       1449       1440       1409       1448       1451       1442       1333        751       1306       1342
+
+ ELEMENT           69 with label "CPE8    " and with nodes:
+        315        303        166        167        351        352        182        353
+  is expanded into a "C3D20 E " element with topology:
+       1341       1305        894        897       1343       1307        896        899       1449       1452
+        942       1455       1451       1454        944       1457       1342       1306        895        898
+
+ ELEMENT           70 with label "CPE8    " and with nodes:
+        310        315        167        168        349        353        183        332
+  is expanded into a "C3D20 E " element with topology:
+       1326       1341        897        900       1328       1343        899        902       1443       1455
+        945       1392       1445       1457        947       1394       1327       1342        898        901
+
+ ELEMENT           71 with label "CPE8    " and with nodes:
+        122        123        316        305        138        354        355        356
+  is expanded into a "C3D20 E " element with topology:
+        762        765       1344       1311        764        767       1346       1313        810       1458
+       1461       1464        812       1460       1463       1466        763        766       1345       1312
+
+ ELEMENT           72 with label "CPE8    " and with nodes:
+        123        124        308        316        139        357        358        354
+  is expanded into a "C3D20 E " element with topology:
+        765        768       1320       1344        767        770       1322       1346        813       1467
+       1470       1458        815       1469       1472       1460        766        769       1321       1345
+
+ ELEMENT           73 with label "CPE8    " and with nodes:
+        316        308        160        161        358        359        176        360
+  is expanded into a "C3D20 E " element with topology:
+       1344       1320        876        879       1346       1322        878        881       1470       1473
+        924       1476       1472       1475        926       1478       1345       1321        877        880
+
+ ELEMENT           74 with label "CPE8    " and with nodes:
+        305        316        161        162        355        360        177        361
+  is expanded into a "C3D20 E " element with topology:
+       1311       1344        879        882       1313       1346        881        884       1461       1476
+        927       1479       1463       1478        929       1481       1312       1345        880        883
+
+ ELEMENT           75 with label "CPE8    " and with nodes:
+        130        299        317        129        362        363        364        145
+  is expanded into a "C3D20 E " element with topology:
+        786       1293       1347        783        788       1295       1349        785       1482       1485
+       1488        831       1484       1487       1490        833        787       1294       1348        784
+
+ ELEMENT           76 with label "CPE8    " and with nodes:
+        299        158        159        317        365        174        366        363
+  is expanded into a "C3D20 E " element with topology:
+       1293        870        873       1347       1295        872        875       1349       1491        918
+       1494       1485       1493        920       1496       1487       1294        871        874       1348
+
+ ELEMENT           77 with label "CPE8    " and with nodes:
+        317        159        160        306        366        175        367        368
+  is expanded into a "C3D20 E " element with topology:
+       1347        873        876       1314       1349        875        878       1316       1494        921
+       1497       1500       1496        923       1499       1502       1348        874        877       1315
+
+ ELEMENT           78 with label "CPE8    " and with nodes:
+        129        317        306        128        364        368        369        144
+  is expanded into a "C3D20 E " element with topology:
+        783       1347       1314        780        785       1349       1316        782       1488       1500
+       1503        828       1490       1502       1505        830        784       1348       1315        781
+
+ ELEMENT           79 with label "CPE8    " and with nodes:
+        156        298        318        155        343        370        371        171
+  is expanded into a "C3D20 E " element with topology:
+        864       1290       1350        861        866       1292       1352        863       1425       1506
+       1509        909       1427       1508       1511        911        865       1291       1351        862
+
+ ELEMENT           80 with label "CPE8    " and with nodes:
+        298        149        150        318        347        153        372        370
+  is expanded into a "C3D20 E " element with topology:
+       1290        843        846       1350       1292        845        848       1352       1437        855
+       1512       1506       1439        857       1514       1508       1291        844        847       1351
+
+ ELEMENT           81 with label "CPE8    " and with nodes:
+        155        318        150          9        371        372        154        170
+  is expanded into a "C3D20 E " element with topology:
+        861       1350        846        423        863       1352        848        425       1509       1512
+        858        906       1511       1514        860        908        862       1351        847        424
+
+ ELEMENT           82 with label "CPE8    " and with nodes:
+        158        299        319        157        365        373        374        173
+  is expanded into a "C3D20 E " element with topology:
+        870       1293       1353        867        872       1295       1355        869       1491       1515
+       1518        915       1493       1517       1520        917        871       1294       1354        868
+
+ ELEMENT           83 with label "CPE8    " and with nodes:
+        299        130        300        319        362        344        375        373
+  is expanded into a "C3D20 E " element with topology:
+       1293        786       1296       1353       1295        788       1298       1355       1482       1428
+       1521       1515       1484       1430       1523       1517       1294        787       1297       1354
+
+ ELEMENT           84 with label "CPE8    " and with nodes:
+        157        319        300        156        374        375        340        172
+  is expanded into a "C3D20 E " element with topology:
+        867       1353       1296        864        869       1355       1298        866       1518       1521
+       1416        912       1520       1523       1418        914        868       1354       1297        865
+
+ ELEMENT           85 with label "CPE8    " and with nodes:
+        120        121        320        302        136        376        377        378
+  is expanded into a "C3D20 E " element with topology:
+        756        759       1356       1302        758        761       1358       1304        804       1524
+       1527       1530        806       1526       1529       1532        757        760       1357       1303
+
+ ELEMENT           86 with label "CPE8    " and with nodes:
+        121        122        301        320        137        379        380        376
+  is expanded into a "C3D20 E " element with topology:
+        759        762       1299       1356        761        764       1301       1358        807       1533
+       1536       1524        809       1535       1538       1526        760        763       1300       1357
+
+ ELEMENT           87 with label "CPE8    " and with nodes:
+        302        320        301        166        377        380        381        382
+  is expanded into a "C3D20 E " element with topology:
+       1302       1356       1299        894       1304       1358       1301        896       1527       1536
+       1539       1542       1529       1538       1541       1544       1303       1357       1300        895
+
+ ELEMENT           88 with label "CPE8    " and with nodes:
+        166        303        321        302        352        383        384        382
+  is expanded into a "C3D20 E " element with topology:
+        894       1305       1359       1302        896       1307       1361       1304       1452       1545
+       1548       1542       1454       1547       1550       1544        895       1306       1360       1303
+
+ ELEMENT           89 with label "CPE8    " and with nodes:
+        303        118        119        321        350        134        385        383
+  is expanded into a "C3D20 E " element with topology:
+       1305        750        753       1359       1307        752        755       1361       1446        798
+       1551       1545       1448        800       1553       1547       1306        751        754       1360
+
+ ELEMENT           90 with label "CPE8    " and with nodes:
+        302        321        119        120        384        385        135        378
+  is expanded into a "C3D20 E " element with topology:
+       1302       1359        753        756       1304       1361        755        758       1548       1551
+        801       1530       1550       1553        803       1532       1303       1360        754        757
+
+ ELEMENT           91 with label "CPE8    " and with nodes:
+        164        165        322        304        180        386        387        388
+  is expanded into a "C3D20 E " element with topology:
+        888        891       1362       1308        890        893       1364       1310        936       1554
+       1557       1560        938       1556       1559       1562        889        892       1363       1309
+
+ ELEMENT           92 with label "CPE8    " and with nodes:
+        165        166        301        322        181        381        389        386
+  is expanded into a "C3D20 E " element with topology:
+        891        894       1299       1362        893        896       1301       1364        939       1539
+       1563       1554        941       1541       1565       1556        892        895       1300       1363
+
+ ELEMENT           93 with label "CPE8    " and with nodes:
+        304        322        301        122        387        389        379        390
+  is expanded into a "C3D20 E " element with topology:
+       1308       1362       1299        762       1310       1364       1301        764       1557       1563
+       1533       1566       1559       1565       1535       1568       1309       1363       1300        763
+
+ ELEMENT           94 with label "CPE8    " and with nodes:
+        122        305        323        304        356        391        392        390
+  is expanded into a "C3D20 E " element with topology:
+        762       1311       1365       1308        764       1313       1367       1310       1464       1569
+       1572       1566       1466       1571       1574       1568        763       1312       1366       1309
+
+ ELEMENT           95 with label "CPE8    " and with nodes:
+        305        162        163        323        361        178        393        391
+  is expanded into a "C3D20 E " element with topology:
+       1311        882        885       1365       1313        884        887       1367       1479        930
+       1575       1569       1481        932       1577       1571       1312        883        886       1366
+
+ ELEMENT           96 with label "CPE8    " and with nodes:
+        304        323        163        164        392        393        179        388
+  is expanded into a "C3D20 E " element with topology:
+       1308       1365        885        888       1310       1367        887        890       1572       1575
+        933       1560       1574       1577        935       1562       1309       1366        886        889
+
+ ELEMENT           97 with label "CPE8    " and with nodes:
+        126        127        324        307        142        394        395        396
+  is expanded into a "C3D20 E " element with topology:
+        774        777       1368       1317        776        779       1370       1319        822       1578
+       1581       1584        824       1580       1583       1586        775        778       1369       1318
+
+ ELEMENT           98 with label "CPE8    " and with nodes:
+        127        128        306        324        143        369        397        394
+  is expanded into a "C3D20 E " element with topology:
+        777        780       1314       1368        779        782       1316       1370        825       1503
+       1587       1578        827       1505       1589       1580        778        781       1315       1369
+
+ ELEMENT           99 with label "CPE8    " and with nodes:
+        307        324        306        160        395        397        367        398
+  is expanded into a "C3D20 E " element with topology:
+       1317       1368       1314        876       1319       1370       1316        878       1581       1587
+       1497       1590       1583       1589       1499       1592       1318       1369       1315        877
+
+ ELEMENT          100 with label "CPE8    " and with nodes:
+        160        308        325        307        359        399        400        398
+  is expanded into a "C3D20 E " element with topology:
+        876       1320       1371       1317        878       1322       1373       1319       1473       1593
+       1596       1590       1475       1595       1598       1592        877       1321       1372       1318
+
+ ELEMENT          101 with label "CPE8    " and with nodes:
+        308        124        125        325        357        140        401        399
+  is expanded into a "C3D20 E " element with topology:
+       1320        768        771       1371       1322        770        773       1373       1467        816
+       1599       1593       1469        818       1601       1595       1321        769        772       1372
+
+ ELEMENT          102 with label "CPE8    " and with nodes:
+        307        325        125        126        400        401        141        396
+  is expanded into a "C3D20 E " element with topology:
+       1317       1371        771        774       1319       1373        773        776       1596       1599
+        819       1584       1598       1601        821       1586       1318       1372        772        775
+
