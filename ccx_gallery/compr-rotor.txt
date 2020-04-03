@@ -1,0 +1,364 @@
+================================================
+Units have been set to m_N
+For dist use m
+For force use N
+For stress use Pa
+For temp use K
+For density use kg/(m^3)
+For time use s
+For displ use m
+================================================
+Inserting line L17 into area A0 next to L13
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L18 into area A0 next to L12
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L19 into area A0 next to L0
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L20 into area A0 next to L11
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L21 into area A0 next to L1
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L22 into area A0 next to L10
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L23 into area A0 next to L2
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L24 into area A0 next to L9
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+File compr-rotor_geom.png was saved.
+File: compr-rotor.geo was written
+C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe compr-rotor.geo -2 -o compr-rotor.inp
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe compr-rotor.geo -2 -o compr-rotor.inp' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 21:12:11 2020
+Info    : Reading 'compr-rotor.geo'...
+Info    : Done reading 'compr-rotor.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 33 (Line)
+Info    : [ 10 %] Meshing curve 34 (Line)
+Info    : [ 10 %] Meshing curve 35 (Line)
+Info    : [ 20 %] Meshing curve 36 (Line)
+Info    : [ 20 %] Meshing curve 37 (Line)
+Info    : [ 20 %] Meshing curve 38 (Line)
+Info    : [ 30 %] Meshing curve 39 (Line)
+Info    : [ 30 %] Meshing curve 40 (Line)
+Info    : [ 40 %] Meshing curve 41 (Line)
+Info    : [ 40 %] Meshing curve 42 (Line)
+Info    : [ 40 %] Meshing curve 43 (Line)
+Info    : [ 50 %] Meshing curve 44 (Line)
+Info    : [ 50 %] Meshing curve 45 (Line)
+Info    : [ 60 %] Meshing curve 46 (Line)
+Info    : [ 60 %] Meshing curve 47 (Line)
+Info    : [ 60 %] Meshing curve 48 (Line)
+Info    : [ 70 %] Meshing curve 49 (Line)
+Info    : [ 70 %] Meshing curve 50 (Circle)
+Info    : [ 80 %] Meshing curve 51 (Circle)
+Info    : [ 80 %] Meshing curve 52 (Circle)
+Info    : [ 80 %] Meshing curve 53 (Circle)
+Info    : [ 90 %] Meshing curve 54 (Circle)
+Info    : [ 90 %] Meshing curve 55 (Circle)
+Info    : [100 %] Meshing curve 56 (Circle)
+Info    : [100 %] Meshing curve 57 (Circle)
+Info    : Done meshing 1D (0 s)
+Info    : Meshing 2D...
+Info    : [  0 %] Meshing surface 59 (Plane, Frontal Quad)
+Info    : [  0 %] Blossom: 104 internal 46 closed
+Info    : [  0 %] Blossom recombination completed (0 s): 34 quads, 18 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.622828, min Q = 0.124999
+Info    : [ 50 %] Meshing surface 61 (Plane, Frontal Quad)
+Info    : [ 50 %] Blossom: 18 internal 12 closed
+Info    : [ 50 %] Blossom recombination completed (0 s): 8 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.994759, min Q = 0.991051
+Info    : Done meshing 2D (0.015625 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 33 order 2
+Info    : [ 10 %] Meshing curve 34 order 2
+Info    : [ 10 %] Meshing curve 35 order 2
+Info    : [ 20 %] Meshing curve 36 order 2
+Info    : [ 20 %] Meshing curve 37 order 2
+Info    : [ 20 %] Meshing curve 38 order 2
+Info    : [ 30 %] Meshing curve 39 order 2
+Info    : [ 30 %] Meshing curve 40 order 2
+Info    : [ 30 %] Meshing curve 41 order 2
+Info    : [ 40 %] Meshing curve 42 order 2
+Info    : [ 40 %] Meshing curve 43 order 2
+Info    : [ 50 %] Meshing curve 44 order 2
+Info    : [ 50 %] Meshing curve 45 order 2
+Info    : [ 50 %] Meshing curve 46 order 2
+Info    : [ 60 %] Meshing curve 47 order 2
+Info    : [ 60 %] Meshing curve 48 order 2
+Info    : [ 60 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 70 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing curve 53 order 2
+Info    : [ 80 %] Meshing curve 54 order 2
+Info    : [ 90 %] Meshing curve 55 order 2
+Info    : [ 90 %] Meshing curve 56 order 2
+Info    : [ 90 %] Meshing curve 57 order 2
+Info    : [100 %] Meshing surface 59 order 2
+Info    : [100 %] Meshing surface 61 order 2
+Info    : Surface mesh: worst distortion = 0.176078 (2 elements in ]0, 0.2]); worst gamma = 0.232625
+Info    : Done meshing order 2 (0.015625 s)
+Info    : Done refining mesh (0.015625 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 33 order 2
+Info    : [ 10 %] Meshing curve 34 order 2
+Info    : [ 10 %] Meshing curve 35 order 2
+Info    : [ 20 %] Meshing curve 36 order 2
+Info    : [ 20 %] Meshing curve 37 order 2
+Info    : [ 20 %] Meshing curve 38 order 2
+Info    : [ 30 %] Meshing curve 39 order 2
+Info    : [ 30 %] Meshing curve 40 order 2
+Info    : [ 30 %] Meshing curve 41 order 2
+Info    : [ 40 %] Meshing curve 42 order 2
+Info    : [ 40 %] Meshing curve 43 order 2
+Info    : [ 50 %] Meshing curve 44 order 2
+Info    : [ 50 %] Meshing curve 45 order 2
+Info    : [ 50 %] Meshing curve 46 order 2
+Info    : [ 60 %] Meshing curve 47 order 2
+Info    : [ 60 %] Meshing curve 48 order 2
+Info    : [ 60 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 70 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing curve 53 order 2
+Info    : [ 80 %] Meshing curve 54 order 2
+Info    : [ 90 %] Meshing curve 55 order 2
+Info    : [ 90 %] Meshing curve 56 order 2
+Info    : [ 90 %] Meshing curve 57 order 2
+Info    : [100 %] Meshing surface 59 order 2
+Info    : [100 %] Meshing surface 61 order 2
+Info    : Done meshing order 2 (0.015625 s)
+Info    : 791 nodes 374 elements
+Info    : Writing 'compr-rotor.inp'...
+Info    : Done writing 'compr-rotor.inp'
+Info    : Stopped on Fri Apr 03 21:12:20 2020
+File: compr-rotor.inp was written
+Meshing done!
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe compr-rotor.geo -2 -o compr-rotor.msh' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 21:12:20 2020
+Info    : Reading 'compr-rotor.geo'...
+Info    : Done reading 'compr-rotor.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 33 (Line)
+Info    : [ 10 %] Meshing curve 34 (Line)
+Info    : [ 10 %] Meshing curve 35 (Line)
+Info    : [ 20 %] Meshing curve 36 (Line)
+Info    : [ 20 %] Meshing curve 37 (Line)
+Info    : [ 20 %] Meshing curve 38 (Line)
+Info    : [ 30 %] Meshing curve 39 (Line)
+Info    : [ 30 %] Meshing curve 40 (Line)
+Info    : [ 40 %] Meshing curve 41 (Line)
+Info    : [ 40 %] Meshing curve 42 (Line)
+Info    : [ 40 %] Meshing curve 43 (Line)
+Info    : [ 50 %] Meshing curve 44 (Line)
+Info    : [ 50 %] Meshing curve 45 (Line)
+Info    : [ 60 %] Meshing curve 46 (Line)
+Info    : [ 60 %] Meshing curve 47 (Line)
+Info    : [ 60 %] Meshing curve 48 (Line)
+Info    : [ 70 %] Meshing curve 49 (Line)
+Info    : [ 70 %] Meshing curve 50 (Circle)
+Info    : [ 80 %] Meshing curve 51 (Circle)
+Info    : [ 80 %] Meshing curve 52 (Circle)
+Info    : [ 80 %] Meshing curve 53 (Circle)
+Info    : [ 90 %] Meshing curve 54 (Circle)
+Info    : [ 90 %] Meshing curve 55 (Circle)
+Info    : [100 %] Meshing curve 56 (Circle)
+Info    : [100 %] Meshing curve 57 (Circle)
+Info    : Done meshing 1D (0.03125 s)
+Info    : Meshing 2D...
+Info    : [  0 %] Meshing surface 59 (Plane, Frontal Quad)
+Info    : [  0 %] Blossom: 104 internal 46 closed
+Info    : [  0 %] Blossom recombination completed (0 s): 34 quads, 18 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.622828, min Q = 0.124999
+Info    : [ 50 %] Meshing surface 61 (Plane, Frontal Quad)
+Info    : [ 50 %] Blossom: 18 internal 12 closed
+Info    : [ 50 %] Blossom recombination completed (0 s): 8 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.994759, min Q = 0.991051
+Info    : Done meshing 2D (0 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 33 order 2
+Info    : [ 10 %] Meshing curve 34 order 2
+Info    : [ 10 %] Meshing curve 35 order 2
+Info    : [ 20 %] Meshing curve 36 order 2
+Info    : [ 20 %] Meshing curve 37 order 2
+Info    : [ 20 %] Meshing curve 38 order 2
+Info    : [ 30 %] Meshing curve 39 order 2
+Info    : [ 30 %] Meshing curve 40 order 2
+Info    : [ 30 %] Meshing curve 41 order 2
+Info    : [ 40 %] Meshing curve 42 order 2
+Info    : [ 40 %] Meshing curve 43 order 2
+Info    : [ 50 %] Meshing curve 44 order 2
+Info    : [ 50 %] Meshing curve 45 order 2
+Info    : [ 50 %] Meshing curve 46 order 2
+Info    : [ 60 %] Meshing curve 47 order 2
+Info    : [ 60 %] Meshing curve 48 order 2
+Info    : [ 60 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 70 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing curve 53 order 2
+Info    : [ 80 %] Meshing curve 54 order 2
+Info    : [ 90 %] Meshing curve 55 order 2
+Info    : [ 90 %] Meshing curve 56 order 2
+Info    : [ 90 %] Meshing curve 57 order 2
+Info    : [100 %] Meshing surface 59 order 2
+Info    : [100 %] Meshing surface 61 order 2
+Info    : Surface mesh: worst distortion = 0.176078 (2 elements in ]0, 0.2]); worst gamma = 0.232625
+Info    : Done meshing order 2 (0.015625 s)
+Info    : Done refining mesh (0.03125 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 33 order 2
+Info    : [ 10 %] Meshing curve 34 order 2
+Info    : [ 10 %] Meshing curve 35 order 2
+Info    : [ 20 %] Meshing curve 36 order 2
+Info    : [ 20 %] Meshing curve 37 order 2
+Info    : [ 20 %] Meshing curve 38 order 2
+Info    : [ 30 %] Meshing curve 39 order 2
+Info    : [ 30 %] Meshing curve 40 order 2
+Info    : [ 30 %] Meshing curve 41 order 2
+Info    : [ 40 %] Meshing curve 42 order 2
+Info    : [ 40 %] Meshing curve 43 order 2
+Info    : [ 50 %] Meshing curve 44 order 2
+Info    : [ 50 %] Meshing curve 45 order 2
+Info    : [ 50 %] Meshing curve 46 order 2
+Info    : [ 60 %] Meshing curve 47 order 2
+Info    : [ 60 %] Meshing curve 48 order 2
+Info    : [ 60 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 70 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing curve 53 order 2
+Info    : [ 80 %] Meshing curve 54 order 2
+Info    : [ 90 %] Meshing curve 55 order 2
+Info    : [ 90 %] Meshing curve 56 order 2
+Info    : [ 90 %] Meshing curve 57 order 2
+Info    : [100 %] Meshing surface 59 order 2
+Info    : [100 %] Meshing surface 61 order 2
+Info    : Done meshing order 2 (0.015625 s)
+Info    : 791 nodes 374 elements
+Info    : Writing 'compr-rotor.msh'...
+Info    : Done writing 'compr-rotor.msh'
+Info    : Stopped on Fri Apr 03 21:12:27 2020
+File: compr-rotor.msh was written
+Re-indexing elements to min element number of: 1
+Old min:153  max:374
+New min:1  max:222
+Elements: 222
+Nodes: 783
+Done reading Calculix/Abaqus .inp file
+File compr-rotor_elem.png was saved.
+File compr-rotor_constr.png was saved.
+INFO: 783 nodes
+INFO: 32 CPS8 elements
+INFO: 32 total elements
+INFO: 190 CAX8 elements
+INFO: 222 total elements
+File: compr-rotor.inp was written
+ccx compr-rotor
+
+************************************************************
+
+CalculiX Version 2.16, Copyright(C) 1998-2019 Guido Dhondt
+CalculiX comes with ABSOLUTELY NO WARRANTY. This is free
+software, and you are welcome to redistribute it under
+certain conditions, see gpl.htm
+
+************************************************************
+
+You are using an executable made on Tue Jan 21 07:43:05 CUT 2020
+
+  The numbers below are estimated upper bounds
+
+  number of:
+
+   nodes:        14999
+   elements:          222
+   one-dimensional elements:            0
+   two-dimensional elements:          222
+   integration points per element:           27
+   degrees of freedom per node:            3
+   layers per element:            1
+
+   distributed facial loads:            0
+   distributed volumetric loads:            1
+   concentrated loads:            0
+   single point constraints:        16020
+   multiple point constraints:        26641
+   terms in all multiple point constraints:       170497
+   tie constraints:            1
+   dependent nodes tied by cyclic constraints:            0
+   dependent nodes in pre-tension constraints:            0
+
+   sets:            7
+   terms in all sets:         2362
+
+   materials:            1
+   constants per material and temperature:            2
+   temperature points per material:            1
+   plastic data points per material:            0
+
+   orientations:            0
+   amplitudes:            2
+   data points in all amplitudes:            2
+   print requests:            1
+   transformations:            0
+   property cards:            0
+
+
+ STEP            1
+
+ Static analysis was selected
+
+ Decascading the MPC's
+
+ Determining the structure of the matrix:
+ number of equations
+ 1799
+ number of nonzero lower triangular matrix elements
+ 30347
+
+ Using up to 1 cpu(s) for the stress calculation.
+
+ Using up to 1 cpu(s) for the symmetric stiffness/mass contributions.
+
+ Factoring the system of equations using the symmetric spooles solver
+ Using up to 1 cpu(s) for spooles.
+
+ Using up to 1 cpu(s) for the stress calculation.
+
+
+ Job finished
+
+Solving done!
+Using Calculix ccx version=2.16 (trailing characters like the p in 2.8p are omitted)
+Loading nodal results from file: compr-rotor.frd
+Reading displ storing: ux,uy,uz,utot
+Reading stress storing: Sx,Sy,Sz,Sxy,Syz,Szx,Seqv,S1,S2,S3
+Reading strain storing: ex,ey,ez,exy,eyz,ezx,eeqv,e1,e2,e3
+Reading force storing: fx,fy,fz
+Reading error storing: STR(%)
+The following times have been read:
+[1.0]
+Nodal results from file: compr-rotor.frd have been read.
+Results file time set to: 1.000000
+Loading element results from file: compr-rotor.dat
+The following times have been read:
+[1.0]
+Element results from file: compr-rotor.dat have been read.
+File compr-rotor_Sx.png was saved.
+File compr-rotor_Sy.png was saved.
+File compr-rotor_Sz.png was saved.
+File compr-rotor_S1.png was saved.
+File compr-rotor_S2.png was saved.
+File compr-rotor_S3.png was saved.
+File compr-rotor_Seqv.png was saved.
+File compr-rotor_ux.png was saved.
+File compr-rotor_uy.png was saved.
+File compr-rotor_uz.png was saved.
+File compr-rotor_utot.png was saved.
