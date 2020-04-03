@@ -1,0 +1,390 @@
+================================================
+Units have been set to m_N
+For dist use m
+For force use N
+For stress use Pa
+For temp use K
+For density use kg/(m^3)
+For time use s
+For displ use m
+================================================
+Inserting line L8 into area A0 next to L4
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L9 into area A0 next to L5
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L10 into area A0 next to L6
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+Inserting line L11 into area A0 next to L7
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+--------------------
+Cut point: P17
+Cut line: Line L-1, start: Point P-1, (x, y)=(3.000, 1.000) end: Point P-1, (x, y)=(4.000, 1.000)
+Cut through line L0
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L12 into area A0 next to L0
+ Inserting line into A0 outer lines
+Merging hole in A0
+--------------------
+Cut point: P8
+Cut line: Line L-1, start: Point P-1, (x, y)=(3.000, -1.000) end: Point P-1, (x, y)=(4.000, -1.000)
+Cut through line L0
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L14 into area A0 next to L0
+ Inserting line into A0 outer lines
+Cutting A0
+--------------------
+Cut point: P10
+Cut line: Line L-1, start: Point P-1, (x, y)=(2.000, -2.000) end: Point P-1, (x, y)=(2.000, -3.000)
+Cut through line L3
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L16 into area A0 next to L3
+ Inserting line into A0 outer lines
+Cutting A0
+--------------------
+Cut point: P11
+Cut line: Line L-1, start: Point P-1, (x, y)=(-2.000, -2.000) end: Point P-1, (x, y)=(-2.000, -3.000)
+Cut through line L3
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L18 into area A2 next to L3
+ Inserting line into A2 outer lines
+Cutting A2
+--------------------
+Cut point: P13
+Cut line: Line L-1, start: Point P-1, (x, y)=(-3.000, -1.000) end: Point P-1, (x, y)=(-4.000, -1.000)
+Cut through line L2
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L20 into area A3 next to L2
+ Inserting line into A3 outer lines
+Cutting A3
+--------------------
+Cut point: P5
+Cut line: Line L-1, start: Point P-1, (x, y)=(-3.000, 1.000) end: Point P-1, (x, y)=(-4.000, 1.000)
+Cut through line L2
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L22 into area A4 next to L2
+ Inserting line into A4 outer lines
+Cutting A4
+--------------------
+Cut point: P14
+Cut line: Line L-1, start: Point P-1, (x, y)=(-2.000, 2.000) end: Point P-1, (x, y)=(-2.000, 3.000)
+Cut through line L1
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L24 into area A5 next to L1
+ Inserting line into A5 outer lines
+Cutting A5
+--------------------
+Cut point: P15
+Cut line: Line L-1, start: Point P-1, (x, y)=(2.000, 2.000) end: Point P-1, (x, y)=(2.000, 3.000)
+Cut through line L1
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L26 into area A6 next to L1
+ Inserting line into A6 outer lines
+Cutting A6
+Area A1 was not chunked because it had <= 5 lines and no holes.
+Area A2 was not chunked because it had <= 5 lines and no holes.
+Area A3 was not chunked because it had <= 5 lines and no holes.
+Area A4 was not chunked because it had <= 5 lines and no holes.
+Area A5 was not chunked because it had <= 5 lines and no holes.
+Area A6 was not chunked because it had <= 5 lines and no holes.
+Area A7 was not chunked because it had <= 5 lines and no holes.
+File: hole-fancy.geo was written
+C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe hole-fancy.geo -2 -o hole-fancy.inp
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe hole-fancy.geo -2 -o hole-fancy.inp' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 20:59:31 2020
+Info    : Reading 'hole-fancy.geo'...
+Info    : Done reading 'hole-fancy.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 25 (Line)
+Info    : [ 10 %] Meshing curve 26 (Line)
+Info    : [ 10 %] Meshing curve 27 (Line)
+Info    : [ 20 %] Meshing curve 28 (Line)
+Info    : [ 20 %] Meshing curve 29 (Line)
+Info    : [ 20 %] Meshing curve 30 (Line)
+Info    : [ 30 %] Meshing curve 31 (Line)
+Info    : [ 30 %] Meshing curve 32 (Line)
+Info    : [ 30 %] Meshing curve 33 (Circle)
+Info    : [ 40 %] Meshing curve 34 (Circle)
+Info    : [ 40 %] Meshing curve 35 (Circle)
+Info    : [ 40 %] Meshing curve 36 (Circle)
+Info    : [ 50 %] Meshing curve 37 (Line)
+Info    : [ 50 %] Meshing curve 38 (Line)
+Info    : [ 50 %] Meshing curve 39 (Line)
+Info    : [ 60 %] Meshing curve 40 (Line)
+Info    : [ 60 %] Meshing curve 41 (Line)
+Info    : [ 70 %] Meshing curve 42 (Line)
+Info    : [ 70 %] Meshing curve 43 (Line)
+Info    : [ 70 %] Meshing curve 44 (Line)
+Info    : [ 80 %] Meshing curve 45 (Line)
+Info    : [ 80 %] Meshing curve 46 (Line)
+Info    : [ 80 %] Meshing curve 47 (Line)
+Info    : [ 90 %] Meshing curve 48 (Line)
+Info    : [ 90 %] Meshing curve 49 (Line)
+Info    : [ 90 %] Meshing curve 50 (Line)
+Info    : [100 %] Meshing curve 51 (Line)
+Info    : [100 %] Meshing curve 52 (Line)
+Info    : Done meshing 1D (0.03125 s)
+Info    : Meshing 2D...
+Info    : [  0 %] Meshing surface 54 (Plane, Frontal Quad)
+Info    : [  0 %] Blossom: 13 internal 7 closed
+Info    : [  0 %] Blossom recombination completed (0 s): 6 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.699283, min Q = 0.571314
+Info    : [ 20 %] Meshing surface 56 (Plane, Frontal Quad)
+Info    : [ 20 %] Blossom: 8 internal 6 closed
+Info    : [ 20 %] Blossom recombination completed (0 s): 3 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.612362, min Q = 0.590334
+Info    : [ 30 %] Meshing surface 58 (Plane, Frontal Quad)
+Info    : [ 30 %] Blossom: 12 internal 10 closed
+Info    : [ 30 %] Blossom recombination completed (0 s): 5 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.57888, min Q = 0.5
+Info    : [ 40 %] Meshing surface 60 (Plane, Frontal Quad)
+Info    : [ 40 %] Blossom: 13 internal 8 closed
+Info    : [ 40 %] Blossom recombination completed (0 s): 6 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.699178, min Q = 0.58022
+Info    : [ 50 %] Meshing surface 62 (Plane, Frontal Quad)
+Info    : [ 50 %] Blossom: 8 internal 6 closed
+Info    : [ 50 %] Blossom recombination completed (0 s): 3 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.612362, min Q = 0.590334
+Info    : [ 70 %] Meshing surface 64 (Plane, Frontal Quad)
+Info    : [ 70 %] Blossom: 16 internal 9 closed
+Info    : [ 70 %] Blossom recombination completed (0 s): 7 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.582878, min Q = 0.566649
+Info    : [ 80 %] Meshing surface 66 (Plane, Frontal Quad)
+Info    : [ 80 %] Blossom: 9 internal 8 closed
+Info    : [ 80 %] Blossom recombination completed (0 s): 3 quads, 4 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.636555, min Q = 0.5
+Info    : [ 90 %] Meshing surface 68 (Plane, Frontal Quad)
+Info    : [ 90 %] Blossom: 16 internal 9 closed
+Info    : [ 90 %] Blossom recombination completed (0.015625 s): 7 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.582791, min Q = 0.566737
+Info    : Done meshing 2D (0.015625 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 25 order 2
+Info    : [ 10 %] Meshing curve 26 order 2
+Info    : [ 10 %] Meshing curve 27 order 2
+Info    : [ 10 %] Meshing curve 28 order 2
+Info    : [ 20 %] Meshing curve 29 order 2
+Info    : [ 20 %] Meshing curve 30 order 2
+Info    : [ 20 %] Meshing curve 31 order 2
+Info    : [ 20 %] Meshing curve 32 order 2
+Info    : [ 30 %] Meshing curve 33 order 2
+Info    : [ 30 %] Meshing curve 34 order 2
+Info    : [ 30 %] Meshing curve 35 order 2
+Info    : [ 40 %] Meshing curve 36 order 2
+Info    : [ 40 %] Meshing curve 37 order 2
+Info    : [ 40 %] Meshing curve 38 order 2
+Info    : [ 40 %] Meshing curve 39 order 2
+Info    : [ 50 %] Meshing curve 40 order 2
+Info    : [ 50 %] Meshing curve 41 order 2
+Info    : [ 50 %] Meshing curve 42 order 2
+Info    : [ 50 %] Meshing curve 43 order 2
+Info    : [ 60 %] Meshing curve 44 order 2
+Info    : [ 60 %] Meshing curve 45 order 2
+Info    : [ 60 %] Meshing curve 46 order 2
+Info    : [ 70 %] Meshing curve 47 order 2
+Info    : [ 70 %] Meshing curve 48 order 2
+Info    : [ 70 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 80 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing surface 54 order 2
+Info    : [ 90 %] Meshing surface 56 order 2
+Info    : [ 90 %] Meshing surface 58 order 2
+Info    : [ 90 %] Meshing surface 60 order 2
+Info    : [ 90 %] Meshing surface 62 order 2
+Info    : [100 %] Meshing surface 64 order 2
+Info    : [100 %] Meshing surface 66 order 2
+Info    : [100 %] Meshing surface 68 order 2
+Info    : Surface mesh: worst distortion = 1 (0 elements in ]0, 0.2]); worst gamma = 0.683282
+Info    : Done meshing order 2 (0 s)
+Info    : Done refining mesh (0 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 25 order 2
+Info    : [ 10 %] Meshing curve 26 order 2
+Info    : [ 10 %] Meshing curve 27 order 2
+Info    : [ 10 %] Meshing curve 28 order 2
+Info    : [ 20 %] Meshing curve 29 order 2
+Info    : [ 20 %] Meshing curve 30 order 2
+Info    : [ 20 %] Meshing curve 31 order 2
+Info    : [ 20 %] Meshing curve 32 order 2
+Info    : [ 30 %] Meshing curve 33 order 2
+Info    : [ 30 %] Meshing curve 34 order 2
+Info    : [ 30 %] Meshing curve 35 order 2
+Info    : [ 40 %] Meshing curve 36 order 2
+Info    : [ 40 %] Meshing curve 37 order 2
+Info    : [ 40 %] Meshing curve 38 order 2
+Info    : [ 40 %] Meshing curve 39 order 2
+Info    : [ 50 %] Meshing curve 40 order 2
+Info    : [ 50 %] Meshing curve 41 order 2
+Info    : [ 50 %] Meshing curve 42 order 2
+Info    : [ 50 %] Meshing curve 43 order 2
+Info    : [ 60 %] Meshing curve 44 order 2
+Info    : [ 60 %] Meshing curve 45 order 2
+Info    : [ 60 %] Meshing curve 46 order 2
+Info    : [ 70 %] Meshing curve 47 order 2
+Info    : [ 70 %] Meshing curve 48 order 2
+Info    : [ 70 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 80 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing surface 54 order 2
+Info    : [ 90 %] Meshing surface 56 order 2
+Info    : [ 90 %] Meshing surface 58 order 2
+Info    : [ 90 %] Meshing surface 60 order 2
+Info    : [ 90 %] Meshing surface 62 order 2
+Info    : [100 %] Meshing surface 64 order 2
+Info    : [100 %] Meshing surface 66 order 2
+Info    : [100 %] Meshing surface 68 order 2
+Info    : Done meshing order 2 (0.0625 s)
+Info    : 670 nodes 342 elements
+Info    : Writing 'hole-fancy.inp'...
+Info    : Done writing 'hole-fancy.inp'
+Info    : Stopped on Fri Apr 03 20:59:37 2020
+File: hole-fancy.inp was written
+Meshing done!
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe hole-fancy.geo -2 -o hole-fancy.msh' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 20:59:37 2020
+Info    : Reading 'hole-fancy.geo'...
+Info    : Done reading 'hole-fancy.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 25 (Line)
+Info    : [ 10 %] Meshing curve 26 (Line)
+Info    : [ 10 %] Meshing curve 27 (Line)
+Info    : [ 20 %] Meshing curve 28 (Line)
+Info    : [ 20 %] Meshing curve 29 (Line)
+Info    : [ 20 %] Meshing curve 30 (Line)
+Info    : [ 30 %] Meshing curve 31 (Line)
+Info    : [ 30 %] Meshing curve 32 (Line)
+Info    : [ 30 %] Meshing curve 33 (Circle)
+Info    : [ 40 %] Meshing curve 34 (Circle)
+Info    : [ 40 %] Meshing curve 35 (Circle)
+Info    : [ 40 %] Meshing curve 36 (Circle)
+Info    : [ 50 %] Meshing curve 37 (Line)
+Info    : [ 50 %] Meshing curve 38 (Line)
+Info    : [ 50 %] Meshing curve 39 (Line)
+Info    : [ 60 %] Meshing curve 40 (Line)
+Info    : [ 60 %] Meshing curve 41 (Line)
+Info    : [ 70 %] Meshing curve 42 (Line)
+Info    : [ 70 %] Meshing curve 43 (Line)
+Info    : [ 70 %] Meshing curve 44 (Line)
+Info    : [ 80 %] Meshing curve 45 (Line)
+Info    : [ 80 %] Meshing curve 46 (Line)
+Info    : [ 80 %] Meshing curve 47 (Line)
+Info    : [ 90 %] Meshing curve 48 (Line)
+Info    : [ 90 %] Meshing curve 49 (Line)
+Info    : [ 90 %] Meshing curve 50 (Line)
+Info    : [100 %] Meshing curve 51 (Line)
+Info    : [100 %] Meshing curve 52 (Line)
+Info    : Done meshing 1D (0.03125 s)
+Info    : Meshing 2D...
+Info    : [  0 %] Meshing surface 54 (Plane, Frontal Quad)
+Info    : [  0 %] Blossom: 13 internal 7 closed
+Info    : [  0 %] Blossom recombination completed (0 s): 6 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.699283, min Q = 0.571314
+Info    : [ 20 %] Meshing surface 56 (Plane, Frontal Quad)
+Info    : [ 20 %] Blossom: 8 internal 6 closed
+Info    : [ 20 %] Blossom recombination completed (0 s): 3 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.612362, min Q = 0.590334
+Info    : [ 30 %] Meshing surface 58 (Plane, Frontal Quad)
+Info    : [ 30 %] Blossom: 12 internal 10 closed
+Info    : [ 30 %] Blossom recombination completed (0 s): 5 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.57888, min Q = 0.5
+Info    : [ 40 %] Meshing surface 60 (Plane, Frontal Quad)
+Info    : [ 40 %] Blossom: 13 internal 8 closed
+Info    : [ 40 %] Blossom recombination completed (0 s): 6 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.699178, min Q = 0.58022
+Info    : [ 50 %] Meshing surface 62 (Plane, Frontal Quad)
+Info    : [ 50 %] Blossom: 8 internal 6 closed
+Info    : [ 50 %] Blossom recombination completed (0 s): 3 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.612362, min Q = 0.590334
+Info    : [ 70 %] Meshing surface 64 (Plane, Frontal Quad)
+Info    : [ 70 %] Blossom: 16 internal 9 closed
+Info    : [ 70 %] Blossom recombination completed (0 s): 7 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.582878, min Q = 0.566649
+Info    : [ 80 %] Meshing surface 66 (Plane, Frontal Quad)
+Info    : [ 80 %] Blossom: 9 internal 8 closed
+Info    : [ 80 %] Blossom recombination completed (0.015625 s): 3 quads, 4 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.636555, min Q = 0.5
+Info    : [ 90 %] Meshing surface 68 (Plane, Frontal Quad)
+Info    : [ 90 %] Blossom: 16 internal 9 closed
+Info    : [ 90 %] Blossom recombination completed (0 s): 7 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.582791, min Q = 0.566737
+Info    : Done meshing 2D (0.03125 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 25 order 2
+Info    : [ 10 %] Meshing curve 26 order 2
+Info    : [ 10 %] Meshing curve 27 order 2
+Info    : [ 10 %] Meshing curve 28 order 2
+Info    : [ 20 %] Meshing curve 29 order 2
+Info    : [ 20 %] Meshing curve 30 order 2
+Info    : [ 20 %] Meshing curve 31 order 2
+Info    : [ 20 %] Meshing curve 32 order 2
+Info    : [ 30 %] Meshing curve 33 order 2
+Info    : [ 30 %] Meshing curve 34 order 2
+Info    : [ 30 %] Meshing curve 35 order 2
+Info    : [ 40 %] Meshing curve 36 order 2
+Info    : [ 40 %] Meshing curve 37 order 2
+Info    : [ 40 %] Meshing curve 38 order 2
+Info    : [ 40 %] Meshing curve 39 order 2
+Info    : [ 50 %] Meshing curve 40 order 2
+Info    : [ 50 %] Meshing curve 41 order 2
+Info    : [ 50 %] Meshing curve 42 order 2
+Info    : [ 50 %] Meshing curve 43 order 2
+Info    : [ 60 %] Meshing curve 44 order 2
+Info    : [ 60 %] Meshing curve 45 order 2
+Info    : [ 60 %] Meshing curve 46 order 2
+Info    : [ 70 %] Meshing curve 47 order 2
+Info    : [ 70 %] Meshing curve 48 order 2
+Info    : [ 70 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 80 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing surface 54 order 2
+Info    : [ 90 %] Meshing surface 56 order 2
+Info    : [ 90 %] Meshing surface 58 order 2
+Info    : [ 90 %] Meshing surface 60 order 2
+Info    : [ 90 %] Meshing surface 62 order 2
+Info    : [100 %] Meshing surface 64 order 2
+Info    : [100 %] Meshing surface 66 order 2
+Info    : [100 %] Meshing surface 68 order 2
+Info    : Surface mesh: worst distortion = 1 (0 elements in ]0, 0.2]); worst gamma = 0.683282
+Info    : Done meshing order 2 (0.03125 s)
+Info    : Done refining mesh (0.03125 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 25 order 2
+Info    : [ 10 %] Meshing curve 26 order 2
+Info    : [ 10 %] Meshing curve 27 order 2
+Info    : [ 10 %] Meshing curve 28 order 2
+Info    : [ 20 %] Meshing curve 29 order 2
+Info    : [ 20 %] Meshing curve 30 order 2
+Info    : [ 20 %] Meshing curve 31 order 2
+Info    : [ 20 %] Meshing curve 32 order 2
+Info    : [ 30 %] Meshing curve 33 order 2
+Info    : [ 30 %] Meshing curve 34 order 2
+Info    : [ 30 %] Meshing curve 35 order 2
+Info    : [ 40 %] Meshing curve 36 order 2
+Info    : [ 40 %] Meshing curve 37 order 2
+Info    : [ 40 %] Meshing curve 38 order 2
+Info    : [ 40 %] Meshing curve 39 order 2
+Info    : [ 50 %] Meshing curve 40 order 2
+Info    : [ 50 %] Meshing curve 41 order 2
+Info    : [ 50 %] Meshing curve 42 order 2
+Info    : [ 50 %] Meshing curve 43 order 2
+Info    : [ 60 %] Meshing curve 44 order 2
+Info    : [ 60 %] Meshing curve 45 order 2
+Info    : [ 60 %] Meshing curve 46 order 2
+Info    : [ 70 %] Meshing curve 47 order 2
+Info    : [ 70 %] Meshing curve 48 order 2
+Info    : [ 70 %] Meshing curve 49 order 2
+Info    : [ 70 %] Meshing curve 50 order 2
+Info    : [ 80 %] Meshing curve 51 order 2
+Info    : [ 80 %] Meshing curve 52 order 2
+Info    : [ 80 %] Meshing surface 54 order 2
+Info    : [ 90 %] Meshing surface 56 order 2
+Info    : [ 90 %] Meshing surface 58 order 2
+Info    : [ 90 %] Meshing surface 60 order 2
+Info    : [ 90 %] Meshing surface 62 order 2
+Info    : [100 %] Meshing surface 64 order 2
+Info    : [100 %] Meshing surface 66 order 2
+Info    : [100 %] Meshing surface 68 order 2
+Info    : Done meshing order 2 (0.015625 s)
+Info    : 670 nodes 342 elements
+Info    : Writing 'hole-fancy.msh'...
+Info    : Done writing 'hole-fancy.msh'
+Info    : Stopped on Fri Apr 03 20:59:43 2020
+File: hole-fancy.msh was written
+Re-indexing elements to min element number of: 1
+Old min:153  max:342
+New min:1  max:190
+Elements: 190
+Nodes: 666
+Done reading Calculix/Abaqus .inp file
