@@ -13,7 +13,7 @@ model = pyc.FeaModel(model_name)
 model.set_units('m')
 
 # set whether or not to show gui plots
-show_gui = True
+show_gui = False
 if '-nogui' in sys.argv:
     show_gui = False
 # set element shape
