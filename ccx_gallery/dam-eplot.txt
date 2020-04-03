@@ -1,0 +1,237 @@
+================================================
+Units have been set to m_N
+For dist use m
+For force use N
+For stress use Pa
+For temp use K
+For density use kg/(m^3)
+For time use s
+For displ use m
+================================================
+File dam-eplot_geom.png was saved.
+File: dam-eplot.geo was written
+C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe dam-eplot.geo -2 -o dam-eplot.inp
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe dam-eplot.geo -2 -o dam-eplot.inp' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 21:09:56 2020
+Info    : Reading 'dam-eplot.geo'...
+Info    : Done reading 'dam-eplot.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 12 (Line)
+Info    : [ 10 %] Meshing curve 13 (Line)
+Info    : [ 20 %] Meshing curve 14 (Line)
+Info    : [ 30 %] Meshing curve 15 (Line)
+Info    : [ 40 %] Meshing curve 16 (Line)
+Info    : [ 50 %] Meshing curve 17 (Circle)
+Info    : [ 60 %] Meshing curve 18 (Circle)
+Info    : [ 70 %] Meshing curve 19 (Line)
+Info    : [ 80 %] Meshing curve 20 (Line)
+Info    : [ 90 %] Meshing curve 21 (Line)
+Info    : Done meshing 1D (0 s)
+Info    : Meshing 2D...
+Info    : Meshing surface 23 (Plane, Frontal Quad)
+Info    : Blossom: 54 internal 27 closed
+Info    : Blossom recombination completed (0 s): 18 quads, 10 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.563826, min Q = 0.343433
+Info    : Done meshing 2D (0.015625 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 30 %] Meshing curve 15 order 2
+Info    : [ 40 %] Meshing curve 16 order 2
+Info    : [ 50 %] Meshing curve 17 order 2
+Info    : [ 60 %] Meshing curve 18 order 2
+Info    : [ 70 %] Meshing curve 19 order 2
+Info    : [ 80 %] Meshing curve 20 order 2
+Info    : [ 90 %] Meshing curve 21 order 2
+Info    : [100 %] Meshing surface 23 order 2
+Info    : Surface mesh: worst distortion = 0.959319 (0 elements in ]0, 0.2]); worst gamma = 0.077247
+Info    : Done meshing order 2 (0 s)
+Info    : Done refining mesh (0 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 30 %] Meshing curve 15 order 2
+Info    : [ 40 %] Meshing curve 16 order 2
+Info    : [ 50 %] Meshing curve 17 order 2
+Info    : [ 60 %] Meshing curve 18 order 2
+Info    : [ 70 %] Meshing curve 19 order 2
+Info    : [ 80 %] Meshing curve 20 order 2
+Info    : [ 90 %] Meshing curve 21 order 2
+Info    : [100 %] Meshing surface 23 order 2
+Info    : Done meshing order 2 (0 s)
+Info    : 369 nodes 174 elements
+Info    : Writing 'dam-eplot.inp'...
+Info    : Done writing 'dam-eplot.inp'
+Info    : Stopped on Fri Apr 03 21:10:01 2020
+File: dam-eplot.inp was written
+Meshing done!
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe dam-eplot.geo -2 -o dam-eplot.msh' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 21:10:02 2020
+Info    : Reading 'dam-eplot.geo'...
+Info    : Done reading 'dam-eplot.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 12 (Line)
+Info    : [ 10 %] Meshing curve 13 (Line)
+Info    : [ 20 %] Meshing curve 14 (Line)
+Info    : [ 30 %] Meshing curve 15 (Line)
+Info    : [ 40 %] Meshing curve 16 (Line)
+Info    : [ 50 %] Meshing curve 17 (Circle)
+Info    : [ 60 %] Meshing curve 18 (Circle)
+Info    : [ 70 %] Meshing curve 19 (Line)
+Info    : [ 80 %] Meshing curve 20 (Line)
+Info    : [ 90 %] Meshing curve 21 (Line)
+Info    : Done meshing 1D (0.03125 s)
+Info    : Meshing 2D...
+Info    : Meshing surface 23 (Plane, Frontal Quad)
+Info    : Blossom: 54 internal 27 closed
+Info    : Blossom recombination completed (0 s): 18 quads, 10 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.563826, min Q = 0.343433
+Info    : Done meshing 2D (0 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 30 %] Meshing curve 15 order 2
+Info    : [ 40 %] Meshing curve 16 order 2
+Info    : [ 50 %] Meshing curve 17 order 2
+Info    : [ 60 %] Meshing curve 18 order 2
+Info    : [ 70 %] Meshing curve 19 order 2
+Info    : [ 80 %] Meshing curve 20 order 2
+Info    : [ 90 %] Meshing curve 21 order 2
+Info    : [100 %] Meshing surface 23 order 2
+Info    : Surface mesh: worst distortion = 0.959319 (0 elements in ]0, 0.2]); worst gamma = 0.077247
+Info    : Done meshing order 2 (0 s)
+Info    : Done refining mesh (0 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 30 %] Meshing curve 15 order 2
+Info    : [ 40 %] Meshing curve 16 order 2
+Info    : [ 50 %] Meshing curve 17 order 2
+Info    : [ 60 %] Meshing curve 18 order 2
+Info    : [ 70 %] Meshing curve 19 order 2
+Info    : [ 80 %] Meshing curve 20 order 2
+Info    : [ 90 %] Meshing curve 21 order 2
+Info    : [100 %] Meshing surface 23 order 2
+Info    : Done meshing order 2 (0.015625 s)
+Info    : 369 nodes 174 elements
+Info    : Writing 'dam-eplot.msh'...
+Info    : Done writing 'dam-eplot.msh'
+Info    : Stopped on Fri Apr 03 21:10:06 2020
+File: dam-eplot.msh was written
+Re-indexing elements to min element number of: 1
+Old min:73  max:174
+New min:1  max:102
+Elements: 102
+Nodes: 367
+Done reading Calculix/Abaqus .inp file
+File dam-eplot_elem.png was saved.
+File dam-eplot_press_1.png was saved.
+File dam-eplot_constr.png was saved.
+INFO: 367 nodes
+INFO: 102 CPE8 elements
+INFO: 102 total elements
+File: dam-eplot.inp was written
+ccx dam-eplot
+
+************************************************************
+
+CalculiX Version 2.16, Copyright(C) 1998-2019 Guido Dhondt
+CalculiX comes with ABSOLUTELY NO WARRANTY. This is free
+software, and you are welcome to redistribute it under
+certain conditions, see gpl.htm
+
+************************************************************
+
+You are using an executable made on Tue Jan 21 07:43:05 CUT 2020
+
+  The numbers below are estimated upper bounds
+
+  number of:
+
+   nodes:         6897
+   elements:          102
+   one-dimensional elements:            0
+   two-dimensional elements:          102
+   integration points per element:           27
+   degrees of freedom per node:            3
+   layers per element:            1
+
+   distributed facial loads:           48
+   distributed volumetric loads:            1
+   concentrated loads:            0
+   single point constraints:         7544
+   multiple point constraints:        12241
+   terms in all multiple point constraints:        78337
+   tie constraints:            0
+   dependent nodes tied by cyclic constraints:            0
+   dependent nodes in pre-tension constraints:            0
+
+   sets:            5
+   terms in all sets:         1330
+
+   materials:            1
+   constants per material and temperature:            2
+   temperature points per material:            1
+   plastic data points per material:            0
+
+   orientations:            0
+   amplitudes:           20
+   data points in all amplitudes:           20
+   print requests:            1
+   transformations:            0
+   property cards:            0
+
+
+ STEP            1
+
+ Static analysis was selected
+
+ Decascading the MPC's
+
+ Determining the structure of the matrix:
+ number of equations
+ 684
+ number of nonzero lower triangular matrix elements
+ 8802
+
+ Using up to 1 cpu(s) for the stress calculation.
+
+ Using up to 1 cpu(s) for the symmetric stiffness/mass contributions.
+
+ Factoring the system of equations using the symmetric spooles solver
+ Using up to 1 cpu(s) for spooles.
+
+ Using up to 1 cpu(s) for the stress calculation.
+
+
+ Job finished
+
+Solving done!
+Using Calculix ccx version=2.16 (trailing characters like the p in 2.8p are omitted)
+Loading nodal results from file: dam-eplot.frd
+Reading displ storing: ux,uy,uz,utot
+Reading stress storing: Sx,Sy,Sz,Sxy,Syz,Szx,Seqv,S1,S2,S3
+Reading strain storing: ex,ey,ez,exy,eyz,ezx,eeqv,e1,e2,e3
+Reading force storing: fx,fy,fz
+Reading error storing: STR(%)
+The following times have been read:
+[1.0]
+Nodal results from file: dam-eplot.frd have been read.
+Results file time set to: 1.000000
+Loading element results from file: dam-eplot.dat
+The following times have been read:
+[1.0]
+Element results from file: dam-eplot.dat have been read.
+Results file time set to: 1.000000
+File dam-eplot_1_Seqv_n.png was saved.
+File dam-eplot_1_Seqv_e.png was saved.
+File dam-eplot_1_S1_n.png was saved.
+File dam-eplot_1_S1_e.png was saved.
+File dam-eplot_1_S2_n.png was saved.
+File dam-eplot_1_S2_e.png was saved.
+File dam-eplot_1_S3_n.png was saved.
+File dam-eplot_1_S3_e.png was saved.
