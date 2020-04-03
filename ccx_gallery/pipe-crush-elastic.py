@@ -9,7 +9,7 @@ model = pyc.FeaModel(proj_name)
 model.set_units('m')  # this sets dist units to meters
 
 # set whether or not to show gui plots
-show_gui = True
+show_gui = False
 if '-nogui' in sys.argv:
     show_gui = False
 # set element shape
