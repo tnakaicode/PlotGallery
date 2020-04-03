@@ -1,0 +1,240 @@
+================================================
+Units have been set to m_N
+For dist use m
+For force use N
+For stress use Pa
+For temp use K
+For density use kg/(m^3)
+For time use s
+For displ use m
+================================================
+File rounded-square-cw_pre.png was saved.
+Inserting line L6 into area A0 next to L2
+ Inserting line into A0 outer lines
+Arc inserted into area 0
+File rounded-square-cw_geom.png was saved.
+--------------------
+Cut point: P1
+Cut line: Line L-1, start: Point P-1, (x, y)=(1.600, 10.000) end: Point P-1, (x, y)=(1.600, 11.990)
+Cut through line L6
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L7 into area A0 next to L6
+ Inserting line into A0 outer lines
+Cutting A0
+--------------------
+Cut point: P5
+Cut line: Line L-1, start: Point P-1, (x, y)=(1.000, 11.000) end: Point P-1, (x, y)=(2.000, 11.000)
+Cut through line L8
+Cutting line (is_line, is_sline, signlines) (True, False, 2)
+Inserting line L9 into area A0 next to L8
+ Inserting line into A0 outer lines
+Inserting line -L9 into area A1 next to -L8
+ Inserting line into A1 outer lines
+Cutting A0
+Cut through line L2
+Cutting line (is_line, is_sline, signlines) (True, False, 1)
+Inserting line L11 into area A1 next to L2
+ Inserting line into A1 outer lines
+Cutting A1
+Area A1 was not chunked because it had <= 5 lines and no holes.
+Area A2 was not chunked because it had <= 5 lines and no holes.
+Area A3 was not chunked because it had <= 5 lines and no holes.
+File rounded-square-cw_chunked.png was saved.
+----------------------------------
+View's currently selected items:
+ parts: 1 selected
+ areas: 4 selected
+ lines: 17 selected
+ points: 10 selected
+ elements: 0 selected
+ faces: 0 selected
+ nodes: 0 selected
+----------------------------------
+File: rounded-square-cw.geo was written
+C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe rounded-square-cw.geo -2 -o rounded-square-cw.inp
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe rounded-square-cw.geo -2 -o rounded-square-cw.inp' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 21:15:04 2020
+Info    : Reading 'rounded-square-cw.geo'...
+Info    : Done reading 'rounded-square-cw.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 12 (Line)
+Info    : [ 10 %] Meshing curve 13 (Line)
+Info    : [ 20 %] Meshing curve 14 (Line)
+Info    : [ 30 %] Meshing curve 15 (Line)
+Info    : [ 40 %] Meshing curve 16 (Line)
+Info    : [ 40 %] Meshing curve 17 (Line)
+Info    : [ 50 %] Meshing curve 18 (Circle)
+Info    : [ 60 %] Meshing curve 19 (Circle)
+Info    : [ 70 %] Meshing curve 20 (Line)
+Info    : [ 70 %] Meshing curve 21 (Line)
+Info    : [ 80 %] Meshing curve 22 (Line)
+Info    : [ 90 %] Meshing curve 23 (Line)
+Info    : [100 %] Meshing curve 24 (Line)
+Info    : Done meshing 1D (0 s)
+Info    : Meshing 2D...
+Info    : [  0 %] Meshing surface 26 (Plane, Frontal Quad)
+Info    : [  0 %] Blossom: 65 internal 20 closed
+Info    : [  0 %] Blossom recombination completed (0 s): 24 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.993155, min Q = 0.986377
+Info    : [ 30 %] Meshing surface 28 (Plane, Frontal Quad)
+Info    : [ 30 %] Blossom: 28 internal 14 closed
+Info    : [ 30 %] Blossom recombination completed (0 s): 12 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.996644, min Q = 0.992517
+Info    : [ 50 %] Meshing surface 30 (Plane, Frontal Quad)
+Info    : [ 50 %] Blossom: 73 internal 22 closed
+Info    : [ 50 %] Blossom recombination completed (0 s): 26 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.823763, min Q = 0.546428
+Info    : [ 80 %] Meshing surface 32 (Plane, Frontal Quad)
+Info    : [ 80 %] Blossom: 40 internal 15 closed
+Info    : [ 80 %] Blossom recombination completed (0 s): 14 quads, 4 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.615501, min Q = 0.217953
+Info    : Done meshing 2D (0.03125 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 20 %] Meshing curve 15 order 2
+Info    : [ 30 %] Meshing curve 16 order 2
+Info    : [ 30 %] Meshing curve 17 order 2
+Info    : [ 40 %] Meshing curve 18 order 2
+Info    : [ 50 %] Meshing curve 19 order 2
+Info    : [ 50 %] Meshing curve 20 order 2
+Info    : [ 60 %] Meshing curve 21 order 2
+Info    : [ 60 %] Meshing curve 22 order 2
+Info    : [ 70 %] Meshing curve 23 order 2
+Info    : [ 80 %] Meshing curve 24 order 2
+Info    : [ 80 %] Meshing surface 26 order 2
+Info    : [ 90 %] Meshing surface 28 order 2
+Info    : [ 90 %] Meshing surface 30 order 2
+Info    : [100 %] Meshing surface 32 order 2
+Info    : Surface mesh: worst distortion = 1 (0 elements in ]0, 0.2]); worst gamma = 0.513941
+Info    : Done meshing order 2 (0 s)
+Info    : Done refining mesh (0 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 20 %] Meshing curve 15 order 2
+Info    : [ 30 %] Meshing curve 16 order 2
+Info    : [ 30 %] Meshing curve 17 order 2
+Info    : [ 40 %] Meshing curve 18 order 2
+Info    : [ 50 %] Meshing curve 19 order 2
+Info    : [ 50 %] Meshing curve 20 order 2
+Info    : [ 60 %] Meshing curve 21 order 2
+Info    : [ 60 %] Meshing curve 22 order 2
+Info    : [ 70 %] Meshing curve 23 order 2
+Info    : [ 80 %] Meshing curve 24 order 2
+Info    : [ 80 %] Meshing surface 26 order 2
+Info    : [ 90 %] Meshing surface 28 order 2
+Info    : [ 90 %] Meshing surface 30 order 2
+Info    : [100 %] Meshing surface 32 order 2
+Info    : Done meshing order 2 (0 s)
+Info    : 1044 nodes 445 elements
+Info    : Writing 'rounded-square-cw.inp'...
+Info    : Done writing 'rounded-square-cw.inp'
+Info    : Stopped on Fri Apr 03 21:15:06 2020
+File: rounded-square-cw.inp was written
+Meshing done!
+Info    : Running 'C:\Users\nakai\gmsh-4.5.4-Windows64\gmsh.exe rounded-square-cw.geo -2 -o rounded-square-cw.msh' [Gmsh 4.5.4, 1 node, max. 1 thread]
+Info    : Started on Fri Apr 03 21:15:07 2020
+Info    : Reading 'rounded-square-cw.geo'...
+Info    : Done reading 'rounded-square-cw.geo'
+Info    : Meshing 1D...
+Info    : [  0 %] Meshing curve 12 (Line)
+Info    : [ 10 %] Meshing curve 13 (Line)
+Info    : [ 20 %] Meshing curve 14 (Line)
+Info    : [ 30 %] Meshing curve 15 (Line)
+Info    : [ 40 %] Meshing curve 16 (Line)
+Info    : [ 40 %] Meshing curve 17 (Line)
+Info    : [ 50 %] Meshing curve 18 (Circle)
+Info    : [ 60 %] Meshing curve 19 (Circle)
+Info    : [ 70 %] Meshing curve 20 (Line)
+Info    : [ 70 %] Meshing curve 21 (Line)
+Info    : [ 80 %] Meshing curve 22 (Line)
+Info    : [ 90 %] Meshing curve 23 (Line)
+Info    : [100 %] Meshing curve 24 (Line)
+Info    : Done meshing 1D (0.015625 s)
+Info    : Meshing 2D...
+Info    : [  0 %] Meshing surface 26 (Plane, Frontal Quad)
+Info    : [  0 %] Blossom: 65 internal 20 closed
+Info    : [  0 %] Blossom recombination completed (0 s): 24 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.993155, min Q = 0.986377
+Info    : [ 30 %] Meshing surface 28 (Plane, Frontal Quad)
+Info    : [ 30 %] Blossom: 28 internal 14 closed
+Info    : [ 30 %] Blossom recombination completed (0 s): 12 quads, 0 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.996644, min Q = 0.992517
+Info    : [ 50 %] Meshing surface 30 (Plane, Frontal Quad)
+Info    : [ 50 %] Blossom: 73 internal 22 closed
+Info    : [ 50 %] Blossom recombination completed (0 s): 26 quads, 2 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.823763, min Q = 0.546428
+Info    : [ 80 %] Meshing surface 32 (Plane, Frontal Quad)
+Info    : [ 80 %] Blossom: 40 internal 15 closed
+Info    : [ 80 %] Blossom recombination completed (0 s): 14 quads, 4 triangles, 0 invalid quads, 0 quads with Q < 0.1, avg Q = 0.615501, min Q = 0.217953
+Info    : Done meshing 2D (0.015625 s)
+Info    : Refining mesh...
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 20 %] Meshing curve 15 order 2
+Info    : [ 30 %] Meshing curve 16 order 2
+Info    : [ 30 %] Meshing curve 17 order 2
+Info    : [ 40 %] Meshing curve 18 order 2
+Info    : [ 50 %] Meshing curve 19 order 2
+Info    : [ 50 %] Meshing curve 20 order 2
+Info    : [ 60 %] Meshing curve 21 order 2
+Info    : [ 60 %] Meshing curve 22 order 2
+Info    : [ 70 %] Meshing curve 23 order 2
+Info    : [ 80 %] Meshing curve 24 order 2
+Info    : [ 80 %] Meshing surface 26 order 2
+Info    : [ 90 %] Meshing surface 28 order 2
+Info    : [ 90 %] Meshing surface 30 order 2
+Info    : [100 %] Meshing surface 32 order 2
+Info    : Surface mesh: worst distortion = 1 (0 elements in ]0, 0.2]); worst gamma = 0.513941
+Info    : Done meshing order 2 (0.015625 s)
+Info    : Done refining mesh (0.015625 s)
+Info    : Meshing order 2 (curvilinear on)...
+Info    : [  0 %] Meshing curve 12 order 2
+Info    : [ 10 %] Meshing curve 13 order 2
+Info    : [ 20 %] Meshing curve 14 order 2
+Info    : [ 20 %] Meshing curve 15 order 2
+Info    : [ 30 %] Meshing curve 16 order 2
+Info    : [ 30 %] Meshing curve 17 order 2
+Info    : [ 40 %] Meshing curve 18 order 2
+Info    : [ 50 %] Meshing curve 19 order 2
+Info    : [ 50 %] Meshing curve 20 order 2
+Info    : [ 60 %] Meshing curve 21 order 2
+Info    : [ 60 %] Meshing curve 22 order 2
+Info    : [ 70 %] Meshing curve 23 order 2
+Info    : [ 80 %] Meshing curve 24 order 2
+Info    : [ 80 %] Meshing surface 26 order 2
+Info    : [ 90 %] Meshing surface 28 order 2
+Info    : [ 90 %] Meshing surface 30 order 2
+Info    : [100 %] Meshing surface 32 order 2
+Info    : Done meshing order 2 (0.015625 s)
+Info    : 1044 nodes 445 elements
+Info    : Writing 'rounded-square-cw.msh'...
+Info    : Done writing 'rounded-square-cw.msh'
+Info    : Stopped on Fri Apr 03 21:15:09 2020
+File: rounded-square-cw.msh was written
+Re-indexing elements to min element number of: 1
+Old min:124  max:445
+New min:1  max:322
+Elements: 322
+Nodes: 1043
+Done reading Calculix/Abaqus .inp file
+File rounded-square-cw_elements.png was saved.
+----------------------------------
+View's currently selected items:
+ parts: 1 selected
+ areas: 4 selected
+ lines: 17 selected
+ points: 10 selected
+ elements: 322 selected
+ faces: 1288 selected
+ nodes: 1043 selected
+----------------------------------
+----------------------------------
+Items in the database:
+ parts: 1
+ areas: 4
+ lines: 17
+ points: 11
+ elements: 322
+ faces: 1288
+ nodes: 1043
+----------------------------------
