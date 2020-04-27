@@ -1,19 +1,19 @@
-##Copyright 2009-2016 Jelle Feringa (jelleferinga@gmail.com)
+# Copyright 2009-2016 Jelle Feringa (jelleferinga@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function
 
 import os
@@ -28,7 +28,7 @@ from OCC.Display.SimpleGui import init_display
 from OCC.Core.GeomAbs import GeomAbs_C0
 from OCC.Core.GeomLProp import GeomLProp_SLProps
 from OCC.Core.GeomPlate import (GeomPlate_BuildPlateSurface, GeomPlate_PointConstraint,
-	                            GeomPlate_MakeApprox)
+                                GeomPlate_MakeApprox)
 from OCC.Core.ShapeAnalysis import ShapeAnalysis_Surface
 from OCC.Core.gp import gp_Pnt
 from OCC.Core.BRepFill import BRepFill_Filling
@@ -97,7 +97,6 @@ def make_closed_polygon(*args):
     poly.Close()
     result = poly.Wire()
     return result
-
 
 
 def geom_plate(event=None):
@@ -276,7 +275,7 @@ def build_curve_network(event=None):
     mimic the curve network surfacing command from rhino
     '''
     print('Importing IGES file...')
-    iges_file = os.path.join('..', 'assets', 'models', 'curve_geom_plate.igs')
+    iges_file = os.path.join('models', 'curve_geom_plate.igs')
     iges = read_iges_file(iges_file)
 
     print('Building geomplate...')
