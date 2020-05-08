@@ -117,11 +117,30 @@ mode2 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p2))
 mode3 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p3))
 mode4 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p4))
 
-sim.run(until_after_sources=100)
+#sim.run(until_after_sources=100)
+sim.run()
 
+#        if until_after_sources is not None:
+#            self._run_sources_until(until_after_sources, step_funcs)
+#        elif until is not None:
+#            self._run_until(until, step_funcs)
+#        else:
+#            raise ValueError("Invalid run configuration")
 
-# In[2]:
-
+#    def _run_sources_until(self, cond, step_funcs):
+#        if self.fields is None:
+#            self.init_sim()
+#
+#        ts = self.fields.last_source_time()
+#
+#        if isinstance(cond, numbers.Number):
+#            new_cond = (ts - self.round_time()) + cond
+#        else:
+#            def f(sim):
+#                return cond(sim) and sim.round_time() >= ts
+#            new_cond = f
+#
+#        self._run_until(new_cond, step_funcs)
 
 # S parameters
 p1_coeff = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
@@ -168,7 +187,9 @@ sim = mp.Simulation(resolution=res,
                     sources=sources,
                     geometry=geometry)
 
+print("start run")
 sim.run(until=400)  # arbitrary long run time to ensure that fields have reached steady state
+print("end run")
 
 eps_data = sim.get_epsilon()
 ez_data = numpy.real(sim.get_efield_z())

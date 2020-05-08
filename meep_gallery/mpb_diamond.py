@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import math
 import meep as mp
 from meep import mpb
@@ -56,6 +57,8 @@ ms = mpb.ModeSolver(
 def main():
     # run calculation, outputting electric_field energy density at the U point:
     ms.run(mpb.output_at_kpoint(mp.Vector3(0, 0.625, 0.375), mpb.output_dpwr))
-
+    ms.display_kpoint_data("./mpb_diamond", ms.band_range_data)
+    plt.show()
+    
 if __name__ == '__main__':
     main()

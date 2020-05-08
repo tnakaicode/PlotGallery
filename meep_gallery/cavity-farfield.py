@@ -109,6 +109,7 @@ nearfield = sim.add_near2far(fcen, 0, 1,
 
 sim.run(until_after_sources=mp.stop_when_fields_decayed(50, mp.Hz, mp.Vector3(0.12,-0.37), 1e-8))
 
+print(sim.run_index)
 
 # In[2]:
 
@@ -121,4 +122,4 @@ ff = sim.get_farfields(nearfield, resolution, center=mp.Vector3(y=0.5*w+d2+0.5*h
 plt.figure(dpi=200)
 plt.imshow(np.rot90(np.real(ff['Hz']),1),cmap='RdBu')
 plt.axis('off')
-
+plt.show()

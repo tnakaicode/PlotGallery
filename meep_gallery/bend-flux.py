@@ -91,7 +91,8 @@ tran_fr = mp.FluxRegion(center=mp.Vector3(
 tran = sim.add_flux(fcen, df, nfreq, tran_fr)
 
 plt.figure(dpi=150)
-sim.plot2D()
+sim.display_fluxes(tran)
+#sim.plot2D()
 plt.show()
 
 

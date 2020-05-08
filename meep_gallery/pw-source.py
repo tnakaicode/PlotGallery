@@ -28,10 +28,11 @@ def pw_amp(k, x0):
         return cmath.exp(1j * k.dot(x + x0))
     return _pw_amp
 
+
 fcen = 0.8  # pulse center frequency
 df = 0.02  # turn-on bandwidth
 kdir = mp.Vector3(1, 1)  # direction of k (length is irrelevant)
-n = 1 # refractive index of material containing the source
+n = 1  # refractive index of material containing the source
 k = kdir.unit().scale(2 * math.pi * fcen * n)  # k with correct length
 
 sources = [
