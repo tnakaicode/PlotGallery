@@ -14,7 +14,7 @@ import meep as mp
 from matplotlib import pyplot as plt
 import numpy as np
 from IPython.display import Video
-get_ipython().run_line_magic('matplotlib', 'inline')
+# get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 # Then let's set up the bent waveguide in a slightly larger cell:

@@ -18,7 +18,7 @@ import meep as mp
 import numpy as np
 from matplotlib import pyplot as plt
 from IPython.display import Video
-get_ipython().run_line_magic('matplotlib', 'notebook')
+# get_ipython().run_line_magic('matplotlib', 'notebook')
 
 
 # And define our computational cell as follows:
@@ -109,7 +109,7 @@ sim.run(mp.after_sources(mp.Harminv(mp.Hz, mp.Vector3(0.1234), fcen, df)),
 # In[8]:
 
 
-get_ipython().run_cell_magic('capture', '', 'sim.restart_fields()\nk_interp = 19\nkpts = mp.interpolate(k_interp, [mp.Vector3(0), mp.Vector3(0.5)])\nall_freqs = sim.run_k_points(300, kpts)')
+# get_ipython().run_cell_magic('capture', '', 'sim.restart_fields()\nk_interp = 19\nkpts = mp.interpolate(k_interp, [mp.Vector3(0), mp.Vector3(0.5)])\nall_freqs = sim.run_k_points(300, kpts)')
 
 
 # Here, we have used Meep's built-in `interpolate` function to interpolate a set of 19 $k$ points between $k=0$ and $k=0.5⋅2\pi x̂$ , to cover the irreducible Brillouin zone. This function automatically runs Harminv, using the frequency range and location taken from the Gaussian source in the sources list. It returns the calculated modes as a list of lists.

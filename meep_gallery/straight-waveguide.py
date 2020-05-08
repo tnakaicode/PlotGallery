@@ -109,7 +109,7 @@ sim = mp.Simulation(cell_size=cell,
 
 
 from matplotlib import pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
+# get_ipython().run_line_magic('matplotlib', 'inline')
 plt.figure(dpi=100)
 sim.plot2D()
 plt.show()

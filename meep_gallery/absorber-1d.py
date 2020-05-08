@@ -10,7 +10,8 @@ def main(args):
     resolution = 40
     cell_size = mp.Vector3(z=10)
 
-    boundary_layers = [mp.PML(1, direction=mp.Z) if args.pml else mp.Absorber(1, direction=mp.Z)]
+    boundary_layers = [mp.PML(1, direction=mp.Z)
+                       if args.pml else mp.Absorber(1, direction=mp.Z)]
 
     sources = [mp.Source(src=mp.GaussianSource(1 / 0.803, fwidth=0.1),
                          center=mp.Vector3(),
@@ -33,6 +34,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-pml', action='store_true', default=False, help='Use PML as boundary layer')
+    parser.add_argument('-pml', action='store_true',
+                        default=False, help='Use PML as boundary layer')
     args = parser.parse_args()
     main(args)

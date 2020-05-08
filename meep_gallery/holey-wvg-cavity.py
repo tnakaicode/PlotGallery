@@ -14,7 +14,7 @@ import meep as mp
 import numpy as np
 from matplotlib import pyplot as plt
 from IPython.display import Video
-get_ipython().run_line_magic('matplotlib', 'notebook')
+# get_ipython().run_line_magic('matplotlib', 'notebook')
 
 
 # Next, we'll define some parameters of our structure. All lengths are in units of microns ($\mu$m). The periodicity of the photonic crystal is 1 $\mu$m.
