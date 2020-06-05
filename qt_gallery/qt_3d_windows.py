@@ -1,6 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout, QCheckBox, QCommandLinkButton, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.Qt3DCore import QEntity
+from PyQt5.Qt3DExtras import Qt3DWindow, QFirstPersonCameraController
 from PyQt5.Qt3DExtras import QTorusMesh, QPhongMaterial, QConeMesh, QCylinderMesh, QCuboidMesh, QPlaneMesh, QSphereMesh, Qt3DWindow, QFirstPersonCameraController
 # ModuleNotFoundError: No module named 'PyQt5.Qt3DExtras'
 # Failed to make context current: OpenGL resources will not be destroyed
@@ -10,7 +13,15 @@ import sys
 class contained3dWindow(QWidget):
     def __init__(self):
         super().__init__()
-        view = Qt3DWindow()
+        lay = QVBoxLayout(self)
+        self.view = Qt3DWindow()
+        container = QWidget.createWindowContainer(self.view)
+        lay.addWidget(container)
+        self.rootEntity = QEntity()
+        cameraEntity = self.view.camera()
+        camController = QFirstPersonCameraController(self.rootEntity)
+        camController.setCamera(cameraEntity)
+        self.view.setRootEntity(self.rootEntity)
 
 
 class Ui_MainWindow(object):
