@@ -8,7 +8,7 @@ cs = Airfoil()
 
 # Generate a 2-D profile by reading and approximating an airfoil file from the
 # UIUC database. Close the trailing edge if necessary.
-cs.read_uiuc('../models/clarky.dat', close=True)
+cs.read_uiuc('./models/clarky.dat', close=True)
 
 # Define a plane at the root and scale
 pln1 = PlaneByAxes(axes='xz').plane

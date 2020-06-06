@@ -1,7 +1,7 @@
 from afem.exchange import *
 from afem.graphics import Viewer
 
-fn = '../models/777-200LR_Onshape.step'
+fn = './models/777-200LR_Onshape.step'
 
 doc = XdeDocument()
 shapes_label = doc.read_step(fn)

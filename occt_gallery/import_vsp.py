@@ -35,7 +35,7 @@ for s in vsp.solids:
     r = random.randint(0, 256)
     g = random.randint(0, 256)
     b = random.randint(0, 256)
-    v.display_shape(s, (r, g, b))
+    v.display_shape(s)
 v.start()
 v.clear()
 
