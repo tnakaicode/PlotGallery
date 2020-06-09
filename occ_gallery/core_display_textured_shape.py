@@ -65,7 +65,7 @@ class Texture(object):
 #
 # First create texture and a material
 #
-texture_filename = './images/ground.bmp'
+texture_filename = '../images/ground.bmp'
 t = Texture(texture_filename)
 m = Graphic3d_MaterialAspect(Graphic3d_NOM_SILVER)
 #

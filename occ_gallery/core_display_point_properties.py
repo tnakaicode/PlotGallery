@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2020 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2020 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 
@@ -54,6 +54,8 @@ ALL_ASPECTS = [Aspect_TOM_POINT,
                Aspect_TOM_RING2,
                Aspect_TOM_RING3,
                Aspect_TOM_BALL]
+
+
 def pnt():
     # create a point
     for idx in range(10):
@@ -63,7 +65,8 @@ def pnt():
                 y = 0 + idy * 0.1
                 z = 0 + idz / len(ALL_ASPECTS)
                 p = Geom_CartesianPoint(gp_Pnt(x, y, z))
-                color = Quantity_Color(x / len(ALL_ASPECTS), 0, z, Quantity_TOC_RGB)
+                color = Quantity_Color(
+                    x / len(ALL_ASPECTS), 0, z, Quantity_TOC_RGB)
                 ais_point = AIS_Point(p)
 
                 drawer = ais_point.Attributes()
@@ -78,6 +81,7 @@ def pnt():
 
 def exit(event=None):
     sys.exit()
+
 
 if __name__ == '__main__':
     pnt()

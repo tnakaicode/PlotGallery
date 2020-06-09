@@ -1,5 +1,27 @@
 # OCC
 
+## GTransform
+
+<https://www.opencascade.com/doc/occt-7.4.0/refman/html/classgp___g_trsf.html>
+
+Defines a non-persistent transformation in 3D space.
+This transformation is a general transformation.
+It can be a Trsf from gp, an affinity, or you can define your own transformation giving the matrix of transformation.
+
+With a Gtrsf you can transform only a triplet of coordinates XYZ.
+It is not possible to transform other geometric objects because
+these transformations can change the nature of non-elementary geometric objects.
+The transformation GTrsf can be represented as follow :
+
+V1 V2 V3 T XYZ XYZ | a11 a12 a13 a14 | | x | | x'| | a21 a22 a23 a24 | | y | | y'| | a31 a32 a33 a34 | | z | = | z'| | 0 0 0 1 | | 1 | | 1 |
+
+where {V1, V2, V3} define the vectorial part of the transformation and T defines the translation part of the transformation.
+Warning A GTrsf transformation is only applicable to coordinates.
+Be careful if you apply such a transformation to all points of a geometric object,
+as this can change the nature of the object and thus render it incoherent!
+Typically, a circle is transformed into an ellipse by an affinity transformation.
+To avoid modifying the nature of an object, use a gp_Trsf transformation instead, as objects of this class respect the nature of geometric objects.
+
 ## SimpleGUI
 
 ```Python

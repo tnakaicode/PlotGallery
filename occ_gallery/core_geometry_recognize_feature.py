@@ -113,7 +113,7 @@ if __name__ == '__main__':
     display.SetSelectionModeFace()  # switch to Face selection mode
     display.register_select_callback(recognize_clicked)
     # first loads the STEP file and display
-    shp = read_step_file('./models/as1_pe_203.stp')
+    shp = read_step_file('../models/as1_pe_203.stp')
     display.DisplayShape(shp, update=True)
     add_menu('recognition')
     add_function_to_menu('recognition', recognize_batch)

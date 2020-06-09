@@ -37,8 +37,8 @@ if __name__ == "__main__":
     """
     print("opening image")
     #heightmap = Image.open('images/mountain_heightmap.jpg')
-    heightmap = Image.open('images/map1.jpg')
-    heightmap = Image.open('images/Shurijo.jpg')
+    heightmap = Image.open('../images/map1.jpg')
+    heightmap = Image.open('../images/Shurijo.jpg')
     heightmap.show()
     width = int(heightmap.size[0] / 8)
     height = int(heightmap.size[1] / 4)
