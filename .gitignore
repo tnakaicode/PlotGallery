@@ -15,7 +15,7 @@ temp_*/*
 a.exe
 
 # Big File
-occ_gallery/models/3864470050F1.stp
+./models/3864470050F1.stp
 
 # hdf5
 meep_gallery/*.h5
