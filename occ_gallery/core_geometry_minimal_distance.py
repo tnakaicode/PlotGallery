@@ -45,6 +45,7 @@ def compute_minimal_distance_between_cubes():
     dss.Perform()
 
     assert dss.IsDone()
+    print("Minimal distance between cubes: ", dss.Value())
 
     edg = make_edge(dss.PointOnShape1(1), dss.PointOnShape2(1))
     display.DisplayColoredShape([edg], color="CYAN")

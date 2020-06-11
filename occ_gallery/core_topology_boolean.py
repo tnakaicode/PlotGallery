@@ -1,19 +1,19 @@
-# Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import time
 
@@ -60,8 +60,8 @@ def common(event=None):
     CommonSurface = BRepAlgoAPI_Common(Box, Wedge).Shape()
 
     display.EraseAll()
-    ais_box = display.DisplayShape(Box)
-    ais_wedge = display.DisplayShape(Wedge)
+    ais_box = display.DisplayShape(Box)[0]
+    ais_wedge = display.DisplayShape(Wedge)[0]
     display.Context.SetTransparency(ais_box, 0.8, True)
     display.Context.SetTransparency(ais_wedge, 0.8, True)
     display.DisplayShape(CommonSurface)
@@ -107,8 +107,7 @@ def section(event=None):
     sections = []
     for i in range(-3, 4):
         # Create Sphere
-        sphere = BRepPrimAPI_MakeSphere(
-            gp_Pnt(26 * 3 * i, 0, 0), radius).Shape()
+        sphere = BRepPrimAPI_MakeSphere(gp_Pnt(26 * 3 * i, 0, 0), radius).Shape()
         # Computes Torus/Sphere section
         section_shp = BRepAlgoAPI_Section(torus, sphere, False)
         section_shp.ComputePCurveOn1(True)
@@ -131,7 +130,7 @@ def cut(event=None):
     # Cut: the shere is cut 'by' the box
     Cut = BRepAlgoAPI_Cut(Sphere, Box).Shape()
     display.EraseAll()
-    ais_box = display.DisplayShape(Box)
+    ais_box = display.DisplayShape(Box)[0]
     display.Context.SetTransparency(ais_box, 0.8, True)
     display.DisplayShape(Cut)
     display.FitAll()

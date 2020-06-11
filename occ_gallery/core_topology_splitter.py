@@ -1,30 +1,31 @@
-# Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function
 
 import sys
 
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace
-from OCC.Display.SimpleGui import init_display
 from OCC.Core.BOPAlgo import BOPAlgo_Splitter
 from OCC.Core.TopAbs import TopAbs_EDGE
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.gp import gp_Dir, gp_Pln, gp_Pnt
 
+from OCC.Extend.TopologyUtils import TopologyExplorer
+from OCC.Display.SimpleGui import init_display
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 
@@ -44,7 +45,10 @@ def split_face_with_edge(event=None):
     splitter.AddArgument(face)
     splitter.AddTool(edge)
     splitter.Perform()
-    display.DisplayShape(splitter.Shape())
+    # resulting shapes
+    faces = TopologyExplorer(splitter.Shape()).faces()
+    for face in faces:
+        display.DisplayShape(face)
     display.FitAll()
 
 
