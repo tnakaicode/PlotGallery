@@ -5,7 +5,7 @@ import vtk
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtWidgets import QFrame, QVBoxLayout
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-
+from vtk.util.colors import tomato
 
 class MainWindow(QMainWindow):
 
