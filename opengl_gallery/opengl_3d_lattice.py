@@ -149,11 +149,11 @@ def motion(x, y):
 if __name__ == "__main__":
     init_lattice()
 
+    glutCreateWindow("pyOpenGL TEST".encode('utf-8'))
     glutInitWindowPosition(50, 50)
     glutInitWindowSize(340, 340)
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE)
-    glutCreateWindow("pyOpenGL TEST".encode('utf-8'))
     glutDisplayFunc(draw)
     glutReshapeFunc(reshape)
     glutMotionFunc(motion)
