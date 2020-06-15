@@ -40,7 +40,8 @@ for ii, r in enumerate(R):
     for jj, rstar in enumerate(Rstar):
         r_b = rstar * r_i
         man = Maneuver.bielliptic(ss_i, r_b, r_f)
-        bielliptic_data[ii, jj] = (man.get_total_cost() / v_i).decompose().value
+        bielliptic_data[ii, jj] = (
+            man.get_total_cost() / v_i).decompose().value
 
 idx_max = np.argmax(hohmann_data)
 
@@ -58,7 +59,8 @@ for jj in range(len(Rstar)):
 ax.vlines([11.94, R[idx_max]], *ylims, color='0.6')
 
 if ZOOM:
-    ax_zoom = zoomed_inset_axes(ax, 4, loc=4, axes_kwargs={'facecolor': '0.97'})
+    ax_zoom = zoomed_inset_axes(
+        ax, 4, loc=4, axes_kwargs={'facecolor': '0.97'})
     ax_zoom.plot(R, hohmann_data, lw=2)
     for jj in range(len(Rstar)):
         ax_zoom.plot(R, bielliptic_data[:, jj], color=l.get_color())
@@ -79,4 +81,3 @@ ax.set_xlim(2, 75)
 ax.set_title("Hohmann vs bielliptic transfers")
 
 fig.savefig("hohmann-bielliptic-transfers.png")
-

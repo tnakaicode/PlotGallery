@@ -2,9 +2,9 @@
 # coding: utf-8
 
 # # Analyzing the Parker Solar Probe flybys
-# 
+#
 # ## 1. Modulus of the exit velocity, some features of Orbit #2
-# 
+#
 # First, using the data available in the reports, we try to compute some of the properties of orbit #2. This is not enough to completely define the trajectory, but will give us information later on in the process.
 
 # In[1]:
@@ -88,7 +88,7 @@ v_mag_ref.to(u.km / u.s)
 
 
 # ## 2. Lambert arc between #0 and #1
-# 
+#
 # To compute the arrival velocity to Venus at flyby #1, we have the necessary data to solve the boundary value problem.
 
 # In[12]:
@@ -150,7 +150,7 @@ norm(v1_pre)
 
 
 # ## 3. Flyby #1 around Venus
-# 
+#
 # We compute a flyby using poliastro with the default value of the entry angle, just to discover that the results do not match what we expected.
 
 # In[21]:
@@ -191,7 +191,7 @@ norm(V_2_v_)
 
 
 # ## 4. Optimization
-# 
+#
 # Now we will try to find the value of $\theta$ that satisfies our requirements.
 
 # In[27]:
@@ -222,7 +222,7 @@ import matplotlib.pyplot as plt
 
 theta_range = np.linspace(0, 2 * np.pi)
 plt.plot(theta_range, [func(theta) for theta in theta_range])
-plt.axhline(0, color="k", linestyle="dashed");
+plt.axhline(0, color="k", linestyle="dashed")
 
 
 # In[31]:
@@ -277,7 +277,7 @@ norm(V_2_v_b)
 
 
 # ## 5. Exit orbit
-# 
+#
 # And finally, we compute orbit #2 and check that the period is the expected one.
 
 # In[39]:
@@ -347,6 +347,6 @@ frame = StaticOrbitPlotter(plane=Planes.EARTH_ECLIPTIC)
 frame.plot_body_orbit(Earth, d_launch)
 frame.plot_body_orbit(Venus, flyby_1_time)
 frame.plot(ss01, label="#0 to #1", color="C2")
-frame.plot(ss_1_a, label="#1 to #2", color="C3");
+frame.plot(ss_1_a, label="#1 to #2", color="C3")
 
 plt.show()
