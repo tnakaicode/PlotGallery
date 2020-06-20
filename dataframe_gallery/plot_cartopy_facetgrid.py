@@ -42,4 +42,4 @@ for ax in p.axes.flat:
     # "extent" attribute above will be ignored
     ax.set_aspect("equal")
 
-plt.show()
+plt.savefig("./plot_cartopy_facetgrid.png")

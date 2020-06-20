@@ -40,4 +40,4 @@ ax4.set_ylabel("")
 
 # Mke it nice
 plt.tight_layout()
-plt.show()
+plt.savefig("./plot_colorbar_center.png")
