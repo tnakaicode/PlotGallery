@@ -106,6 +106,7 @@ grids = [bempp.api.shapes.sphere(r=radius, origin=(c, 0, 0), h=0.1)
 
 
 frequency = 300E6 # 300Mhz
+frequency = 100E9 # 100Ghz
 
 vacuum_permittivity = 8.854187817E-12
 vacuum_permeability = 4 * np.pi * 1E-7
@@ -312,7 +313,7 @@ for i in range(number_of_scatterers):
 # In[13]:
 
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.patches import Circle
@@ -364,7 +365,6 @@ divider = make_axes_locatable(axes[1])
 cax = divider.append_axes("right", size="5%", pad=0.05)
 fig.colorbar(f1, cax=cax)
 
-plt.show()
 
 
 # We now evaluate the bistatic radar cross section with the given incident angle. Here, we are only interested in backscattering into negative y plane. First, we define the evaluation points on the lower half of the unit circle. For the RCS we define the 0 degree angle to point into the negative x-direction, and correspondingly the 180 degree angle to be pointing into the positive x-direction.
@@ -403,3 +403,4 @@ plt.plot(angles * 180 / np.pi, bistatic_rcs)
 plt.title("Bistatic RCS [dB]")
 _ = plt.xlabel('Angle (Degrees)')
 
+plt.show()
