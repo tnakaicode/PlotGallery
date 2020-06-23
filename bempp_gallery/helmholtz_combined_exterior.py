@@ -6,47 +6,47 @@
 # ### Background
 
 # In this tutorial, we will solve the problem of scattering from the unit sphere $\Omega$ using a combined integral formulation and an incident wave defined by
-# 
+#
 # $$
 # u^{\text{inc}}(\mathbf x) = \mathrm{e}^{\mathrm{i} k x}.
 # $$
-# 
+#
 # where $\mathbf x = (x, y, z)$.
-# 
+#
 # The PDE is given by the <a href='/tag/Helmholtz'>Helmholtz equation</a>:
-# 
+#
 # $$
 # \Delta u + k^2 u = 0, \quad \text{ in } \mathbb{R}^3 \backslash \Omega,
 # $$
-# 
+#
 # where $u=u^\text{s}+u^\text{inc}$ is the total acoustic field and $u^\text{s}$ satisfies the Sommerfeld radiation condition
-# 
+#
 # $$
 # \frac{\partial u^\text{s}}{\partial r}-\mathrm{i}ku^\text{s}=o(r^{-1})
 # $$
-# 
+#
 # for $r:=|\mathbf{x}|\rightarrow\infty$.
-# 
+#
 # From Green's representation formula, one can derive that
-# 
+#
 # $$
 # u(\mathbf x) = u^\text{inc}-\int_{\Gamma}g(\mathbf x,\mathbf y)\frac{\partial u}{\partial\nu}(\mathbf y)\mathrm{d}\mathbf{y}.
 # $$
-# 
+#
 # Here, $g(\mathbf x, \mathbf y)$ is the acoustic Green's function given by
-# 
+#
 # $$
 # g(\mathbf x, \mathbf y):=\frac{\mathrm{e}^{\mathrm{i} k |\mathbf{x}-\mathbf{y}|}}{4 \pi |\mathbf{x}-\mathbf{y}|}.
 # $$
-# 
+#
 # The problem has therefore been reduced to computing the normal derivative $u_\nu:=\frac{\partial u}{\partial\nu}$ on the boundary $\Gamma$. This is achieved using the following boundary integral equation formulation.
-# 
+#
 # $$
 # (\tfrac12\mathsf{Id} + \mathsf{K}' - \mathrm{i} \eta \mathsf{V}) u_\nu(\mathbf{x}) = \frac{\partial u^{\text{inc}}}{\partial \nu}(\mathbf{x}) - \mathrm{i} \eta u^{\text{inc}}(\mathbf{x}), \quad \mathbf{x} \in \Gamma.
 # $$
-# 
+#
 # where $\mathsf{Id}$, $\mathsf{K}'$ and $\mathsf{V}$ are identity, adjoint double layer and single layer <a href='https://bempp.com/2017/07/11/available_operators/'>boundary operators</a>. More details of the derivation of this formulation and its properties can be found in the article <a href='http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=8539370&fileId=S0962492912000037' target='new'>Chandler-Wilde <em>et al</em> (2012)</a>.
-# 
+#
 
 # ### Implementation
 
@@ -112,7 +112,8 @@ lhs = 0.5 * identity + adlp - 1j * k * slp
 
 @bempp.api.complex_callable
 def combined_data(x, n, domain_index, result):
-    result[0] = 1j * k * np.exp(1j * k * x[0]) * (n[0]-1)
+    result[0] = 1j * k * np.exp(1j * k * x[0]) * (n[0] - 1)
+
 
 grid_fun = bempp.api.GridFunction(piecewise_const_space, fun=combined_data)
 
@@ -127,7 +128,7 @@ neumann_fun, info = gmres(lhs, grid_fun, tol=1E-5)
 
 
 # `gmres` returns a grid function `neumann_fun` and an integer `info`. When everything works fine info is equal to 0.
-# 
+#
 # At this stage, we have the surface solution of the integral equation. Now we will evaluate the solution in the domain of interest. We define the evaluation points as follows.
 
 # In[9]:
@@ -145,7 +146,7 @@ u_evaluated[:] = np.nan
 
 
 # This will generate a grid of points in the $x$-$y$ plane.
-# 
+#
 # Then we create a single layer potential operator and use it to evaluate the solution at the evaluation points. The variable ``idx`` allows to compute the solution only at points located outside the unit circle of the plane. We use a single layer potential operator to evaluate the solution at the observation points.
 
 # In[10]:
@@ -157,7 +158,7 @@ idx = np.sqrt(x**2 + y**2) > 1.0
 from bempp.api.operators.potential import helmholtz as helmholtz_potential
 slp_pot = helmholtz_potential.single_layer(
     piecewise_const_space, points[:, idx], k)
-res = np.real(np.exp(1j *k * points[0, idx]) - slp_pot.evaluate(neumann_fun))
+res = np.real(np.exp(1j * k * points[0, idx]) - slp_pot.evaluate(neumann_fun))
 u_evaluated[idx] = res.flat
 
 
@@ -166,7 +167,7 @@ u_evaluated[idx] = res.flat
 # In[11]:
 
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 u_evaluated = u_evaluated.reshape((Nx, Ny))
 
@@ -177,4 +178,5 @@ plt.xlabel('x')
 plt.ylabel('y')
 plt.colorbar()
 plt.title("Scattering from the unit sphere, solution in plane z=0")
-
+plt.savefig("./helmholtz_combined_exterior.png")
+plt.show()

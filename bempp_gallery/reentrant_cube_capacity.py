@@ -19,7 +19,7 @@
 # \text{cap}(\Omega)=-\epsilon_0\int_{\Gamma}\frac{\partial u}{\partial\nu}(\mathbf{x})\,\mathrm{d}\mathbf{x}.
 # $$
 # $\nu(\mathbf{x})$ is the outward pointing normal direction for $\mathbf{x}\in\Gamma$, and $\epsilon_0$ is the electric constant with value $\epsilon_0\approx 8.854\times 10^{-12}\,{\rm F/m}$. In the following we will use the normalized capacity $\text{cap}^*(\Omega)=-\frac{1}{4\pi}\int_{\Gamma}\frac{\partial u}{\partial\nu}\,d\mathbf{x}$. The normalized capacity has the value $1$ for the unit sphere.
-# 
+#
 # Using Green's representation theorem and noting that the exterior Laplace double layer potential is zero for constant densities, we can represent the solution $u$ as
 # $$
 # u(\mathbf{x}) = -\int_{\Gamma} g(\mathbf{x},\mathbf{y})\phi(\mathbf{y})\,\mathrm{d}\mathbf{y} \quad\text{for all }\mathbf{x}\in\Omega^\text{+},
@@ -61,7 +61,8 @@ space = bempp.api.function_space(grid, "DP", 0)
 @bempp.api.real_callable
 def one_fun(x, n, domain_index, res):
     res[0] = 1
-    
+
+
 rhs = bempp.api.GridFunction(space, fun=one_fun)
 
 
@@ -78,7 +79,8 @@ op = bempp.api.operators.boundary.laplace.single_layer(space, space, space)
 # In[5]:
 
 
-sol, _, iteration_count = bempp.api.linalg.gmres(op, rhs, use_strong_form=True, return_iteration_count=True)
+sol, _, iteration_count = bempp.api.linalg.gmres(
+    op, rhs, use_strong_form=True, return_iteration_count=True)
 
 print("Number of iterations: {0}".format(iteration_count))
 
@@ -88,6 +90,5 @@ print("Number of iterations: {0}".format(iteration_count))
 # In[6]:
 
 
-normalized_capacity = 1./ ( 4 * np.pi) * sol.integrate()[0]
+normalized_capacity = 1. / (4 * np.pi) * sol.integrate()[0]
 print("The normalized capacity is {0}.".format(normalized_capacity))
-

@@ -6,12 +6,12 @@
 # ### Background
 
 # In this tutorial, we will solve a simple Laplace problem inside the unit sphere with Dirichlet boundary conditions. Let $\Omega$ be the unit sphere with boundary $\Gamma$. Let $\nu$ be the outward pointing normal on $\Gamma$. The PDE and boundary conditions are given by
-# 
+#
 # \begin{align}
 # \Delta u &= 0&&\text{in }\Omega,\\
 # u &= f&&\text{on }\Gamma.
 # \end{align}
-# 
+#
 # The boundary data is a source $\hat{u}$ located at the point $(0.9,0,0)$.
 # $$
 # \hat{u}(\mathbf x)=\frac{1}{4\pi\sqrt{(x-0.9)^2+y^2+z^2}}.
@@ -22,25 +22,25 @@
 # g(\mathbf x,\mathbf y) = \frac{1}{4\pi |\mathbf x-\mathbf y|}
 # $$
 # be the Green's function for Laplace in three dimensions. From Green's representation theorem, it follows that every harmonic function $u$ in $\Omega$ satisfies
-# 
+#
 # $$
 # u(\mathbf x) = \int_{\Gamma} g(\mathbf x,\mathbf y)\frac{\partial u(\mathbf y)}{\partial \nu(\mathbf{y})}\mathrm{d}\mathbf y-\int_{\Gamma}\frac{\partial g(\mathbf x,\mathbf y)}{\partial \nu(\mathbf{y})}u(\mathbf y)\mathrm{d}\mathbf y,~\mathbf x\in\Omega\setminus\Gamma
 # $$
-# 
+#
 # or equivalantly
-# 
+#
 # $$
 # u(\mathbf x) = \left[\mathcal{V}\frac{\partial u(\mathbf y)}{\partial \nu(\mathbf{y})}\right] (\mathbf{x}) - \left[\mathcal{K}u\right] (\mathbf{x}),~\mathbf x\in\Omega\setminus\Gamma,
 # $$
-# 
+#
 # where $\mathcal{V}$ and $\mathcal{K}$ are the <a href='https://bempp.com/2017/07/11/available_operators/'>single and double layer potential operators</a>.
-# 
+#
 # Taking the limit $\mathbf x\rightarrow \Gamma$ we obtain the boundary integral equation
-# 
+#
 # $$
 # \left[\mathsf{V}\frac{\partial u}{\partial n}\right] (\mathbf x)=\left[(\tfrac12\mathsf{Id}+\mathsf{K})u\right] (\mathbf x),~\mathbf x\in\Gamma.
 # $$
-# 
+#
 # Here, $\mathsf{V}$ and $\mathsf{K}$ are the <a href='https://bempp.com/2017/07/11/available_operators/'>single and double layer boundary operators</a>.
 
 # ### Implementation
@@ -91,8 +91,9 @@ slp = bempp.api.operators.boundary.laplace.single_layer(
 
 @bempp.api.real_callable
 def dirichlet_data(x, n, domain_index, result):
-    result[0] = 1./(4 * np.pi * ((x[0] - .9)**2 + x[1]**2 + x[2]**2)**(0.5))
-    
+    result[0] = 1. / (4 * np.pi * ((x[0] - .9)**2 + x[1]**2 + x[2]**2)**(0.5))
+
+
 dirichlet_fun = bempp.api.GridFunction(p1_space, fun=dirichlet_data)
 
 
@@ -118,7 +119,7 @@ neumann_fun, info = bempp.api.linalg.cg(slp, rhs, tol=1E-3)
 
 
 n_grid_points = 150
-plot_grid = np.mgrid[-1:1:n_grid_points*1j, -1:1:n_grid_points*1j]
+plot_grid = np.mgrid[-1:1:n_grid_points * 1j, -1:1:n_grid_points * 1j]
 points = np.vstack((plot_grid[0].ravel(),
                     plot_grid[1].ravel(),
                     np.zeros(plot_grid[0].size)))
@@ -145,9 +146,9 @@ u_evaluated = slp_pot * neumann_fun - dlp_pot * dirichlet_fun
 #get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Filter out solution values that are associated with points outside the unit circle.
-u_evaluated = u_evaluated.reshape((n_grid_points,n_grid_points))
+u_evaluated = u_evaluated.reshape((n_grid_points, n_grid_points))
 radius = np.sqrt(plot_grid[0]**2 + plot_grid[1]**2)
-u_evaluated[radius>1] = np.nan
+u_evaluated[radius > 1] = np.nan
 
 # Plot the image
 import matplotlib
@@ -155,7 +156,7 @@ matplotlib.rcParams['figure.figsize'] = (5.0, 4.0)
 
 from matplotlib import pylab as plt
 
-plt.imshow(np.log(np.abs(u_evaluated.T)), extent=(-1,1,-1,1))
+plt.imshow(np.log(np.abs(u_evaluated.T)), extent=(-1, 1, -1, 1))
 plt.title('Computed solution')
 plt.colorbar()
 plt.show()

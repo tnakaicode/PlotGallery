@@ -106,7 +106,8 @@ grids = [bempp.api.shapes.sphere(r=radius, origin=(c, 0, 0), h=0.1)
 
 
 frequency = 300E6 # 300Mhz
-frequency = 100E9 # 100Ghz
+frequency = 10E6 # 10Mhz
+#frequency = 100E9 # 100Ghz
 
 vacuum_permittivity = 8.854187817E-12
 vacuum_permeability = 4 * np.pi * 1E-7

@@ -165,8 +165,14 @@ neumann_grid_fun = bempp.api.GridFunction(
     fun=neumann_data,
     dual_space=dirichlet_space_neumann_segment)
 
+print(0.5*id_DD)
+print(0.5*id_DD+dlp_DD)
+print(0.5*id_DD*dirichlet_grid_fun)
+print(slp_DN)
+print(neumann_grid_fun)
+#print(slp_DN*neumann_grid_fun)
 rhs_fun1 = (.5 * id_DD + dlp_DD) * dirichlet_grid_fun - \
-    slp_DN * neumann_grid_fun
+    slp_DD * neumann_grid_fun
 rhs_fun2 = - hyp_ND * dirichlet_grid_fun + \
     (.5 * id_NN - adlp_NN) * neumann_grid_fun
 
