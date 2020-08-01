@@ -1,0 +1,115 @@
+from sympy.physics.quantum.spin import Jminus, Jx, Jz, J2, J2Op, JzKet, JzKetCoupled, Rotation, WignerD, couple, uncouple
+from sympy.physics.quantum import Dagger, hbar, qapply, represent, TensorProduct
+from sympy import factor, pi, S, Sum, symbols
+
+jz = JzKet(1,1); jz
+
+represent(jz)
+
+ip = Dagger(jz) * jz; ip
+
+ip.doit()
+
+Jz * jz
+
+qapply(Jz * jz)
+
+Jminus * jz
+
+qapply(Jminus * jz)
+
+j, m = symbols('j m')
+jz = JzKet(j, m); jz
+
+J2 * jz
+
+qapply(J2 * jz)
+
+represent(Jz, j=1)
+
+jz = JzKet(1, 1)
+jz.rewrite("Jx")
+
+represent(jz, basis=Jx)
+
+Jx * jz
+
+qapply(Jx * jz)
+
+jz = JzKet(j, m)
+jz.rewrite("Jx")
+
+a, b, g = symbols('alpha beta gamma')
+Rotation(a, b, g)
+
+mp = symbols('mp')
+r = Rotation.D(j, m, mp, a, b, g); r
+
+r = Rotation.D(1, 1, 0, pi, pi/2, 0); r
+
+r.doit()
+
+r = Rotation.d(j, m, mp, b); r
+
+r = Rotation.d(1, 1, 0, pi/2); r
+
+r.doit()
+
+WignerD(j, m, mp, a, b, g)
+
+jzc = JzKetCoupled(1, 0, (1, 1)); jzc
+
+jzc.hilbert_space
+
+represent(jzc)
+
+jzc = JzKetCoupled(1, 1, (S(1)/2, S(1)/2, 1)); jzc
+
+qapply(Jz * jzc)
+
+jzu = TensorProduct(JzKet(1, 1), JzKet(S(1)/2, -S(1)/2)); jzu
+
+represent(jzu)
+
+jzopu = TensorProduct(Jz, 1); jzopu
+
+qapply(jzopu * jzu)
+
+qapply(Jz * jzu)
+
+jzu.rewrite("Jx")
+
+jzu = TensorProduct(JzKet(1, 1), JzKet(S(1)/2, -S(1)/2))
+couple(jzu)
+
+jzc = JzKetCoupled(2, 1, (1, S(1)/2, S(1)/2))
+uncouple(jzc)
+
+jzc.rewrite("Jz", coupled=False)
+
+jz = JzKet(2, 1)
+uncouple(jz, (1, S(1)/2, S(1)/2))
+
+l, ml = symbols('l m_l')
+orbit = JzKet(l, ml); orbit
+
+ms = symbols('m_s')
+spin = JzKet(S(1)/2, ms); spin
+
+state = TensorProduct(orbit, spin); state
+
+L2 = J2Op('L')
+S2 = J2Op('S')
+
+hso = J2 - TensorProduct(L2, 1) - TensorProduct(1, S2); hso
+
+apply1 = qapply(hso * state); apply1
+
+apply2 = qapply(couple(apply1)); apply2
+
+subs = []
+for sum_term in apply2.atoms(Sum):
+    subs.append((sum_term, sum_term.function))
+    limits = sum_term.limits
+final = Sum(factor(apply2.subs(subs)), limits)
+final

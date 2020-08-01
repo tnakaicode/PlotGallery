@@ -1,0 +1,40 @@
+from sympy import symbols
+from sympy.core.trace import Tr
+from sympy.matrices.matrices import Matrix
+from IPython.core.display import display_pretty
+from sympy.printing.latex import *
+
+%load_ext sympyprinting
+
+a, b, c, d = symbols('a b c d'); 
+A, B = symbols('A B', commutative=False)
+t = Tr(A*B)
+
+t
+
+latex(t)
+
+display_pretty(t)
+
+t = Tr ( Matrix([ [2,3], [3,4] ]))
+
+t
+
+from sympy.physics.quantum.density import Density
+from sympy.physics.quantum.spin import (
+    Jx, Jy, Jz, Jplus, Jminus, J2,
+    JxBra, JyBra, JzBra,
+    JxKet, JyKet, JzKet,
+)
+
+d = Density([JzKet(1,1),0.5],[JzKet(1,-1),0.5]); d
+
+t = Tr(d)
+
+t
+
+latex(t)
+
+t.doit()
+
+

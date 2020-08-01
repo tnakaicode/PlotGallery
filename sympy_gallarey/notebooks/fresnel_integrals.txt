@@ -1,0 +1,42 @@
+%pylab inline
+
+from sympy import Symbol, fresnels, fresnelc, oo, I, re, im, series, Rational, sin, cos, exp, plot
+from sympy.plotting import plot, plot_parametric
+from matplotlib.pyplot import figsize
+
+x = Symbol("x")
+
+plot(fresnels(x), fresnelc(x), (x, 0, 8))
+
+figsize(8,8)
+plot_parametric(fresnelc(x), fresnels(x))
+
+ltc = series(fresnelc(x), x, n=2).removeO()
+lts = series(fresnels(x), x, n=4).removeO()
+
+lts, ltc
+
+figsize(4,4)
+plot(fresnels(x), lts, (x, 0, 1))
+plot(fresnelc(x), ltc, (x, 0, 1))
+
+# Series expansion at infinity is not implemented yet
+#ats = series(fresnels(x), x, oo)
+#atc = series(fresnelc(x), x, oo)
+
+# However we can use the well known values
+ats = Rational(1,2) - cos(pi*x**2/2)/(pi*x)
+atc = Rational(1,2) + sin(pi*x**2/2)/(pi*x)
+
+figsize(4,4)
+plot(fresnels(x), ats, (x, 6, 8))
+plot(fresnelc(x), atc, (x, 6, 8))
+Another nice example of a parametric plot
+alpha = Symbol("alpha")
+r = 3.0
+circ = r*exp(1.0j*alpha)
+
+figsize(8,8)
+plot_parametric(re(fresnelc(circ)), im(fresnelc(circ)), (alpha, 0, 2*pi))
+
+

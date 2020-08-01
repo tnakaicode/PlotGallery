@@ -1,0 +1,134 @@
+%load_ext sympy.interactive.ipythonprinting 
+from sympy import *
+from IPython.display import display_pretty
+from sympy.physics.quantum import *
+from sympy.physics.quantum.sho1d import *
+from sympy.physics.quantum.tests.test_sho1d import *
+
+ad = RaisingOp('a')
+a = LoweringOp('a')
+
+ad
+
+a
+
+print latex(ad)
+print latex(a)
+
+display_pretty(ad)
+display_pretty(a)
+
+print srepr(ad)
+print srepr(a)
+
+print repr(ad)
+print repr(a)
+
+k = SHOKet('k')
+b = SHOBra('b')
+
+k
+
+b
+
+print pretty(k)
+print pretty(b)
+
+print latex(k)
+print latex(b)
+
+print srepr(k)
+print srepr(b)
+
+Dagger(ad)
+
+Dagger(a)
+
+Commutator(ad,a).doit()
+
+Commutator(a,ad).doit()
+
+k.dual
+
+b.dual
+
+InnerProduct(b,k).doit()
+
+qapply(ad*k)
+
+qapply(a*k)
+
+kg = SHOKet(0)
+kf = SHOKet(1)
+
+qapply(ad*kg)
+
+qapply(ad*kf)
+
+qapply(a*kg)
+
+qapply(a*kf)
+
+k = SHOKet('k')
+ad = RaisingOp('a')
+a = LoweringOp('a')
+N = NumberOp('N')
+H = Hamiltonian('H')
+
+N().rewrite('a').doit()
+
+N().rewrite('xp').doit()
+
+N().rewrite('H').doit()
+
+H().rewrite('a').doit()
+
+H().rewrite('xp').doit()
+
+H().rewrite('N').doit()
+
+ad().rewrite('xp').doit()
+
+a().rewrite('xp').doit()
+
+qapply(N*k)
+
+ks = SHOKet(2)
+qapply(N*ks)
+
+qapply(H*k)
+
+Commutator(N,ad).doit()
+
+Commutator(N,a).doit()
+
+Commutator(N,H).doit()
+
+represent(ad, basis=N, ndim=4, format='sympy')
+
+represent(ad, basis=N, ndim=5, format='numpy')
+
+represent(ad, basis=N, ndim=4, format='scipy.sparse', spmatrix='lil')
+
+print represent(ad, basis=N, ndim=4, format='scipy.sparse', spmatrix='lil')
+
+represent(a, basis=N, ndim=4, format='sympy')
+
+represent(N, basis=N, ndim=4, format='sympy')
+
+represent(H, basis=N, ndim=4, format='sympy')
+
+k0 = SHOKet(0)
+k1 = SHOKet(1)
+b0 = SHOBra(0)
+b1 = SHOBra(1)
+
+print represent(k0, basis=N, ndim=5, format='sympy')
+
+print represent(k1, basis=N, ndim=5, format='sympy')
+
+print represent(b0, basis=N, ndim=5, format='sympy')
+
+print represent(b1, basis=N, ndim=5, format='sympy')
+
+
