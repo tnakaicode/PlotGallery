@@ -1,16 +1,27 @@
 {
     "dae": {
-        "dat":[
+        "dat": [
             "dae11",
-            "dae51"
+            "dae51",
+            "geminism"
         ]
     },
     "naca": {
-        "dat":[
+        "dat": [
             "naca0006",
             "naca0008",
             "naca001034a08cli0.2",
             "naca747a315"
+        ]
+    },
+    "naca6-a": {
+        "dat": [
+            "naca63a210",
+            "naca64a010",
+            "naca64a210",
+            "naca64a410",
+            "naca66-018",
+            "naca632a015"
         ]
     }
 }

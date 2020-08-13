@@ -43,16 +43,15 @@ if __name__ == '__main__':
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--name", dest="name", default="dae")
+    parser.add_option("--name", dest="name", default="dae51")
     opt, argc = parser.parse_args(argvs)
     print(opt, argc)
 
     obj = plot2d(aspect="equal")
     cfg = json.load(open("./cfg.json", "r"))
-    name = opt.name
-    for dat_name in cfg[name]["dat"]:
-        data = uiuc_database(dat_name)
-        print(dat_name, data.shape)
-        obj.axs.plot(data[:, 0], data[:, 1], label=dat_name)
-    plt.legend(loc='lower right', bbox_to_anchor=(1.0, -2.0))
-    obj.SavePng("./uiuc_dat/{}.png".format(name))
+    dat_name = opt.name
+    data = uiuc_database(dat_name)
+    print(dat_name, data.shape)
+    obj.axs.plot(data[:, 0], data[:, 1])
+    obj.axs.set_title(dat_name)
+    obj.SavePng("./uiuc_dat/{}.png".format(dat_name))
