@@ -24,7 +24,7 @@ pio.renderers.default = "notebook_connected"
 # In[3]:
 
 
-churi.plot(interactive=True, use_3d=True)
+#churi.plot(interactive=True, use_3d=True)
 
 
 # In[4]:
