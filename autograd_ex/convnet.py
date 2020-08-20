@@ -12,8 +12,10 @@ import data_mnist
 
 convolve = autograd.scipy.signal.convolve
 
+
 class WeightsParser(object):
     """A helper class to index into a parameter vector."""
+
     def __init__(self):
         self.idxs_and_shapes = {}
         self.N = 0
@@ -27,6 +29,7 @@ class WeightsParser(object):
         idxs, shape = self.idxs_and_shapes[name]
         return np.reshape(vect[idxs], shape)
 
+
 def make_batches(N_total, N_batch):
     start = 0
     batches = []
@@ -35,9 +38,11 @@ def make_batches(N_total, N_batch):
         start += N_batch
     return batches
 
+
 def logsumexp(X, axis, keepdims=False):
     max_X = np.max(X)
     return max_X + np.log(np.sum(np.exp(X - max_X), axis=axis, keepdims=keepdims))
+
 
 def make_nn_funs(input_shape, layer_specs, L2_reg):
     parser = WeightsParser()
@@ -65,6 +70,7 @@ def make_nn_funs(input_shape, layer_specs, L2_reg):
 
     return parser.N, predictions, loss, frac_err
 
+
 class conv_layer(object):
     def __init__(self, kernel_shape, num_filters):
         self.kernel_shape = kernel_shape
@@ -76,21 +82,23 @@ class conv_layer(object):
         # Output dimensions: [data, color_out, y, x]
         params = self.parser.get(param_vector, 'params')
         biases = self.parser.get(param_vector, 'biases')
-        conv = convolve(inputs, params, axes=([2, 3], [2, 3]), dot_axes = ([1], [0]), mode='valid')
+        conv = convolve(inputs, params, axes=(
+            [2, 3], [2, 3]), dot_axes=([1], [0]), mode='valid')
         return conv + biases
 
     def build_weights_dict(self, input_shape):
         # Input shape : [color, y, x] (don't need to know number of data yet)
         self.parser = WeightsParser()
         self.parser.add_weights('params', (input_shape[0], self.num_filters)
-                                          + self.kernel_shape)
+                                + self.kernel_shape)
         self.parser.add_weights('biases', (1, self.num_filters, 1, 1))
         output_shape = (self.num_filters,) + \
-                       self.conv_output_shape(input_shape[1:], self.kernel_shape)
+            self.conv_output_shape(input_shape[1:], self.kernel_shape)
         return self.parser.N, output_shape
 
     def conv_output_shape(self, A, B):
         return (A[0] - B[0] + 1, A[1] - B[1] + 1)
+
 
 class maxpool_layer(object):
     def __init__(self, pool_shape):
@@ -114,6 +122,7 @@ class maxpool_layer(object):
         result = inputs.reshape(new_shape)
         return np.max(np.max(result, axis=3), axis=4)
 
+
 class full_layer(object):
     def __init__(self, size):
         self.size = size
@@ -130,16 +139,20 @@ class full_layer(object):
         params = self.parser.get(param_vector, 'params')
         biases = self.parser.get(param_vector, 'biases')
         if inputs.ndim > 2:
-            inputs = inputs.reshape((inputs.shape[0], np.prod(inputs.shape[1:])))
+            inputs = inputs.reshape(
+                (inputs.shape[0], np.prod(inputs.shape[1:])))
         return self.nonlinearity(np.dot(inputs[:, :], params) + biases)
+
 
 class tanh_layer(full_layer):
     def nonlinearity(self, x):
         return np.tanh(x)
 
+
 class softmax_layer(full_layer):
     def nonlinearity(self, x):
         return x - logsumexp(x, axis=1, keepdims=True)
+
 
 if __name__ == '__main__':
     # Network parameters
@@ -162,17 +175,22 @@ if __name__ == '__main__':
 
     # Load and process MNIST data
     print("Loading training data...")
-    add_color_channel = lambda x : x.reshape((x.shape[0], 1, x.shape[1], x.shape[2]))
-    one_hot = lambda x, K : np.array(x[:,None] == np.arange(K)[None, :], dtype=int)
+
+    def add_color_channel(x): return x.reshape(
+        (x.shape[0], 1, x.shape[1], x.shape[2]))
+
+    def one_hot(x, K): return np.array(
+        x[:, None] == np.arange(K)[None, :], dtype=int)
     train_images, train_labels, test_images, test_labels = data_mnist.mnist()
     train_images = add_color_channel(train_images) / 255.0
-    test_images  = add_color_channel(test_images)  / 255.0
+    test_images = add_color_channel(test_images) / 255.0
     train_labels = one_hot(train_labels, 10)
     test_labels = one_hot(test_labels, 10)
     N_data = train_images.shape[0]
 
     # Make neural net functions
-    N_weights, pred_fun, loss_fun, frac_err = make_nn_funs(input_shape, layer_specs, L2_reg)
+    N_weights, pred_fun, loss_fun, frac_err = make_nn_funs(
+        input_shape, layer_specs, L2_reg)
     loss_grad = grad(loss_fun)
 
     # Initialize weights
@@ -183,8 +201,9 @@ if __name__ == '__main__':
     # quick_grad_check(loss_fun, W, (train_images[:50], train_labels[:50]))
 
     print("    Epoch      |    Train err  |   Test error  ")
+
     def print_perf(epoch, W):
-        test_perf  = frac_err(W, test_images, test_labels)
+        test_perf = frac_err(W, test_images, test_labels)
         train_perf = frac_err(W, train_images, train_labels)
         print("{0:15}|{1:15}|{2:15}".format(epoch, train_perf, test_perf))
 

@@ -13,7 +13,7 @@ from autograd.scipy.special import logsumexp
 
 from autograd.misc.optimizers import adam
 from rnn import string_to_one_hot, one_hot_to_string,\
-                build_dataset, sigmoid, concat_and_multiply
+    build_dataset, sigmoid, concat_and_multiply
 
 
 def init_lstm_params(input_size, state_size, output_size,
@@ -21,37 +21,41 @@ def init_lstm_params(input_size, state_size, output_size,
     def rp(*shape):
         return rs.randn(*shape) * param_scale
 
-    return {'init cells':   rp(1, state_size),
+    return {'init cells': rp(1, state_size),
             'init hiddens': rp(1, state_size),
-            'change':       rp(input_size + state_size + 1, state_size),
-            'forget':       rp(input_size + state_size + 1, state_size),
-            'ingate':       rp(input_size + state_size + 1, state_size),
-            'outgate':      rp(input_size + state_size + 1, state_size),
-            'predict':      rp(state_size + 1, output_size)}
+            'change': rp(input_size + state_size + 1, state_size),
+            'forget': rp(input_size + state_size + 1, state_size),
+            'ingate': rp(input_size + state_size + 1, state_size),
+            'outgate': rp(input_size + state_size + 1, state_size),
+            'predict': rp(state_size + 1, output_size)}
+
 
 def lstm_predict(params, inputs):
     def update_lstm(input, hiddens, cells):
-        change  = np.tanh(concat_and_multiply(params['change'], input, hiddens))
-        forget  = sigmoid(concat_and_multiply(params['forget'], input, hiddens))
-        ingate  = sigmoid(concat_and_multiply(params['ingate'], input, hiddens))
-        outgate = sigmoid(concat_and_multiply(params['outgate'], input, hiddens))
-        cells   = cells * forget + ingate * change
+        change = np.tanh(concat_and_multiply(params['change'], input, hiddens))
+        forget = sigmoid(concat_and_multiply(params['forget'], input, hiddens))
+        ingate = sigmoid(concat_and_multiply(params['ingate'], input, hiddens))
+        outgate = sigmoid(concat_and_multiply(
+            params['outgate'], input, hiddens))
+        cells = cells * forget + ingate * change
         hiddens = outgate * np.tanh(cells)
         return hiddens, cells
 
     def hiddens_to_output_probs(hiddens):
         output = concat_and_multiply(params['predict'], hiddens)
-        return output - logsumexp(output, axis=1, keepdims=True) # Normalize log-probs.
+        # Normalize log-probs.
+        return output - logsumexp(output, axis=1, keepdims=True)
 
     num_sequences = inputs.shape[1]
     hiddens = np.repeat(params['init hiddens'], num_sequences, axis=0)
-    cells   = np.repeat(params['init cells'],   num_sequences, axis=0)
+    cells = np.repeat(params['init cells'], num_sequences, axis=0)
 
     output = [hiddens_to_output_probs(hiddens)]
     for input in inputs:  # Iterate over time steps.
         hiddens, cells = update_lstm(input, hiddens, cells)
         output.append(hiddens_to_output_probs(hiddens))
     return output
+
 
 def lstm_log_likelihood(params, inputs, targets):
     logprobs = lstm_predict(params, inputs)
@@ -77,8 +81,8 @@ if __name__ == '__main__':
         print("Training text                         Predicted text")
         logprobs = np.asarray(lstm_predict(weights, train_inputs))
         for t in range(logprobs.shape[1]):
-            training_text  = one_hot_to_string(train_inputs[:,t,:])
-            predicted_text = one_hot_to_string(logprobs[:,t,:])
+            training_text = one_hot_to_string(train_inputs[:, t, :])
+            predicted_text = one_hot_to_string(logprobs[:, t, :])
             print(training_text.replace('\n', ' ') + "|" +
                   predicted_text.replace('\n', ' '))
 

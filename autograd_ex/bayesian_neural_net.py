@@ -13,14 +13,14 @@ def make_nn_funs(layer_sizes, L2_reg, noise_variance, nonlinearity=np.tanh):
     """These functions implement a standard multi-layer perceptron,
     vectorized over both training examples and weight samples."""
     shapes = list(zip(layer_sizes[:-1], layer_sizes[1:]))
-    num_weights = sum((m+1)*n for m, n in shapes)
+    num_weights = sum((m + 1) * n for m, n in shapes)
 
     def unpack_layers(weights):
         num_weight_sets = len(weights)
         for m, n in shapes:
-            yield weights[:, :m*n]     .reshape((num_weight_sets, m, n)),\
-                  weights[:, m*n:m*n+n].reshape((num_weight_sets, 1, n))
-            weights = weights[:, (m+1)*n:]
+            yield weights[:, :m * n]     .reshape((num_weight_sets, m, n)),\
+                weights[:, m * n:m * n + n].reshape((num_weight_sets, 1, n))
+            weights = weights[:, (m + 1) * n:]
 
     def predictions(weights, inputs):
         """weights is shape (num_weight_samples x num_weights)
@@ -43,11 +43,11 @@ def make_nn_funs(layer_sizes, L2_reg, noise_variance, nonlinearity=np.tanh):
 def build_toy_dataset(n_data=40, noise_std=0.1):
     D = 1
     rs = npr.RandomState(0)
-    inputs  = np.concatenate([np.linspace(0, 2, num=n_data/2),
-                              np.linspace(6, 8, num=n_data/2)])
+    inputs = np.concatenate([np.linspace(0, 2, num=int(n_data / 2)),
+                             np.linspace(6, 8, num=int(n_data / 2))])
     targets = np.cos(inputs) + rs.randn(n_data) * noise_std
     inputs = (inputs - 4.0) / 4.0
-    inputs  = inputs.reshape((len(inputs), D))
+    inputs = inputs.reshape((len(inputs), D))
     targets = targets.reshape((len(targets), D))
     return inputs, targets
 
@@ -55,14 +55,14 @@ def build_toy_dataset(n_data=40, noise_std=0.1):
 if __name__ == '__main__':
 
     # Specify inference problem by its unnormalized log-posterior.
-    rbf = lambda x: np.exp(-x**2)
-    relu = lambda x: np.maximum(x, 0.)
+    def rbf(x): return np.exp(-x**2)
+    def relu(x): return np.maximum(x, 0.)
     num_weights, predictions, logprob = \
         make_nn_funs(layer_sizes=[1, 20, 20, 1], L2_reg=0.1,
                      noise_variance=0.01, nonlinearity=rbf)
 
     inputs, targets = build_toy_dataset()
-    log_posterior = lambda weights, t: logprob(weights, inputs, targets)
+    def log_posterior(weights, t): return logprob(weights, inputs, targets)
 
     # Build variational objective.
     objective, gradient, unpack_params = \
@@ -74,7 +74,6 @@ if __name__ == '__main__':
     ax = fig.add_subplot(111, frameon=False)
     plt.ion()
     plt.show(block=False)
-
 
     def callback(params, t, g):
         print("Iteration {} lower bound {}".format(t, -objective(params, t)))
@@ -93,11 +92,11 @@ if __name__ == '__main__':
         ax.plot(plot_inputs, outputs[:, :, 0].T)
         ax.set_ylim([-2, 3])
         plt.draw()
-        plt.pause(1.0/60.0)
+        plt.pause(1.0 / 60.0)
 
     # Initialize variational parameters
     rs = npr.RandomState(0)
-    init_mean    = rs.randn(num_weights)
+    init_mean = rs.randn(num_weights)
     init_log_std = -5 * np.ones(num_weights)
     init_var_params = np.concatenate([init_mean, init_log_std])
 

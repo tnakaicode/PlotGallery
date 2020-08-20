@@ -192,3 +192,4 @@ ax.set_ylabel(r'$\mu_l \, \cos b$ [{0}]'.format(
     (u.mas / u.yr).to_string('latex_inline')))
 
 ax.legend()
+plt.show()

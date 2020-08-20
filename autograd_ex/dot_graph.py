@@ -23,18 +23,22 @@ class GraphNode(Node):
     def __repr__(self):
         return 'node_{}'.format(id(self))
 
+
 def trace_graph(f, x):
     start_node = GraphNode.new_root(x)
     _, node = trace(start_node, f, x)
     return node
+
 
 dot_edge = '{} -> {} [color=gray30];\n'.format
 dot_function_node = '{} [label="{}", shape=box, color=lightblue, style=filled];\n'.format
 dot_variable_node = '{} [label="{}", color=orange, style=filled];\n'.format
 dot_graph = 'digraph G {{{}}}'.format
 
+
 def graph_to_dotfile(graph):
     visited = set()
+
     def node_to_fragment(node):
         visited.add(node)
         if node.isroot:
@@ -57,6 +61,7 @@ def graph_to_dotfile(graph):
     dot_body += dot_variable_node('output', 'output')
     dot_body += dot_edge(graph, 'output')
     return dot_graph(dot_body)
+
 
 if __name__ == '__main__':
     def fun(x):

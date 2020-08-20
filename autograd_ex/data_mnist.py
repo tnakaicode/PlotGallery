@@ -10,12 +10,14 @@ import array
 import numpy as np
 from urllib.request import urlretrieve
 
+
 def download(url, filename):
     if not os.path.exists('data'):
         os.makedirs('data')
     out_file = os.path.join('data', filename)
     if not os.path.isfile(out_file):
         urlretrieve(url, out_file)
+
 
 def mnist():
     base_url = 'http://yann.lecun.com/exdb/mnist/'
@@ -38,7 +40,7 @@ def mnist():
 
     train_images = parse_images('data/train-images-idx3-ubyte.gz')
     train_labels = parse_labels('data/train-labels-idx1-ubyte.gz')
-    test_images  = parse_images('data/t10k-images-idx3-ubyte.gz')
-    test_labels  = parse_labels('data/t10k-labels-idx1-ubyte.gz')
+    test_images = parse_images('data/t10k-images-idx3-ubyte.gz')
+    test_labels = parse_labels('data/t10k-labels-idx1-ubyte.gz')
 
     return train_images, train_labels, test_images, test_labels

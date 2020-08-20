@@ -5,12 +5,15 @@ import autograd.numpy as np
 from autograd import grad
 from autograd.test_util import check_grads
 
+
 def sigmoid(x):
-    return 0.5*(np.tanh(x) + 1)
+    return 0.5 * (np.tanh(x) + 1)
+
 
 def logistic_predictions(weights, inputs):
     # Outputs probability of a label being true according to logistic model.
     return sigmoid(np.dot(inputs, weights))
+
 
 def training_loss(weights):
     # Training loss is the negative log-likelihood of the training labels.
@@ -18,8 +21,9 @@ def training_loss(weights):
     label_probabilities = preds * targets + (1 - preds) * (1 - targets)
     return -np.sum(np.log(label_probabilities))
 
+
 # Build a toy dataset.
-inputs = np.array([[0.52, 1.12,  0.77],
+inputs = np.array([[0.52, 1.12, 0.77],
                    [0.88, -1.08, 0.15],
                    [0.52, 0.06, -1.30],
                    [0.74, -2.49, 1.39]])

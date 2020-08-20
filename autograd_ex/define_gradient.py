@@ -26,6 +26,7 @@ def logsumexp(x):
 # on both the input to the original function (x), and the output of the
 # original function (ans).
 
+
 def logsumexp_vjp(ans, x):
     # If you want to be able to take higher-order derivatives, then all the
     # code inside this function must be itself differentiable by Autograd.
@@ -36,6 +37,7 @@ def logsumexp_vjp(ans, x):
     # garbage-collect `x` if there are no references to it elsewhere.
     x_shape = x.shape
     return lambda g: np.full(x_shape, g) * np.exp(x - np.full(x_shape, ans))
+
 
 # Now we tell Autograd that logsumexmp has a gradient-making function.
 defvjp(logsumexp, logsumexp_vjp)

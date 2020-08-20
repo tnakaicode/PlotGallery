@@ -107,4 +107,4 @@ with open('large.fits', 'rb+') as fobj:
 ##############################################################################
 # Finally, we'll remove the file we created:
 
-os.remove('large.fits')
+#os.remove('large.fits')

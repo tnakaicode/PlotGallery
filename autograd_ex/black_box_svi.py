@@ -21,9 +21,10 @@ def black_box_variational_inference(logprob, D, num_samples):
         return mean, log_std
 
     def gaussian_entropy(log_std):
-        return 0.5 * D * (1.0 + np.log(2*np.pi)) + np.sum(log_std)
+        return 0.5 * D * (1.0 + np.log(2 * np.pi)) + np.sum(log_std)
 
     rs = npr.RandomState(0)
+
     def variational_objective(params, t):
         """Provides a stochastic estimate of the variational lower bound."""
         mean, log_std = unpack_params(params)
@@ -36,11 +37,11 @@ def black_box_variational_inference(logprob, D, num_samples):
     return variational_objective, gradient, unpack_params
 
 
-
 if __name__ == '__main__':
 
     # Specify an inference problem by its unnormalized log-density.
     D = 2
+
     def log_density(x, t):
         mu, log_sigma = x[:, 0], x[:, 1]
         sigma_density = norm.logpdf(log_sigma, 0, 1.35)
@@ -56,14 +57,15 @@ if __name__ == '__main__':
         x = np.linspace(*xlimits, num=numticks)
         y = np.linspace(*ylimits, num=numticks)
         X, Y = np.meshgrid(x, y)
-        zs = func(np.concatenate([np.atleast_2d(X.ravel()), np.atleast_2d(Y.ravel())]).T)
+        zs = func(np.concatenate(
+            [np.atleast_2d(X.ravel()), np.atleast_2d(Y.ravel())]).T)
         Z = zs.reshape(X.shape)
         plt.contour(X, Y, Z)
         ax.set_yticks([])
         ax.set_xticks([])
 
     # Set up figure.
-    fig = plt.figure(figsize=(8,8), facecolor='white')
+    fig = plt.figure(figsize=(8, 8), facecolor='white')
     ax = fig.add_subplot(111, frameon=False)
     plt.ion()
     plt.show(block=False)
@@ -72,17 +74,20 @@ if __name__ == '__main__':
         print("Iteration {} lower bound {}".format(t, -objective(params, t)))
 
         plt.cla()
-        target_distribution = lambda x : np.exp(log_density(x, t))
+        def target_distribution(x): return np.exp(log_density(x, t))
         plot_isocontours(ax, target_distribution)
 
         mean, log_std = unpack_params(params)
-        variational_contour = lambda x: mvn.pdf(x, mean, np.diag(np.exp(2*log_std)))
+
+        def variational_contour(x): return mvn.pdf(
+            x, mean, np.diag(np.exp(2 * log_std)))
         plot_isocontours(ax, variational_contour)
         plt.draw()
-        plt.pause(1.0/30.0)
+        plt.pause(1.0 / 30.0)
 
     print("Optimizing variational parameters...")
-    init_mean    = -1 * np.ones(D)
+    init_mean = -1 * np.ones(D)
     init_log_std = -5 * np.ones(D)
     init_var_params = np.concatenate([init_mean, init_log_std])
-    variational_params = adam(gradient, init_var_params, step_size=0.1, num_iters=2000, callback=callback)
+    variational_params = adam(
+        gradient, init_var_params, step_size=0.1, num_iters=2000, callback=callback)

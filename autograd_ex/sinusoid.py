@@ -5,11 +5,13 @@ import autograd.numpy as np
 import matplotlib.pyplot as plt
 from autograd import grad
 
+
 def fun(x):
     return np.sin(x)
 
+
 d_fun = grad(fun)    # First derivative
-dd_fun = grad(d_fun) # Second derivative
+dd_fun = grad(d_fun)  # Second derivative
 
 x = np.linspace(-10, 10, 100)
 plt.plot(x, list(map(fun, x)), x, list(map(d_fun, x)), x, list(map(dd_fun, x)))
@@ -21,6 +23,8 @@ plt.savefig("sinusoid.png")
 plt.clf()
 
 # Taylor approximation to sin function
+
+
 def fun(x):
     currterm = x
     ans = currterm
@@ -28,9 +32,11 @@ def fun(x):
         print(i, end=' ')
         currterm = - currterm * x ** 2 / ((2 * i + 3) * (2 * i + 2))
         ans = ans + currterm
-        if np.abs(currterm) < 0.2: break # (Very generous tolerance!)
+        if np.abs(currterm) < 0.2:
+            break  # (Very generous tolerance!)
 
     return ans
+
 
 d_fun = grad(fun)
 dd_fun = grad(d_fun)

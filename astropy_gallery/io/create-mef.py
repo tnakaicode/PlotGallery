@@ -49,4 +49,4 @@ new_hdul.writeto('test.fits', overwrite=True)
 ##############################################################################
 # Finally, we'll remove the file we created:
 
-os.remove('test.fits')
+#os.remove('test.fits')

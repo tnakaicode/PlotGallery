@@ -16,7 +16,8 @@ from autograd.misc.optimizers import adam
 ### Helper functions #################
 
 def sigmoid(x):
-    return 0.5*(np.tanh(x) + 1.0)   # Output ranges from 0 to 1.
+    return 0.5 * (np.tanh(x) + 1.0)   # Output ranges from 0 to 1.
+
 
 def concat_and_multiply(weights, *args):
     cat_state = np.hstack(args + (np.ones((args[0].shape[0], 1)),))
@@ -28,8 +29,9 @@ def concat_and_multiply(weights, *args):
 def create_rnn_params(input_size, state_size, output_size,
                       param_scale=0.01, rs=npr.RandomState(0)):
     return {'init hiddens': rs.randn(1, state_size) * param_scale,
-            'change':       rs.randn(input_size + state_size + 1, state_size) * param_scale,
-            'predict':      rs.randn(state_size + 1, output_size) * param_scale}
+            'change': rs.randn(input_size + state_size + 1, state_size) * param_scale,
+            'predict': rs.randn(state_size + 1, output_size) * param_scale}
+
 
 def rnn_predict(params, inputs):
     def update_rnn(input, hiddens):
@@ -37,7 +39,8 @@ def rnn_predict(params, inputs):
 
     def hiddens_to_output_probs(hiddens):
         output = concat_and_multiply(params['predict'], hiddens)
-        return output - logsumexp(output, axis=1, keepdims=True)     # Normalize log-probs.
+        # Normalize log-probs.
+        return output - logsumexp(output, axis=1, keepdims=True)
 
     num_sequences = inputs.shape[1]
     hiddens = np.repeat(params['init hiddens'], num_sequences, axis=0)
@@ -47,6 +50,7 @@ def rnn_predict(params, inputs):
         hiddens = update_rnn(input, hiddens)
         output.append(hiddens_to_output_probs(hiddens))
     return output
+
 
 def rnn_log_likelihood(params, inputs, targets):
     logprobs = rnn_predict(params, inputs)
@@ -62,17 +66,20 @@ def rnn_log_likelihood(params, inputs, targets):
 def string_to_one_hot(string, maxchar):
     """Converts an ASCII string to a one-of-k encoding."""
     ascii = np.array([ord(c) for c in string]).T
-    return np.array(ascii[:,None] == np.arange(maxchar)[None, :], dtype=int)
+    return np.array(ascii[:, None] == np.arange(maxchar)[None, :], dtype=int)
+
 
 def one_hot_to_string(one_hot_matrix):
     return "".join([chr(np.argmax(c)) for c in one_hot_matrix])
+
 
 def build_dataset(filename, sequence_length, alphabet_size, max_lines=-1):
     """Loads a text file, and turns each line into an encoded sequence."""
     with open(filename) as f:
         content = f.readlines()
     content = content[:max_lines]
-    content = [line for line in content if len(line) > 2]   # Remove blank lines
+    content = [line for line in content if len(
+        line) > 2]   # Remove blank lines
     seqs = np.zeros((sequence_length, len(content), alphabet_size))
     for ix, line in enumerate(content):
         padded_line = (line + " " * sequence_length)[:sequence_length]
@@ -95,8 +102,8 @@ if __name__ == '__main__':
         print("Training text                         Predicted text")
         logprobs = np.asarray(rnn_predict(weights, train_inputs))
         for t in range(logprobs.shape[1]):
-            training_text  = one_hot_to_string(train_inputs[:,t,:])
-            predicted_text = one_hot_to_string(logprobs[:,t,:])
+            training_text = one_hot_to_string(train_inputs[:, t, :])
+            predicted_text = one_hot_to_string(logprobs[:, t, :])
             print(training_text.replace('\n', ' ') + "|" +
                   predicted_text.replace('\n', ' '))
 

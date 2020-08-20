@@ -5,6 +5,7 @@ from __future__ import print_function
 import autograd.numpy as np  # autograd has already wrapped numpy for us
 from autograd.tracer import trace, Node
 
+
 class PrintNode(Node):
     def __init__(self, value, fun, args, kwargs, parent_argnums, parents):
         self.varname_generator = parents[0].varname_generator
@@ -20,21 +21,27 @@ class PrintNode(Node):
         self.varname = next(self.varname_generator)
         print('{} = {}'.format(self.varname, x))
 
+
 def make_varname_generator():
     for i in range(65, 91):
         yield chr(i)
     raise Exception("Ran out of alphabet!")
+
 
 def print_trace(f, x):
     start_node = PrintNode.new_root(x)
     trace(start_node, f, x)
     print()
 
+
 def avg(x, y):
     return (x + y) / 2
+
+
 def fun(x):
     y = np.sin(x + x)
     return avg(y, y)
+
 
 print_trace(fun, 1.23)
 
