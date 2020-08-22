@@ -206,3 +206,4 @@ ax.plot([-1, 1], [-1, -1], 'k-', linewidth=4)
 
 fig.colorbar(im, ax=ax)
 _ = ax.set_title("Squared Electric Field Density")
+plt.savefig("./maxwell_screen.png")
