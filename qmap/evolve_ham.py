@@ -44,7 +44,6 @@ ax1, ax2, ax3 = hsm_axes(fig)
 ax = [ax1, ax2, ax3]
 
 plt.ion()
-plt.show()
 
 for t in range(10):
     vec = sum(np.exp(s * evals[i] * t) * coeff[i]
@@ -67,6 +66,4 @@ for t in range(10):
 
     fig.suptitle("%d-th iteration" % (t))
     fig.canvas.draw()
-    _ = input("press enter to the next:")
-    for a in ax:
-        a.cla()
+fig.savefig("./evolve_ham.png")

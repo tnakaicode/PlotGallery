@@ -97,7 +97,6 @@ ax1, ax2, ax3 = hsm_axes(fig)
 ax = [ax1, ax2, ax3]
 
 plt.ion()
-plt.show()
 
 vec = init_vec.copy()
 for t in range(10):
@@ -131,9 +130,6 @@ for t in range(10):
 
     fig.suptitle("%d-th iteration" % t)
     fig.canvas.draw()
-    _ = input("press enter to the next:")
-
-    for a in ax:
-        a.cla()
 
     vec = Usol.TVevolve(T, V, vec)
+fig.savefig("./bch_evolve.png")

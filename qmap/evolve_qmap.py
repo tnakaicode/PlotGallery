@@ -23,7 +23,6 @@ ax1, ax2, ax3 = hsm_axes(fig)
 ax = [ax1, ax2, ax3]
 
 plt.ion()
-plt.show()
 
 x = np.linspace(domain[0, 0], domain[0, 1], 100)
 y = np.linspace(domain[1, 0], domain[1, 1], 100)
@@ -51,7 +50,5 @@ for t in range(10):
 
     fig.suptitle("%d-th iteration" % (t))
     fig.canvas.draw()
-    _ = input("press enter to the next:")
-    for a in ax:
-        a.cla()
     vec = Usol.TVevolve(T, V, vec)
+plt.savefig("./evolve_qmap.png")

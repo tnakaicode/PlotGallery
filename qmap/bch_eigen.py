@@ -92,7 +92,6 @@ ax1, ax2, ax3 = hsm_axes(fig)
 ax = [ax1, ax2, ax3]
 
 plt.ion()
-plt.show()
 for i in range(dim):
     evec = uevecs[i]
     bchvec = bchevecs[i]
@@ -118,7 +117,4 @@ for i in range(dim):
     norm = evec.inner(bchvec).abs2()
     fig.suptitle(
         r"%d-th eigenstate, $|\langle \Psi_n|J_n^{(bch)}\rangle|^2$=%f" % (i, norm))
-    fig.canvas.draw()
-    _ = input("press enter to the next:")
-    for a in ax:
-        a.cla()
+fig.savefig("./bch_eigen.png")

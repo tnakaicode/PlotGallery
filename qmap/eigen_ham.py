@@ -30,7 +30,6 @@ ax = [ax1, ax2, ax3]
 
 
 plt.ion()
-plt.show()
 
 x = np.linspace(domain[0, 0], domain[0, 1], 100)
 y = np.linspace(domain[1, 0], domain[1, 1], 100)
@@ -57,7 +56,4 @@ for i in range(dim):
     ax[2].set_xlim(1e-30, 1)
 
     fig.suptitle("%d-th eigenstate, E_n=%f" % (i, evals[i]))
-    fig.canvas.draw()
-    _ = input()
-    for a in ax:
-        a.cla()
+fig.savefig("./eigen_ham.png")
