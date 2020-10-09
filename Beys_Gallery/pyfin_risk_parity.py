@@ -1,11 +1,15 @@
-# -*- coding: utf-8 -*-
-#%% NumPyの読み込み
 import numpy as np
-#   NumPyのLinalgモジュールの読み込み
+import cvxpy as cvx
+import pandas as pd
 import numpy.linalg as lin
-#   SciPyのoptimizeモジュールの読み込み
 import scipy.optimize as opt
-#%% リスク寄与度の平準化によるポートフォリオ選択
+import scipy.stats as st
+import matplotlib.pyplot as plt
+import numpy.polynomial.polynomial as pol
+from matplotlib.font_manager import FontProperties
+import sys
+
+# リスク寄与度の平準化によるポートフォリオ選択
 Mu = np.array([1.0, 3.0, 1.5, 6.0, 4.5])
 Stdev = np.array([5.0, 10.0, 7.5, 15.0, 11.0])
 CorrMatrix = np.array([[1.00, 0.25, 0.18, 0.10, 0.25],
@@ -16,10 +20,15 @@ CorrMatrix = np.array([[1.00, 0.25, 0.18, 0.10, 0.25],
 Sigma = np.diag(Stdev).dot(CorrMatrix).dot(np.diag(Stdev))
 iota = np.ones(Mu.shape)
 inv_Sigma = lin.inv(Sigma)
-Weight_1N = np.tile(1.0/Mu.shape[0], Mu.shape[0])
+Weight_1N = np.tile(1.0 / Mu.shape[0], Mu.shape[0])
 Weight_MV = inv_Sigma.dot(iota) / iota.dot(inv_Sigma).dot(iota)
 Weight_MD = inv_Sigma.dot(Stdev) / iota.dot(inv_Sigma).dot(Stdev)
-F = lambda v, Sigma: np.r_[Sigma.dot(v[:-1])-v[-1]/v[:-1], v[:-1].sum()-1.0]
+
+
+def F(v, Sigma): return np.r_[Sigma.dot(
+    v[:-1]) - v[-1] / v[:-1], v[:-1].sum() - 1.0]
+
+
 Weight_RP = opt.root(F, np.r_[Weight_1N, 0.0], args=Sigma).x[:-1]
 np.set_printoptions(formatter={'float': '{:7.2f}'.format})
-print(np.c_[Weight_1N, Weight_MV, Weight_RP, Weight_MD]*100)
+print(np.c_[Weight_1N, Weight_MV, Weight_RP, Weight_MD] * 100)

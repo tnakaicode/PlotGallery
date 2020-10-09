@@ -1,9 +1,14 @@
-# -*- coding: utf-8 -*-
-#%% NumPyの読み込み
 import numpy as np
-#   SciPyのstatsモジュールの読み込み
+import cvxpy as cvx
+import pandas as pd
+import numpy.linalg as lin
+import scipy.optimize as opt
 import scipy.stats as st
-#%% Black-Scholeの公式によるヨーロピアン・コールオプション価格の計算
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
+import sys
+
+# Black-Scholeの公式によるヨーロピアン・コールオプション価格の計算
 S = 100.0
 K = 100.0
 r = 0.01
