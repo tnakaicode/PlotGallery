@@ -23,7 +23,7 @@ def update_polygon(tri):
     polygon.set_xy(np.column_stack([xs, ys]))
 
 
-def motion_notify(event):
+def on_mouse_move(event):
     if event.inaxes is None:
         tri = -1
     else:
@@ -41,8 +41,8 @@ radii = np.linspace(min_radius, 0.95, n_radii)
 angles = np.linspace(0, 2 * np.pi, n_angles, endpoint=False)
 angles = np.repeat(angles[..., np.newaxis], n_radii, axis=1)
 angles[:, 1::2] += np.pi / n_angles
-x = (radii * np.cos(angles)).flatten()
-y = (radii * np.sin(angles)).flatten()
+x = (radii*np.cos(angles)).flatten()
+y = (radii*np.sin(angles)).flatten()
 triang = Triangulation(x, y)
 triang.set_mask(np.hypot(x[triang.triangles].mean(axis=1),
                          y[triang.triangles].mean(axis=1))
@@ -54,8 +54,8 @@ trifinder = triang.get_trifinder()
 # Setup plot and callbacks.
 plt.subplot(111, aspect='equal')
 plt.triplot(triang, 'bo-')
-polygon = Polygon([[0, 0], [0, 0]], facecolor='y')  # dummy data for xs,ys
+polygon = Polygon([[0, 0], [0, 0]], facecolor='y')  # dummy data for (xs, ys)
 update_polygon(-1)
 plt.gca().add_patch(polygon)
-plt.gcf().canvas.mpl_connect('motion_notify_event', motion_notify)
+plt.gcf().canvas.mpl_connect('motion_notify_event', on_mouse_move)
 plt.show()

@@ -11,13 +11,11 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, PathPatch
 from matplotlib.text import TextPath
 from matplotlib.transforms import Affine2D
-# This import registers the 3D projection, but is otherwise unused.
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 import mpl_toolkits.mplot3d.art3d as art3d
 
 
 def text3d(ax, xyz, s, zdir="z", size=None, angle=0, usetex=False, **kwargs):
-    '''
+    """
     Plots the string 's' on the axes 'ax', with position 'xyz', size 'size',
     and rotation angle 'angle'.  'zdir' gives the axis which is to be treated
     as the third dimension.  usetex is a boolean indicating whether the string
@@ -25,7 +23,7 @@ def text3d(ax, xyz, s, zdir="z", size=None, angle=0, usetex=False, **kwargs):
     are passed on to transform_path.
 
     Note: zdir affects the interpretation of xyz.
-    '''
+    """
     x, y, z = xyz
     if zdir == "y":
         xy1, z1 = (x, z), y

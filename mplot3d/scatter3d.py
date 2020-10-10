@@ -1,13 +1,10 @@
-'''
+"""
 ==============
 3D scatterplot
 ==============
 
 Demonstration of a basic scatterplot in 3D.
-'''
-
-# This import registers the 3D projection, but is otherwise unused.
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,10 +14,10 @@ np.random.seed(19680801)
 
 
 def randrange(n, vmin, vmax):
-    '''
+    """
     Helper function to make an array of random numbers having shape (n, )
     with each number distributed Uniform(vmin, vmax).
-    '''
+    """
     return (vmax - vmin)*np.random.rand(n) + vmin
 
 fig = plt.figure()

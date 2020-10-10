@@ -4,7 +4,7 @@ Anchored Artists
 ================
 
 This example illustrates the use of the anchored objects without the
-helper classes found in the :ref:`toolkit_axesgrid1-index`. This version
+helper classes found in :mod:`mpl_toolkits.axes_grid1`. This version
 of the figure is similar to the one found in
 :doc:`/gallery/axes_grid1/simple_anchored_artists`, but it is
 implemented using only the matplotlib namespace, without the help
@@ -12,7 +12,8 @@ of additional toolkits.
 """
 
 from matplotlib import pyplot as plt
-from matplotlib.patches import Rectangle, Ellipse
+from matplotlib.lines import Line2D
+from matplotlib.patches import Ellipse
 from matplotlib.offsetbox import (
     AnchoredOffsetbox, AuxTransformBox, DrawingArea, TextArea, VPacker)
 
@@ -91,7 +92,7 @@ class AnchoredSizeBar(AnchoredOffsetbox):
         sep in points.
         """
         self.size_bar = AuxTransformBox(transform)
-        self.size_bar.add_artist(Rectangle((0, 0), size, 0, ec="black", lw=1.0))
+        self.size_bar.add_artist(Line2D([0, size], [0, 0], color="black"))
 
         self.txt_label = TextArea(label, minimumdescent=False)
 

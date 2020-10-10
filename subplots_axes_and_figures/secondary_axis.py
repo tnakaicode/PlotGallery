@@ -3,10 +3,10 @@
 Secondary Axis
 ==============
 
-Sometimes we want as secondary axis on a plot, for instance to convert
+Sometimes we want a secondary axis on a plot, for instance to convert
 radians to degrees on the same plot.  We can do this by making a child
-axes with only one axis visible via `.Axes.axes.secondary_xaxis` and
-`.Axes.axes.secondary_yaxis`.  This secondary axis can have a different scale
+axes with only one axis visible via `.axes.Axes.secondary_xaxis` and
+`.axes.Axes.secondary_yaxis`.  This secondary axis can have a different scale
 than the main axis by providing both a forward and an inverse conversion
 function in a tuple to the ``functions`` kwarg:
 """
@@ -15,9 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import datetime
 import matplotlib.dates as mdates
-from matplotlib.transforms import Transform
-from matplotlib.ticker import (
-    AutoLocator, AutoMinorLocator)
+from matplotlib.ticker import AutoMinorLocator
 
 fig, ax = plt.subplots(constrained_layout=True)
 x = np.arange(0, 360, 1)
@@ -34,6 +32,7 @@ def deg2rad(x):
 
 def rad2deg(x):
     return x * 180 / np.pi
+
 
 secax = ax.secondary_xaxis('top', functions=(deg2rad, rad2deg))
 secax.set_xlabel('angle [rad]')
@@ -65,6 +64,7 @@ def forward(x):
 def inverse(x):
     return 1 / x
 
+
 secax = ax.secondary_xaxis('top', functions=(forward, inverse))
 secax.set_xlabel('period [s]')
 plt.show()
@@ -81,7 +81,7 @@ ydata = np.random.randn(len(xdata))
 ax.plot(xdata, ydata, label='Plotted data')
 
 xold = np.arange(0, 11, 0.2)
-# fake data set relating x co-ordinate to another data-derived co-ordinate.
+# fake data set relating x coordinate to another data-derived coordinate.
 # xnew must be monotonic, so we sort...
 xnew = np.sort(10 * np.exp(-xold / 4) + np.random.randn(len(xold)) / 3)
 
@@ -97,6 +97,7 @@ def forward(x):
 def inverse(x):
     return np.interp(x, xnew, xold)
 
+
 secax = ax.secondary_xaxis('top', functions=(forward, inverse))
 secax.xaxis.set_minor_locator(AutoMinorLocator())
 secax.set_xlabel('$X_{other}$')
@@ -105,12 +106,13 @@ plt.show()
 
 ###########################################################################
 # A final example translates np.datetime64 to yearday on the x axis and
-# from Celsius to Farenheit on the y axis:
-
+# from Celsius to Fahrenheit on the y axis.  Note the addition of a
+# third y axis, and that it can be placed using a float for the
+# location argument
 
 dates = [datetime.datetime(2018, 1, 1) + datetime.timedelta(hours=k * 6)
-            for k in range(240)]
-temperature = np.random.randn(len(dates))
+         for k in range(240)]
+temperature = np.random.randn(len(dates)) * 4 + 6.7
 fig, ax = plt.subplots(constrained_layout=True)
 
 ax.plot(dates, temperature)
@@ -119,33 +121,47 @@ plt.xticks(rotation=70)
 
 
 def date2yday(x):
-    """
-    x is in matplotlib datenums, so they are floats.
-    """
+    """Convert matplotlib datenum to days since 2018-01-01."""
     y = x - mdates.date2num(datetime.datetime(2018, 1, 1))
     return y
 
 
 def yday2date(x):
-    """
-    return a matplotlib datenum (x is days since start of year)
-    """
+    """Return a matplotlib datenum for *x* days after 2018-01-01."""
     y = x + mdates.date2num(datetime.datetime(2018, 1, 1))
     return y
 
-secaxx = ax.secondary_xaxis('top', functions=(date2yday, yday2date))
-secaxx.set_xlabel('yday [2018]')
+
+secax_x = ax.secondary_xaxis('top', functions=(date2yday, yday2date))
+secax_x.set_xlabel('yday [2018]')
 
 
-def CtoF(x):
+def celsius_to_fahrenheit(x):
     return x * 1.8 + 32
 
 
-def FtoC(x):
+def fahrenheit_to_celsius(x):
     return (x - 32) / 1.8
 
-secaxy = ax.secondary_yaxis('right', functions=(CtoF, FtoC))
-secaxy.set_ylabel(r'$T\ [^oF]$')
+
+secax_y = ax.secondary_yaxis(
+    'right', functions=(celsius_to_fahrenheit, fahrenheit_to_celsius))
+secax_y.set_ylabel(r'$T\ [^oF]$')
+
+
+def celsius_to_anomaly(x):
+    return (x - np.mean(temperature))
+
+
+def anomaly_to_celsius(x):
+    return (x + np.mean(temperature))
+
+
+# use of a float for the position:
+secax_y2 = ax.secondary_yaxis(
+    1.2, functions=(celsius_to_anomaly, anomaly_to_celsius))
+secax_y2.set_ylabel(r'$T - \overline{T}\ [^oC]$')
+
 
 plt.show()
 

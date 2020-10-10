@@ -9,7 +9,7 @@ see :doc:`/tutorials/text/mathtext`.
 import numpy as np
 import matplotlib.pyplot as plt
 t = np.arange(0.0, 2.0, 0.01)
-s = np.sin(2 * np.pi * t)
+s = np.sin(2*np.pi*t)
 
 plt.plot(t, s)
 plt.title(r'$\alpha_i > \beta_i$', fontsize=20)

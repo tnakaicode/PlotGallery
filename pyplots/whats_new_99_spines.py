@@ -1,7 +1,7 @@
 """
-=====================
-Whats New 0.99 Spines
-=====================
+======================
+What's New 0.99 Spines
+======================
 
 """
 import matplotlib.pyplot as plt
@@ -28,11 +28,10 @@ def adjust_spines(ax, spines):
         # no xaxis ticks
         ax.xaxis.set_ticks([])
 
-
 fig = plt.figure()
 
-x = np.linspace(0, 2 * np.pi, 100)
-y = 2 * np.sin(x)
+x = np.linspace(0, 2*np.pi, 100)
+y = 2*np.sin(x)
 
 ax = fig.add_subplot(2, 2, 1)
 ax.plot(x, y)

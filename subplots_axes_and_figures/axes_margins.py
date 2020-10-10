@@ -1,7 +1,7 @@
 """
-=====================================================================
-Zooming in and out using Axes.margins and the subject of "stickiness"
-=====================================================================
+======================================================
+Controlling view limits using margins and sticky_edges
+======================================================
 
 The first figure in this example shows how to zoom in and out of a
 plot using `~.Axes.margins` instead of `~.Axes.set_xlim` and
@@ -62,7 +62,7 @@ fig, (ax1, ax2) = plt.subplots(ncols=2)
 ax2.use_sticky_edges = False
 
 for ax, status in zip((ax1, ax2), ('Is', 'Is Not')):
-    cells = ax.pcolor(x, y, x+y, cmap='inferno')  # sticky
+    cells = ax.pcolor(x, y, x+y, cmap='inferno', shading='auto')  # sticky
     ax.add_patch(
         plt.Polygon(poly_coords, color='forestgreen', alpha=0.5)
     )  # not sticky

@@ -40,11 +40,11 @@ import matplotlib.transforms as transforms
 
 def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     """
-    Create a plot of the covariance confidence ellipse of `x` and `y`
+    Create a plot of the covariance confidence ellipse of *x* and *y*.
 
     Parameters
     ----------
-    x, y : array_like, shape (n, )
+    x, y : array-like, shape (n, )
         Input data.
 
     ax : matplotlib.axes.Axes
@@ -53,28 +53,24 @@ def confidence_ellipse(x, y, ax, n_std=3.0, facecolor='none', **kwargs):
     n_std : float
         The number of standard deviations to determine the ellipse's radiuses.
 
+    **kwargs
+        Forwarded to `~matplotlib.patches.Ellipse`
+
     Returns
     -------
     matplotlib.patches.Ellipse
-
-    Other parameters
-    ----------------
-    kwargs : `~matplotlib.patches.Patch` properties
     """
     if x.size != y.size:
         raise ValueError("x and y must be the same size")
 
     cov = np.cov(x, y)
-    pearson = cov[0, 1] / np.sqrt(cov[0, 0] * cov[1, 1])
+    pearson = cov[0, 1]/np.sqrt(cov[0, 0] * cov[1, 1])
     # Using a special case to obtain the eigenvalues of this
     # two-dimensionl dataset.
     ell_radius_x = np.sqrt(1 + pearson)
     ell_radius_y = np.sqrt(1 - pearson)
-    ellipse = Ellipse((0, 0),
-                      width=ell_radius_x * 2,
-                      height=ell_radius_y * 2,
-                      facecolor=facecolor,
-                      **kwargs)
+    ellipse = Ellipse((0, 0), width=ell_radius_x * 2, height=ell_radius_y * 2,
+                      facecolor=facecolor, **kwargs)
 
     # Calculating the stdandard deviation of x from
     # the squareroot of the variance and multiplying
@@ -128,12 +124,12 @@ def get_correlated_dataset(n, dependency, mu, scale):
 np.random.seed(0)
 
 PARAMETERS = {
-    'Positive correlation': np.array([[0.85, 0.35],
-                                      [0.15, -0.65]]),
-    'Negative correlation': np.array([[0.9, -0.4],
-                                      [0.1, -0.6]]),
-    'Weak correlation': np.array([[1, 0],
-                                  [0, 1]]),
+    'Positive correlation': [[0.85, 0.35],
+                             [0.15, -0.65]],
+    'Negative correlation': [[0.9, -0.4],
+                             [0.1, -0.6]],
+    'Weak correlation': [[1, 0],
+                         [0, 1]],
 }
 
 mu = 2, 4
@@ -164,10 +160,8 @@ plt.show()
 
 fig, ax_nstd = plt.subplots(figsize=(6, 6))
 
-dependency_nstd = np.array([
-    [0.8, 0.75],
-    [-0.2, 0.35]
-])
+dependency_nstd = [[0.8, 0.75],
+                   [-0.2, 0.35]]
 mu = 0, 0
 scale = 8, 5
 
@@ -199,10 +193,8 @@ plt.show()
 # to have the ellipse rendered in different ways.
 
 fig, ax_kwargs = plt.subplots(figsize=(6, 6))
-dependency_kwargs = np.array([
-    [-0.8, 0.5],
-    [-0.2, 0.5]
-])
+dependency_kwargs = [[-0.8, 0.5],
+                     [-0.2, 0.5]]
 mu = 2, -3
 scale = 6, 5
 
@@ -217,7 +209,7 @@ confidence_ellipse(x, y, ax_kwargs,
 
 ax_kwargs.scatter(x, y, s=0.5)
 ax_kwargs.scatter(mu[0], mu[1], c='red', s=3)
-ax_kwargs.set_title(f'Using kwargs')
+ax_kwargs.set_title('Using kwargs')
 
 fig.subplots_adjust(hspace=0.25)
 plt.show()

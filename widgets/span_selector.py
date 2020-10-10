@@ -6,30 +6,6 @@ Span Selector
 The SpanSelector is a mouse widget to select a xmin/xmax range and plot the
 detail view of the selected region in the lower axes
 """
-
-"""
-Widgets class list
-class LockDraw(object):
-class Widget(object):
-class AxesWidget(Widget):
-class Button(AxesWidget):
-class Slider(AxesWidget):
-class CheckButtons(AxesWidget):
-class TextBox(AxesWidget):
-class RadioButtons(AxesWidget):
-class SubplotTool(Widget):
-class Cursor(AxesWidget):
-class MultiCursor(Widget):
-class _SelectorWidget(AxesWidget):
-class SpanSelector(_SelectorWidget):
-class ToolHandles(object):
-class RectangleSelector(_SelectorWidget):
-class EllipseSelector(RectangleSelector):
-class LassoSelector(_SelectorWidget):
-class PolygonSelector(_SelectorWidget):
-class Lasso(AxesWidget):
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import SpanSelector
@@ -40,11 +16,10 @@ np.random.seed(19680801)
 fig, (ax1, ax2) = plt.subplots(2, figsize=(8, 6))
 ax1.set(facecolor='#FFFFCC')
 
-x = np.arange(0.0, 1.0, 0.001) * 2.5 * np.pi
-y = np.sin(x) + 0.1 * np.random.randn(len(x))
+x = np.arange(0.0, 5.0, 0.01)
+y = np.sin(2*np.pi*x) + 0.5*np.random.randn(len(x))
 
 ax1.plot(x, y, '-')
-ax1.plot(x, np.sin(x))
 ax1.set_ylim(-2, 2)
 ax1.set_title('Press left mouse button and drag to test')
 

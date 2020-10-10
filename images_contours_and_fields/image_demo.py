@@ -6,7 +6,7 @@ Image Demo
 Many ways to plot images in Matplotlib.
 
 The most common way to plot images in Matplotlib is with
-:meth:`~.axes.Axes.imshow`. The following examples demonstrate much of the
+`~.axes.Axes.imshow`. The following examples demonstrate much of the
 functionality of imshow and the many images you can create.
 """
 
@@ -16,6 +16,10 @@ import matplotlib.pyplot as plt
 import matplotlib.cbook as cbook
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
+
+
+# Fixing random state for reproducibility
+np.random.seed(19680801)
 
 ###############################################################################
 # First we'll generate a simple bivariate normal distribution.
@@ -78,9 +82,9 @@ plt.show()
 # achieving the look you want. Below we'll display the same (small) array,
 # interpolated with three different interpolation methods.
 #
-# The center of the pixel at A[i,j] is plotted at i+0.5, i+0.5.  If you
-# are using interpolation='nearest', the region bounded by (i,j) and
-# (i+1,j+1) will have the same color.  If you are using interpolation,
+# The center of the pixel at A[i, j] is plotted at (i+0.5, i+0.5).  If you
+# are using interpolation='nearest', the region bounded by (i, j) and
+# (i+1, j+1) will have the same color.  If you are using interpolation,
 # the pixel center will have the same color as it does with nearest, but
 # other pixels will be interpolated between the neighboring pixels.
 #
@@ -129,7 +133,7 @@ plt.show()
 
 ###############################################################################
 # You can specify whether images should be plotted with the array origin
-# x[0,0] in the upper left or lower right by using the origin parameter.
+# x[0, 0] in the upper left or lower right by using the origin parameter.
 # You can also control the default setting image.origin in your
 # :ref:`matplotlibrc file <customizing-with-matplotlibrc-files>`. For more on
 # this topic see the :doc:`complete guide on origin and extent

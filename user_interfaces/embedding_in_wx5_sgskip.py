@@ -10,8 +10,9 @@ import wx.lib.agw.aui as aui
 import wx.lib.mixins.inspection as wit
 
 import matplotlib as mpl
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
+from matplotlib.backends.backend_wxagg import (
+    FigureCanvasWxAgg as FigureCanvas,
+    NavigationToolbar2WxAgg as NavigationToolbar)
 
 
 class Plot(wx.Panel):
@@ -56,7 +57,6 @@ def demo():
     axes2.plot([1, 2, 3, 4, 5], [2, 1, 4, 2, 3])
     frame.Show()
     app.MainLoop()
-
 
 if __name__ == "__main__":
     demo()

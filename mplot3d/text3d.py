@@ -1,4 +1,4 @@
-'''
+"""
 ======================
 Text annotations in 3D
 ======================
@@ -14,10 +14,7 @@ Functionality shown:
     - Using the text2D function to place text on a fixed position on the ax
       object.
 
-'''
-
-# This import registers the 3D projection, but is otherwise unused.
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+"""
 
 import matplotlib.pyplot as plt
 

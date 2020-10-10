@@ -19,9 +19,7 @@ slower = np.ma.masked_where(s > lower, s)
 smiddle = np.ma.masked_where((s < lower) | (s > upper), s)
 
 fig, ax = plt.subplots()
-ax.plot(t, smiddle)
-ax.plot(t, slower)
-ax.plot(t, supper)
+ax.plot(t, smiddle, t, slower, t, supper)
 plt.show()
 
 #############################################################################

@@ -5,8 +5,6 @@ Frontpage 3D example
 
 This example reproduces the frontpage 3D example.
 """
-# This import registers the 3D projection, but is otherwise unused.
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
 from matplotlib import cbook
 from matplotlib import cm
@@ -14,13 +12,12 @@ from matplotlib.colors import LightSource
 import matplotlib.pyplot as plt
 import numpy as np
 
-with cbook.get_sample_data('jacksboro_fault_dem.npz') as file, \
-     np.load(file) as dem:
-    z = dem['elevation']
-    nrows, ncols = z.shape
-    x = np.linspace(dem['xmin'], dem['xmax'], ncols)
-    y = np.linspace(dem['ymin'], dem['ymax'], nrows)
-    x, y = np.meshgrid(x, y)
+dem = cbook.get_sample_data('jacksboro_fault_dem.npz', np_load=True)
+z = dem['elevation']
+nrows, ncols = z.shape
+x = np.linspace(dem['xmin'], dem['xmax'], ncols)
+y = np.linspace(dem['ymin'], dem['ymax'], nrows)
+x, y = np.meshgrid(x, y)
 
 region = np.s_[5:50, 5:50]
 x, y, z = x[region], y[region], z[region]
