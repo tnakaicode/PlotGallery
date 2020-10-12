@@ -6,6 +6,12 @@ License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 # In[ ]:
 
 
+get_ipython().run_line_magic('matplotlib', 'notebook')
+
+
+# In[ ]:
+
+
 import numpy as np
 import scipy.linalg as spla
 import matplotlib.pyplot as plt
@@ -16,6 +22,8 @@ from pymor.core.config import config
 
 from pymor.core.logger import set_log_levels
 set_log_levels({'pymor.algorithms.gram_schmidt.gram_schmidt': 'WARNING'})
+
+set_defaults({'pymor.discretizers.builtin.gui.jupyter.get_visualizer.backend': 'not pythreejs'})
 
 
 # # Model

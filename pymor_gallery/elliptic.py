@@ -10,8 +10,9 @@ from pymor.discretizers.builtin import discretize_stationary_cg
 from pymor.analyticalproblems.functions import ExpressionFunction, LincombFunction
 from pymor.parameters.functionals import ProjectionParameterFunctional, ExpressionParameterFunctional
 from time import sleep
-import matplotlib.pyplot as plt
-#from ipywidgets import interact, widgets
+from ipywidgets import interact, widgets
+from pythreejs._example_helper import use_example_model_ids
+use_example_model_ids()
 
 
 # In[ ]:
@@ -38,7 +39,7 @@ problem = StationaryProblem(
 # In[ ]:
 
 
-args = {'N': 100, 'samples': 10}
+args = {'N': 100, 'samples': 1}
 m, data = discretize_stationary_cg(problem, diameter=1. / args['N'])
 U = m.solution_space.empty()
 for mu in problem.parameter_space.sample_uniformly(args['samples']):
@@ -49,5 +50,5 @@ for mu in problem.parameter_space.sample_uniformly(args['samples']):
 
 
 Us = U * 1.5
-plot = m.visualize((U, Us), title='Solution for diffusionl=0.5')
-plt.show()
+m.visualize((U, Us), title='Solution for diffusionl=0.5')
+

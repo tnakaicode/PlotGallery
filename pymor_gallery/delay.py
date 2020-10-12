@@ -61,7 +61,7 @@ fig, ax = plt.subplots()
 w = np.logspace(-1, 2.5, 500)
 td_lti.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the FOM')
-
+plt.show()
 
 
 # # Unstructured Hermite interpolation
@@ -92,7 +92,7 @@ fig, ax = plt.subplots()
 td_lti.mag_plot(w, ax=ax)
 rom.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the FOM and ROM')
-
+plt.show()
 
 
 # In[ ]:
@@ -101,7 +101,7 @@ ax.set_title('Magnitude plot of the FOM and ROM')
 fig, ax = plt.subplots()
 err_rom.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the error')
-
+plt.show()
 
 
 # # Delay-preserving reduction by Hermite interpolation
@@ -127,7 +127,7 @@ td_lti.mag_plot(w, ax=ax)
 rom.mag_plot(w, ax=ax)
 td_rom.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the FOM and ROMs')
-
+plt.show()
 
 
 # In[ ]:
@@ -137,5 +137,5 @@ fig, ax = plt.subplots()
 err_rom.mag_plot(w, ax=ax, color='tab:orange')
 err_td_rom.mag_plot(w, ax=ax, color='tab:green')
 ax.set_title('Magnitude plot of the errors')
-
 plt.show()
+

@@ -23,6 +23,12 @@
 # In[ ]:
 
 
+#get_ipython().run_line_magic('matplotlib', 'notebook')
+
+
+# In[ ]:
+
+
 import numpy as np
 import scipy.linalg as spla
 import scipy.integrate as spint
@@ -34,6 +40,8 @@ from pymor.reductors.h2 import OneSidedIRKAReductor
 
 from pymor.core.logger import set_log_levels
 set_log_levels({'pymor.algorithms.gram_schmidt.gram_schmidt': 'WARNING'})
+
+set_defaults({'pymor.discretizers.builtin.gui.jupyter.get_visualizer.backend': 'not pythreejs'})
 
 
 # ## Assemble LTIModel
@@ -84,7 +92,7 @@ poles = lti.poles()
 fig, ax = plt.subplots()
 ax.plot(poles.real, poles.imag, '.')
 ax.set_title('System poles')
-
+plt.show()
 
 
 # In[ ]:
@@ -94,7 +102,7 @@ w = np.logspace(-2, 3, 100)
 fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the full model')
-
+plt.show()
 
 
 # In[ ]:
@@ -104,7 +112,7 @@ hsv = lti.hsv()
 fig, ax = plt.subplots()
 ax.semilogy(range(1, len(hsv) + 1), hsv, '.-')
 ax.set_title('Hankel singular values')
-
+plt.show()
 
 
 # In[ ]:
@@ -143,7 +151,7 @@ poles = rom_bt.poles()
 fig, ax = plt.subplots()
 ax.plot(poles.real, poles.imag, '.')
 ax.set_title('Poles of the BT reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -153,7 +161,7 @@ fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 rom_bt.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and BT reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -162,7 +170,7 @@ ax.set_title('Magnitude plot of the full and BT reduced model')
 fig, ax = plt.subplots()
 err_bt.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the BT error system')
-
+plt.show()
 
 
 # ## LQG Balanced Truncation (LQGBT)
@@ -192,7 +200,7 @@ poles = rom_lqgbt.poles()
 fig, ax = plt.subplots()
 ax.plot(poles.real, poles.imag, '.')
 ax.set_title('Poles of the LQGBT reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -202,7 +210,7 @@ fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 rom_lqgbt.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and LQGBT reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -211,7 +219,7 @@ ax.set_title('Magnitude plot of the full and LQGBT reduced model')
 fig, ax = plt.subplots()
 err_lqgbt.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the LGQBT error system')
-
+plt.show()
 
 
 # ## Bounded Real Balanced Truncation (BRBT)
@@ -241,7 +249,7 @@ poles = rom_brbt.poles()
 fig, ax = plt.subplots()
 ax.plot(poles.real, poles.imag, '.')
 ax.set_title('Poles of the BRBT reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -251,7 +259,7 @@ fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 rom_brbt.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and BRBT reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -260,7 +268,7 @@ ax.set_title('Magnitude plot of the full and BRBT reduced model')
 fig, ax = plt.subplots()
 err_brbt.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the BRBT error system')
-
+plt.show()
 
 
 # ## Iterative Rational Krylov Algorithm (IRKA)
@@ -279,7 +287,7 @@ rom_irka = irka_reductor.reduce(r)
 fig, ax = plt.subplots()
 ax.semilogy(irka_reductor.conv_crit, '.-')
 ax.set_title('Distances between shifts in IRKA iterations')
-
+plt.show()
 
 
 # In[ ]:
@@ -299,7 +307,7 @@ poles = rom_irka.poles()
 fig, ax = plt.subplots()
 ax.plot(poles.real, poles.imag, '.')
 ax.set_title('Poles of the IRKA reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -309,7 +317,7 @@ fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 rom_irka.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and IRKA reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -318,7 +326,7 @@ ax.set_title('Magnitude plot of the full and IRKA reduced model')
 fig, ax = plt.subplots()
 err_irka.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the IRKA error system')
-
+plt.show()
 
 
 # ## Two-Sided Iteration Algorithm (TSIA)
@@ -337,7 +345,7 @@ rom_tsia = tsia_reductor.reduce(r)
 fig, ax = plt.subplots()
 ax.semilogy(tsia_reductor.conv_crit, '.-')
 ax.set_title('Distances between shifts in TSIA iterations')
-
+plt.show()
 
 
 # In[ ]:
@@ -357,7 +365,7 @@ poles = rom_tsia.poles()
 fig, ax = plt.subplots()
 ax.plot(poles.real, poles.imag, '.')
 ax.set_title('Poles of the TSIA reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -367,7 +375,7 @@ fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 rom_tsia.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and TSIA reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -376,7 +384,7 @@ ax.set_title('Magnitude plot of the full and TSIA reduced model')
 fig, ax = plt.subplots()
 err_tsia.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the TSIA error system')
-
+plt.show()
 
 
 # ## One-Sided IRKA
@@ -395,7 +403,7 @@ rom_one_sided_irka = one_sided_irka_reductor.reduce(r)
 fig, ax = plt.subplots()
 ax.semilogy(one_sided_irka_reductor.conv_crit, '.-')
 ax.set_title('Distances between shifts in one-sided IRKA iterations')
-
+plt.show()
 
 
 # In[ ]:
@@ -405,7 +413,7 @@ fig, ax = plt.subplots()
 osirka_poles = rom_one_sided_irka.poles()
 ax.plot(osirka_poles.real, osirka_poles.imag, '.')
 ax.set_title('Poles of the one-sided IRKA ROM')
-
+plt.show()
 
 
 # In[ ]:
@@ -425,7 +433,7 @@ fig, ax = plt.subplots()
 lti.mag_plot(w, ax=ax)
 rom_one_sided_irka.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and one-sided IRKA reduced model')
-
+plt.show()
 
 
 # In[ ]:
@@ -434,7 +442,7 @@ ax.set_title('Magnitude plot of the full and one-sided IRKA reduced model')
 fig, ax = plt.subplots()
 err_one_sided_irka.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the one-sided IRKA error system')
-
+plt.show()
 
 
 # ## Transfer Function IRKA (TF-IRKA)
@@ -531,7 +539,7 @@ tf_lti_diff = tf - lti
 fig, ax = plt.subplots()
 tf_lti_diff.mag_plot(w, ax=ax)
 ax.set_title('Distance between PDE and discretized transfer function')
-
+plt.show()
 
 
 # In[ ]:
@@ -563,7 +571,7 @@ fig, ax = plt.subplots()
 tfirka_poles = rom_tf_irka.poles()
 ax.plot(tfirka_poles.real, tfirka_poles.imag, '.')
 ax.set_title('Poles of the TF-IRKA ROM')
-
+plt.show()
 
 
 # Here we compute the $\mathcal{H}_2$-distance from the original PDE model to the TF-IRKA's reduced model and to the IRKA's reduced model.
@@ -581,4 +589,3 @@ print(f'TF-IRKA relative H_2-error = {err_tf_irka.h2_norm() / tf.h2_norm():e}')
 err_irka_tf = tf - rom_irka
 print(f'IRKA relative H_2-error (from TF) = {err_irka_tf.h2_norm() / tf.h2_norm():e}')
 
-plt.show()
