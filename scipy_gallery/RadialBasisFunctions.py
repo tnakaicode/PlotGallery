@@ -3,18 +3,16 @@
 
 # Using radial basis functions for smoothing/interpolation
 # ========================================================
-# 
+#
 # Radial basis functions can be used for smoothing/interpolating scattered
 # data in n-dimensions, but should be used with caution for extrapolation
 # outside of the observed data range.
-# 
+#
 # 1d example
 # ----------
-# 
+#
 # This example compares the usage of the Rbf and UnivariateSpline classes
 # from the scipy.interpolate module.
-
-# In[ ]:
 
 
 import numpy as np
@@ -49,17 +47,15 @@ plt.plot(xi, fi, 'g')
 plt.plot(xi, np.sin(xi), 'r')
 plt.title('Interpolation using RBF - multiquadrics')
 plt.tight_layout()
-plt.savefig('rbf1d.png')
+plt.savefig('RadialBasisFunctions_rbf1d.png')
 
 
 # ![](files/attachments/RadialBasisFunctions/rbf1dnew.png)
-# 
+#
 # 2d example
 # ==========
-# 
+#
 # This example shows how to interpolate scattered 2d data.
-
-# In[ ]:
 
 
 import numpy as np
@@ -71,9 +67,9 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 # 2-d tests - setup scattered data
-x = np.random.rand(100)*4.0-2.0
-y = np.random.rand(100)*4.0-2.0
-z = x*np.exp(-x**2-y**2)
+x = np.random.rand(100) * 4.0 - 2.0
+y = np.random.rand(100) * 4.0 - 2.0
+z = x * np.exp(-x**2 - y**2)
 ti = np.linspace(-2.0, 2.0, 100)
 XI, YI = np.meshgrid(ti, ti)
 
@@ -82,7 +78,7 @@ rbf = Rbf(x, y, z, epsilon=2)
 ZI = rbf(XI, YI)
 
 # plot the result
-n = plt.normalize(-2., 2.)
+#n = plt.color.normalize(-2., 2.)
 plt.subplot(1, 1, 1)
 plt.pcolor(XI, YI, ZI, cmap=cm.jet)
 plt.scatter(x, y, 100, z, cmap=cm.jet)
@@ -90,5 +86,4 @@ plt.title('RBF interpolation - multiquadrics')
 plt.xlim(-2, 2)
 plt.ylim(-2, 2)
 plt.colorbar()
-plt.savefig('rbf2d.png')
-
+plt.savefig('RadialBasisFunctions_rbf2d.png')

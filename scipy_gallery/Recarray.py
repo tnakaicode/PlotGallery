@@ -8,18 +8,17 @@
 # recarrays and structured arrays. Structured arrays are just ndarrays
 # with a complicated data type:
 
-# In[ ]:
+
 
 
 #!python numbers=disable
 from numpy import *
 ones(3, dtype=dtype([('foo', int), ('bar', float)]))
-Out[2]:
 array([(1, 1.0), (1, 1.0), (1, 1.0)],
       dtype=[('foo', '<i4'), ('bar', '<f8')])
 r = _
 r['foo']
-Out[4]: array([1, 1, 1])
+
 
 
 # recarray is a subclass of ndarray that just adds attribute access to
