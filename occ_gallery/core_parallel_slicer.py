@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-# Copyright 2009-2015 Jelle Feringa (jelleferinga@gmail.com)
+##Copyright 2009-2015 Jelle Feringa (jelleferinga@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import time
 import sys
@@ -30,7 +30,7 @@ from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
 
 from OCC.Display.SimpleGui import init_display
 
-from OCC.Extend.ShapeFactory import get_boundingbox
+from OCC.Extend.ShapeFactory import get_aligned_boundingbox
 
 
 def drange(start, stop, step):
@@ -38,7 +38,7 @@ def drange(start, stop, step):
     '''
     float_list = []
     r = start
-    while r < stop - step:
+    while r < stop-step:
         float_list.append(r)
         r += step
     return float_list
@@ -47,8 +47,7 @@ def drange(start, stop, step):
 def get_brep():
     cylinder_head = TopoDS_Shape()
     builder = BRep_Builder()
-    breptools_Read(
-        cylinder_head, '../assets/models/cylinder_head.brep', builder)
+    breptools_Read(cylinder_head, '../assets/models/cylinder_head.brep', builder)
     return cylinder_head
 
 
@@ -57,7 +56,7 @@ def vectorized_slicer(li):
     z_values, shape = li
     _slices = []
     for z in z_values:
-        # print 'slicing index:', z, 'sliced by process:', os.getpid()
+        #print 'slicing index:', z, 'sliced by process:', os.getpid()
         plane = gp_Pln(gp_Pnt(0., 0., z), gp_Dir(0., 0., 1.))
         face = BRepBuilderAPI_MakeFace(plane).Shape()
         # Computes Shape/Plane intersection
@@ -70,34 +69,34 @@ def vectorized_slicer(li):
 
 def run(n_procs, compare_by_number_of_processors=False):
     shape = get_brep()
-    x_min, y_min, z_min, x_max, y_max, z_max = get_boundingbox(shape)
-    z_delta = abs(z_min - z_max)
+    center, [dx, dy, dz], box_shp = get_aligned_boundingbox(shape)
+    z_min = center.Z() - dz / 2
+    z_max = center.Z() + dz / 2
 
     init_time = time.time()  # for total time computation
 
     def get_z_coords_for_n_procs(n_slices, n_procs):
-        z_slices = drange(z_min, z_max, z_delta / n_slices)
+        z_slices = drange(z_min, z_max, dz/n_slices)
 
         slices = []
         n = len(z_slices) // n_procs
         print('number of slices:', len(z_slices))
 
         _str_slices = []
-        for i in range(1, n_procs + 1):
+        for i in range(1, n_procs+1):
             if i == 1:
-                slices.append(z_slices[:i * n])
-                _str_slices.append(':' + str(i * n) + ' ')
+                slices.append(z_slices[:i*n])
+                _str_slices.append(':'+str(i*n)+' ')
             elif i == n_procs:
                 # does a little extra work if the number of slices
-                # isnt divisible by n_procs
-                slices.append(z_slices[(i - 1) * n:])
-                _str_slices.append(str((i - 1) * n) + ': ')
-                print('last slice', len(z_slices[(i - 1) * n:]))
+                # isn't divisible by n_procs
+                slices.append(z_slices[(i-1)*n:])
+                _str_slices.append(str((i-1)*n)+': ')
+                print('last slice', len(z_slices[(i-1)*n:]))
             else:
-                slices.append(z_slices[(i - 1) * n:i * n])
-                _str_slices.append(' %s:%s ' % ((i - 1) * n, i * n))
-        print('the z-index array is sliced over %s processors like this: \n %s' %
-              (n_procs, _str_slices))
+                slices.append(z_slices[(i-1)*n:i*n])
+                _str_slices.append(' %s:%s ' % ((i-1)*n, i*n))
+        print('the z-index array is sliced over %s processors like this: \n %s' % (n_procs, _str_slices))
         return slices
 
     def arguments(n_slices, n_procs):
@@ -120,13 +119,11 @@ def run(n_procs, compare_by_number_of_processors=False):
             tA = time.time()
             _results = []
             if i == 1:
-                _results = vectorized_slicer(
-                    [drange(z_min, z_max, z_delta / n_slice), shape])
+                _results = vectorized_slicer([drange(z_min, z_max, dz/n_slice), shape])
             else:
                 P = multiprocessing.Pool(n_procs)
                 _results = P.map(vectorized_slicer, arguments(n_slice, i))
-            print('slicing took %s seconds for %s processors' %
-                  (time.time() - tA, i))
+            print('slicing took %s seconds for %s processors' % (time.time() - tA, i))
         sys.exit()
 
     print('\n\n\n done slicing on %i cores \n\n\n' % nprocs)
@@ -142,10 +139,8 @@ def run(n_procs, compare_by_number_of_processors=False):
     # update viewer when all is added:
     display.Repaint()
     total_time = time.time() - init_time
-    print("%s necessary to perform slice with %s processor(s)." %
-          (total_time, n_procs))
+    print("%s necessary to perform slice with %s processor(s)." % (total_time, n_procs))
     start_display()
-
 
 if __name__ == '__main__':
     # use compare_by_number_of_processors=True to see speed up

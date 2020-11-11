@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-# Copyright 2016 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2016 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import random
@@ -28,7 +28,6 @@ from OCC.Core.gp import gp_Pnt
 
 from OCC.Display.SimpleGui import init_display
 display, start_display, add_menu, add_function_to_menu = init_display()
-
 
 def pcd_get_number_of_vertices(pcd_filename):
     """ open the PCD file, read header and get number of vertices.
@@ -53,7 +52,6 @@ def pcd_get_number_of_vertices(pcd_filename):
     f.close()
     return number_of_points
 
-
 def random_points(event=None):
     n_points = 500000
     # first, create a set of 1000 points
@@ -74,9 +72,8 @@ def random_points(event=None):
     display.View_Iso()
     display.FitAll()
 
-
 def bunny(event=None):
-    pcd_file_name = "./models/bunny.pcd"
+    pcd_file_name = os.path.join('..', 'assets', 'models', 'bunny.pcd')
     # compute number of lines
     nbr_of_vertices = pcd_get_number_of_vertices(pcd_file_name)
     print("Number of vertices :", nbr_of_vertices)
@@ -98,16 +95,14 @@ def bunny(event=None):
     display.View_Iso()
     display.FitAll()
 
-
 def tabletop(event=None):
-    pcd_file = open("./models/tabletop.pcd", 'r').readlines()[11:]
+    pcd_file = open(os.path.join('..', 'assets', 'models', 'tabletop.pcd'), 'r').readlines()[11:]
     # create the point_cloud
     pc = Graphic3d_ArrayOfPoints(len(pcd_file), True)
     for line in pcd_file:
         x, y, z, rgb = map(float, line.split())
         r, g, b = unpackRGB(rgb)
-        color = Quantity_Color(r / float(255), g /
-                               float(255), b / float(255), Quantity_TOC_RGB)
+        color = Quantity_Color(r/float(255), g/float(255), b/float(255), Quantity_TOC_RGB)
         pc.AddVertex(gp_Pnt(x, y, z), color)
 
     # then build the point cloud
@@ -119,7 +114,6 @@ def tabletop(event=None):
     display.DisableAntiAliasing()
     display.View_Iso()
     display.FitAll()
-
 
 def unpackRGB(rgb):
     """
@@ -133,8 +127,8 @@ def unpackRGB(rgb):
     rgb = struct.unpack('I', struct.pack('f', rgb))[0]
     # unpack rgb into r/g/b
     r = (rgb >> 16) & 0x0000ff
-    g = (rgb >> 8) & 0x0000ff
-    b = (rgb) & 0x0000ff
+    g = (rgb >> 8)  & 0x0000ff
+    b = (rgb)       & 0x0000ff
     return r, g, b
 
 

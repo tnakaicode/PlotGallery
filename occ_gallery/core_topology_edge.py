@@ -1,19 +1,19 @@
-# Copyright 2009-2015 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2009-2015 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import math
 
@@ -35,13 +35,13 @@ def edge(event=None):
     V2 = BRepBuilderAPI_MakeVertex(gp_Pnt(10, 7, -25))
     YellowEdge = BRepBuilderAPI_MakeEdge(V1.Vertex(), V2.Vertex())
 
-    # The white edge
+    #The white edge
     line = gp_Lin(gp_Ax1(gp_Pnt(10, 10, 10), gp_Dir(1, 0, 0)))
     WhiteEdge = BRepBuilderAPI_MakeEdge(line, -20, 10)
 
-    # The red edge
+    #The red edge
     Elips = gp_Elips(gp_Ax2(gp_Pnt(10, 0, 0), gp_Dir(1, 1, 1)), 60, 30)
-    RedEdge = BRepBuilderAPI_MakeEdge(Elips, 0, math.pi / 2)
+    RedEdge = BRepBuilderAPI_MakeEdge(Elips, 0, math.pi/2)
 
     # The green edge and the both extreme vertex
     P1 = gp_Pnt(-15, 200, 10)
@@ -76,7 +76,6 @@ def edge(event=None):
     display.DisplayColoredShape(GreenEdge.Edge(), 'GREEN')
     display.DisplayShape(V3)
     display.DisplayShape(V4, update=True)
-
 
 if __name__ == '__main__':
     edge()

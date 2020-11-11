@@ -1,19 +1,19 @@
-# Copyright 2017 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2017 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 """ Loads a STEP file and identify geometrical nature of each face
 (cylindrical face, planar etc.)
@@ -72,7 +72,7 @@ def recognize_face(a_face):
     """
     surf = BRepAdaptor_Surface(a_face, True)
     surf_type = surf.GetType()
-    if surf_type == GeomAbs_Plane:
+    if  surf_type == GeomAbs_Plane:
         print("--> plane")
         # look for the properties of the plane
         # first get the related gp_Pln
@@ -80,10 +80,8 @@ def recognize_face(a_face):
         location = gp_pln.Location()  # a point of the plane
         normal = gp_pln.Axis().Direction()  # the plane normal
         # then export location and normal to the console output
-        print("--> Location (global coordinates)",
-              location.X(), location.Y(), location.Z())
-        print("--> Normal (global coordinates)",
-              normal.X(), normal.Y(), normal.Z())
+        print("--> Location (global coordinates)", location.X(), location.Y(), location.Z())
+        print("--> Normal (global coordinates)", normal.X(), normal.Y(), normal.Z())
     elif surf_type == GeomAbs_Cylinder:
         print("--> cylinder")
         # look for the properties of the cylinder
@@ -92,8 +90,7 @@ def recognize_face(a_face):
         location = gp_cyl.Location()  # a point of the axis
         axis = gp_cyl.Axis().Direction()  # the cylinder axis
         # then export location and normal to the console output
-        print("--> Location (global coordinates)",
-              location.X(), location.Y(), location.Z())
+        print("--> Location (global coordinates)", location.X(), location.Y(), location.Z())
         print("--> Axis (global coordinates)", axis.X(), axis.Y(), axis.Z())
     else:
         # TODO there are plenty other type that can be checked
@@ -131,8 +128,7 @@ if __name__ == '__main__':
     display.SetSelectionModeFace()  # switch to Face selection mode
     display.register_select_callback(recognize_clicked)
     # first loads the STEP file and display
-    shp = read_step_file(os.path.join(
-        'models', 'face_recognition_sample_part.stp'))
+    shp = read_step_file(os.path.join('..', 'assets', 'models', 'face_recognition_sample_part.stp'))
     display.DisplayShape(shp, update=True)
     add_menu('recognition')
     add_function_to_menu('recognition', recognize_batch)

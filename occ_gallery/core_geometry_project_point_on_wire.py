@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-# Copyright 2019 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2019 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
@@ -32,7 +32,7 @@ from OCC.Core.GeomAbs import GeomAbs_C2
 from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnCurve
 
 # Read wire
-wire_filename = "../models/wire.brep"
+wire_filename = os.path.join('..', 'assets', 'models', 'wire.brep')
 shp = TopoDS_Shape()
 aBuilder = BRep_Builder()
 breptools.Read(shp, wire_filename, aBuilder)
@@ -55,8 +55,7 @@ if (approx.IsDone() and approx.HasResult()):
 
 # 1st solution: using GeomAPI_ProjectPointOnCurve
 point_to_project = gp_Pnt(1., 2., 3.)
-projection = GeomAPI_ProjectPointOnCurve(
-    point_to_project, an_approximated_curve)
+projection = GeomAPI_ProjectPointOnCurve(point_to_project, an_approximated_curve)
 # get the results of the projection
 projected_point = projection.NearestPoint()
 # the number of possible results
