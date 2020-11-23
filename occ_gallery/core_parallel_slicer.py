@@ -100,7 +100,7 @@ def get_brep():
     cylinder_head = TopoDS_Shape()
     builder = BRep_Builder()
     breptools_Read(
-        cylinder_head, '../assets/models/cylinder_head.brep', builder)
+        cylinder_head, './assets/models/cylinder_head.brep', builder)
     return cylinder_head
 
 
