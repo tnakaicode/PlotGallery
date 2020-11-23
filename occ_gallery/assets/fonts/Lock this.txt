@@ -1,0 +1,35 @@
+Metrolox is loosely based on the titling of the Enemy of the State movie. I say "loosely" because the movie titling showed only so many letters, and the lab's final version turned out so big.
+
+Anyhow, here's the technical rundown:
+
+- Metrolox true type: 
+1 font, 568 glyphs, unicoded (ISO 10646-2), suporting the basic latin, latin-1 supplement, latin extended-A, spcing modified letters, Greek, Cyrillic, general punctuation, superscripts and subscripts, letterlike symbols, mathematical operators and alphabetic presentation forms unicode ranges.
+The suported code pages are:
+1252 Latin 1
+1250 Latin 2: East Europe
+1251 Cyrillic
+1253 Greek
+1254 Turkish
+1257 Windows Baltic
+1258 Vietnamese
+Macintosh Character Set (US Roman)
+869 IBM Greek
+866 Ms-DOS Russian
+865 Ms-DOS Nordic
+863 MS-DOS Canadian French
+861 MS-DOS Icelandic
+860 MS-DOS Portuguese
+857 MS-DOS IBM Turkish
+855 IBM Cyrillic; primarily Russian
+852 Latin 2
+775 MS-DOS Baltic
+850 WE/Latin 1
+437 US
+
+- Metrolox postscript type 1:
+8 fonts, all produced in Adobe WinEncoding (with basic latin subsets) for their respective languages: Normal Latin 1 and 2, Cyrillic, Russian, Turkish, Baltic, Eastern European, Greek, and an alternates font for use with the basic latin font. The international and alternate characters in the type 1 fonts all exist in the true type Metrolox, so to fully benefit from the this package it is advisable to use the true type version under Windows.
+
+Cool.
+
+'
+

@@ -28,25 +28,9 @@ register_font("./assets/fonts/Respective.ttf")
 register_font("./assets/fonts/METROLOX.ttf")
 
 # Poetry from Paul Verlaine, Chanson d'Automne
-text = """Les sanglots longs
-Des violons
-De l'automne
-Blessent mon cœur
-D'une langueur monotone
-
-Tout suffocant
-Et blême, quand
-Sonne l'heure,
-Je me souviens
-Des jours anciens
-Et je pleure
-
-Et je m'en vais
-Au vent mauvais
-Qui m'emporte
-Deçà, delà,
-Pareil à la
-Feuille morte."""
+text = """
+Japan
+"""
 ## create a basic string
 arialbold_brep_string = text_to_brep(text, "Respective", Font_FA_Regular, 12., True)
 
