@@ -276,7 +276,7 @@ def build_curve_network(event=None):
     mimic the curve network surfacing command from rhino
     '''
     print('Importing IGES file...')
-    iges_file = os.path.join('..', 'assets', 'models', 'curve_geom_plate.igs')
+    iges_file = os.path.join('.', 'assets', 'models', 'curve_geom_plate.igs')
     iges = read_iges_file(iges_file)
 
     print('Building geomplate...')
