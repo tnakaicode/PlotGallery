@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import os
 
 from OCC.Core.gp import gp_Pnt
-
+from OCC.Display.SimpleGui import init_display
 from OCC.Display.WebGl.jupyter_renderer import JupyterRenderer
-
-
-# In[ ]:
 
 
 def pcd_get_number_of_vertices(pcd_filename):
@@ -38,10 +32,7 @@ def pcd_get_number_of_vertices(pcd_filename):
     return number_of_points
 
 
-# In[ ]:
-
-
-pcd_file_name = os.path.join('..', 'assets', 'models', 'bunny.pcd')
+pcd_file_name = "./models/bunny.pcd"
 # compute number of lines
 nbr_of_vertices = pcd_get_number_of_vertices(pcd_file_name)
 print("Number of vertices :", nbr_of_vertices)
@@ -57,14 +48,5 @@ for i in range(nbr_of_vertices):
     vertices.append(gp_Pnt(x, y, z))
 
 
-# In[ ]:
-
-
 my_renderer = JupyterRenderer()
-
-
-# In[ ]:
-
-
 my_renderer.DisplayShape(vertices, update=True)
-
