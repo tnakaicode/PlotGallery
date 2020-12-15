@@ -28,3 +28,23 @@ ax2.Transform(trf)
 trf2 = gp_Trsf()
 trf2.SetTransformation(ax2, axs)
 print(trf2.DumpJsonToString())
+
+
+def print_axs(ax=gp_Ax3()):
+    print(ax.Location())
+    # <class 'gp_Pnt'>
+
+
+class PrintAxs(object):
+
+    def __init__(self):
+        ax = gp_Ax3()
+        print(ax.Location())
+        # <class 'gp_Pnt'>
+
+
+if __name__ == "__main__":
+    print(axs.Location())
+    # <class 'gp_Pnt'>
+    print_axs()
+    PrintAxs()
