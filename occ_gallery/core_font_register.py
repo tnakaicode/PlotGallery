@@ -24,8 +24,7 @@ from OCC.Core.Addons import text_to_brep, register_font, Font_FA_Regular
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 # register the Respective font
-register_font("./assets/fonts/Respective.ttf")
-register_font("./assets/fonts/METROLOX.ttf")
+register_font(os.path.join('..', 'assets', 'fonts', 'Respective.ttf'))
 
 # Poetry from Paul Verlaine, Chanson d'Automne
 text = """Les sanglots longs
