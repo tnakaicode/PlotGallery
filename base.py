@@ -22,6 +22,7 @@ logging.getLogger('parso').setLevel(logging.ERROR)
 
 from PyQt5.QtWidgets import QApplication, qApp
 from PyQt5.QtWidgets import QDialog, QCheckBox
+# pip install PyQt5
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
@@ -191,6 +192,13 @@ class PlotBase(SetDir):
             pass
 
 
+def make_patch_spines_invisible(ax):
+    ax.set_frame_on(True)
+    ax.patch.set_visible(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+
 class plot2d (PlotBase):
 
     def __init__(self, aspect="equal", *args, **kwargs):
@@ -206,6 +214,16 @@ class plot2d (PlotBase):
         axs.xaxis.grid()
         axs.yaxis.grid()
         return axs
+
+    def add_twin(self, aspect="auto", side="right", out=0):
+        axt = self.axs.twinx()
+        axt.set_aspect(aspect)
+        axt.xaxis.grid()
+        axt.yaxis.grid()
+        axt.spines[side].set_position(('axes', out))
+        make_patch_spines_invisible(axt)
+        axt.spines[side].set_visible(True)
+        return axt
 
     def div_axs(self):
         self.div = make_axes_locatable(self.axs)
@@ -239,6 +257,28 @@ class plot2d (PlotBase):
         ys, ye = mesh[1][0, 0], mesh[1][-1, 0]
         mx = np.searchsorted(mesh[0][0, :], sx) - 1
         my = np.searchsorted(mesh[1][:, 0], sy) - 1
+
+        self.ax_x.plot(mesh[0][mx, :], func[mx, :])
+        self.ax_x.set_title("y = {:.2f}".format(sy))
+        self.ax_y.plot(func[:, my], mesh[1][:, my])
+        self.ax_y.set_title("x = {:.2f}".format(sx))
+        im = self.axs.contourf(*mesh, func, cmap="jet")
+        self.fig.colorbar(im, ax=self.axs, shrink=0.9)
+        self.fig.tight_layout()
+        if pngname == None:
+            self.SavePng_Serial(pngname)
+        else:
+            self.SavePng(pngname)
+
+    def contourf_sub_xy(self, mesh, func, sxy=[0, 0], pngname=None):
+        self.new_fig()
+        self.div_axs()
+        nx, ny = mesh[0].shape
+        sx, sy = sxy
+        xs, xe = mesh[0][0, 0], mesh[0][0, -1]
+        ys, ye = mesh[1][0, 0], mesh[1][-1, 0]
+        mx = np.searchsorted(mesh[0][:, 0], sx) - 1
+        my = np.searchsorted(mesh[1][0, :], sy) - 1
 
         self.ax_x.plot(mesh[0][mx, :], func[mx, :])
         self.ax_x.set_title("y = {:.2f}".format(sy))
@@ -381,7 +421,7 @@ class plot3d (PlotBase):
         self.dim = 3
         self.new_fig()
 
-    def set_axes_equal(self):
+    def set_axes_equal(self, axis="xyz"):
         '''
         Make axes of 3D plot have equal scale so that spheres appear as spheres,
         cubes as cubes, etc..  This is one possible solution to Matplotlib's
@@ -407,9 +447,19 @@ class plot3d (PlotBase):
         # norm, hence I call half the max range the plot radius.
         plot_radius = 0.5 * max([x_range, y_range, z_range])
 
-        self.axs.set_xlim3d([x_middle - plot_radius, x_middle + plot_radius])
-        self.axs.set_ylim3d([y_middle - plot_radius, y_middle + plot_radius])
-        self.axs.set_zlim3d([z_middle - plot_radius, z_middle + plot_radius])
+        for i in axis:
+            if i == "x":
+                self.axs.set_xlim3d(
+                    [x_middle - plot_radius, x_middle + plot_radius])
+            elif i == "y":
+                self.axs.set_ylim3d(
+                    [y_middle - plot_radius, y_middle + plot_radius])
+            elif i == "z":
+                self.axs.set_zlim3d(
+                    [z_middle - plot_radius, z_middle + plot_radius])
+            else:
+                self.axs.set_zlim3d(
+                    [z_middle - plot_radius, z_middle + plot_radius])
 
     def plot_ball(self, rxyz=[1, 1, 1]):
         u = np.linspace(0, 1, 10) * 2 * np.pi
