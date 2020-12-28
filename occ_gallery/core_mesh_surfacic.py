@@ -1,19 +1,19 @@
-##Copyright 2009-2017 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2017 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 
@@ -34,23 +34,26 @@ from OCC.Core.MeshVS import MeshVS_Mesh, MeshVS_BP_Mesh, MeshVS_MeshPrsBuilder
 # SMESH wrappers
 from OCC.Core.SMESH import SMESH_Gen, SMESH_MeshVSLink
 from OCC.Core.StdMeshers import (StdMeshers_Arithmetic1D, StdMeshers_TrianglePreference,
-                            StdMeshers_Regular_1D, StdMeshers_Quadrangle_2D,
-                            StdMeshers_MEFISTO_2D)
+                                 StdMeshers_Regular_1D, StdMeshers_Quadrangle_2D,
+                                 StdMeshers_MEFISTO_2D)
 
 from OCC.Display.SimpleGui import init_display
 display, start_display, add_menu, add_function_to_menu = init_display()
 
+
 def point_list_to_TColgp_Array1OfPnt(li):
-    pts = TColgp_Array1OfPnt(0, len(li)-1)
+    pts = TColgp_Array1OfPnt(0, len(li) - 1)
     for n, i in enumerate(li):
         pts.SetValue(n, i)
     return pts
+
 
 def get_simple_bound(pts):
     spl1 = GeomAPI_PointsToBSpline(pts).Curve()
     spl1_adap = GeomAdaptor_HCurve(spl1)
     bound1 = GeomFill_SimpleBound(spl1_adap, 0.001, 0.001)
     return spl1, bound1
+
 
 def constrained_filling(event=None):
 
@@ -101,8 +104,10 @@ def constrained_filling(event=None):
     shp = f.Shape()
     return shp
 
+
 def exit(event=None):
     sys.exit(0)
+
 
 def occ_triangle_mesh(event=None):
     #
@@ -120,9 +125,9 @@ def occ_triangle_mesh(event=None):
         facing = (BRep_Tool().Triangulation(F, L))
         tab = facing.Nodes()
         tri = facing.Triangles()
-        for i in range(1, facing.NbTriangles()+1):
+        for i in range(1, facing.NbTriangles() + 1):
             trian = tri.Value(i)
-            #print trian
+            # print trian
             index1, index2, index3 = trian.Get()
             for j in range(1, 4):
                 if j == 1:
@@ -138,41 +143,51 @@ def occ_triangle_mesh(event=None):
         ex.Next()
     display.DisplayShape(Comp, update=True)
 
+
 def smesh_quadrangle_mesh(event=None):
     # Create the Mesh
     aMeshGen = SMESH_Gen()
     aMesh = aMeshGen.CreateMesh(0, True)
     # 1D
-    an1DHypothesis = StdMeshers_Arithmetic1D(0, 0, aMeshGen)#discretization of the wire
-    an1DHypothesis.SetLength(0.01, False)  # the smallest distance between 2 points
-    an1DHypothesis.SetLength(0.3, True)  # the longest distance between 2 points
+    an1DHypothesis = StdMeshers_Arithmetic1D(
+        0, 0, aMeshGen)  # discretization of the wire
+    # the smallest distance between 2 points
+    an1DHypothesis.SetLength(0.01, False)
+    # the longest distance between 2 points
+    an1DHypothesis.SetLength(0.3, True)
     an1DAlgo = StdMeshers_Regular_1D(1, 0, aMeshGen)  # interpolation 1D Algo
     # 2D
-    a2dHypothseis = StdMeshers_TrianglePreference(2, 0, aMeshGen)  # define the boundary
+    a2dHypothseis = StdMeshers_TrianglePreference(
+        2, 0, aMeshGen)  # define the boundary
     a2dAlgo = StdMeshers_Quadrangle_2D(3, 0, aMeshGen)  # the 2D mesh
-    #Calculate mesh
+    # Calculate mesh
     aMesh.ShapeToMesh(aShape)
-    #Assign hyptothesis to mesh
+    # Assign hyptothesis to mesh
     aMesh.AddHypothesis(aShape, 0)
     aMesh.AddHypothesis(aShape, 1)
     aMesh.AddHypothesis(aShape, 2)
     aMesh.AddHypothesis(aShape, 3)
-    #Compute the data
+    # Compute the data
     aMeshGen.Compute(aMesh, aMesh.GetShapeToMesh())
     # Display the data
     display_mesh(aMesh)
+
 
 def smesh_MEFISTO2D(event=None):
     # Create the Mesh
     aMeshGen = SMESH_Gen()
     aMesh = aMeshGen.CreateMesh(0, True)
     # 1D
-    an1DHypothesis = StdMeshers_Arithmetic1D(0, 0, aMeshGen)  # discretization of the wire
-    an1DHypothesis.SetLength(0.1, False) # the smallest distance between 2 points
-    an1DHypothesis.SetLength(0.5, True)  # the longest distance between 2 points
+    an1DHypothesis = StdMeshers_Arithmetic1D(
+        0, 0, aMeshGen)  # discretization of the wire
+    # the smallest distance between 2 points
+    an1DHypothesis.SetLength(0.1, False)
+    # the longest distance between 2 points
+    an1DHypothesis.SetLength(0.5, True)
     an1DAlgo = StdMeshers_Regular_1D(1, 0, aMeshGen)  # interpolation
     # 2D
-    a2dHypothseis = StdMeshers_TrianglePreference(2, 0, aMeshGen)  # define the boundary
+    a2dHypothseis = StdMeshers_TrianglePreference(
+        2, 0, aMeshGen)  # define the boundary
     a2dAlgo = StdMeshers_MEFISTO_2D(3, 0, aMeshGen)
     # alculate mesh
     aMesh.ShapeToMesh(aShape)
@@ -186,6 +201,7 @@ def smesh_MEFISTO2D(event=None):
     # Display the data
     display_mesh(aMesh)
 
+
 def display_mesh(the_mesh):
     # First, erase all
     display.EraseAll()
@@ -194,7 +210,7 @@ def display_mesh(the_mesh):
     # then the mesh
     aDS = SMESH_MeshVSLink(the_mesh)
     aMeshVS = MeshVS_Mesh(True)
-    DMF = 1 # to wrap!
+    DMF = 1  # to wrap!
     aPrsBuilder = MeshVS_MeshPrsBuilder(aMeshVS,
                                         DMF,
                                         aDS,
@@ -202,12 +218,13 @@ def display_mesh(the_mesh):
                                         MeshVS_BP_Mesh)
     aMeshVS.SetDataSource(aDS)
     aMeshVS.AddBuilder(aPrsBuilder, True)
-    #Create the graphic window and display the mesh
+    # Create the graphic window and display the mesh
     context = display.Context
     context.Display(aMeshVS)
     context.Deactivate(aMeshVS)
 
     display.FitAll()
+
 
 aShape = constrained_filling()
 

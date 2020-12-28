@@ -1,19 +1,19 @@
-##Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 """ This module provides unittests for the visualization wrapper
 Usage :
@@ -31,8 +31,10 @@ from OCC.Core.Tesselator import ShapeTesselator
 
 from OCC.Extend.DataExchange import read_step_file
 
+
 class TestTesselator(unittest.TestCase):
     """ A class for testing tesselation algorithm """
+
     def test_tesselate_box(self):
         """ 1st test : tesselation of a box """
         a_box = BRepPrimAPI_MakeBox(10, 20, 30).Shape()
@@ -97,7 +99,8 @@ class TestTesselator(unittest.TestCase):
         # i.e. the JSON string is well formed
         dico = json.loads(JSON_str)
         # after that, check that the number of vertices is ok
-        self.assertEqual(len(dico["data"]["attributes"]["position"]["array"]), 36*3)
+        self.assertEqual(
+            len(dico["data"]["attributes"]["position"]["array"]), 36 * 3)
 
     def test_x3d_file_is_valid_xml(self):
         """ use ElementTree to parse X3D output """
@@ -135,6 +138,7 @@ def suite():
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(TestTesselator))
     return test_suite
+
 
 if __name__ == '__main__':
     unittest.main()

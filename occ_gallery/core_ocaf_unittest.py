@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2009-2013 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2013 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from contextlib import contextmanager
 import os
@@ -49,62 +49,61 @@ def assert_warns_deprecated() -> Iterator[Any]:
 
 
 class TestOCAF(unittest.TestCase):
-    def test_create_doc(self) -> None:
+    def test_create_doc(self):
         ''' Creates an OCAF app and an empty document '''
         # create an handle to a document
         doc = TDocStd_Document(TCollection_ExtendedString("MDTV-CAF"))
         self.assertFalse(doc is None)
 
-    # def test_write_step_file(self)-> None:
-    #     ''' Exports a colored box into a STEP file '''
-    #     ### initialisation
-    #     doc = TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
-    #     self.assertTrue(doc is not None)
+    def test_write_step_file(self):
+        ''' Exports a colored box into a STEP file '''
+        # initialisation
+        doc = TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
+        self.assertTrue(doc is not None)
+        # Get root assembly
+        shape_tool=XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+        colors=XCAFDoc_DocumentTool.ColorTool(doc.Main())
+        # create the shape to export
+        test_shape=BRepPrimAPI_MakeBox(100., 100., 100.).Shape(
+        # add shape
+        shp_label=shape_tool.AddShape(test_shape)
+        # set a color for this shape
+        r=1.
+        g=b=0.5
+        red_color=Quantity_Color(
+            r, g, b, Quantity_TypeOfColor.Quantity_TOC_RGB)
+        colors.SetColor(shp_label, red_color, XCAFDoc_ColorGen)
+        # write file
+        WS=XSControl_WorkSession()
+        writer=STEPCAFControl_Writer(WS, False)
+        writer.Transfer(doc, STEPControl_AsIs)
+        status=writer.Write("./test_io/test_ocaf_generated.stp")
+        self.assertTrue(status)
+        self.assertTrue(os.path.isfile("./test_io/test_ocaf_generated.stp"))
 
-    #     # Get root assembly
-    #     shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
-    #     colors = XCAFDoc_DocumentTool.ColorTool(doc.Main())
-    #     ### create the shape to export
-    #     test_shape = BRepPrimAPI_MakeBox(100., 100., 100.).Shape()
-
-    #     ### add shape
-    #     shp_label = shape_tool.AddShape(test_shape)
-    #     ### set a color for this shape
-    #     r = 1.
-    #     g = b = 0.5
-    #     red_color = Quantity_Color(r, g, b, Quantity_TypeOfColor.Quantity_TOC_RGB)
-    #     colors.SetColor(shp_label, red_color, XCAFDoc_ColorGen)
-    #     # write file
-    #     WS = XSControl_WorkSession()
-    #     writer = STEPCAFControl_Writer(WS, False)
-    #     writer.Transfer(doc, STEPControl_AsIs)
-    #     status = writer.Write("./test_io/test_ocaf_generated.stp")
-    #     self.assertTrue(status)
-    #     self.assertTrue(os.path.isfile("./test_io/test_ocaf_generated.stp"))
-
-    def test_read_step_file(self)-> None:
+    def test_read_step_file(self) -> None:
         ''' Reads the previous step file '''
         # create an handle to a document
-        doc = TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
+        doc=TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
         # Get root assembly
-        shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
-        l_colors = XCAFDoc_DocumentTool.ColorTool(doc.Main())
-        step_reader = STEPCAFControl_Reader()
+        shape_tool=XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+        l_colors=XCAFDoc_DocumentTool.ColorTool(doc.Main())
+        step_reader=STEPCAFControl_Reader()
         step_reader.SetColorMode(True)
         step_reader.SetLayerMode(True)
         step_reader.SetNameMode(True)
         step_reader.SetMatMode(True)
-        status = step_reader.ReadFile("./test_io/test_ocaf.stp")
+        status=step_reader.ReadFile("./test_io/test_ocaf.stp")
         if status == IFSelect_RetDone:
             step_reader.Transfer(doc)
 
-        labels = TDF_LabelSequence()
-        color_labels = TDF_LabelSequence()
+        labels=TDF_LabelSequence()
+        color_labels=TDF_LabelSequence()
 
         shape_tool.GetFreeShapes(labels)
 
         self.assertEqual(labels.Length(), 1)
-        sub_shapes_labels = TDF_LabelSequence()
+        sub_shapes_labels=TDF_LabelSequence()
         self.assertFalse(shape_tool.IsAssembly(labels.Value(1)))
         shape_tool.GetSubShapes(labels.Value(1), sub_shapes_labels)
         self.assertEqual(sub_shapes_labels.Length(), 0)
@@ -112,15 +111,16 @@ class TestOCAF(unittest.TestCase):
         l_colors.GetColors(color_labels)
         self.assertEqual(color_labels.Length(), 1)
 
-        label_shp = labels.Value(1)
-        a_shape = shape_tool.GetShape(label_shp)
+        label_shp=labels.Value(1)
+        a_shape=shape_tool.GetShape(label_shp)
         self.assertFalse(a_shape.IsNull())
 
 
 def suite() -> unittest.TestSuite:
-    suite = unittest.TestSuite()
+    suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestOCAF))
     return suite
+
 
 if __name__ == "__main__":
     unittest.main()
