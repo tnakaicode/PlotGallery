@@ -55,6 +55,8 @@ def identify_axes(ax_dict, fontsize=48):
     kw = dict(ha="center", va="center", fontsize=fontsize, color="darkgrey")
     for k, ax in ax_dict.items():
         ax.text(0.5, 0.5, k, transform=ax.transAxes, **kw)
+
+
 ###############################################################################
 # If we want a 2x2 grid we can use `.Figure.subplots` which returns a 2D array
 # of `.axes.Axes` which we can index into to do our plotting.
@@ -73,6 +75,7 @@ ax_array[1, 1].imshow([[1, 2], [2, 1]])
 identify_axes(
     {(j, k): a for j, r in enumerate(ax_array) for k, a in enumerate(r)}
 )
+plt.savefig("./mosaic01.png")
 
 ###############################################################################
 # Using `.Figure.subplot_mosaic` we can produce the same layout but give the
@@ -80,13 +83,14 @@ identify_axes(
 
 fig = plt.figure(constrained_layout=True)
 ax_dict = fig.subplot_mosaic(
-    [['bar',  'plot'],
+    [['bar', 'plot'],
      ['hist', 'image']])
 ax_dict['bar'].bar(['a', 'b', 'c'], [5, 7, 9])
 ax_dict['plot'].plot([1, 2, 3])
 ax_dict['hist'].hist(hist_data)
 ax_dict['image'].imshow([[1, 2], [2, 1]])
 identify_axes(ax_dict)
+plt.savefig("./mosaic02.png")
 
 ###############################################################################
 # A key difference between `.Figure.subplots` and
@@ -118,6 +122,7 @@ layout = """
 fig = plt.figure(constrained_layout=True)
 ax_dict = fig.subplot_mosaic(layout)
 identify_axes(ax_dict)
+plt.savefig("./mosaic03.png")
 
 
 ###############################################################################
@@ -135,6 +140,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     """
 )
 identify_axes(axd)
+plt.savefig("./mosaic04.png")
 
 ###############################################################################
 # If we do not want to fill in all the spaces in the Figure with Axes,
@@ -149,6 +155,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     """
 )
 identify_axes(axd)
+plt.savefig("./mosaic05.png")
 
 
 ###############################################################################
@@ -164,6 +171,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     empty_sentinel="X",
 )
 identify_axes(axd)
+plt.savefig("./mosaic06.png")
 
 
 ###############################################################################
@@ -176,6 +184,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
        ℝ☢"""
 )
 identify_axes(axd)
+plt.savefig("./mosaic07.png")
 
 ###############################################################################
 # It is not recommended to use white space as either a label or an
@@ -207,6 +216,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     },
 )
 identify_axes(axd)
+plt.savefig("./mosaic08.png")
 
 ###############################################################################
 # Or use the {*left*, *right*, *bottom*, *top*} keyword arguments to
@@ -241,6 +251,7 @@ axd = fig.subplot_mosaic(
     },
 )
 identify_axes(axd)
+plt.savefig("./mosaic09.png")
 
 
 ###############################################################################
@@ -252,6 +263,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     "AB", subplot_kw={"projection": "polar"}
 )
 identify_axes(axd)
+plt.savefig("./mosaic10.png")
 
 
 ###############################################################################
@@ -270,6 +282,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     gridspec_kw={"width_ratios": [2, 1]}
 )
 identify_axes(axd)
+plt.savefig("./mosaic11.png")
 
 
 ###############################################################################
@@ -289,6 +302,7 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     outer_nested_layout, empty_sentinel=None
 )
 identify_axes(axd, fontsize=36)
+plt.savefig("./mosaic12.png")
 
 
 ###############################################################################
@@ -300,3 +314,4 @@ axd = plt.figure(constrained_layout=True).subplot_mosaic(
     layout, empty_sentinel=0
 )
 identify_axes(axd)
+plt.savefig("./mosaic13.png")
