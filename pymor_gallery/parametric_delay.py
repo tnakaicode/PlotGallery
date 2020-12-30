@@ -10,10 +10,11 @@ import scipy.linalg as spla
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from pymor.basic import *
 
-
-# # Model
+from pymor.basic import ExpressionFunction, ProjectionParameterFunctional
+from pymor.basic import StationaryProblem, LincombFunction, LineDomain
+from pymor.basic import ConstantFunction, discretize_stationary_cg
+from pymor.basic import TransferFunction, NumpyVectorSpace, TFIRKAReductor
 
 
 def H(s, mu):
@@ -31,19 +32,15 @@ fom = TransferFunction(NumpyVectorSpace(1), NumpyVectorSpace(1),
                        parameters={'tau': 1})
 
 
-# # Magnitude plot
-
+# Magnitude plot
 
 mu_list_short = [0.01, 0.1, 1]
-
-
 w = np.logspace(-2, 4, 100)
 
 fig, ax = plt.subplots()
 for mu in mu_list_short:
     fom.mag_plot(w, ax=ax, mu=mu, label=fr'$\tau = {mu}$')
 ax.legend()
-plt.show()
 
 
 w_list = np.logspace(-2, 4, 100)
@@ -63,10 +60,9 @@ ax.set_ylabel(r'Parameter $\mu$')
 ax.set_xscale('log')
 ax.set_yscale('log')
 fig.colorbar(out, ticks=np.logspace(-4, 1, 6))
-plt.show()
 
 
-# # TF-IRKA
+# TF-IRKA
 
 
 r = 10
@@ -83,7 +79,6 @@ for mu, rom in zip(mu_list_short, roms_tf_irka):
     ax.plot(poles.real, poles.imag, '.', label=fr'$\tau = {mu}$')
 ax.set_title("Poles of TF-IRKA's ROMs")
 ax.legend()
-plt.show()
 
 
 fig, ax = plt.subplots()
@@ -91,7 +86,6 @@ for mu, rom in zip(mu_list_short, roms_tf_irka):
     rom.mag_plot(w, ax=ax, label=fr'$\tau = {mu}$')
 ax.set_title("Magnitude plot of TF-IRKA's ROMs")
 ax.legend()
-plt.show()
 
 
 fig, ax = plt.subplots()

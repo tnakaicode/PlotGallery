@@ -29,7 +29,9 @@ import scipy.linalg as spla
 import scipy.integrate as spint
 import matplotlib.pyplot as plt
 
-from pymor.basic import *
+from pymor.basic import ExpressionFunction, ProjectionParameterFunctional
+from pymor.basic import StationaryProblem, LincombFunction, LineDomain
+from pymor.basic import ConstantFunction, discretize_stationary_cg
 from pymor.core.config import config
 from pymor.reductors.h2 import OneSidedIRKAReductor
 
@@ -61,22 +63,16 @@ p = InstationaryProblem(
 fom, _ = discretize_instationary_cg(p, diameter=1 / 100, nt=100)
 print(fom)
 
-
-# ### Visualize solution for constant input of 1
-
-
+# Visualize solution for constant input of 1
 fom.visualize(fom.solve())
 
 
-# ### Convert to LTIModel
-
-
+# Convert to LTIModel
 lti = fom.to_lti()
 print(lti)
 
 
-# ## System analysis
-
+# System analysis
 
 poles = lti.poles()
 fig, ax = plt.subplots()

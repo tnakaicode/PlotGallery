@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-This file is part of the pyMOR project (http://www.pymor.org).
-Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
-# In[ ]:
-
-
-get_ipython().run_line_magic('matplotlib', 'notebook')
-
-
-# In[ ]:
+# This file is part of the pyMOR project (http://www.pymor.org).
+# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
 
 import numpy as np
@@ -23,50 +16,39 @@ from pymor.core.config import config
 from pymor.core.logger import set_log_levels
 set_log_levels({'pymor.algorithms.gram_schmidt.gram_schmidt': 'WARNING'})
 
-set_defaults({'pymor.discretizers.builtin.gui.jupyter.get_visualizer.backend': 'not pythreejs'})
+set_defaults(
+    {'pymor.discretizers.builtin.gui.jupyter.get_visualizer.backend': 'not pythreejs'})
 
 
 # # Model
 
-# In[ ]:
-
 
 p = InstationaryProblem(
     StationaryProblem(
-        domain=LineDomain([0.,1.], left='robin', right='robin'),
+        domain=LineDomain([0., 1.], left='robin', right='robin'),
         diffusion=LincombFunction([ExpressionFunction('(x[...,0] <= 0.5) * 1.', 1),
                                    ExpressionFunction('(0.5 < x[...,0]) * 1.', 1)],
                                   [1,
                                    ProjectionParameterFunctional('diffusion')]),
-        robin_data=(ConstantFunction(1., 1), ExpressionFunction('(x[...,0] < 1e-10) * 1.', 1)),
-        outputs=(('l2_boundary', ExpressionFunction('(x[...,0] > (1 - 1e-10)) * 1.', 1)),),
+        robin_data=(ConstantFunction(1., 1), ExpressionFunction(
+            '(x[...,0] < 1e-10) * 1.', 1)),
+        outputs=(('l2_boundary', ExpressionFunction(
+            '(x[...,0] > (1 - 1e-10)) * 1.', 1)),),
     ),
     ConstantFunction(0., 1),
     T=3.
 )
 
-fom, _ = discretize_instationary_cg(p, diameter=1/100, nt=100)
-
-
-# In[ ]:
+fom, _ = discretize_instationary_cg(p, diameter=1 / 100, nt=100)
 
 
 fom.visualize(fom.solve(mu=0.1))
 
 
-# In[ ]:
-
-
 fom.visualize(fom.solve(mu=1))
 
 
-# In[ ]:
-
-
 fom.visualize(fom.solve(mu=10))
-
-
-# In[ ]:
 
 
 lti = fom.to_lti()
@@ -74,15 +56,10 @@ lti = fom.to_lti()
 
 # # System analysis
 
-# In[ ]:
-
 
 print(f'order of the model = {lti.order}')
 print(f'number of inputs   = {lti.input_dim}')
 print(f'number of outputs  = {lti.output_dim}')
-
-
-# In[ ]:
 
 
 mu_list = [0.1, 1, 10]
@@ -98,9 +75,6 @@ fig.subplots_adjust(hspace=0.5)
 plt.show()
 
 
-# In[ ]:
-
-
 mu_list = [0.1, 1, 10]
 
 fig, ax = plt.subplots()
@@ -111,18 +85,12 @@ ax.legend()
 plt.show()
 
 
-# In[ ]:
-
-
 w_list = np.logspace(-1, 3, 100)
 mu_list = np.logspace(-1, 1, 20)
 
 lti_w_mu = np.zeros((len(w_list), len(mu_list)))
 for i, mu in enumerate(mu_list):
     lti_w_mu[:, i] = spla.norm(lti.freq_resp(w, mu=mu), axis=(1, 2))
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -137,9 +105,6 @@ fig.colorbar(out, ticks=np.logspace(-16, 0, 17))
 plt.show()
 
 
-# In[ ]:
-
-
 mu_list = [0.1, 1, 10]
 
 fig, ax = plt.subplots()
@@ -149,9 +114,6 @@ for mu in mu_list:
 ax.set_title('Hankel singular values')
 ax.legend()
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -174,8 +136,6 @@ plt.show()
 
 # # Balanced truncation
 
-# In[ ]:
-
 
 def reduction_errors(lti, r, mu_fine, reductor, **kwargs):
     h2_err_mu = []
@@ -185,20 +145,17 @@ def reduction_errors(lti, r, mu_fine, reductor, **kwargs):
         rom_mu = reductor(lti, mu=mu, **kwargs).reduce(r)
         h2_err_mu.append((lti - rom_mu).h2_norm(mu=mu) / lti.h2_norm(mu=mu))
         if config.HAVE_SLYCOT:
-            hinf_err_mu.append((lti - rom_mu).hinf_norm(mu=mu) / lti.hinf_norm(mu=mu))
-        hankel_err_mu.append((lti - rom_mu).hankel_norm(mu=mu) / lti.hankel_norm(mu=mu))
+            hinf_err_mu.append(
+                (lti - rom_mu).hinf_norm(mu=mu) / lti.hinf_norm(mu=mu))
+        hankel_err_mu.append(
+            (lti - rom_mu).hankel_norm(mu=mu) / lti.hankel_norm(mu=mu))
     return h2_err_mu, hinf_err_mu, hankel_err_mu
-
-
-# In[ ]:
 
 
 r = 5
 mu_fine = np.logspace(-1, 1, 10)
-h2_bt_err_mu, hinf_bt_err_mu, hankel_bt_err_mu = reduction_errors(lti, r, mu_fine, BTReductor)
-
-
-# In[ ]:
+h2_bt_err_mu, hinf_bt_err_mu, hankel_bt_err_mu = reduction_errors(
+    lti, r, mu_fine, BTReductor)
 
 
 fig, ax = plt.subplots()
@@ -215,13 +172,9 @@ plt.show()
 
 # # Iterative Rational Krylov Algorithm (IRKA)
 
-# In[ ]:
 
-
-h2_irka_err_mu, hinf_irka_err_mu, hankel_irka_err_mu = reduction_errors(lti, r, mu_fine, IRKAReductor)
-
-
-# In[ ]:
+h2_irka_err_mu, hinf_irka_err_mu, hankel_irka_err_mu = reduction_errors(
+    lti, r, mu_fine, IRKAReductor)
 
 
 fig, ax = plt.subplots()
@@ -238,13 +191,9 @@ plt.show()
 
 # # Two-Sided Iteration Algorithm (TSIA)
 
-# In[ ]:
 
-
-h2_tsia_err_mu, hinf_tsia_err_mu, hankel_tsia_err_mu = reduction_errors(lti, r, mu_fine, TSIAReductor)
-
-
-# In[ ]:
+h2_tsia_err_mu, hinf_tsia_err_mu, hankel_tsia_err_mu = reduction_errors(
+    lti, r, mu_fine, TSIAReductor)
 
 
 fig, ax = plt.subplots()
@@ -261,25 +210,20 @@ plt.show()
 
 # # One-sided IRKA
 
-# In[ ]:
-
 
 h2_osirka_err_mu, hinf_osirka_err_mu, hankel_osirka_err_mu = reduction_errors(
     lti, r, mu_fine, OneSidedIRKAReductor, version='V'
 )
 
 
-# In[ ]:
-
-
 fig, ax = plt.subplots()
 ax.semilogy(mu_fine, h2_osirka_err_mu, '.-', label=r'$\mathcal{H}_2$')
 if config.HAVE_SLYCOT:
-    ax.semilogy(mu_fine, hinf_osirka_err_mu, '.-', label=r'$\mathcal{H}_\infty$')
+    ax.semilogy(mu_fine, hinf_osirka_err_mu, '.-',
+                label=r'$\mathcal{H}_\infty$')
 ax.semilogy(mu_fine, hankel_osirka_err_mu, '.-', label='Hankel')
 
 ax.set_xlabel(r'$\mu$')
 ax.set_title('One-sided IRKA errors')
 ax.legend()
 plt.show()
-

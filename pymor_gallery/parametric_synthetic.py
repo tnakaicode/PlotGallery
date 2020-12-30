@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-This file is part of the pyMOR project (http://www.pymor.org).
-Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
-# In[ ]:
+# This file is part of the pyMOR project (http://www.pymor.org).
+# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
 
 import numpy as np
@@ -21,10 +20,8 @@ from pymor.reductors.h2 import IRKAReductor
 
 
 # # Model
-# 
+#
 # https://morwiki.mpi-magdeburg.mpg.de/morwiki/index.php/Synthetic_parametric_model
-
-# In[ ]:
 
 
 n = 100  # order of the resulting system
@@ -52,22 +49,13 @@ C[0, ::2] = c
 C[0, 1::2] = d
 
 
-# In[ ]:
-
-
 A0 = NumpyMatrixOperator(A0)
 Amu = NumpyMatrixOperator(Amu)
 B = NumpyMatrixOperator(B)
 C = NumpyMatrixOperator(C)
 
 
-# In[ ]:
-
-
 A = A0 + Amu * ProjectionParameterFunctional('mu')
-
-
-# In[ ]:
 
 
 lti = LTIModel(A, B, C)
@@ -75,13 +63,8 @@ lti = LTIModel(A, B, C)
 
 # # Magnitude plot
 
-# In[ ]:
 
-
-mu_list_short = [1/50, 1/20, 1/10, 1/5, 1/2, 1]
-
-
-# In[ ]:
+mu_list_short = [1 / 50, 1 / 20, 1 / 10, 1 / 5, 1 / 2, 1]
 
 
 w = np.logspace(0.5, 3.5, 200)
@@ -93,18 +76,12 @@ ax.legend()
 plt.show()
 
 
-# In[ ]:
-
-
 w_list = np.logspace(0.5, 3.5, 200)
-mu_list = np.linspace(1/50, 1, 50)
+mu_list = np.linspace(1 / 50, 1, 50)
 
 lti_w_mu = np.zeros((len(w_list), len(mu_list)))
 for i, mu in enumerate(mu_list):
     lti_w_mu[:, i] = spla.norm(lti.freq_resp(w_list, mu=mu), axis=(1, 2))
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -114,14 +91,12 @@ out = ax.contourf(w_list, mu_list, lti_w_mu.T,
 ax.set_xlabel(r'Frequency $\omega$')
 ax.set_ylabel(r'Parameter $\mu$')
 ax.set_xscale('log')
-#ax.set_yscale('log')
+# ax.set_yscale('log')
 fig.colorbar(out, ticks=np.logspace(-2, 1, 7))
 plt.show()
 
 
 # # Hankel singular values
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -135,11 +110,9 @@ plt.show()
 
 # # System norms
 
-# In[ ]:
-
 
 fig, ax = plt.subplots()
-mu_fine = np.linspace(1/50, 1, 20)
+mu_fine = np.linspace(1 / 50, 1, 20)
 h2_norm_mu = [lti.h2_norm(mu=mu) for mu in mu_fine]
 ax.plot(mu_fine, h2_norm_mu, '.-', label=r'$\mathcal{H}_2$-norm')
 
@@ -158,8 +131,6 @@ plt.show()
 
 # # Balanced truncation
 
-# In[ ]:
-
 
 def reduction_errors(lti, r, mu_fine, method):
     h2_err_mu = []
@@ -169,25 +140,21 @@ def reduction_errors(lti, r, mu_fine, method):
         rom_mu = method(lti, r, mu=mu)
         h2_err_mu.append((lti - rom_mu).h2_norm(mu=mu) / lti.h2_norm(mu=mu))
         if config.HAVE_SLYCOT:
-            hinf_err_mu.append((lti - rom_mu).hinf_norm(mu=mu) / lti.hinf_norm(mu=mu))
-        hankel_err_mu.append((lti - rom_mu).hankel_norm(mu=mu) / lti.hankel_norm(mu=mu))
+            hinf_err_mu.append(
+                (lti - rom_mu).hinf_norm(mu=mu) / lti.hinf_norm(mu=mu))
+        hankel_err_mu.append(
+            (lti - rom_mu).hankel_norm(mu=mu) / lti.hankel_norm(mu=mu))
     return h2_err_mu, hinf_err_mu, hankel_err_mu
 
 
-# In[ ]:
-
-
 r = 20
-mu_fine = np.linspace(1/50, 1, 10)
+mu_fine = np.linspace(1 / 50, 1, 10)
 (
     h2_bt_err_mu,
     hinf_bt_err_mu,
     hankel_bt_err_mu
 ) = reduction_errors(lti, r, mu_fine,
                      lambda lti, r, mu=None: BTReductor(lti, mu=mu).reduce(r))
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -204,8 +171,6 @@ plt.show()
 
 # # Iterative Rational Krylov Algorithm (IRKA)
 
-# In[ ]:
-
 
 (
     h2_irka_err_mu,
@@ -213,9 +178,6 @@ plt.show()
     hankel_irka_err_mu
 ) = reduction_errors(lti, r, mu_fine,
                      lambda lti, r, mu=mu: IRKAReductor(lti, mu=mu).reduce(r, conv_crit='h2'))
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -228,4 +190,3 @@ ax.set_xlabel(r'$\mu$')
 ax.set_title('IRKA errors')
 ax.legend()
 plt.show()
-

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
-This file is part of the pyMOR project (http://www.pymor.org).
-Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# This file is part of the pyMOR project (http://www.pymor.org).
+# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 # # String equation example
 
 # ## Analytic problem formulation
-# 
+#
 # We consider a vibrating string on the segment $[0, 1]$, fixed on both sides, with input $u$ and output $\tilde{y}$ in the middle:
 # $$
 # \begin{align*}
@@ -16,9 +16,9 @@ License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 #     \tilde{y}(t) & = \xi(1/2, t), & t > 0.
 # \end{align*}
 # $$
-# 
+#
 # ## Semidiscretized formulation
-# 
+#
 # Using the finite volume method on the equidistant mesh $0 = z_1 < z_2 < \ldots < z_{n + 1} = 1$, where $n = 2 n_2 - 1$, we obtain the semidiscretized formulation:
 # $$
 # \begin{align*}
@@ -29,7 +29,7 @@ License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 # \end{align*}
 # $$
 # where $h = \frac{1}{n}$, $x_i(t) \approx \int_{z_i}^{z_{i + 1}} \xi(z, t) \, \mathrm{d}z$, and $y(t) \approx \tilde{y}(t)$.
-# 
+#
 # Separating cases $i = 1$ and $i = n$ in the first equation, we find:
 # $$
 # \begin{alignat*}{7}
@@ -41,8 +41,6 @@ License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 # $$
 
 # ## Import modules
-
-# In[ ]:
 
 
 import numpy as np
@@ -62,8 +60,6 @@ set_log_levels({'pymor.algorithms.gram_schmidt.gram_schmidt': 'WARNING'})
 
 
 # ## Assemble $M$, $D$, $K$, $B$, $C_p$
-
-# In[ ]:
 
 
 n2 = 50
@@ -91,14 +87,9 @@ Cp[0, n2 - 1] = 1
 
 # ## Second-order system
 
-# In[ ]:
-
 
 so_sys = SecondOrderModel.from_matrices(M, E, K, B, Cp)
 print(so_sys)
-
-
-# In[ ]:
 
 
 poles = so_sys.poles()
@@ -108,17 +99,11 @@ ax.set_title('System poles')
 plt.show()
 
 
-# In[ ]:
-
-
 w = np.logspace(-4, 2, 200)
 fig, ax = plt.subplots()
 so_sys.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the full model')
 plt.show()
-
-
-# In[ ]:
 
 
 psv = so_sys.psv()
@@ -137,9 +122,6 @@ ax[1, 1].set_title('Velocity-position singular values')
 plt.show()
 
 
-# In[ ]:
-
-
 print(f'H_2-norm of the full model:    {so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
     print(f'H_inf-norm of the full model:  {so_sys.hinf_norm():e}')
@@ -148,15 +130,10 @@ print(f'Hankel-norm of the full model: {so_sys.hankel_norm():e}')
 
 # ## Position Second-Order Balanced Truncation (SOBTp)
 
-# In[ ]:
-
 
 r = 5
 sobtp_reductor = SOBTpReductor(so_sys)
 rom_sobtp = sobtp_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_sobtp = rom_sobtp.poles()
@@ -166,17 +143,14 @@ ax.set_title("SOBTp reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sobtp = so_sys - rom_sobtp
-print(f'SOBTp relative H_2-error:    {err_sobtp.h2_norm() / so_sys.h2_norm():e}')
+print(
+    f'SOBTp relative H_2-error:    {err_sobtp.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOBTp relative H_inf-error:  {err_sobtp.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOBTp relative Hankel-error: {err_sobtp.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOBTp relative H_inf-error:  {err_sobtp.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOBTp relative Hankel-error: {err_sobtp.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -184,9 +158,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_sobtp.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and SOBTp reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -197,15 +168,10 @@ plt.show()
 
 # ## Velocity Second-Order Balanced Truncation (SOBTv)
 
-# In[ ]:
-
 
 r = 5
 sobtv_reductor = SOBTvReductor(so_sys)
 rom_sobtv = sobtv_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_sobtv = rom_sobtv.poles()
@@ -215,17 +181,14 @@ ax.set_title("SOBTv reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sobtv = so_sys - rom_sobtv
-print(f'SOBTv relative H_2-error:    {err_sobtv.h2_norm() / so_sys.h2_norm():e}')
+print(
+    f'SOBTv relative H_2-error:    {err_sobtv.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOBTv relative H_inf-error:  {err_sobtv.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOBTv relative Hankel-error: {err_sobtv.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOBTv relative H_inf-error:  {err_sobtv.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOBTv relative Hankel-error: {err_sobtv.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -233,9 +196,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_sobtv.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and SOBTv reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -246,15 +206,10 @@ plt.show()
 
 # ## Position-Velocity Second-Order Balanced Truncation (SOBTpv)
 
-# In[ ]:
-
 
 r = 5
 sobtpv_reductor = SOBTpvReductor(so_sys)
 rom_sobtpv = sobtpv_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_sobtpv = rom_sobtpv.poles()
@@ -264,17 +219,14 @@ ax.set_title("SOBTpv reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sobtpv = so_sys - rom_sobtpv
-print(f'SOBTpv relative H_2-error:    {err_sobtpv.h2_norm() / so_sys.h2_norm():e}')
+print(
+    f'SOBTpv relative H_2-error:    {err_sobtpv.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOBTpv relative H_inf-error:  {err_sobtpv.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOBTpv relative Hankel-error: {err_sobtpv.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOBTpv relative H_inf-error:  {err_sobtpv.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOBTpv relative Hankel-error: {err_sobtpv.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -282,9 +234,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_sobtpv.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and SOBTpv reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -295,15 +244,10 @@ plt.show()
 
 # ## Velocity-Position Second-Order Balanced Truncation (SOBTvp)
 
-# In[ ]:
-
 
 r = 5
 sobtvp_reductor = SOBTvpReductor(so_sys)
 rom_sobtvp = sobtvp_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_sobtvp = rom_sobtvp.poles()
@@ -313,17 +257,14 @@ ax.set_title("SOBTvp reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sobtvp = so_sys - rom_sobtvp
-print(f'SOBTvp relative H_2-error:    {err_sobtvp.h2_norm() / so_sys.h2_norm():e}')
+print(
+    f'SOBTvp relative H_2-error:    {err_sobtvp.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOBTvp relative H_inf-error:  {err_sobtvp.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOBTvp relative Hankel-error: {err_sobtvp.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOBTvp relative H_inf-error:  {err_sobtvp.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOBTvp relative Hankel-error: {err_sobtvp.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -331,9 +272,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_sobtvp.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and SOBTvp reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -344,15 +282,10 @@ plt.show()
 
 # ## Free-Velocity Second-Order Balanced Truncation (SOBTfv)
 
-# In[ ]:
-
 
 r = 5
 sobtfv_reductor = SOBTfvReductor(so_sys)
 rom_sobtfv = sobtfv_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_sobtfv = rom_sobtfv.poles()
@@ -362,17 +295,14 @@ ax.set_title("SOBTfv reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sobtfv = so_sys - rom_sobtfv
-print(f'SOBTfv relative H_2-error:    {err_sobtfv.h2_norm() / so_sys.h2_norm():e}')
+print(
+    f'SOBTfv relative H_2-error:    {err_sobtfv.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOBTfv relative H_inf-error:  {err_sobtfv.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOBTfv relative Hankel-error: {err_sobtfv.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOBTfv relative H_inf-error:  {err_sobtfv.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOBTfv relative Hankel-error: {err_sobtfv.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -380,9 +310,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_sobtfv.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and SOBTfv reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -393,15 +320,10 @@ plt.show()
 
 # ## Second-Order Balanced Truncation (SOBT)
 
-# In[ ]:
-
 
 r = 5
 sobt_reductor = SOBTReductor(so_sys)
 rom_sobt = sobt_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_sobt = rom_sobt.poles()
@@ -411,17 +333,13 @@ ax.set_title("SOBT reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sobt = so_sys - rom_sobt
 print(f'SOBT relative H_2-error:    {err_sobt.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOBT relative H_inf-error:  {err_sobt.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOBT relative Hankel-error: {err_sobt.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOBT relative H_inf-error:  {err_sobt.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOBT relative Hankel-error: {err_sobt.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -429,9 +347,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_sobt.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and SOBT reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -442,15 +357,10 @@ plt.show()
 
 # ## Balanced Truncation (BT)
 
-# In[ ]:
-
 
 r = 5
 bt_reductor = BTReductor(so_sys.to_lti())
 rom_bt = bt_reductor.reduce(r)
-
-
-# In[ ]:
 
 
 poles_rom_bt = rom_bt.poles()
@@ -460,17 +370,13 @@ ax.set_title("BT reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_bt = so_sys - rom_bt
 print(f'BT relative H_2-error:    {err_bt.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'BT relative H_inf-error:  {err_bt.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'BT relative Hankel-error: {err_bt.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'BT relative H_inf-error:  {err_bt.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'BT relative Hankel-error: {err_bt.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -478,9 +384,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_bt.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and BT reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -491,24 +394,16 @@ plt.show()
 
 # ## Iterative Rational Krylov Algorithm (IRKA)
 
-# In[ ]:
-
 
 r = 5
 irka_reductor = IRKAReductor(so_sys.to_lti())
 rom_irka = irka_reductor.reduce(r)
 
 
-# In[ ]:
-
-
 fig, ax = plt.subplots()
 ax.semilogy(irka_reductor.conv_crit, '.-')
 ax.set_title('IRKA convergence criterion')
 plt.show()
-
-
-# In[ ]:
 
 
 poles_rom_irka = rom_irka.poles()
@@ -518,17 +413,13 @@ ax.set_title("IRKA reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_irka = so_sys - rom_irka
 print(f'IRKA relative H_2-error:    {err_irka.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'IRKA relative H_inf-error:  {err_irka.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'IRKA relative Hankel-error: {err_irka.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'IRKA relative H_inf-error:  {err_irka.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'IRKA relative Hankel-error: {err_irka.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -536,9 +427,6 @@ so_sys.mag_plot(w, ax=ax)
 rom_irka.mag_plot(w, ax=ax, linestyle='dashed')
 ax.set_title('Magnitude plot of the full and IRKA reduced model')
 plt.show()
-
-
-# In[ ]:
 
 
 fig, ax = plt.subplots()
@@ -549,24 +437,16 @@ plt.show()
 
 # ## Second-Order Iterative Rational Krylov Algorithm (SOR-IRKA)
 
-# In[ ]:
-
 
 r = 5
 sor_irka_reductor = SORIRKAReductor(so_sys)
 rom_sor_irka = sor_irka_reductor.reduce(r)
 
 
-# In[ ]:
-
-
 fig, ax = plt.subplots()
 ax.semilogy(sor_irka_reductor.conv_crit, '.-')
 ax.set_title('SOR-IRKA convergence criterion')
 plt.show()
-
-
-# In[ ]:
 
 
 poles_rom_sor_irka = rom_sor_irka.poles()
@@ -576,17 +456,14 @@ ax.set_title("SOR-IRKA reduced model's poles")
 plt.show()
 
 
-# In[ ]:
-
-
 err_sor_irka = so_sys - rom_sor_irka
-print(f'SOR-IRKA relative H_2-error:    {err_sor_irka.h2_norm() / so_sys.h2_norm():e}')
+print(
+    f'SOR-IRKA relative H_2-error:    {err_sor_irka.h2_norm() / so_sys.h2_norm():e}')
 if config.HAVE_SLYCOT:
-    print(f'SOR-IRKA relative H_inf-error:  {err_sor_irka.hinf_norm() / so_sys.hinf_norm():e}')
-print(f'SOR-IRKA relative Hankel-error: {err_sor_irka.hankel_norm() / so_sys.hankel_norm():e}')
-
-
-# In[ ]:
+    print(
+        f'SOR-IRKA relative H_inf-error:  {err_sor_irka.hinf_norm() / so_sys.hinf_norm():e}')
+print(
+    f'SOR-IRKA relative Hankel-error: {err_sor_irka.hankel_norm() / so_sys.hankel_norm():e}')
 
 
 fig, ax = plt.subplots()
@@ -596,11 +473,7 @@ ax.set_title('Magnitude plot of the full and SOR-IRKA reduced model')
 plt.show()
 
 
-# In[ ]:
-
-
 fig, ax = plt.subplots()
 err_sor_irka.mag_plot(w, ax=ax)
 ax.set_title('Magnitude plot of the SOR-IRKA error system')
 plt.show()
-
