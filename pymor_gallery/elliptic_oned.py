@@ -7,8 +7,9 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from pymor.basic import *
-
+from pymor.basic import ExpressionFunction, ProjectionParameterFunctional
+from pymor.basic import StationaryProblem, LincombFunction, LineDomain
+from pymor.basic import ConstantFunction, discretize_stationary_cg
 
 N = 100
 
@@ -41,3 +42,11 @@ for mu in parameter_space.sample_uniformly(10):
     U.append(m.solve(mu))
 m.visualize(
     U, title='Solution for diffusionl in [0.1, 1]', separate_plots=True, separate_axes=False)
+
+# m.visualize(
+#    U, title='Solution for diffusionl in [0.1, 1]', separate_plots=True, separate_axes=False, filename="./elliptic_oned.vtk")
+#
+# pymor\discretizers\builtin\gui\visualizers.py line 143
+#
+# class OnedVisualizer(ImmutableObject):
+# raise NotImplementedError

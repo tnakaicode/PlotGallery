@@ -6,31 +6,25 @@
 
 # [Plotly Express](/python/plotly-express/) is the easy-to-use, high-level interface to Plotly, which [operates on a variety of types of data](/python/px-arguments/) and produces [easy-to-style figures](/python/styling-plotly-express/). The Plotly Express function `density_contour()` can be used to produce density contours.
 
-
+import numpy as np
 import plotly.express as px
-df = px.data.tips()
+import plotly.graph_objects as go
 
+df = px.data.tips()
 fig = px.density_contour(df, x="total_bill", y="tip")
 fig.show()
 
 
 # Marginal plots can be added to visualize the 1-dimensional distributions of the two variables. Here we use a marginal [`histogram`](/python/histograms/). Other allowable values are `violin`, `box` and `rug`.
 
-
-import plotly.express as px
 df = px.data.tips()
-
 fig = px.density_contour(df, x="total_bill", y="tip",
                          marginal_x="histogram", marginal_y="histogram")
 fig.show()
 
-
 # Density contours can also be [faceted](/python/facet-plots/) and [discretely colored](/python/discrete-color/):
 
-
-import plotly.express as px
 df = px.data.tips()
-
 fig = px.density_contour(df, x="total_bill", y="tip",
                          facet_col="sex", color="smoker")
 fig.show()
@@ -38,8 +32,6 @@ fig.show()
 
 # Plotly Express density contours can be [continuously-colored](/python/colorscales/) and labeled:
 
-
-import plotly.express as px
 df = px.data.tips()
 
 fig = px.density_contour(df, x="total_bill", y="tip")
@@ -51,10 +43,7 @@ fig.show()
 
 # By passing in a `z` value and a `histfunc`, density contours can perform basic aggregation operations. Here we show average Sepal Length grouped by Petal Length and Petal Width for the Iris dataset.
 
-
-import plotly.express as px
 df = px.data.iris()
-
 fig = px.density_contour(df, x="petal_length",
                          y="petal_width", z="sepal_length", histfunc="avg")
 fig.show()
@@ -67,9 +56,6 @@ fig.show()
 # Basic 2D Histogram Contour
 
 
-import plotly.graph_objects as go
-
-import numpy as np
 np.random.seed(1)
 
 x = np.random.uniform(-1, 1, size=500)
@@ -79,16 +65,10 @@ fig = go.Figure(go.Histogram2dContour(
     x=x,
     y=y
 ))
-
 fig.show()
 
 
 # 2D Histogram Contour Colorscale
-
-
-import plotly.graph_objects as go
-
-import numpy as np
 
 x = np.random.uniform(-1, 1, size=500)
 y = np.random.uniform(-1, 1, size=500)
@@ -98,16 +78,10 @@ fig = go.Figure(go.Histogram2dContour(
     y=y,
     colorscale='Blues'
 ))
-
 fig.show()
 
 
 # 2D Histogram Contour Styled
-
-
-import plotly.graph_objects as go
-
-import numpy as np
 
 x = np.random.uniform(-1, 1, size=500)
 y = np.random.uniform(-1, 1, size=500)
@@ -138,11 +112,6 @@ fig.show()
 
 
 # 2D Histogram Contour Subplot
-
-
-import plotly.graph_objects as go
-
-import numpy as np
 
 t = np.linspace(-1, 1.2, 2000)
 x = (t**3) + (0.3 * np.random.randn(2000))

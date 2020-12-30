@@ -4,30 +4,26 @@
 
 # [Plotly Express](/python/plotly-express/) is the easy-to-use, high-level interface to Plotly, which [operates on a variety of types of data](/python/px-arguments/) and produces [easy-to-style figures](/python/styling-plotly-express/). The Plotly Express function `density_heatmap()` can be used to produce density heatmaps.
 
+import numpy as np
 import plotly.express as px
-df = px.data.tips()
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
+df = px.data.tips()
 fig = px.density_heatmap(df, x="total_bill", y="tip")
 fig.show()
 
 
 # The number of bins can be controlled with `nbinsx` and `nbinsy` and the [color scale](/python/colorscales/) with `color_continuous_scale`.
 
-
-import plotly.express as px
 df = px.data.tips()
-
 fig = px.density_heatmap(df, x="total_bill", y="tip",
                          nbinsx=20, nbinsy=20, color_continuous_scale="Viridis")
 fig.show()
 
-
 # Marginal plots can be added to visualize the 1-dimensional distributions of the two variables. Here we use a marginal [`histogram`](/python/histograms/). Other allowable values are `violin`, `box` and `rug`.
 
-
-import plotly.express as px
 df = px.data.tips()
-
 fig = px.density_heatmap(df, x="total_bill", y="tip",
                          marginal_x="histogram", marginal_y="histogram")
 fig.show()
@@ -35,23 +31,16 @@ fig.show()
 
 # Density heatmaps can also be [faceted](/python/facet-plots/):
 
-
-import plotly.express as px
 df = px.data.tips()
-
 fig = px.density_heatmap(df, x="total_bill", y="tip",
                          facet_row="sex", facet_col="smoker")
 fig.show()
 
 
 # Other aggregation functions than `count`
-
 # By passing in a `z` value and a `histfunc`, density heatmaps can perform basic aggregation operations. Here we show average Sepal Length grouped by Petal Length and Petal Width for the Iris dataset.
 
-
-import plotly.express as px
 df = px.data.iris()
-
 fig = px.density_heatmap(df, x="petal_length",
                          y="petal_width", z="sepal_length", histfunc="avg")
 fig.show()
@@ -65,9 +54,6 @@ fig.show()
 # 2D Histogram of a Bivariate Normal Distribution ###
 
 
-import plotly.graph_objects as go
-
-import numpy as np
 np.random.seed(1)
 
 x = np.random.randn(500)
@@ -81,11 +67,6 @@ fig.show()
 
 
 # 2D Histogram Binning and Styling Options ###
-
-
-import plotly.graph_objects as go
-
-import numpy as np
 
 x = np.random.randn(500)
 y = np.random.randn(500) + 1
@@ -103,9 +84,6 @@ fig.show()
 # Sharing bin settings between 2D Histograms
 # This example shows how to use [bingroup](https://plotly.com/python/reference/#histogram-bingroup) attribute to have a compatible bin settings for both histograms. To define `start`, `end` and `size` value of x-axis and y-axis seperatly, set [ybins](https://plotly.com/python/reference/#histogram2dcontour-ybins) and `xbins`.
 
-
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 fig = make_subplots(2, 2)
 fig.add_trace(go.Histogram2d(
@@ -134,11 +112,6 @@ fig.show()
 
 
 # 2D Histogram Overlaid with a Scatter Chart
-
-
-import plotly.graph_objects as go
-
-import numpy as np
 
 x0 = np.random.randn(100) / 5. + 0.5  # 5. enforces float division
 y0 = np.random.randn(100) / 5. + 0.5

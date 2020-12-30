@@ -7,14 +7,19 @@
 
 
 import numpy as np
+import matplotlib.pyplot as plt
 import scipy.linalg as spla
 import scipy.sparse as sps
-import matplotlib.pyplot as plt
+import sys, os
 
-from pymor.basic import *
+#from pymor.basic import *
+from pymor.basic import InstationaryProblem, StationaryProblem, LineDomain, ConstantFunction, ExpressionFunction
+from pymor.basic import discretize_instationary_cg, NumpyMatrixOperator
 from pymor.models.iosys import LinearDelayModel
 from pymor.reductors.interpolation import DelayBHIReductor, TFBHIReductor
 
+sys.path.append(os.path.join("../"))
+from base import plot2d
 
 p = InstationaryProblem(
     StationaryProblem(
@@ -44,11 +49,11 @@ Atau = NumpyMatrixOperator(
 td_lti = LinearDelayModel(lti.A, (Atau,), (tau,), lti.B, lti.C, E=lti.E)
 print(td_lti)
 
-fig, ax = plt.subplots()
+obj = plot2d()
 w = np.logspace(-1, 2.5, 500)
-td_lti.mag_plot(w, ax=ax)
-ax.set_title('Magnitude plot of the FOM')
-plt.savefig("delay01.png")
+td_lti.mag_plot(w, ax=obj.axs)
+obj.axs.set_title('Magnitude plot of the FOM')
+obj.SavePng("delay01.png")
 
 
 # # Unstructured Hermite interpolation
@@ -58,40 +63,40 @@ interp = TFBHIReductor(td_lti)
 r = 3
 sigma = np.logspace(0, 1, r)
 sigma = np.concatenate((1j * sigma, -1j * sigma))
-b = td_lti.input_space.ones(2 * r)
-c = td_lti.output_space.ones(2 * r)
+#b = td_lti.input_space.ones(2 * r)
+#c = td_lti.output_space.ones(2 * r)
+b = np.ones((sigma.shape[0], td_lti.input_dim))
+c = np.ones((sigma.shape[0], td_lti.output_dim))
 
 rom = interp.reduce(sigma, b, c)
 err_rom = td_lti - rom
 
-fig, ax = plt.subplots()
-td_lti.mag_plot(w, ax=ax)
-rom.mag_plot(w, ax=ax)
-ax.set_title('Magnitude plot of the FOM and ROM')
-plt.savefig("delay02.png")
+obj.new_2Dfig(aspect="equal")
+td_lti.mag_plot(w, ax=obj.axs)
+rom.mag_plot(w, ax=obj.axs)
+obj.axs.set_title('Magnitude plot of the FOM and ROM')
+obj.SavePng("delay02.png")
 
-fig, ax = plt.subplots()
-err_rom.mag_plot(w, ax=ax)
-ax.set_title('Magnitude plot of the error')
-plt.savefig("delay03.png")
+obj.new_2Dfig(aspect="equal")
+err_rom.mag_plot(w, ax=obj.axs)
+obj.axs.set_title('Magnitude plot of the error')
+obj.SavePng("delay03.png")
 
 
-# # Delay-preserving reduction by Hermite interpolation
-
+# Delay-preserving reduction by Hermite interpolation
 delay_interp = DelayBHIReductor(td_lti)
-
 td_rom = delay_interp.reduce(sigma, b, c)
 err_td_rom = td_lti - td_rom
 
-fig, ax = plt.subplots()
-td_lti.mag_plot(w, ax=ax)
-rom.mag_plot(w, ax=ax)
-td_rom.mag_plot(w, ax=ax)
-ax.set_title('Magnitude plot of the FOM and ROMs')
-plt.savefig("delay04.png")
+obj.new_2Dfig()
+td_lti.mag_plot(w, ax=obj.axs)
+rom.mag_plot(w, ax=obj.axs)
+td_rom.mag_plot(w, ax=obj.axs)
+obj.axs.set_title('Magnitude plot of the FOM and ROMs')
+obj.SavePng("delay04.png")
 
-fig, ax = plt.subplots()
-err_rom.mag_plot(w, ax=ax, color='tab:orange')
-err_td_rom.mag_plot(w, ax=ax, color='tab:green')
-ax.set_title('Magnitude plot of the errors')
-plt.savefig("delay05.png")
+obj.new_2Dfig()
+err_rom.mag_plot(w, ax=obj.axs, color='tab:orange')
+err_td_rom.mag_plot(w, ax=obj.axs, color='tab:green')
+obj.axs.set_title('Magnitude plot of the errors')
+obj.SavePng("delay05.png")
