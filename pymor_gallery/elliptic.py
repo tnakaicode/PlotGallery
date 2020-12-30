@@ -8,9 +8,6 @@ from pymor.discretizers.builtin import discretize_stationary_cg
 from pymor.analyticalproblems.functions import ExpressionFunction, LincombFunction
 from pymor.parameters.functionals import ProjectionParameterFunctional, ExpressionParameterFunctional
 from time import sleep
-from ipywidgets import interact, widgets
-from pythreejs._example_helper import use_example_model_ids
-use_example_model_ids()
 
 
 rhs = ExpressionFunction('(x[..., 0] - 0.5)**2 * 1000', 2, ())
@@ -37,4 +34,8 @@ for mu in problem.parameter_space.sample_uniformly(args['samples']):
 
 
 Us = U * 1.5
+m.visualize((U, Us), title='Solution for diffusionl=0.5',
+            filename="./elliptic.vtk")
+# pip install pyevtk
+
 m.visualize((U, Us), title='Solution for diffusionl=0.5')

@@ -44,7 +44,7 @@ m.visualize(
     U, title='Solution for diffusionl in [0.1, 1]', separate_plots=True, separate_axes=False)
 
 # m.visualize(
-#    U, title='Solution for diffusionl in [0.1, 1]', separate_plots=True, separate_axes=False, filename="./elliptic_oned.vtk")
+#   U, title='Solution for diffusionl in [0.1, 1]', separate_plots=True, separate_axes=False, filename="./elliptic_oned.vtk")
 #
 # pymor\discretizers\builtin\gui\visualizers.py line 143
 #
