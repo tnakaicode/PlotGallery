@@ -41,7 +41,7 @@ regions = {
 }
 
 fields = {
-    'pressure': ('real', 1, 'Omega', 1)
+    'pressure':('real', 1, 'Omega', 1)
 }
 
 variables = {
@@ -52,7 +52,7 @@ variables = {
 }
 
 ebcs = {
-    'P1': ('Sigma_1', {'p1.0': 0.0}),
+    'P1': ('Sigma_1', {'p1.0' : 0.0}),
 }
 
 equations = {
@@ -70,30 +70,28 @@ equations = {
 solvers = {
     'ls': ('ls.scipy_direct', {}),
     'newton': ('nls.newton',
-               {'i_max': 1,
-                'eps_a': 1e-6,
-                'eps_r': 1.0,
+               {'i_max'      : 1,
+                'eps_a'      : 1e-6,
+                'eps_r'      : 1.0,
                 })
 }
-
 
 def mat_fun(ts, coors, mode=None, **kwargs):
     if mode == 'qp':
         nqp, dim = coors.shape
-        alpha = nm.zeros((nqp, 1, 1), dtype=nm.float64)
-        alpha[0:nqp // 2, ...] = alpha1
-        alpha[nqp // 2:, ...] = alpha2
+        alpha = nm.zeros((nqp,1,1), dtype=nm.float64)
+        alpha[0:nqp // 2,...] = alpha1
+        alpha[nqp // 2:,...] = alpha2
         K = nm.eye(dim, dtype=nm.float64)
-        K2 = nm.tile(K, (nqp, 1, 1))
+        K2 = nm.tile(K, (nqp,1,1))
         out = {
-            'K': K2,
-            'f_1': 20.0 * nm.ones((nqp, 1, 1), dtype=nm.float64),
-            'f_2': -20.0 * nm.ones((nqp, 1, 1), dtype=nm.float64),
+            'K' : K2,
+            'f_1': 20.0 * nm.ones((nqp,1,1), dtype=nm.float64),
+            'f_2': -20.0 * nm.ones((nqp,1,1), dtype=nm.float64),
             'G_alfa': G_bar * alpha,
-        }
+            }
 
         return out
-
 
 functions = {
     'mat_fun': (mat_fun,),
@@ -102,7 +100,6 @@ functions = {
 options = {
     'post_process_hook': 'postproc',
 }
-
 
 def postproc(out, pb, state, extend=False):
     alpha = pb.evaluate('ev_volume_integrate_mat.5.Omega(mat.G_alfa, p1)',
