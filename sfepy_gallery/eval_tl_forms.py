@@ -6,6 +6,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 import sympy as s
 
+
 def main():
     u1, u2, u3 = s.symbols(['u1', 'u2', 'u3'], commutative=False)
     u = s.Matrix([[u1], [u2], [u3]])
@@ -25,9 +26,9 @@ def main():
 
     ## z = s.zeros((3, 1))
 
-    ## g = s.Matrix([[gc, z, z],
+    # g = s.Matrix([[gc, z, z],
     ##               [z, gc, z],
-    ##               [z, z, gc]])
+    # [z, z, gc]])
 
     g = s.Matrix([[g1, 0, 0],
                   [g2, 0, 0],
@@ -41,7 +42,6 @@ def main():
 
     print(g)
     print(g * u)
-
 
     h = s.Matrix([[1, 0, 0, 0, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 1, 0, 0, 0, 0],
@@ -71,12 +71,12 @@ def main():
 
     s.pprint(b)
 
-    a = s.Matrix([[u11+1, 0, 0, u21, 0, 0, u31, 0, 0],
-                  [0, u12, 0, 0, u22+1, 0, 0, u32, 0],
-                  [0, 0, u13, 0, 0, u23, 0, 0, u33+1],
-                  [u12, u11+1, 0, u22+1, u21, 0, u32, u31, 0],
-                  [u13, 0, u11+1, u23, 0, u21, u33+1, 0, u31],
-                  [0, u13, u12, 0, u23, u22+1, 0, u33+1, u32]])
+    a = s.Matrix([[u11 + 1, 0, 0, u21, 0, 0, u31, 0, 0],
+                  [0, u12, 0, 0, u22 + 1, 0, 0, u32, 0],
+                  [0, 0, u13, 0, 0, u23, 0, 0, u33 + 1],
+                  [u12, u11 + 1, 0, u22 + 1, u21, 0, u32, u31, 0],
+                  [u13, 0, u11 + 1, u23, 0, u21, u33 + 1, 0, u31],
+                  [0, u13, u12, 0, u23, u22 + 1, 0, u33 + 1, u32]])
     print(a)
 
     print(a * g * u)
@@ -101,6 +101,7 @@ def main():
     b = a * g
 
     s.pprint(b)
+
 
 if __name__ == '__main__':
     main()

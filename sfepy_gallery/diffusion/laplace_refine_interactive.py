@@ -79,6 +79,7 @@ from sfepy.solvers.ls import ScipyDirect
 from sfepy.solvers.nls import Newton
 from sfepy.terms import Term
 
+
 def refine_towards_facet(domain0, grading, axis):
     subs = None
     domain = domain0
@@ -94,20 +95,22 @@ def refine_towards_facet(domain0, grading, axis):
 
     return domain, subs
 
+
 helps = {
-    'output_dir' :
+    'output_dir':
     'output directory',
-    'dims' :
+    'dims':
     'dimensions of the block [default: %(default)s]',
-    'shape' :
+    'shape':
     'shape (counts of nodes in x, y[, z]) of the block [default: %(default)s]',
-    'centre' :
+    'centre':
     'centre of the block [default: %(default)s]',
-    '3d' :
+    '3d':
     'generate a 3D block',
-    'order' :
+    'order':
     'field approximation order',
 }
+
 
 def main():
     parser = ArgumentParser(description=__doc__.rstrip(),
@@ -149,7 +152,8 @@ def main():
 
     cnt = (shape[0] - 1) // 2
     g0 = 0.5 * dims[0]
-    grading = nm.array([g0 / 2**ii for ii in range(cnt)]) + eps + centre[0] - g0
+    grading = nm.array([g0 / 2**ii for ii in range(cnt)]) + \
+        eps + centre[0] - g0
 
     domain, subs = refine_towards_facet(domain0, grading, 'x <')
 
@@ -171,7 +175,7 @@ def main():
     u = FieldVariable('u', 'unknown', field)
     v = FieldVariable('v', 'test', field, primary_var_name='u')
 
-    integral = Integral('i', order=2*options.order)
+    integral = Integral('i', order=2 * options.order)
 
     t1 = Term.new('dw_laplace(v, u)',
                   integral, omega, v=v, u=u)
@@ -200,8 +204,8 @@ def main():
         return val
 
     bc_fun = Function('u_fun', u_fun)
-    fix1 = EssentialBC('shift_u', gamma1, {'u.0' : bc_fun})
-    fix2 = EssentialBC('fix2', gamma2, {'u.all' : 0.0})
+    fix1 = EssentialBC('shift_u', gamma1, {'u.0': bc_fun})
+    fix2 = EssentialBC('fix2', gamma2, {'u.all': 0.0})
 
     ls = ScipyDirect({})
 
@@ -227,6 +231,7 @@ def main():
                                                             min_level=0,
                                                             max_level=8,
                                                             eps=1e-3))
+
 
 if __name__ == '__main__':
     main()

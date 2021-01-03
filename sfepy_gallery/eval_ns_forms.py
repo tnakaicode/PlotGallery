@@ -7,42 +7,48 @@ from __future__ import absolute_import
 import sympy as s
 from six.moves import range
 
+
 def create_scalar(name, n_ep):
     vec = s.zeros(n_ep, 1)
     for ip in range(n_ep):
-        vec[ip,0] = '%s%d' % (name, ip)
+        vec[ip, 0] = '%s%d' % (name, ip)
     return vec
+
 
 def create_vector(name, n_ep, dim):
     """ordering is DOF-by-DOF"""
     vec = s.zeros(dim * n_ep, 1)
     for ii in range(dim):
         for ip in range(n_ep):
-            vec[n_ep*ii+ip,0] = '%s%d%d' % (name, ii, ip)
+            vec[n_ep * ii + ip, 0] = '%s%d%d' % (name, ii, ip)
     return vec
+
 
 def create_scalar_base(name, n_ep):
     phi = s.zeros(1, n_ep)
     for ip in range(n_ep):
-        phi[0,ip] = '%s%d' % (name, ip)
+        phi[0, ip] = '%s%d' % (name, ip)
     return phi
+
 
 def create_vector_base(name, phic, dim):
     n_ep = phic.shape[1]
     phi = s.zeros(dim, dim * n_ep)
     indx = []
     for ii in range(dim):
-        phi[ii,n_ep*ii:n_ep*(ii+1)] = phic
+        phi[ii, n_ep * ii:n_ep * (ii + 1)] = phic
         indx.append(ii)
     return phi, indx
+
 
 def create_scalar_base_grad(name, phic, dim):
     n_ep = phic.shape[1]
     gc = s.zeros(dim, n_ep)
     for ii in range(dim):
         for ip in range(n_ep):
-            gc[ii,ip] = '%s%d%d' % (name, ii, ip)
+            gc[ii, ip] = '%s%d%d' % (name, ii, ip)
     return gc
+
 
 def create_vector_base_grad(name, gc, transpose=False):
     dim, n_ep = gc.shape
@@ -51,14 +57,15 @@ def create_vector_base_grad(name, gc, transpose=False):
     if transpose:
         for ir in range(dim):
             for ic in range(dim):
-                g[dim*ir+ic,n_ep*ic:n_ep*(ic+1)] = gc[ir,:]
+                g[dim * ir + ic, n_ep * ic:n_ep * (ic + 1)] = gc[ir, :]
                 indx.append((ic, ir))
     else:
         for ir in range(dim):
             for ic in range(dim):
-                g[dim*ir+ic,n_ep*ir:n_ep*(ir+1)] = gc[ic,:]
+                g[dim * ir + ic, n_ep * ir:n_ep * (ir + 1)] = gc[ic, :]
                 indx.append((ir, ic))
     return g, indx
+
 
 def create_u_operator(u, transpose=False):
     dim = u.shape[0]
@@ -66,11 +73,12 @@ def create_u_operator(u, transpose=False):
     if transpose:
         for ir in range(dim):
             for ic in range(dim):
-                op_u[dim*ir+ic,ic] = u[ir]
+                op_u[dim * ir + ic, ic] = u[ir]
     else:
         for ii in range(dim):
-            op_u[dim*ii:dim*(ii+1),ii] = u
+            op_u[dim * ii:dim * (ii + 1), ii] = u
     return op_u
+
 
 def grad_vector_to_matrix(name, gv):
     dim2 = gv.shape[0]
@@ -78,14 +86,16 @@ def grad_vector_to_matrix(name, gv):
     gm = s.zeros(dim, dim)
     for ir in range(dim):
         for ic in range(dim):
-            gm[ir,ic] = gv[dim*ir+ic,0]
+            gm[ir, ic] = gv[dim * ir + ic, 0]
     return gm
+
 
 def substitute_continuous(expr, names, u, phi):
     pu = phi * u
     for ii in range(phi.rows):
-        expr = expr.subs(pu[ii,0], names[ii])
+        expr = expr.subs(pu[ii, 0], names[ii])
     return expr
+
 
 def create_vector_var_data(name, phi, vindx, g, gt, vgindx, u):
     gu = g * u
@@ -117,21 +127,22 @@ def create_vector_var_data(name, phi, vindx, g, gt, vgindx, u):
     print(op_ut)
 
     out = {
-        'g' : gu,
-        'g_m' : gum,
-        'q' : pu,
-        'c' : cu,
-        'cg' : cgu,
-        'cg_m' : cgum,
-        'cgt' : cgut,
-        'cgt_m' : cgutm,
-        'op' : op_u,
-        'opt' : op_ut,
-        'names' : names,
-        'gnames' : gnames,
+        'g': gu,
+        'g_m': gum,
+        'q': pu,
+        'c': cu,
+        'cg': cgu,
+        'cg_m': cgum,
+        'cgt': cgut,
+        'cgt_m': cgutm,
+        'op': op_u,
+        'opt': op_ut,
+        'names': names,
+        'gnames': gnames,
     }
 
     return out
+
 
 def create_scalar_var_data(name, phi, g, u):
     gu = g * u
@@ -149,16 +160,17 @@ def create_scalar_var_data(name, phi, g, u):
     print(op_gu)
 
     out = {
-        'g' : gu,
-        'q' : pu,
-        'c' : cu,
-        'cg' : cgu,
-        'gop' : op_gu,
-        'names' : names,
-        'gnames' : gnames,
+        'g': gu,
+        'q': pu,
+        'c': cu,
+        'cg': cgu,
+        'gop': op_gu,
+        'names': names,
+        'gnames': gnames,
     }
 
     return out
+
 
 def main():
     n_ep = 3
@@ -258,6 +270,7 @@ def main():
     print(form1)
 
     return ud, vd, bd, pd, qd, rd
+
 
 if __name__ == '__main__':
     ud, vd, bd, pd, qd, rd = main()
