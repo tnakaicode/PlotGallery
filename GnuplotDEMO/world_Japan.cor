@@ -1,0 +1,15 @@
+#
+# $Id: world.cor,v 1.4 1993/09/27 17:12:03 alex Exp $
+#
+# Gnuplot world correspondences.  Feel free to check for and update
+# your site; especially if it represents a new location or you
+# know more precise coordinates for a site.  A (?) indicates
+# the site may not be correct.  Currently coordinates are generally
+# rounded to the nearest latitude and longitude.  It's fine, however,
+# to give as many decimal places with each as you like.
+# 
+# Japan
+139.294774527387 34.2255804  # Tokyo
+140.108642       36.2221190  # Tsukuba
+128.0255901      26.5707754  # Okinawa
+143.1487225      42.0163463  # Erimo-Misaki
