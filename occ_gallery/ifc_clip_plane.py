@@ -38,7 +38,7 @@ settings.set(settings.USE_PYTHON_OPENCASCADE, True)  # tells ifcopenshell to use
 
 # read the ifc file
 print("Loading ifc file ...", end="")
-ifc_filename = os.path.join('..', 'assets', 'ifc_models', 'IFC Schependomlaan.ifc')
+ifc_filename = "./assets/ifc_models/A_IFC_model.ifc"
 assert os.path.isfile(ifc_filename)
 ifc_file = ifcopenshell.open(ifc_filename)
 print("done.")
