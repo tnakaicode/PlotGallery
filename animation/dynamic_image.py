@@ -42,6 +42,6 @@ ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
 #
 # writer = animation.FFMpegWriter(
 #     fps=15, metadata=dict(artist='Me'), bitrate=1800)
-# ani.save("./dynamic_image.mp4")
+# ani.save("movie.mp4", writer=writer)
 
 plt.show()
