@@ -1,0 +1,61 @@
+---
+title: NOTE for pyMOR Tutorial
+---
+
+- Tutorial: Using pyMOR’s discretization toolkit
+  - A first equation without parameters
+  - Defining boundary conditions
+  - Another example
+  - Data functions defined from pixel graphics
+  - A parametric problem
+  - Multiple parameters
+  - Parameter-separability
+- Tutorial: Building a Reduced Basis
+  - Model setup
+  - Computing the snapshot data
+  - A trivial reduced basis
+  - Strong greedy algorithm
+  - Orthonormalization required
+  - Proper Orthogonal Decomposition
+  - Weak greedy algorithm
+- Tutorial: Projecting a Model
+  - Model setup
+  - Solving the Model
+  - Galerkin Projection
+    - <https://docs.pymor.org/2020.2.0/tutorial_projection.html#galerkin-projection>
+  - Building the ROM
+  - Offline/Online Decomposition
+  - Letting pyMOR do the work
+  - Using Reductors
+- Tutorial: Linear time-invariant systems
+  - Building a model
+  - Transfer function evaluation
+  - Magnitude and Bode plots
+  - System poles
+  - System Gramians
+  - Hankel singular values
+  - System norms
+  - H2 norm
+  - H∞ norm
+  - Hankel norm
+- Tutorial: Reducing an LTI system using balanced truncation
+  - Balanced truncation
+  - Balanced truncation in pyMOR
+- Tutorial: Model order reduction with artificial neural networks
+  - Feedforward neural networks
+  - A non-intrusive reduced order method using artificial neural networks
+- Tutorial: Model order reduction for PDE-constrained optimization problems
+  - An elliptic model problem with a linear objective functional
+  - Optimizing with the FOM using finite differences
+  - Optimizing with the ROM using finite differences
+  - Computing the gradient of the objective functional
+  - Optimizing using a gradient in FOM
+  - Optimizing using a gradient in ROM
+  - Beyond the traditional offline/online splitting: enrich along the path of optimization
+  - Adaptively enriching along the path
+  - Conclusion and some general words about MOR methods for optimization
+- Tutorial: Binding an external PDE solver to pyMOR
+  - Defining the PDE solver
+  - Binding the solver to Python
+  - Using the exported Python classes with pyMOR
+  - Putting it all together
