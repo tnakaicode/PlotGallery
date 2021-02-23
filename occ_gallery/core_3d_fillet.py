@@ -17,7 +17,7 @@
 
 from OCC.Core.gp import gp_Pnt, gp_Pln, gp_Vec
 from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo
-from OCC.Core.ChFi3d import ChFi3d_Builder, ChFi3d_FilBuilder
+from OCC.Core.ChFi3d import ChFi3d_Builder, ChFi3d_FilBuilder, ChFi3d_ChBuilder, ChFi3d_FilletShape
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCCUtils.Construct import make_plane
 
@@ -44,7 +44,7 @@ fillet2d = f.Result(ed1, ed2)
 
 pln1 = make_plane(gp_Pnt(+200,0,0), gp_Vec(1,0,1))
 pln2 = make_plane(gp_Pnt(-200,0,0), gp_Vec(-1,0,1))
-f = ChFi3d_Builder()
+#f = ChFi3d_FilBuilder()
 
 # Create and display a wire
 w = make_wire([ed1, fillet2d, ed2])
