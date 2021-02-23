@@ -44,4 +44,7 @@ the_shape = read_step_file('./assets/models/as1_pe_203.stp')
 display.register_select_callback(vertex_clicked)
 display.DisplayShape(the_shape, update=True)
 display.SetSelectionModeVertex()  # switch to Vertex selection mode
+#display.SetSelectionModeFace()
+#display.SetSelectionModeNeutral()
+#display.SetSelectionModeEdge()
 start_display()

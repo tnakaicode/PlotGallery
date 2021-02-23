@@ -64,7 +64,7 @@ class TestOCAF(unittest.TestCase):
         shape_tool=XCAFDoc_DocumentTool.ShapeTool(doc.Main())
         colors=XCAFDoc_DocumentTool.ColorTool(doc.Main())
         # create the shape to export
-        test_shape=BRepPrimAPI_MakeBox(100., 100., 100.).Shape(
+        test_shape=BRepPrimAPI_MakeBox(100., 100., 100.).Shape()
         # add shape
         shp_label=shape_tool.AddShape(test_shape)
         # set a color for this shape
@@ -81,7 +81,7 @@ class TestOCAF(unittest.TestCase):
         self.assertTrue(status)
         self.assertTrue(os.path.isfile("./test_io/test_ocaf_generated.stp"))
 
-    def test_read_step_file(self) -> None:
+    def test_read_step_file(self):
         ''' Reads the previous step file '''
         # create an handle to a document
         doc=TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
@@ -116,7 +116,7 @@ class TestOCAF(unittest.TestCase):
         self.assertFalse(a_shape.IsNull())
 
 
-def suite() -> unittest.TestSuite:
+def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestOCAF))
     return suite
