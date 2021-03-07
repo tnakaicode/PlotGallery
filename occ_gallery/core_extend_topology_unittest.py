@@ -19,7 +19,7 @@
 
 import unittest
 
-from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus, BRepPrimAPI_MakeBox
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus, BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
 from OCC.Extend.TopologyUtils import (TopologyExplorer, WireExplorer,
                                       discretize_edge, discretize_wire)
 from OCC.Core.TopoDS import TopoDS_Face, TopoDS_Edge

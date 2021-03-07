@@ -36,15 +36,14 @@ ed1 = BRepBuilderAPI_MakeEdge(p3, p2).Edge()
 ed2 = BRepBuilderAPI_MakeEdge(p2, p1).Edge()
 
 # Making the 2dFillet
-f = ChFi2d_AnaFilletAlgo()
-f.Init(ed1, ed2, gp_Pln())
-radius = 1.0
-f.Perform(radius)
-fillet2d = f.Result(ed1, ed2)
+f2 = ChFi2d_AnaFilletAlgo()
+f2.Init(ed1, ed2, gp_Pln())
+f2.Perform(1.0) # radius
+fillet2d = f2.Result(ed1, ed2)
 
 pln1 = make_plane(gp_Pnt(+200,0,0), gp_Vec(1,0,1))
 pln2 = make_plane(gp_Pnt(-200,0,0), gp_Vec(-1,0,1))
-#f = ChFi3d_FilBuilder()
+f3 = ChFi3d_FilBuilder(pln1)
 
 # Create and display a wire
 w = make_wire([ed1, fillet2d, ed2])
