@@ -1216,6 +1216,7 @@ def main():
     # On -f set the appropriate DocBuilder to use or a default one.
     builderClassName = optsDict.get('-f', 'Pdf') + 'DocBuilder0'
     builder = eval(builderClassName + '()')
+    builder.outPath="./docpy.pdf"
 
     # Set default module or package to document.
     if not hasOpt('-p') and not hasOpt('-m'):

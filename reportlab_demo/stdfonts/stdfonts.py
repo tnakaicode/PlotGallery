@@ -53,10 +53,12 @@ def run(mode):
                 col, row = divmod(byt - 32, 32)
                 x = 72 + (66*col)
                 y = 720 - (18*row)
+                c = chr(byt)
                 canv.setFont('Helvetica', 14)
                 canv.drawString(x, y, label_formatter % byt)
                 canv.setFont(fontName, 14)
-                canv.drawString(x+44, y, chr(byt).decode(encLabel,'ignore').encode('utf8'))
+                #canv.drawString(x+44, y, c.decode(encLabel,'ignore').encode('utf8'))
+                canv.drawString(x+44, y, c)
             canv.showPage()
         canv.save()
 
