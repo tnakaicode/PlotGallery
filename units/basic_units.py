@@ -5,6 +5,7 @@ Basic Units
 
 """
 
+from distutils.version import LooseVersion
 import math
 
 import numpy as np
@@ -43,7 +44,7 @@ class PassThroughProxy:
 
 class ConvertArgsProxy(PassThroughProxy):
     def __init__(self, fn_name, obj):
-        PassThroughProxy.__init__(self, fn_name, obj)
+        super().__init__(fn_name, obj)
         self.unit = obj.unit
 
     def __call__(self, *args):
@@ -54,23 +55,23 @@ class ConvertArgsProxy(PassThroughProxy):
             except AttributeError:
                 converted_args.append(TaggedValue(a, self.unit))
         converted_args = tuple([c.get_value() for c in converted_args])
-        return PassThroughProxy.__call__(self, *converted_args)
+        return super().__call__(*converted_args)
 
 
 class ConvertReturnProxy(PassThroughProxy):
     def __init__(self, fn_name, obj):
-        PassThroughProxy.__init__(self, fn_name, obj)
+        super().__init__(fn_name, obj)
         self.unit = obj.unit
 
     def __call__(self, *args):
-        ret = PassThroughProxy.__call__(self, *args)
+        ret = super().__call__(*args)
         return (NotImplemented if ret is NotImplemented
                 else TaggedValue(ret, self.unit))
 
 
 class ConvertAllProxy(PassThroughProxy):
     def __init__(self, fn_name, obj):
-        PassThroughProxy.__init__(self, fn_name, obj)
+        super().__init__(fn_name, obj)
         self.unit = obj.unit
 
     def __call__(self, *args):
@@ -96,7 +97,7 @@ class ConvertAllProxy(PassThroughProxy):
                 else:
                     arg_units.append(None)
         converted_args = tuple(converted_args)
-        ret = PassThroughProxy.__call__(self, *converted_args)
+        ret = super().__call__(*converted_args)
         if ret is NotImplemented:
             return NotImplemented
         ret_unit = unit_resolver(self.fn_name, arg_units)
@@ -153,6 +154,10 @@ class TaggedValue(metaclass=TaggedValueMeta):
 
     def __len__(self):
         return len(self.value)
+
+    if LooseVersion(np.__version__) >= '1.20':
+        def __getitem__(self, key):
+            return TaggedValue(self.value[key], self.unit)
 
     def __iter__(self):
         # Return a generator expression rather than use `yield`, so that
@@ -215,7 +220,7 @@ class BasicUnit:
         return TaggedValue(array, self)
 
     def __array__(self, t=None, context=None):
-        ret = np.array([1])
+        ret = np.array(1)
         if t is not None:
             return ret.astype(t)
         else:

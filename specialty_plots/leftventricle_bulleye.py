@@ -28,10 +28,9 @@ def bullseye_plot(ax, data, seg_bold=None, cmap=None, norm=None):
     norm : Normalize or None, optional
         Optional argument to normalize data into the [0.0, 1.0] range
 
-
     Notes
     -----
-    This function create the 17 segment model for the left ventricle according
+    This function creates the 17 segment model for the left ventricle according
     to the American Heart Association (AHA) [1]_
 
     References
@@ -135,7 +134,7 @@ data = np.arange(17) + 1
 # Make a figure and axes with dimensions as desired.
 fig, ax = plt.subplots(figsize=(12, 8), nrows=1, ncols=3,
                        subplot_kw=dict(projection='polar'))
-fig.canvas.set_window_title('Left Ventricle Bulls Eyes (AHA)')
+fig.canvas.manager.set_window_title('Left Ventricle Bulls Eyes (AHA)')
 
 # Create the axis for the colorbars
 axl = fig.add_axes([0.14, 0.15, 0.2, 0.05])
@@ -163,9 +162,8 @@ fig.colorbar(mpl.cm.ScalarMappable(cmap=cmap2, norm=norm2),
 # The second example illustrates the use of a ListedColormap, a
 # BoundaryNorm, and extended ends to show the "over" and "under"
 # value colors.
-cmap3 = mpl.colors.ListedColormap(['r', 'g', 'b', 'c'])
-cmap3.set_over('0.35')
-cmap3.set_under('0.75')
+cmap3 = (mpl.colors.ListedColormap(['r', 'g', 'b', 'c'])
+         .with_extremes(over='0.35', under='0.75'))
 # If a ListedColormap is used, the length of the bounds array must be
 # one greater than the length of the color list.  The bounds must be
 # monotonically increasing.

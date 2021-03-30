@@ -1,7 +1,7 @@
 """
-=============
-WXcursor Demo
-=============
+=====================
+Adding a cursor in WX
+=====================
 
 Example to draw a cursor and report the data coords in wx.
 """
@@ -16,10 +16,10 @@ import wx
 
 class CanvasFrame(wx.Frame):
     def __init__(self, ):
-        wx.Frame.__init__(self, None, -1, 'CanvasFrame', size=(550, 350))
+        super().__init__(None, -1, 'CanvasFrame', size=(550, 350))
 
         self.figure = Figure()
-        self.axes = self.figure.add_subplot(111)
+        self.axes = self.figure.add_subplot()
         t = np.arange(0.0, 3.0, 0.01)
         s = np.sin(2*np.pi*t)
 

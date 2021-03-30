@@ -48,12 +48,12 @@ class GeoAxes(Axes):
         self.xaxis = maxis.XAxis(self)
         self.yaxis = maxis.YAxis(self)
         # Do not register xaxis or yaxis with spines -- as done in
-        # Axes._init_axis() -- until GeoAxes.xaxis.cla() works.
+        # Axes._init_axis() -- until GeoAxes.xaxis.clear() works.
         # self.spines['geo'].register_axis(self.yaxis)
         self._update_transScale()
 
     def cla(self):
-        Axes.cla(self)
+        super().cla()
 
         self.set_longitude_grid(30)
         self.set_latitude_grid(15)
@@ -76,13 +76,13 @@ class GeoAxes(Axes):
 
         # There are three important coordinate spaces going on here:
         #
-        #    1. Data space: The space of the data itself
+        # 1. Data space: The space of the data itself
         #
-        #    2. Axes space: The unit rectangle (0, 0) to (1, 1)
-        #       covering the entire plot area.
+        # 2. Axes space: The unit rectangle (0, 0) to (1, 1)
+        #    covering the entire plot area.
         #
-        #    3. Display space: The coordinates of the resulting image,
-        #       often in pixels or dpi/inch.
+        # 3. Display space: The coordinates of the resulting image,
+        #    often in pixels or dpi/inch.
 
         # This function makes heavy use of the Transform classes in
         # ``lib/matplotlib/transforms.py.`` For more information, see
@@ -338,14 +338,16 @@ class GeoAxes(Axes):
     # so we override all of the following methods to disable it.
     def can_zoom(self):
         """
-        Return *True* if this axes supports the zoom box button functionality.
+        Return whether this axes supports the zoom box button functionality.
+
         This axes object does not support interactive zoom box.
         """
         return False
 
     def can_pan(self):
         """
-        Return *True* if this axes supports the pan/zoom button functionality.
+        Return whether this axes supports the pan/zoom button functionality.
+
         This axes object does not support interactive pan/zoom.
         """
         return False
@@ -370,7 +372,7 @@ class HammerAxes(GeoAxes):
 
     # The projection must specify a name. This will be used by the
     # user to select the projection,
-    # i.e. ``subplot(111, projection='custom_hammer')``.
+    # i.e. ``subplot(projection='custom_hammer')``.
     name = 'custom_hammer'
 
     class HammerTransform(Transform):
@@ -426,7 +428,7 @@ class HammerAxes(GeoAxes):
 
     def __init__(self, *args, **kwargs):
         self._longitude_cap = np.pi / 2.0
-        GeoAxes.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.set_aspect(0.5, adjustable='box', anchor='C')
         self.cla()
 
@@ -441,8 +443,8 @@ register_projection(HammerAxes)
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     # Now make a simple example using the custom projection.
-    plt.subplot(111, projection="custom_hammer")
-    p = plt.plot([-1, 1, 1], [-1, -1, 1], "o-")
-    plt.grid(True)
+    fig, ax = plt.subplots(subplot_kw={'projection': 'custom_hammer'})
+    ax.plot([-1, 1, 1], [-1, -1, 1], "o-")
+    ax.grid()
 
     plt.show()
