@@ -1,0 +1,26 @@
+# abaqus_pde.deps
+# Used by Abaqus/PDE to save File Menu data
+#
+::Recent Traced Files
+::Recent Main Files
+/home/lcharleux/Documents/Programmation/Python/Modules/argiope/doc/abq/abqpostproc/workdir/abpostproc.py
+::Recent Files
+/home/lcharleux/Documents/Programmation/Python/Modules/argiope/doc/abq/abqpostproc/workdir/abpostproc.py
+::abpostproc.py
+/home/lcharleux/Documents/Programmation/Python/Modules/argiope/argiope/__init__.py
+/home/lcharleux/Documents/Programmation/Python/Modules/argiope/argiope/abq/__init__.py
+/home/lcharleux/Documents/Programmation/Python/Modules/argiope/argiope/abq/abqpostproc.py
+/home/lcharleux/Documents/Programmation/Python/Modules/argiope/doc/abq/abqpostproc/workdir/abpostproc.py
+/opt/abaqus/scratch/6.13-1/CAEresources/Configuration/Xresources/en_US/en_US_PyDict.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/UserDict.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/codecs.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/encodings/__init__.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/encodings/mbcs.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/encodings/utf_8.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/filecmp.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/genericpath.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/glob.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/posixpath.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/re.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/sre_compile.py
+/opt/abaqus/scratch/6.13-1/tools/SMApy/python2.6/lib/python2.6/sre_parse.py

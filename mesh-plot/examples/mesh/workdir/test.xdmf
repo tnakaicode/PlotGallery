@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+   <Domain>
+     <Grid Name="Mesh">
+       <Topology TopologyType="Mixed" NumberOfElements="12476">
+         <DataItem Format="HDF" Dimensions="62380">
+           test.h5:/CONNECTIVITY/block0_values
+         </DataItem>
+       </Topology>
+       <Geometry GeometryType="XYZ">
+         <DataItem Format="HDF" Dimensions="12759 3">
+           test.h5:/COORDS/block0_values
+         </DataItem>
+       </Geometry>  
+     </Grid>
+   </Domain>
+</Xdmf>
