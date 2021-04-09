@@ -19,13 +19,17 @@
 import os
 
 from OCC.Display.SimpleGui import init_display
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Trsf
+from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.Addons import text_to_brep, register_font, Font_FA_Regular, Font_FA_Undefined
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 # resgister font
-register_font("./assets/fonts/Respective.ttf")
-register_font("./assets/fonts/METROLOX.ttf")
+register_font("./fonts/Respective.ttf")
+register_font("./fonts/METROLOX.ttf")
 
 text = """
 Japan
@@ -37,6 +41,10 @@ arialbold_brep_string1 = text_to_brep(
 
 arialbold_brep_string2 = text_to_brep(
     text, "METOLOX", Font_FA_Regular, 10., True)
+
+trf = gp_Trsf()
+trf.SetDisplacement(gp_Ax3(), gp_Ax3(gp_Pnt(0, 20, 0), gp_Dir(0, 0, 1)))
+arialbold_brep_string2.Move(TopLoc_Location(trf))
 
 # Then display the string
 display.DisplayShape(arialbold_brep_string1)
