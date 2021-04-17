@@ -4,6 +4,8 @@ import pyqtgraph as pg
 import sys  # We need sys so that we can pass argv to QApplication
 import os
 
+# pip install pyqtgraph
+
 
 class MainWindow(QtWidgets.QMainWindow):
 
