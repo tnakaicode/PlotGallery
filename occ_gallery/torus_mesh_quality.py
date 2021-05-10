@@ -11,7 +11,12 @@ from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus
 from OCC.Core.gp import gp_Vec
 from OCC.Display.WebGl.jupyter_renderer import JupyterRenderer, NORMAL
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+
+sys.path.append('..')
 from OCC.Extend.ShapeFactory import translate_shp
+
+
+# In[ ]:
 
 
 # create 3 toruses
@@ -19,6 +24,9 @@ from OCC.Extend.ShapeFactory import translate_shp
 torus_shp1 = BRepPrimAPI_MakeTorus(20, 5).Shape()
 torus_shp2 = translate_shp(torus_shp1, gp_Vec(60, 0, 0), copy=True)
 torus_shp3 = translate_shp(torus_shp1, gp_Vec(-60, 0, 0), copy=True)
+
+
+# In[ ]:
 
 
 # use the NORMAL.CLIENT_SIDE in order to clearly see faces

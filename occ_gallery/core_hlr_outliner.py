@@ -27,7 +27,7 @@ from OCC.Core.HLRBRep import HLRBRep_Algo, HLRBRep_HLRToShape
 cylinder_head = TopoDS_Shape()
 outt = TopoDS_Shape()
 builder = BRep_Builder()
-breptools_Read(cylinder_head, './assets/models/cylinder_head.brep', builder)
+breptools_Read(cylinder_head, '../assets/models/cylinder_head.brep', builder)
 
 myAlgo = HLRBRep_Algo()
 myAlgo.Add(cylinder_head)

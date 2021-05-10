@@ -65,7 +65,7 @@ from OCC.Core.BRep import BRep_Builder
 
 cylinder_head = TopoDS_Shape()
 builder = BRep_Builder()
-breptools_Read(cylinder_head, './assets/models/cylinder_head.brep', builder)
+breptools_Read(cylinder_head, '../assets/models/cylinder_head.brep', builder)
 obb2 = Bnd_OBB()
 brepbndlib_AddOBB(cylinder_head, obb2, True, True, True)
 obb_shape2 = ConvertBndToShape(obb2)

@@ -40,7 +40,7 @@ from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_FACE
 from OCC.Core.TopTools import TopTools_ListOfShape
 
-def face_is_plane(face=TopoDS_Face):
+def face_is_plane(face: TopoDS_Face) -> bool:
     """
     Returns True if the TopoDS_Face is a plane, False otherwise
     """
@@ -49,7 +49,7 @@ def face_is_plane(face=TopoDS_Face):
     return surf_type == GeomAbs_Plane
 
 
-def geom_plane_from_face(aFace=TopoDS_Face):
+def geom_plane_from_face(aFace: TopoDS_Face) -> gp_Pln:
     """
     Returns the geometric plane entity from a planar surface
     """

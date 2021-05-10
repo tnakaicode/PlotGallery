@@ -39,12 +39,9 @@ def vertex_clicked(shp, *kwargs):
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 # loads  and displays a step file
-the_shape = read_step_file('./assets/models/as1_pe_203.stp')
+the_shape = read_step_file('../assets/models/as1_pe_203.stp')
 
 display.register_select_callback(vertex_clicked)
 display.DisplayShape(the_shape, update=True)
 display.SetSelectionModeVertex()  # switch to Vertex selection mode
-#display.SetSelectionModeFace()
-#display.SetSelectionModeNeutral()
-#display.SetSelectionModeEdge()
 start_display()
