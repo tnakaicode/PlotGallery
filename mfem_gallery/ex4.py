@@ -6,7 +6,7 @@
 from mfem import path
 import mfem.ser as mfem
 from mfem.ser import intArray
-from os.path import expanduser, join
+from os.path import expanduser, join, dirname, exists
 import numpy as np
 from numpy import sin, array, cos
 
@@ -18,7 +18,12 @@ freq = 1.0
 kappa = np.pi*freq
 
 order = 1
+
+
 meshfile = expanduser(join(path, 'data', 'star.mesh'))
+if not exists(meshfile):
+    path = dirname(dirname(__file__))
+    meshfile = expanduser(join(path, 'data', 'star.mesh'))
 
 mesh = mfem.Mesh(meshfile, 1,1)
 dim = mesh.Dimension()
@@ -42,7 +47,7 @@ class f_exact(mfem.VectorPyCoefficient):
     def EvalValue(self, p):
        dim = p.shape[0]
        x = p[0]; y = p[1]
-       temp = 1 + 2*kappa*kappa
+       temp = 1. + 2.*kappa*kappa
        
        F0 = temp * cos(kappa*x)*sin(kappa*y)
        F1 = temp * cos(kappa*y)*sin(kappa*x)       
@@ -94,22 +99,24 @@ elif (hybridization):
 a.Assemble();
 
 
-A = mfem.SparseMatrix()
+A = mfem.OperatorPtr()
 B = mfem.Vector()
 X = mfem.Vector()
 a.FormLinearSystem(ess_tdof_list, x, b, A, X, B);
 ## Here, original version calls hegith, which is not
 ## defined in the header...!?
-print("Size of linear system: " + str(A.Size())) 
+print("Size of linear system: " + str(A.Height())) 
 
-# 10. Solve 
-M = mfem.GSSmoother(A)
-mfem.PCG(A, M, B, X, 1, 10000, 1e-20, 0.0);
+# 10. Solve
+AA = mfem.OperatorHandle2SparseMatrix(A)
+M = mfem.GSSmoother(AA)
+X.Print("x")
+mfem.PCG(AA, M, B, X, 1, 10000, 1e-20, 0.0);
 
 # 11. Recover the solution as a finite element grid function.
 a.RecoverFEMSolution(X, b, x);
 
 print("|| F_h - F ||_{L^2} = " + str(x.ComputeL2Error(F)))
 
-mesh.PrintToFile('refined.mesh', 8)
-x.SaveToFile('sol.gf', 8)
+mesh.Print('refined.mesh', 8)
+x.Save('sol.gf', 8)

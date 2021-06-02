@@ -9,27 +9,81 @@
       refinement loop. 
       See c++ version in the MFEM library for more detail 
 '''
+import sys
+from mfem.common.arg_parser import ArgParser
 from mfem import path
 import mfem.ser as mfem
-from mfem.ser import intArray, add_vector, add_sparse
+from mfem.ser import intArray, add_vector, Add
 from os.path import expanduser, join
 import numpy as np
 from numpy import sqrt, pi, cos, sin, hypot, arctan2
 from scipy.special import erfc
 
+parser = ArgParser(description='Ex10')
+parser.add_argument('-m', '--mesh',
+                    default = 'beam-quad.mesh', 
+                    action = 'store', type = str,
+                    help='Mesh file to use.')
+parser.add_argument('-r', '--refine-serial',
+                    action = 'store', default = 2, type=int,
+       help = "Number of times to refine the mesh uniformly before parallel")
+parser.add_argument('-o', '--order',
+                    action = 'store', default = 2, type=int,
+                    help = "Finite element order (polynomial degree)");
+help_ode = "\n".join(["ODE solver: 1 - Backward Euler, 2 - SDIRK2, 3 - SDIRK3",
+                      "\t11 - Forward Euler, 12 - RK2",
+                      "\t13 - RK3 SSP, 14 - RK4."])
+parser.add_argument('-s', '--ode-solver',
+                    action = 'store', default = 3, type=int,
+                    help = help_ode)
+parser.add_argument('-tf', '--t-final',
+                    action = 'store', default = 300.0, type=float,
+                    help = "Final time; start time is 0.")
+parser.add_argument('-dt', '--time-step',
+                    action = 'store', default = 3.0, type=float,
+                    help = "Time step")
+parser.add_argument("-v", "--viscosity",
+                    action = 'store', default = 1e-2, type=float,
+                    help = "Viscosity coefficient.")
+parser.add_argument("-mu", "--shear-modulus",
+             action = 'store', default = 0.25, type=float,                    
+             help = "Shear modulus in the Neo-Hookean hyperelastic model.")
+parser.add_argument("-K", "--bulk-modulus",
+             action = 'store', default = 5.0, type=float,                    
+             help = "Bulk modulus in the Neo-Hookean hyperelastic model.");
+parser.add_argument('-vis', '--visualization',
+                    action = 'store_true', default = True, 
+                    help='Enable GLVis visualization')
+parser.add_argument("-vs", "--visualization-steps",
+                    action = 'store', default = 1,  type = int,
+                    help = "Visualize every n-th timestep.");
+args = parser.parse_args()
+
+ref_levels = args.refine_serial
+order = args.order
+ode_solver_type = args.ode_solver
+t_final = args.t_final
+dt = args.time_step
+visc = args.viscosity
+mu = args.shear_modulus
+K = args.bulk_modulus
+visualization = args.visualization
+vis_steps = args.visualization_steps
+parser.print_options(args)
+'''
 ref_levels = 2
-order = 2
+order = 1
 ode_solver_type = 3
-t_final = 100.0
-dt = 3.0
+t_final = 300.0
+dt = 3
 visc = 1e-2
 mu = 0.25
 K = 5.0
 
 vis_steps = 1
+'''
 
-
-meshfile = expanduser(join(path, 'data', 'beam-quad.mesh'))
+meshfile = expanduser(join(path, 'data', args.mesh))
 mesh = mfem.Mesh(meshfile, 1,1)
 dim = mesh.Dimension()
 #        self.solver.SetOperator(M)
@@ -113,9 +167,12 @@ class ElasticEnergyCoefficient(mfem.PyCoefficient):
     def Eval(self, T, ip):
         self.model.SetTransformation(T)
         self.x.GetVectorGradient(T, self.J)
+        #T.Jacobian().Print()        
+        #print self.x.GetDataArray()
+        #self.J.Print()        
         return self.model.EvalW(self.J)/(self.J.Det())
-    
-class BackwardEulerOperator(mfem.PyOperator):
+
+class ReducedSystemOperator(mfem.PyOperator):    
     def __init__(self, M, S, H):
         mfem.PyOperator.__init__(self, M.Height())
         self.M = M
@@ -126,8 +183,8 @@ class BackwardEulerOperator(mfem.PyOperator):
         self.w = mfem.Vector(h)
         self.z = mfem.Vector(h)
         self.dt = 0.0
-#        v = mfem.Vector()
-#        self.x = None
+        self.v = None
+        self.x = None
         
     def SetParameters(self, dt, v, x):
         self.dt = dt
@@ -142,7 +199,7 @@ class BackwardEulerOperator(mfem.PyOperator):
         self.S.AddMult(self.w, y)
 
     def GetGradient(self, k):
-        Jacobian = add_sparse(1.0, self.M.SpMat(), self.dt, self.S.SpMat())
+        Jacobian = Add(1.0, self.M.SpMat(), self.dt, self.S.SpMat())
         self.Jacobian = Jacobian
         add_vector(self.v, self.dt, k, self.w)
         add_vector(self.x, self.dt, self.w, self.z)
@@ -158,7 +215,7 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
         rel_tol = 1e-8;
         skip_zero_entries = 0;
         ref_density = 1.0
-        self.z = mfem.Vector(self.Height()/2)
+        self.z = mfem.Vector(self.Height()//2)
         self.fespace =  fespace
         self.viscosity = visc
        
@@ -187,7 +244,7 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
        
         self.M_solver = M_solver
         self.M_prec = M_prec
-       
+
         model = mfem.NeoHookeanModel(mu, K)
         H.AddDomainIntegrator(mfem.HyperelasticNLFIntegrator(model))
         H.SetEssentialBC(ess_bdr)
@@ -199,7 +256,7 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
         S.EliminateEssentialBC(ess_bdr)
         S.Finalize(skip_zero_entries)
 
-        self.backward_euler_oper = BackwardEulerOperator(M, S, H)        
+        self.reduced_oper = ReducedSystemOperator(M, S, H)        
        
         J_prec = mfem.DSmoother(1);
         J_minres = mfem.MINRESSolver()
@@ -215,7 +272,7 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
         newton_solver = mfem.NewtonSolver()
         newton_solver.iterative_mode = False
         newton_solver.SetSolver(self.J_solver);
-        newton_solver.SetOperator(self.backward_euler_oper);
+        newton_solver.SetOperator(self.reduced_oper);
         newton_solver.SetPrintLevel(1); #print Newton iterations
         newton_solver.SetRelTol(rel_tol);
         newton_solver.SetAbsTol(0.0);
@@ -223,20 +280,20 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
         self.newton_solver = newton_solver
        
     def Mult(self, vx, vx_dt):    
-        sc = self.Height()/2
+        sc = self.Height()//2
         v = mfem.Vector(vx, 0,  sc)
         x = mfem.Vector(vx, sc,  sc)
         dv_dt = mfem.Vector(dvx_dt, 0, sc)
         dx_dt = mfem.Vector(dvx_dt, sc,  sc)
-
         self.H.Mult(x, z);
         if (self.viscosity != 0.0):  S.AddMult(v, z)
         z.Neg()
         M_solver.Mult(z, dv_dt);
         dx_dt = v;
+#        Print(vx.Size())
 
     def ImplicitSolve(self, dt, vx, dvx_dt):
-        sc = self.Height()/2
+        sc = self.Height()//2
         v = mfem.Vector(vx, 0,  sc)
         x = mfem.Vector(vx, sc,  sc)
         dv_dt = mfem.Vector(dvx_dt, 0, sc)
@@ -248,7 +305,7 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
         # we reduce it to a nonlinear equation for kv, represented by the
         # backward_euler_oper. This equation is solved with the newton_solver
         # object (using J_solver and J_prec internally).
-        self.backward_euler_oper.SetParameters(dt, v, x)
+        self.reduced_oper.SetParameters(dt, v, x)
         zero = mfem.Vector() # empty vector is interpreted as
                              # zero r.h.s. by NewtonSolver
         self.newton_solver.Mult(zero, dv_dt)
@@ -263,7 +320,7 @@ class HyperelasticOperator(mfem.PyTimeDependentOperator):
     def GetElasticEnergyDensity(self, x, w):
         w_coeff = ElasticEnergyCoefficient(self.model, x)
         w.ProjectCoefficient(w_coeff)
-       
+        
 oper = HyperelasticOperator(fespace, ess_bdr, visc, mu, K)
 ee0 = oper.ElasticEnergy(x)
 ke0 = oper.KineticEnergy(v)
@@ -278,10 +335,10 @@ ode_solver.Init(oper)
 t = 0. ; ti = 1
 last_step = False;
 while not last_step:
-    ti = ti + 1
     if (t + dt >= t_final - dt/2): last_step = True
+
     t, dt = ode_solver.Step(vx, t, dt)
-    print ti % vis_steps
+
     if (last_step or (ti % vis_steps) == 0):
         ee = oper.ElasticEnergy(x)
         ke = oper.KineticEnergy(v)
@@ -291,17 +348,21 @@ while not last_step:
                 ", dTE = " + str((ee+ke)-(ee0+ke0)))
 
         print(text)
-
-
+    ti = ti + 1
 #
 # if i translate c++ line-by-line, ti seems the second swap does not work...
 #
-v.SaveToFile('velocity.sol', 8)
-oper.GetElasticEnergyDensity(x, w)
-w.SaveToFile('elastic_energy.sol',  8)        
+nodes = x
 owns_nodes = 0
-node, own_nodes = mesh.SwapNodes(x, owns_nodes)
-mesh.PrintToFile('deformed.mesh', 8)
+nodes, owns_nodes = mesh.SwapNodes(nodes, owns_nodes)
+mesh.Print('deformed.mesh', 8)
+mesh.SwapNodes(nodes, owns_nodes)
+v.Save('velocity.sol', 8)
+oper.GetElasticEnergyDensity(x, w)
+w.Save('elastic_energy.sol',  8)
+
+
+
 
 
 

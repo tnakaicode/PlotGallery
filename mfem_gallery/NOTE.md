@@ -18,3 +18,23 @@ cd ..
 
 "Windows is not supported yet. Contribution is welcome"
 AssertionError: Windows is not supported yet. Contribution is welcome
+
+line:391 'DMFEM_USE_ZLIB': '1' -> 'DMFEM_USE_ZLIB': '0'
+
+```python
+    cmake_opts = {'DCMAKE_VERBOSE_MAKEFILE': '1',
+                  'DBUILD_SHARED_LIBS': '1',
+                  'DMFEM_ENABLE_EXAMPLES': '1',
+                  'DMFEM_ENABLE_MINIAPPS': '1',
+                  'DCMAKE_SHARED_LINKER_FLAGS': '',
+                  'DMFEM_USE_ZLIB': '0',
+                  'DCMAKE_CXX_FLAGS': cxx11_flag}
+```
+
+Error when to wrap
+
+```bash
+mesh_wrap.cxx: In function 'PyObject* _wrap_Mesh_tmp_vertex_parents_set(PyObject*, PyObject*)':
+mesh_wrap.cxx:4335:21: error: 'mfem::Array<mfem::Triple<int, int, int> > mfem::Mesh::tmp_vertex_parents' is protected within this context
+   if (arg1) (arg1)->tmp_vertex_parents = *arg2;
+```

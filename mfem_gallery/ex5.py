@@ -10,10 +10,18 @@ from os.path import expanduser, join
 import numpy as np
 from numpy import sin, cos, exp
 
+#### time.clock deprecated and removed in PY3.8
+import time
+try:
+    clock = time.process_time
+except AttributeError:
+    clock = time.clock
+
 def pFunc_exact(x):
     xi = float(x[0]); yi = float(x[1]); zi = 0.0
     if len(x) == 3: zi = x[2]
-    return exp(xi)*sin(yi)*cos(zi)
+    from numpy import sin, cos, exp    
+    return exp(xi)*sin(yi)*cos(zi) 
 
 class uFunc_ex(mfem.VectorPyCoefficient):
    def EvalValue(self, x):
@@ -30,15 +38,19 @@ class pFunc_ex(mfem.PyCoefficient):
        return  pFunc_exact(x)
    
 class fFunc(mfem.VectorPyCoefficient):
-   def EvalValue(self, x):    
-       return [0, 0, 0]
+   def EvalValue(self, x):
+       if len(x) == 3:
+           return [0., 0., 0.]
+       else:
+           return [0., 0.]
 
 class gFunc(mfem.PyCoefficient):
    def EvalValue(self, x):
        if len(x) == 3: return  -pFunc_exact(x)       
-       return 0
+       return 0.
+   
 class f_natural(mfem.PyCoefficient):
-   def EvalValue(self, x):    
+   def EvalValue(self, x):
        return -pFunc_exact(x)
 
 
@@ -100,27 +112,25 @@ mVarf.AddDomainIntegrator(mfem.VectorFEMassIntegrator(k))
 mVarf.Assemble();
 mVarf.Finalize();
 M = mVarf.SpMat()
-print M.thisown
+
 bVarf.AddDomainIntegrator( mfem.VectorFEDivergenceIntegrator())
 bVarf.Assemble()
 bVarf.Finalize()
 B = bVarf.SpMat()
-print B.thisown
 B *= -1;
-BT = mfem.sparsemat.Transpose(B)
-print B.thisown
+BT = mfem.Transpose(B)
 
 darcyOp = mfem.BlockOperator(block_offsets)
 darcyOp.SetBlock(0,0, M)
 darcyOp.SetBlock(0,1, BT)
 darcyOp.SetBlock(1,0, B)
 
-MinvBt = mfem.sparsemat.Transpose(B)
+MinvBt = mfem.Transpose(B)
 Md = mfem.Vector(M.Height())
 M.GetDiag(Md)
 for i in range(Md.Size()):
    MinvBt.ScaleRow(i, 1/Md[i])
-S = mfem.sparsemat.Mult(B, MinvBt)
+S = mfem.Mult(B, MinvBt)
 
 invM = mfem.DSmoother(M)
 invS = mfem.GSSmoother(S)
@@ -133,8 +143,7 @@ darcyPrec.SetDiagonalBlock(1, invS);
 
 maxIter = 500; rtol = 1e-6; atol = 1e-10
 
-import time
-stime = time.clock()
+stime = clock()
 solver = mfem.MINRESSolver()
 solver.SetAbsTol(atol)
 solver.SetRelTol(rtol)
@@ -142,10 +151,10 @@ solver.SetMaxIter(maxIter)
 solver.SetOperator(darcyOp)
 solver.SetPreconditioner(darcyPrec)
 solver.SetPrintLevel(1)
-x.Assign(0)
+x.Assign(0.0)
 solver.Mult(rhs, x)
 
-solve_time = time.clock() - stime
+solve_time = clock() - stime
 
 if solver.GetConverged():
    print("MINRES converged in " + str(solver.GetNumIterations()) + 
@@ -169,8 +178,9 @@ norm_u = mfem.ComputeLpNorm(2, ucoeff, mesh, irs)
 err_u  = u.ComputeL2Error(ucoeff, irs)
 err_p  = p.ComputeL2Error(pcoeff, irs)
 
-print("|| p_h - p_ex || / || p_ex || = " + str(err_p / norm_p))
 print("|| u_h - u_ex || / || u_ex || = " + str(err_u / norm_u))
+print("|| p_h - p_ex || / || p_ex || = " + str(err_p / norm_p))
+
 
 
 

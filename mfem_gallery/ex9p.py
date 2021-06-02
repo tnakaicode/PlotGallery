@@ -7,7 +7,7 @@
 from mfem import path
 import mfem.par as mfem
 from mfem.par import intArray
-from os.path import expanduser, join
+from os.path import expanduser, join, dirname, exists
 from mpi4py import MPI
 import numpy as np
 from numpy import sqrt, pi, cos, sin, hypot, arctan2
@@ -29,6 +29,10 @@ vis_steps = 5
 # 3. Read the serial mesh from the given mesh file on all processors. We can
 #    handle geometrically periodic meshes in this code.
 meshfile = expanduser(join(path, 'data', 'periodic-hexagon.mesh'))
+if not exists(meshfile):
+    path = dirname(dirname(__file__))
+    meshfile = expanduser(join(path, 'data', 'periodic-hexagon.mesh'))    
+
 mesh = mfem.Mesh(meshfile, 1,1)
 dim = mesh.Dimension()
 
@@ -175,8 +179,8 @@ U = u.GetTrueDofs()
 smyid = '{:0>6d}'.format(myid)
 mesh_name  =  "ex9-mesh."+smyid
 sol_name   =  "ex9-init."+smyid
-pmesh.PrintToFile(mesh_name, 8)
-u.SaveToFile(sol_name, 8)
+pmesh.Print(mesh_name, 8)
+u.Save(sol_name, 8)
 
 class FE_Evolution(mfem.PyTimeDependentOperator):
     def __init__(self, M, K, b):
@@ -218,8 +222,8 @@ while True:
    t, dt = ode_solver.Step(U, t, dt);
    ti = ti + 1
    if ti % vis_steps == 0:
-       print("time step: " + str(ti) + ", time: " + str(t))
+       if myid == 0: print("time step: " + str(ti) + ", time: " + str(t))
 
 u.Assign(U)       
 sol_name   =  "ex9-final."+smyid       
-u.SaveToFile(sol_name, 8)
+u.Save(sol_name, 8)

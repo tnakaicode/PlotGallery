@@ -15,16 +15,16 @@ from mpi4py import MPI
 import numpy as np
 from numpy import sin, cos, exp
 
-ser_ref_levels = 1
+ser_ref_levels = 2
 par_ref_levels = 1
-order = 2
+order = 1
 nev = 5
 visualization = 1
 
 num_proc = MPI.COMM_WORLD.size
 myid     = MPI.COMM_WORLD.rank
 
-meshfile = expanduser(join(path, 'data', 'star.mesh'))
+meshfile = expanduser(join(path, 'data', 'beam-tet.mesh'))
 mesh = mfem.Mesh(meshfile, 1,1)
 
 dim = mesh.Dimension()
@@ -93,11 +93,21 @@ smyid = '{:0>6d}'.format(myid)
 mesh_name  =  "ex13_mesh."+smyid
 
 
-pmesh.PrintToFile(mesh_name, 8)
+pmesh.Print(mesh_name, 8)
 
 for i in range(nev):
+    if ( myid == 0 ):
+        print("Eigenmode " + str(i+1)  +'/' + str(nev) +
+              ", Lambda = " + str(eigenvalues[i]))
+    
     sol_name   =  "ex13_mode_"+str(i)+"."+smyid    
     x.Assign(ame.GetEigenvector(i))
-    x.SaveToFile(sol_name, 8)    
+    x.Save(sol_name, 8)    
+    c  = None
+    if (myid == 0):
+        from builtins import input
+        c = input("press (q)uit or (c)ontinue --> ")
+    c = MPI.COMM_WORLD.bcast(c, root=0)
+    if (c != 'c'): break
 
-eigenvalues.Print()
+

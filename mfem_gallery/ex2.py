@@ -10,6 +10,7 @@ from os.path import expanduser, join
 import numpy as np
 
 order = 1
+visualization = True
 meshfile = expanduser(join(path, 'data', 'beam-tri.mesh'))
 mesh = mfem.Mesh(meshfile, 1,1)
 dim = mesh.Dimension()
@@ -87,17 +88,19 @@ static_cond = False
 if (static_cond): a.EnableStaticCondensation()
 a.Assemble()
 
-A = mfem.SparseMatrix()
+
+A = mfem.OperatorPtr()
 B = mfem.Vector()
 X = mfem.Vector()
 a.FormLinearSystem(ess_tdof_list, x, b, A, X, B);
 print('...done')## Here, original version calls hegith, which is not
 ## defined in the header...!?
-print("Size of linear system: " + str(A.Size())) 
+print("Size of linear system: " + str(A.Height())) 
 
-# 10. Solve 
-M = mfem.GSSmoother(A)
-mfem.PCG(A, M, B, X, 1, 500, 1e-8, 0.0);
+# 10. Solve
+AA = mfem.OperatorHandle2SparseMatrix(A)
+M = mfem.GSSmoother(AA)
+mfem.PCG(AA, M, B, X, 1, 500, 1e-8, 0.0);
 
 # 11. Recover the solution as a finite element grid function.
 a.RecoverFEMSolution(X, b, x);
@@ -119,7 +122,12 @@ if not mesh.NURBSext:
 nodes = mesh.GetNodes()
 nodes += x
 x *= -1
-mesh.PrintToFile('displaced.mesh', 8)
-x.SaveToFile('sol.gf', 8)
-#ans((x, nodes, mesh))
+mesh.Print('displaced.mesh', 8)
+x.Save('sol.gf', 8)
+
+
+if (visualization):
+    sol_sock = mfem.socketstream("localhost", 19916)
+    sol_sock.precision(8)
+    sol_sock.send_solution(mesh,  x)
 
