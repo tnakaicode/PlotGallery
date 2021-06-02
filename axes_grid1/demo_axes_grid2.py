@@ -1,7 +1,7 @@
 """
-===============
-Demo Axes Grid2
-===============
+==========
+Axes Grid2
+==========
 
 Grid of images with shared xaxis and yaxis.
 """
@@ -11,9 +11,6 @@ from matplotlib import cbook
 import matplotlib.colors
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
-
-
-plt.rcParams["mpl_toolkits.legacy_colorbar"] = False
 
 
 def add_inner_title(ax, title, loc, **kwargs):
