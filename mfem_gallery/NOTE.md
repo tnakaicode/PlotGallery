@@ -38,3 +38,7 @@ mesh_wrap.cxx: In function 'PyObject* _wrap_Mesh_tmp_vertex_parents_set(PyObject
 mesh_wrap.cxx:4335:21: error: 'mfem::Array<mfem::Triple<int, int, int> > mfem::Mesh::tmp_vertex_parents' is protected within this context
    if (arg1) (arg1)->tmp_vertex_parents = *arg2;
 ```
+
+- <https://teratail.com/questions/173271>
+- <https://teratail.com/questions/108373>
+- <https://bg1.hatenablog.com/entry/2016/06/21/210000>
