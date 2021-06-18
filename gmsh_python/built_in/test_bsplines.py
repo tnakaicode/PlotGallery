@@ -1,3 +1,4 @@
+from pygmsh import geo
 from helpers import compute_volume
 
 import pygmsh
@@ -29,8 +30,10 @@ def test():
     # ref = 0.9156598733673261
     ref = 0.7474554072002251
     assert abs(compute_volume(mesh) - ref) < 1.0e-2 * ref
-    return mesh
+    return geom, mesh
 
 
 if __name__ == "__main__":
-    test().write("bsplines.vtu")
+    geom, mesh = test()
+    mesh.write("bsplines.vtu")
+    geom.save_geometry("bsplines.geo")
