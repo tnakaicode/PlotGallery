@@ -104,6 +104,7 @@ def heightmap_from_image(event=None):
     width = heightmap.size[0]
     height = heightmap.size[1]
     # create the gp_Pnt array
+    print("image size: ", width, height)
     print("parse image and fill in point array")
     for i in range(1, width):
         for j in range(1, height):

@@ -78,9 +78,9 @@ class Bubble(object):
 
     def updateBrush(self):
         gradient = QtGui.QRadialGradient(
-                QtCore.QPointF(self.radius, self.radius),
-                self.radius,
-                QtCore.QPointF(self.radius * 0.5, self.radius * 0.5))
+            QtCore.QPointF(self.radius, self.radius),
+            self.radius,
+            QtCore.QPointF(self.radius * 0.5, self.radius * 0.5))
         gradient.setColorAt(0, QtGui.QColor(255, 255, 255, 0))
         gradient.setColorAt(0.25, self.innerColor)
         gradient.setColorAt(1, self.outerColor)
@@ -144,7 +144,7 @@ class GLWidget(qtViewer3d):
         self._initialized = False
 
         # no effect?
-        self.doubleBuffer()
+        # self.doubleBuffer()
 
         # ---------------------------------------------------------------------
         # parameters for bubbles
@@ -340,10 +340,12 @@ class GLWidget(qtViewer3d):
 
     def wheelEvent(self, event):
 
-        if self._have_pyqt5:
-            delta = event.angleDelta().y()
-        else:
-            delta = event.delta()
+        # if self._have_pyqt5:
+        #    delta = event.angleDelta().y()
+        # else:
+        #    delta = event.delta()
+
+        delta = event.angleDelta().y()
 
         if delta > 0:
             self.zoom_factor = 1.3
@@ -473,7 +475,7 @@ class GLWidget(qtViewer3d):
 
         except Exception:
             print("could not invoke camera command action {0}".format(
-                    self.current_action))
+                self.current_action))
 
         finally:
             self.current_action = None
@@ -506,20 +508,20 @@ class GLWidget(qtViewer3d):
                 # the viewport
                 self._display.View.Redraw()
 
-            if self.context().isValid():
-                # acquire the OpenGL context
-                self.makeCurrent()
-                painter = QtGui.QPainter(self)
-                painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
-                # swap the buffer before overpainting it
-                self.swapBuffers()
-                # perform overpainting
-                self._overpaint(event, painter)
-                painter.end()
-                # hand over the OpenGL context
-                self.doneCurrent()
-            else:
-                print('invalid OpenGL context: Qt cannot overpaint viewer')
+            # if self.context().isValid():
+            #    # acquire the OpenGL context
+            #    self.makeCurrent()
+            #    painter = QtGui.QPainter(self)
+            #    painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+            #    # swap the buffer before overpainting it
+            #    self.swapBuffers()
+            #    # perform overpainting
+            #    self._overpaint(event, painter)
+            #    painter.end()
+            #    # hand over the OpenGL context
+            #    self.doneCurrent()
+            # else:
+            #    print('invalid OpenGL context: Qt cannot overpaint viewer')
 
     def _overpaint(self, event, painter):
         """ overpaint the viewport
@@ -552,20 +554,19 @@ class GLWidget(qtViewer3d):
         """
         self.createBubbles(20 - len(self.bubbles))
 
-
     def createBubbles(self, number):
         """ instantiate a `number` of bubbles to be painted on top of
         the viewport
         """
         for _ in range(number):
             position = QtCore.QPointF(
-                    self.width() * (0.1 + 0.8 * random.random()),
-                    self.height() * (0.1 + 0.8 * random.random()))
+                self.width() * (0.1 + 0.8 * random.random()),
+                self.height() * (0.1 + 0.8 * random.random()))
             radius = min(self.width(), self.height()) * (
                 0.0125 + 0.0875 * random.random())
             velocity = QtCore.QPointF(
-                    self.width() * 0.0125 * (-0.5 + random.random()),
-                    self.height() * 0.0125 * (-0.5 + random.random()))
+                self.width() * 0.0125 * (-0.5 + random.random()),
+                self.height() * 0.0125 * (-0.5 + random.random()))
 
             self.bubbles.append(Bubble(position, radius, velocity))
 
@@ -623,14 +624,14 @@ class GLWidget(qtViewer3d):
         painter.setRenderHint(QtGui.QPainter.TextAntialiasing)
 
         painter.fillRect(
-                QtCore.QRect(0, 0, self.width(), rect.height() + 2 * border),
-                QtGui.QColor(0, 0, 0, transparency))
+            QtCore.QRect(0, 0, self.width(), rect.height() + 2 * border),
+            QtGui.QColor(0, 0, 0, transparency))
 
         painter.setPen(QtCore.Qt.white)
 
         painter.fillRect(
-                QtCore.QRect(0, 0, self.width(), rect.height() + 2 * border),
-                QtGui.QColor(0, 0, 0, transparency))
+            QtCore.QRect(0, 0, self.width(), rect.height() + 2 * border),
+            QtGui.QColor(0, 0, 0, transparency))
 
         painter.drawText((self.width() - rect.width()) / 2, border,
                          rect.width(),
@@ -644,7 +645,8 @@ if __name__ == '__main__':
         class AppFrame(QtWidgets.QWidget):
             def __init__(self, parent=None):
                 QtWidgets.QWidget.__init__(self, parent)
-                self.setWindowTitle(self.tr("qtDisplay3d overpainting example"))
+                self.setWindowTitle(
+                    self.tr("qtDisplay3d overpainting example"))
                 self.resize(1280, 1024)
                 self.canva = GLWidget(self)
                 mainLayout = QtWidgets.QHBoxLayout()
@@ -661,6 +663,5 @@ if __name__ == '__main__':
         frame.canva.InitDriver()
         frame.runTests()
         app.exec_()
-
 
     TestOverPainting()
