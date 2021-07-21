@@ -42,9 +42,10 @@
 #############################################################################
 
 
+import datetime
 from PyQt5.QtCore import QDateTime, Qt, QTimer
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-                             QDial, QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
+                             QDial, QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QMainWindow,
                              QProgressBar, QPushButton, QRadioButton, QScrollBar, QSizePolicy,
                              QSlider, QSpinBox, QStyleFactory, QTableWidget, QTabWidget, QTextEdit,
                              QVBoxLayout, QWidget)
@@ -238,11 +239,31 @@ class WidgetGallery(QDialog):
         timer.start(1000)
 
 
+class MainWindow(QMainWindow):
+
+    def __init__(self, *args):
+        QMainWindow.__init__(self, *args)
+
+        self.canva = WidgetGallery()
+        self.setWindowTitle("Qt")
+        self.setCentralWidget(self.canva)
+
+        # show time
+        timer = QTimer(self)
+        timer.timeout.connect(self.time_draw)
+        timer.start(1000)  # msec
+
+    def time_draw(self):
+        d = datetime.datetime.today()
+        daystr = d.strftime("%Y-%m-%d %H:%M:%S")
+        self.statusBar().showMessage(daystr)
+
+
 if __name__ == '__main__':
 
     import sys
 
     app = QApplication(sys.argv)
-    gallery = WidgetGallery()
+    gallery = MainWindow()
     gallery.show()
     sys.exit(app.exec_())
