@@ -11,10 +11,10 @@ class App(QMainWindow):
         resolution = QApplication.desktop().screenGeometry()
 
         self.title = "PyQt5 tabs - pythonspot.com"
-        self.left = int(resolution.width() / 2)
-        self.top = int(resolution.height() / 2)
-        self.width = int(resolution.width() / 5)
-        self.height = int(resolution.height() / 5)
+        self.left = int(resolution.width() / 5)
+        self.top = int(resolution.height() / 5)
+        self.width = int(resolution.width() / 2)
+        self.height = int(resolution.height() / 2)
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
@@ -22,6 +22,24 @@ class App(QMainWindow):
         self.setCentralWidget(self.table_widget)
 
         self.show()
+
+
+class Widget1(QWidget):
+
+    def __init__(self):
+        super(QWidget, self).__init__()
+        self.layout = QVBoxLayout(self)
+
+        # Create first tab
+        self.pushButton1 = QPushButton("PyQt5 button")
+        self.layout.addWidget(self.pushButton1)
+
+
+class Widget2(QWidget):
+
+    def __init__(self):
+        super(QWidget, self).__init__()
+        self.layout = QVBoxLayout(self)
 
 
 class MyTableWidget(QWidget):
@@ -32,19 +50,13 @@ class MyTableWidget(QWidget):
 
         # Initialize tab screen
         self.tabs = QTabWidget()
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
+        self.tab1 = Widget1()
+        self.tab2 = Widget2()
         self.tabs.resize(300, 200)
 
         # Add tabs
         self.tabs.addTab(self.tab1, "Tab 1")
         self.tabs.addTab(self.tab2, "Tab 2")
-
-        # Create first tab
-        self.tab1.layout = QVBoxLayout(self)
-        self.pushButton1 = QPushButton("PyQt5 button")
-        self.tab1.layout.addWidget(self.pushButton1)
-        self.tab1.setLayout(self.tab1.layout)
 
         # Add tabs to widget
         self.layout.addWidget(self.tabs)
