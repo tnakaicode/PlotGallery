@@ -22,7 +22,7 @@ from matplotlib.cbook import get_sample_data
 from matplotlib.colors import LightSource
 
 
-dem = get_sample_data('jacksboro_fault_dem.npz', np_load=True)
+dem = get_sample_data('../jacksboro_fault_dem.npz', np_load=True)
 z = dem['elevation']
 #-- Optional dx and dy for accurate vertical exaggeration ---------------------
 # If you need topographically accurate vertical exaggeration, or you don't want

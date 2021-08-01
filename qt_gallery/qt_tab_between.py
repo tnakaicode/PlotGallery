@@ -32,7 +32,11 @@ class Widget1(QWidget):
 
         # Create first tab
         self.pushButton1 = QPushButton("PyQt5 button")
+        self.pushButton1.clicked.connect(self.clickCallback)
         self.layout.addWidget(self.pushButton1)
+
+    def clickCallback(self):
+        print("Button is clicked from Widget1")
 
 
 class Widget2(QWidget):
@@ -61,12 +65,17 @@ class MyTableWidget(QWidget):
         # Add tabs to widget
         self.layout.addWidget(self.tabs)
 
+        self.tab1.pushButton1.clicked.connect(self.clickCallback)
+
     @pyqtSlot()
     def on_click(self):
         print("\n")
         for currentQTableWidgetItem in self.tableWidget.selectedItems():
             print(currentQTableWidgetItem.row(),
                   currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
+
+    def clickCallback(self):
+        print("Button is clicked")
 
 
 if __name__ == "__main__":
