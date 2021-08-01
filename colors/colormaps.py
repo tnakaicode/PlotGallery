@@ -80,6 +80,8 @@ from matplotlib import cm
 from colorspacious import cspace_converter
 from collections import OrderedDict
 
+# pip install colorspacious
+
 cmaps = OrderedDict()
 
 ###############################################################################
@@ -224,7 +226,7 @@ def plot_color_gradients(cmap_category, cmap_list, nrows):
 for cmap_category, cmap_list in cmaps.items():
     plot_color_gradients(cmap_category, cmap_list, nrows)
 
-plt.show()
+
 
 ###############################################################################
 # Lightness of Matplotlib colormaps
@@ -315,7 +317,7 @@ for cmap_category, cmap_list in cmaps.items():
     ax.set_xlabel(cmap_category + ' colormaps', fontsize=14)
 
     fig.tight_layout(h_pad=0.0, pad=1.5)
-    plt.show()
+    
 
 
 ###############################################################################
@@ -390,12 +392,14 @@ def plot_color_gradients(cmap_category, cmap_list):
     for ax in axes.flat:
         ax.set_axis_off()
 
-    plt.show()
+    
 
 
 for cmap_category, cmap_list in cmaps.items():
 
     plot_color_gradients(cmap_category, cmap_list)
+
+plt.show()
 
 ###############################################################################
 # Color vision deficiencies
