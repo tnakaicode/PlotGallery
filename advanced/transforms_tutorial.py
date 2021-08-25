@@ -29,6 +29,13 @@ description of that system. In the ``Transformation Object`` column,
 |                |                             |is bottom left of the axes, and    |
 |                |                             |(1, 1) is top right of the axes.   |
 +----------------+-----------------------------+-----------------------------------+
+|"subfigure"     |``subfigure.transSubfigure`` |The coordinate system of the       |
+|                |                             |`.SubFigure`; (0, 0) is bottom left|
+|                |                             |of the subfigure, and (1, 1) is top|
+|                |                             |right of the subfigure.  If a      |
+|                |                             |figure has no subfigures, this is  |
+|                |                             |the same as ``transFigure``.       |
++----------------+-----------------------------+-----------------------------------+
 |"figure"        |``fig.transFigure``          |The coordinate system of the       |
 |                |                             |`.Figure`; (0, 0) is bottom left   |
 |                |                             |of the figure, and (1, 1) is top   |
@@ -145,6 +152,9 @@ ax.set_xlim(0, 10)
 ax.set_ylim(-1, 1)
 
 xdata, ydata = 5, 0
+# This computing the transform now, if anything
+# (figure size, dpi, axes placement, data limits, scales..)
+# changes re-calling transform will get a different value.
 xdisplay, ydisplay = ax.transData.transform((xdata, ydata))
 
 bbox = dict(boxstyle="round", fc="0.8")
@@ -166,7 +176,7 @@ disp = ax.annotate('display = (%.1f, %.1f)' % (xdisplay, ydisplay),
 plt.show()
 
 ###############################################################################
-# .. note::
+# .. warning::
 #
 #   If you run the source code in the example above in a GUI backend,
 #   you may also find that the two arrows for the *data* and *display*
@@ -489,7 +499,7 @@ plt.show()
 #
 # .. sourcecode:: ipython
 #
-#     In [80]: ax = subplot(111)
+#     In [80]: ax = plt.subplot()
 #
 #     In [81]: ax.set_xlim(0, 10)
 #     Out[81]: (0, 10)

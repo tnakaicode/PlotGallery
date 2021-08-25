@@ -28,7 +28,7 @@ def add_inner_title(ax, title, loc, **kwargs):
 fig = plt.figure(figsize=(6, 6))
 
 # Prepare images
-Z = cbook.get_sample_data("../axes_grid/bivariate_normal.npy", np_load=True)
+Z = cbook.get_sample_data("axes_grid/bivariate_normal.npy", np_load=True)
 extent = (-3, 4, -4, 3)
 ZS = [Z[i::3, :] for i in range(3)]
 extent = extent[0], extent[1]/3., extent[2], extent[3]
@@ -50,8 +50,7 @@ for i, (ax, z) in enumerate(zip(grid, ZS)):
     cb = ax.cax.colorbar(im)
     # Changing the colorbar ticks
     if i in [1, 2]:
-        #cb.set_ticks([-1, 0, 1])
-        plt.xticks([-1, 0, 1])
+        cb.set_ticks([-1, 0, 1])
 
 for ax, im_title in zip(grid, ["Image 1", "Image 2", "Image 3"]):
     t = add_inner_title(ax, im_title, loc='lower left')

@@ -52,11 +52,10 @@ fig.subplots_adjust(bottom=0.5)
 cmap = mpl.cm.viridis
 bounds = [-1, 2, 5, 7, 12, 15]
 norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend='both')
-cb2 = mpl.colorbar.ColorbarBase(ax, cmap=cmap,
-                                norm=norm,
-                                orientation='horizontal')
-cb2.set_label("Discrete intervals with extend='both' keyword")
-fig.show()
+
+fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap),
+             cax=ax, orientation='horizontal',
+             label="Discrete intervals with extend='both' keyword")
 
 ###############################################################################
 # Discrete intervals colorbar
@@ -87,9 +86,8 @@ fig.show()
 fig, ax = plt.subplots(figsize=(6, 1))
 fig.subplots_adjust(bottom=0.5)
 
-cmap = mpl.colors.ListedColormap(['red', 'green', 'blue', 'cyan'])
-cmap.set_over('0.25')
-cmap.set_under('0.75')
+cmap = (mpl.colors.ListedColormap(['red', 'green', 'blue', 'cyan'])
+        .with_extremes(over='0.25', under='0.75'))
 
 bounds = [1, 2, 4, 7, 8]
 norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
@@ -115,10 +113,8 @@ fig.colorbar(
 fig, ax = plt.subplots(figsize=(6, 1))
 fig.subplots_adjust(bottom=0.5)
 
-cmap = mpl.colors.ListedColormap(['royalblue', 'cyan',
-                                  'yellow', 'orange'])
-cmap.set_over('red')
-cmap.set_under('blue')
+cmap = (mpl.colors.ListedColormap(['royalblue', 'cyan', 'yellow', 'orange'])
+        .with_extremes(over='red', under='blue'))
 
 bounds = [-1.0, -0.5, 0.0, 0.5, 1.0]
 norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
