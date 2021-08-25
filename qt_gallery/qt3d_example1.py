@@ -7,7 +7,6 @@ from PyQt5.Qt3DRender import QCamera, QCameraLens, QRenderAspect
 from PyQt5.Qt3DInput import QInputAspect
 from PyQt5.Qt3DExtras import QForwardRenderer, QPhongMaterial, QCylinderMesh, QSphereMesh, QTorusMesh, Qt3DWindow, QOrbitCameraController
 
-
 class View3D(QWidget):
     def __init__(self):
         super(View3D, self).__init__()
@@ -25,7 +24,6 @@ class View3D(QWidget):
 
         self.view.setRootEntity(scene)
 
-
 def initialiseCamera(view, scene):
     # Camera.
     camera = view.camera()
@@ -38,7 +36,6 @@ def initialiseCamera(view, scene):
     camController.setLinearSpeed(50.0)
     camController.setLookSpeed(180.0)
     camController.setCamera(camera)
-
 
 def createScene():
     # Root entity.
@@ -58,7 +55,7 @@ def createScene():
     torusTransform = QTransform()
     torusTransform.setScale3D(QVector3D(1.5, 1.0, 0.5))
     torusTransform.setRotation(
-        QQuaternion.fromAxisAndAngle(QVector3D(1.0, 0.0, 0.0), 45.0))
+            QQuaternion.fromAxisAndAngle(QVector3D(1.0, 0.0, 0.0), 45.0))
 
     torusEntity.addComponent(torusMesh)
     torusEntity.addComponent(torusTransform)
@@ -74,7 +71,6 @@ def createScene():
 
     return rootEntity
 
-
 class Application(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -82,7 +78,6 @@ class Application(QMainWindow):
         view3d = View3D()
         self.setCentralWidget(view3d)
         self.show()
-
 
 # Approach 1 - Integrate Qt3DWindow into a QMainWindow
 if __name__ == '__main__':
