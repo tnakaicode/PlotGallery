@@ -149,6 +149,7 @@ for ax, (title, dependency) in zip(axs, PARAMETERS.items()):
     ax.scatter(mu[0], mu[1], c='red', s=3)
     ax.set_title(title)
 
+plt.show()
 
 
 #############################################################################
@@ -181,6 +182,7 @@ confidence_ellipse(x, y, ax_nstd, n_std=3,
 ax_nstd.scatter(mu[0], mu[1], c='red', s=3)
 ax_nstd.set_title('Different standard deviations')
 ax_nstd.legend()
+plt.show()
 
 
 #############################################################################
@@ -215,13 +217,10 @@ plt.show()
 
 #############################################################################
 #
-# ------------
+# .. admonition:: References
 #
-# References
-# """"""""""
+#    The use of the following functions, methods, classes and modules is shown
+#    in this example:
 #
-# The use of the following functions and methods is shown in this example:
-
-import matplotlib
-matplotlib.transforms.Affine2D
-matplotlib.patches.Ellipse
+#    - `matplotlib.transforms.Affine2D`
+#    - `matplotlib.patches.Ellipse`

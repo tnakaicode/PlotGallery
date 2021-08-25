@@ -14,7 +14,7 @@ import matplotlib.cbook as cbook
 # Load a numpy record array from yahoo csv data with fields date, open, close,
 # volume, adj_close from the mpl-data/example directory. The record array
 # stores the date as an np.datetime64 with a day unit ('D') in the date column.
-r = (cbook.get_sample_data('../goog.npz', np_load=True)['price_data']
+r = (cbook.get_sample_data('goog.npz', np_load=True)['price_data']
      .view(np.recarray))
 r = r[-30:]  # get the last 30 days
 
@@ -45,16 +45,12 @@ plt.show()
 
 #############################################################################
 #
-# ------------
+# .. admonition:: References
 #
-# References
-# """"""""""
+#    The use of the following functions, methods, classes and modules is shown
+#    in this example:
 #
-# The use of the following functions, methods, classes and modules is shown
-# in this example:
-
-import matplotlib
-matplotlib.pyplot.subplots
-matplotlib.axis.Axis.set_major_formatter
-matplotlib.cbook.get_sample_data
-matplotlib.ticker.FuncFormatter
+#    - `matplotlib.pyplot.subplots`
+#    - `matplotlib.axis.Axis.set_major_formatter`
+#    - `matplotlib.cbook.get_sample_data`
+#    - `matplotlib.ticker.FuncFormatter`
