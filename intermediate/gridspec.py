@@ -28,7 +28,6 @@ How to create grid-shaped combinations of axes.
 
 """
 
-import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
@@ -246,25 +245,24 @@ for a in range(4):
 
 # show only the outside spines
 for ax in fig11.get_axes():
-    ax.spines['top'].set_visible(ax.is_first_row())
-    ax.spines['bottom'].set_visible(ax.is_last_row())
-    ax.spines['left'].set_visible(ax.is_first_col())
-    ax.spines['right'].set_visible(ax.is_last_col())
+    ss = ax.get_subplotspec()
+    ax.spines.top.set_visible(ss.is_first_row())
+    ax.spines.bottom.set_visible(ss.is_last_row())
+    ax.spines.left.set_visible(ss.is_first_col())
+    ax.spines.right.set_visible(ss.is_last_col())
 
 plt.show()
 
 #############################################################################
 #
-# ------------
+# .. admonition:: References
 #
-# References
-# """"""""""
+#    The use of the following functions, methods, classes and modules is shown
+#    in this example:
 #
-# The usage of the following functions and methods is shown in this example:
-
-matplotlib.pyplot.subplots
-matplotlib.figure.Figure.add_gridspec
-matplotlib.figure.Figure.add_subplot
-matplotlib.gridspec.GridSpec
-matplotlib.gridspec.SubplotSpec.subgridspec
-matplotlib.gridspec.GridSpecFromSubplotSpec
+#    - `matplotlib.pyplot.subplots`
+#    - `matplotlib.figure.Figure.add_gridspec`
+#    - `matplotlib.figure.Figure.add_subplot`
+#    - `matplotlib.gridspec.GridSpec`
+#    - `matplotlib.gridspec.SubplotSpec.subgridspec`
+#    - `matplotlib.gridspec.GridSpecFromSubplotSpec`
