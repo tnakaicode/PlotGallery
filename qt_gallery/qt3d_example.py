@@ -83,7 +83,8 @@ def createScene():
 
     torusTransform = QTransform()
     torusTransform.setScale3D(QVector3D(1.5, 1.0, 0.5))
-    torusTransform.setRotation(QQuaternion.fromAxisAndAngle(QVector3D(1, 0, 0), 45))
+    torusTransform.setRotation(
+        QQuaternion.fromAxisAndAngle(QVector3D(1, 0, 0), 45))
 
     torusEntity.addComponent(torusMesh)
     torusEntity.addComponent(torusTransform)
@@ -117,6 +118,7 @@ def createScene():
 # container = QWidget.createWindowContainer(view)
 # container.show()
 
+
 app = QApplication(sys.argv)
 view = Qt3DWindow()
 
@@ -124,14 +126,14 @@ scene = createScene()
 
 # camera
 camera = view.camera()
-camera.lens().setPerspectiveProjection(45.0, 16.0/9.0, 0.1, 1000)
+camera.lens().setPerspectiveProjection(45.0, 16.0 / 9.0, 0.1, 1000)
 camera.setPosition(QVector3D(0, 0, 40))
 camera.setViewCenter(QVector3D(0, 0, 0))
 
 # for camera control
 camController = QOrbitCameraController(scene)
-camController.setLinearSpeed( 50.0 )
-camController.setLookSpeed( 180.0 )
+camController.setLinearSpeed(50.0)
+camController.setLookSpeed(180.0)
 camController.setCamera(camera)
 
 view.setRootEntity(scene)

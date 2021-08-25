@@ -25,13 +25,14 @@ from OCCT.BOPAlgo import BOPAlgo_Options
 from OCCT.BRepAlgoAPI import BRepAlgoAPI_Common
 
 from OCCT.Exchange import ExchangeBasic
-from OCCT.Visualization import BasicViewer
+from OCCT.Visualization.QtViewer import ShapeViewerQt
 
 cheese = ExchangeBasic.read_step('./models/cheese.stp')
 planes = ExchangeBasic.read_step('./models/planes.stp')
 
-v = BasicViewer()
-v.add(cheese, planes)
+v = ShapeViewerQt()
+v.display_shape(cheese)
+v.display_shape(planes)
 v.start()
 v.clear()
 
@@ -48,5 +49,5 @@ start = time.time()
 bop = BRepAlgoAPI_Common(cheese, planes)
 print('Complete in ', time.time() - start, ' seconds.')
 
-v.add(bop.Shape())
+v.display_shape(bop.Shape())
 v.start()

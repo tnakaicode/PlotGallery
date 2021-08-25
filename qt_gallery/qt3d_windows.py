@@ -12,6 +12,7 @@ import sys
 # pip install PyQt3D
 # Successfully installed PyQt3D-5.15.4 PyQt3D-Qt5-5.15.2 PyQt5-5.15.4 PyQt5-Qt5-5.15.2 PyQt5-sip-12.8.1
 
+
 class contained3dWindow(QWidget):
     def __init__(self):
         super().__init__()
