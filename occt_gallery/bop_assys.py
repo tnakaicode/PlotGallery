@@ -22,7 +22,13 @@ from OCCT.BRepAlgoAPI import BRepAlgoAPI_Fuse
 from OCCT.TopTools import TopTools_ListOfShape
 
 from OCCT.Exchange import ExchangeBasic
-from OCCT.Visualization.QtViewer import ShapeViewerQt
+try:
+    from OCCT.Visualization.WxViewer import ShapeViewerWx
+    from OCCT.Visualization.QtViewer import ShapeViewerQt
+except:
+    from OCCT.Visualization.WxViewer import ViewerWx as ShapeViewerWx
+    from OCCT.Visualization.QtViewer import ViewerQt as ShapeViewerQt
+
 
 fn = './models/wing_assy.brep'
 wing_assy = ExchangeBasic.read_brep(fn)
