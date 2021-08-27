@@ -19,11 +19,25 @@
 
 import time
 
-from OCCT.BLSURFPlugin import BLSURFPlugin_BLSURF, BLSURFPlugin_Hypothesis
 from OCCT.SMESH import SMESH_Gen, SMESH_Mesh
 
+from OCCT.TDataStd import TDataStd_Name, TDataStd_AsciiString
+from OCCT.TDocStd import TDocStd_Document
+from OCCT.TNaming import TNaming_NamedShape
+from OCCT.XCAFApp import XCAFApp_Application
+from OCCT.XCAFDoc import XCAFDoc_DocumentTool, XCAFDoc_Color
+from OCCT.XmlXCAFDrivers import XmlXCAFDrivers
+from OCCT.STEPCAFControl import STEPCAFControl_Reader
+from OCCT.STEPCAFControl import STEPCAFControl_Writer
+from OCCT.STEPConstruct import STEPConstruct
+
 from OCCT.Exchange import ExchangeBasic
-from OCCT.Visualization import BasicViewer
+try:
+    from OCCT.Visualization.WxViewer import ShapeViewerWx
+    from OCCT.Visualization.QtViewer import ShapeViewerQt
+except:
+    from OCCT.Visualization.WxViewer import ViewerWx as ShapeViewerWx
+    from OCCT.Visualization.QtViewer import ViewerQt as ShapeViewerQt
 
 # fn = './models/lhs_wing.brep'
 # fn = './models/wingbox.brep'
@@ -40,19 +54,22 @@ assert isinstance(mesh, SMESH_Mesh)
 
 mesh.ShapeToMesh(shape)
 
-mg_hyp = BLSURFPlugin_Hypothesis(0, 0, gen, True)
-mg_alg = BLSURFPlugin_BLSURF(1, 0, gen, True)
-mg_hyp.SetPhySize(4)
-mg_hyp.SetQuadAllowed(True)
+#mg_hyp = BLSURFPlugin_Hypothesis(0, 0, gen, True)
+#mg_alg = BLSURFPlugin_BLSURF(1, 0, gen, True)
+#mg_hyp.SetPhySize(4)
+#mg_hyp.SetQuadAllowed(True)
 
 mesh.AddHypothesis(mesh.GetShapeToMesh(), 0)
 mesh.AddHypothesis(mesh.GetShapeToMesh(), 1)
+
+stp = STEPCAFControl_Writer()
+stp.SetNameMode(True)
 
 print('Computing mesh...')
 start = time.time()
 done = gen.Compute(mesh, mesh.GetShapeToMesh())
 print('done in ', time.time() - start, ' seconds.')
 
-v = BasicViewer()
+v = ShapeViewerQt()
 v.add(mesh)
 v.start()
