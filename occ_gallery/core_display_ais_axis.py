@@ -16,7 +16,7 @@
 ##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
-from OCC.Core.AIS import AIS_ColorScale, AIS_Axis, AIS_SD_Axis
+from OCC.Core.AIS import AIS_ColorScale, AIS_Axis
 from OCC.Core.Graphic3d import Graphic3d_ZLayerId_TopOSD, Graphic3d_TMF_2d
 from OCC.Core.gp import gp_XY, gp_Pnt, gp_Dir, gp_Ax1
 from OCC.Core.Geom import Geom_Line
