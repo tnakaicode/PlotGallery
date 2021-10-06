@@ -1,5 +1,4 @@
 import numpy as np
-import cvxpy as cvx
 import pandas as pd
 import numpy.linalg as lin
 import scipy.optimize as opt
