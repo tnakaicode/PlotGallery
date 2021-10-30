@@ -25,6 +25,7 @@ def decay(t, N, tau):
 # The parameters are in no particular order. We'll need some example data. I
 # will use ``N=7`` and ``tau=3``, and add a little noise.
 t = np.linspace(0, 5, num=1000)
+np.random.seed(2021)
 data = decay(t, 7, 3) + np.random.randn(t.size)
 
 ###############################################################################
@@ -148,7 +149,7 @@ report_fit(result.params)
 # The default setting is ``nan_policy='raise'``, which does check for NaNs and
 # raises an exception when present.
 #
-# Null-chekcing  relies on ``pandas.isnull`` if it is available. If pandas
+# Null-checking  relies on ``pandas.isnull`` if it is available. If pandas
 # cannot be imported, it silently falls back on ``numpy.isnan``.
 
 ###############################################################################
