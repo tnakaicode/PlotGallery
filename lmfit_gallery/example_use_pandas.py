@@ -13,7 +13,7 @@ from lmfit.models import LorentzianModel
 
 ###############################################################################
 # read the data into a pandas DataFrame, and use the ``x`` and ``y`` columns:
-dframe = pd.read_csv('peak.csv')
+dframe = pd.read_csv('./documentation/peak.csv', header=1)
 
 model = LorentzianModel()
 params = model.guess(dframe['y'], x=dframe['x'])
