@@ -100,3 +100,4 @@ axs[3].scatter(x[idx], stderrs['b'][idx], color='r', label='outlier')
 axs[3].set_ylabel('err b change')
 
 axs[3].set_xlabel('x')
+plt.show()

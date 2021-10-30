@@ -31,7 +31,7 @@ import lmfit
 
 
 def linear_resonator(f, f_0, Q, Q_e_real, Q_e_imag):
-    Q_e = Q_e_real + 1j*Q_e_imag
+    Q_e = Q_e_real + 1j * Q_e_imag
     return 1 - (Q * Q_e**-1 / (1 + 2j * Q * (f - f_0) / f_0))
 
 
@@ -39,7 +39,7 @@ def linear_resonator(f, f_0, Q, Q_e_real, Q_e_imag):
 # The standard practice of defining an ``lmfit`` model is as follows:
 
 class ResonatorModel(lmfit.model.Model):
-    __doc__ = "resonator model" + lmfit.models.COMMON_DOC
+    #__doc__ = "resonator model" + lmfit.models.COMMON_DOC
 
     def __init__(self, *args, **kwargs):
         # pass in the defining equation so the user doesn't have to later.
@@ -54,17 +54,22 @@ class ResonatorModel(lmfit.model.Model):
         argmin_s21 = np.abs(data).argmin()
         fmin = f.min()
         fmax = f.max()
-        f_0_guess = f[argmin_s21]  # guess that the resonance is the lowest point
-        Q_min = 0.1 * (f_0_guess/(fmax-fmin))  # assume the user isn't trying to fit just a small part of a resonance curve.
+        # guess that the resonance is the lowest point
+        f_0_guess = f[argmin_s21]
+        # assume the user isn't trying to fit just a small part of a resonance curve.
+        Q_min = 0.1 * (f_0_guess / (fmax - fmin))
         delta_f = np.diff(f)  # assume f is sorted
         min_delta_f = delta_f[delta_f > 0].min()
-        Q_max = f_0_guess/min_delta_f  # assume data actually samples the resonance reasonably
-        Q_guess = np.sqrt(Q_min*Q_max)  # geometric mean, why not?
-        Q_e_real_guess = Q_guess/(1-np.abs(data[argmin_s21]))
+        # assume data actually samples the resonance reasonably
+        Q_max = f_0_guess / min_delta_f
+        Q_guess = np.sqrt(Q_min * Q_max)  # geometric mean, why not?
+        Q_e_real_guess = Q_guess / (1 - np.abs(data[argmin_s21]))
         if verbose:
             print("fmin=", fmin, "fmax=", fmax, "f_0_guess=", f_0_guess)
-            print("Qmin=", Q_min, "Q_max=", Q_max, "Q_guess=", Q_guess, "Q_e_real_guess=", Q_e_real_guess)
-        params = self.make_params(Q=Q_guess, Q_e_real=Q_e_real_guess, Q_e_imag=0, f_0=f_0_guess)
+            print("Qmin=", Q_min, "Q_max=", Q_max, "Q_guess=",
+                  Q_guess, "Q_e_real_guess=", Q_e_real_guess)
+        params = self.make_params(
+            Q=Q_guess, Q_e_real=Q_e_real_guess, Q_e_imag=0, f_0=f_0_guess)
         params['%sQ' % self.prefix].set(min=Q_min, max=Q_max)
         params['%sf_0' % self.prefix].set(min=fmin, max=fmax)
         return lmfit.models.update_param_vals(params, self.prefix, **kwargs)
@@ -74,16 +79,18 @@ class ResonatorModel(lmfit.model.Model):
 # Now let's use the model to generate some fake data:
 
 resonator = ResonatorModel()
-true_params = resonator.make_params(f_0=100, Q=10000, Q_e_real=9000, Q_e_imag=-9000)
+true_params = resonator.make_params(
+    f_0=100, Q=10000, Q_e_real=9000, Q_e_imag=-9000)
 
 f = np.linspace(99.95, 100.05, 100)
 true_s21 = resonator.eval(params=true_params, f=f)
 noise_scale = 0.02
 np.random.seed(123)
-measured_s21 = true_s21 + noise_scale*(np.random.randn(100) + 1j*np.random.randn(100))
+measured_s21 = true_s21 + noise_scale * \
+    (np.random.randn(100) + 1j * np.random.randn(100))
 
 plt.figure()
-plt.plot(f, 20*np.log10(np.abs(measured_s21)))
+plt.plot(f, 20 * np.log10(np.abs(measured_s21)))
 plt.ylabel('|S21| (dB)')
 plt.xlabel('MHz')
 plt.title('simulated measurement')
@@ -122,9 +129,10 @@ plt.xlabel('Re(S21)')
 plt.ylabel('Im(S21)')
 
 plt.figure()
-plt.plot(f, 20*np.log10(np.abs(measured_s21)), '.')
-plt.plot(f, 20*np.log10(np.abs(fit_s21)), 'r.-', label='best fit')
-plt.plot(f, 20*np.log10(np.abs(guess_s21)), 'k--', label='initial fit')
+plt.plot(f, 20 * np.log10(np.abs(measured_s21)), '.')
+plt.plot(f, 20 * np.log10(np.abs(fit_s21)), 'r.-', label='best fit')
+plt.plot(f, 20 * np.log10(np.abs(guess_s21)), 'k--', label='initial fit')
 plt.legend(loc='best')
 plt.ylabel('|S21| (dB)')
 plt.xlabel('MHz')
+plt.show()

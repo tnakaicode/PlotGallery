@@ -20,7 +20,7 @@ offset = 1.0
 amp = 2.0
 omega = 4.0
 
-y = offset + amp*np.sin(omega*x) * np.exp(-x/decay)
+y = offset + amp * np.sin(omega * x) * np.exp(-x / decay)
 yn = y + np.random.normal(size=y.size, scale=0.450)
 
 
@@ -30,7 +30,7 @@ def resid(params, x, ydata):
     omega = params['omega'].value
     amp = params['amp'].value
 
-    y_model = offset + amp * np.sin(x*omega) * np.exp(-x/decay)
+    y_model = offset + amp * np.sin(x * omega) * np.exp(-x / decay)
     return y_model - ydata
 
 
@@ -44,12 +44,13 @@ o1 = lmfit.minimize(resid, params, args=(x, yn), method='leastsq')
 print("# Fit using leastsq:")
 lmfit.report_fit(o1)
 
-o2 = lmfit.minimize(resid, params, args=(x, yn), method='differential_evolution')
+o2 = lmfit.minimize(resid, params, args=(
+    x, yn), method='differential_evolution')
 print("\n\n# Fit using differential_evolution:")
 lmfit.report_fit(o2)
 
 plt.plot(x, yn, 'ko', lw=2)
-plt.plot(x, yn+o1.residual, 'r-', lw=2)
-plt.plot(x, yn+o2.residual, 'b--', lw=2)
+plt.plot(x, yn + o1.residual, 'r-', lw=2)
+plt.plot(x, yn + o2.residual, 'b--', lw=2)
 plt.legend(['data', 'leastsq', 'diffev'], loc='upper left')
 plt.show()
