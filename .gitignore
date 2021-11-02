@@ -19,3 +19,5 @@ a.exe
 
 # hdf5
 meep_gallery/*.h5
+
+build/*
