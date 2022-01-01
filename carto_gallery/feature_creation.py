@@ -18,6 +18,16 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from matplotlib.offsetbox import AnchoredText
+import re
+
+
+def latex_str(text=""):
+    #text = re.sub(r"\par", "\n", text)
+    texts = re.split("\n", text)
+    textr = ""
+    for txt in texts:
+        textr += r"${}$".format(txt) + "\n"
+    return textr
 
 
 def main():

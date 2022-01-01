@@ -24,6 +24,12 @@ For another visualization of magnetic field, see the
 
 import numpy as np
 from scipy import special
+
+import os
+import PyQt5
+
+qt_path= os.path.dirname(PyQt5.__file__)
+os.environ['QT_PLUGIN_PATH'] = os.path.join(qt_path, "Qt/plugins")
 from mayavi import mlab
 
 ##############################################################################

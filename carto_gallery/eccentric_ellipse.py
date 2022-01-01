@@ -10,10 +10,7 @@ The image is reprojected on-the-fly onto a geostationary projection with
 matching eccentricity.
 
 """
-try:
-    from urllib2 import urlopen
-except ImportError:
-    from urllib.request import urlopen
+from urllib.request import urlopen
 from io import BytesIO
 
 import cartopy.crs as ccrs
