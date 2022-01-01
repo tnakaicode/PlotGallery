@@ -2,36 +2,30 @@
 # coding: utf-8
 
 # # Visualization Gallery
-# 
+#
 # This notebook shows common visualization issues encountered in Xarray.
-
-# In[ ]:
 
 
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import xarray as xr
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 # Load example dataset:
-
-# In[ ]:
 
 
 ds = xr.tutorial.load_dataset('air_temperature')
 
 
 # ## Multiple plots and map projections
-# 
+#
 # Control the map projection parameters on multiple axes
-# 
+#
 # This example illustrates how to plot multiple maps and control their extent
 # and aspect ratio.
-# 
+#
 # For more details see [this discussion](https://github.com/pydata/xarray/issues/1397#issuecomment-299190567) on github.
-
-# In[ ]:
 
 
 air = ds.air.isel(time=[0, 724]) - 273.15
@@ -51,10 +45,8 @@ for ax in p.axes.flat:
 
 
 # ## Centered colormaps
-# 
+#
 # Xarray's automatic colormaps choice
-
-# In[ ]:
 
 
 air = ds.air.isel(time=0)
@@ -87,11 +79,9 @@ plt.tight_layout()
 
 
 # ## Control the plot's colorbar
-# 
+#
 # Use ``cbar_kwargs`` keyword to specify the number of ticks.
 # The ``spacing`` kwarg can be used to draw proportional ticks.
-
-# In[ ]:
 
 
 air2d = ds.air.isel(time=500)
@@ -113,13 +103,11 @@ plt.tight_layout()
 
 
 # ## Multiple lines from a 2d DataArray
-# 
+#
 # Use ``xarray.plot.line`` on a 2d DataArray to plot selections as
 # multiple lines.
-# 
+#
 # See ``plotting.multiplelines`` for more details.
-
-# In[ ]:
 
 
 air = ds.air - 273.15  # to celsius
@@ -143,15 +131,13 @@ plt.tight_layout()
 
 
 # ## `imshow()` and rasterio map projections
-# 
-# 
+#
+#
 # Using rasterio's projection information for more accurate plots.
-# 
+#
 # This example extends `recipes.rasterio` and plots the image in the
 # original map projection instead of relying on pcolormesh and a map
 # transformation.
-
-# In[ ]:
 
 
 url = 'https://github.com/mapbox/rasterio/raw/master/tests/data/RGB.byte.tif'
@@ -168,16 +154,14 @@ ax.coastlines('10m', color='r')
 
 
 # ## Parsing rasterio geocoordinates
-# 
+#
 # Converting a projection's cartesian coordinates into 2D longitudes and
 # latitudes.
-# 
+#
 # These new coordinates might be handy for plotting and indexing, but it should
 # be kept in mind that a grid which is regular in projection coordinates will
 # likely be irregular in lon/lat. It is often recommended to work in the data's
 # original map projection (see `recipes.rasterio_rgb`).
-
-# In[ ]:
 
 
 from rasterio.warp import transform
@@ -207,3 +191,4 @@ greyscale.plot(ax=ax, x='lon', y='lat', transform=ccrs.PlateCarree(),
                cmap='Greys_r', add_colorbar=False)
 ax.coastlines('10m', color='r')
 
+plt.show()

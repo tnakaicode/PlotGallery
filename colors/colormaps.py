@@ -95,12 +95,12 @@ cmaps = OrderedDict()
 # are more curved.
 
 cmaps['Perceptually Uniform Sequential'] = [
-            'viridis', 'plasma', 'inferno', 'magma', 'cividis']
+    'viridis', 'plasma', 'inferno', 'magma', 'cividis']
 
 cmaps['Sequential'] = [
-            'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
-            'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
-            'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn']
+    'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
+    'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
+    'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn']
 
 ###############################################################################
 # Sequential2
@@ -115,9 +115,9 @@ cmaps['Sequential'] = [
 # an excellent example of this).
 
 cmaps['Sequential (2)'] = [
-            'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
-            'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
-            'hot', 'afmhot', 'gist_heat', 'copper']
+    'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
+    'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
+    'hot', 'afmhot', 'gist_heat', 'copper']
 
 ###############################################################################
 # Diverging
@@ -131,7 +131,7 @@ cmaps['Sequential (2)'] = [
 # doesn't span a wide range of :math:`L^*` values (see grayscale section below).
 
 cmaps['Diverging'] = [
-            'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
+    'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
             'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
 
 ###############################################################################
@@ -188,7 +188,7 @@ cmaps['Qualitative'] = ['Pastel1', 'Pastel2', 'Paired', 'Accent',
 # extension on this idea at [mycarta-jet]_ and [turbo]_.
 
 cmaps['Miscellaneous'] = [
-            'flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
+    'flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
             'gnuplot', 'gnuplot2', 'CMRmap', 'cubehelix', 'brg',
             'gist_rainbow', 'rainbow', 'jet', 'turbo', 'nipy_spectral',
             'gist_ncar']
@@ -260,13 +260,13 @@ for cmap_category, cmap_list in cmaps.items():
 
     # squeeze=False to handle similarly the case of a single subplot
     fig, axs = plt.subplots(nrows=nsubplots, squeeze=False,
-                            figsize=(7, 2.6*nsubplots))
+                            figsize=(7, 2.6 * nsubplots))
 
     for i, ax in enumerate(axs.flat):
 
         locs = []  # locations for text labels
 
-        for j, cmap in enumerate(cmap_list[i*dsub:(i+1)*dsub]):
+        for j, cmap in enumerate(cmap_list[i * dsub:(i + 1) * dsub]):
 
             # Get RGB values for colormap and convert the colormap in
             # CAM02-UCS colorspace.  lab[0, :, 0] is the lightness.
@@ -288,15 +288,15 @@ for cmap_category, cmap_list in cmaps.items():
                 c_ = x
 
             dc = _DC.get(cmap_category, 1.4)  # cmaps horizontal spacing
-            ax.scatter(x + j*dc, y_, c=c_, cmap=cmap, s=300, linewidths=0.0)
+            ax.scatter(x + j * dc, y_, c=c_, cmap=cmap, s=300, linewidths=0.0)
 
             # Store locations for colormap labels
             if cmap_category in ('Perceptually Uniform Sequential',
                                  'Sequential'):
-                locs.append(x[-1] + j*dc)
+                locs.append(x[-1] + j * dc)
             elif cmap_category in ('Diverging', 'Qualitative', 'Cyclic',
                                    'Miscellaneous', 'Sequential (2)'):
-                locs.append(x[int(x.size/2.)] + j*dc)
+                locs.append(x[int(x.size / 2.)] + j * dc)
 
         # Set up the axis limits:
         #   * the 1st subplot is used as a reference for the x-axis limits
@@ -308,7 +308,8 @@ for cmap_category, cmap_list in cmaps.items():
         ax.xaxis.set_ticks_position('top')
         ticker = mpl.ticker.FixedLocator(locs)
         ax.xaxis.set_major_locator(ticker)
-        formatter = mpl.ticker.FixedFormatter(cmap_list[i*dsub:(i+1)*dsub])
+        formatter = mpl.ticker.FixedFormatter(
+            cmap_list[i * dsub:(i + 1) * dsub])
         ax.xaxis.set_major_formatter(formatter)
         ax.xaxis.set_tick_params(rotation=50)
         ax.set_ylabel('Lightness $L^*$', fontsize=12)
@@ -384,7 +385,7 @@ def plot_color_gradients(cmap_category, cmap_list):
         ax[1].imshow(L, aspect='auto', cmap='binary_r', vmin=0., vmax=100.)
         pos = list(ax[0].get_position().bounds)
         x_text = pos[0] - 0.01
-        y_text = pos[1] + pos[3]/2.
+        y_text = pos[1] + pos[3] / 2.
         fig.text(x_text, y_text, name, va='center', ha='right', fontsize=10)
 
     # Turn off *all* ticks & spines, not just the ones with colormaps.

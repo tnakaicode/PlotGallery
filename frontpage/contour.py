@@ -30,5 +30,5 @@ ax.set_xlim(-2, 2)
 ax.set_ylim(-2, 2)
 ax.set_xticks([])
 ax.set_yticks([])
-fig.savefig("contour_frontpage.png", dpi=25)  # results in 160x120 px image
+fig.savefig("contour_frontpage.png", dpi=1000)  # results in 160x120 px image
 plt.show()

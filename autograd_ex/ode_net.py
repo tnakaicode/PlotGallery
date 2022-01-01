@@ -87,7 +87,7 @@ if __name__ == '__main__':
         ax_traj.set_ylim(-2, 2)
         ax_traj.xaxis.set_ticklabels([])
         ax_traj.yaxis.set_ticklabels([])
-        ax_traj.legend()
+        #ax_traj.legend()
 
         ax_phase.cla()
         ax_phase.set_title('Phase Portrait')

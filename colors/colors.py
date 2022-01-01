@@ -118,7 +118,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-th = np.linspace(0, 2*np.pi, 128)
+th = np.linspace(0, 2 * np.pi, 128)
 
 
 def demo(sty):
@@ -162,8 +162,8 @@ demo('seaborn')
 import matplotlib._color_data as mcd
 import matplotlib.patches as mpatch
 
-overlap = {name for name in mcd.CSS4_COLORS
-           if "xkcd:" + name in mcd.XKCD_COLORS}
+overlap = {name for name in mcd.CSS4_COLORS if "xkcd:" +
+           name in mcd.XKCD_COLORS}
 
 fig = plt.figure(figsize=[9, 5])
 ax = fig.add_axes([0, 0, 1, 1])
@@ -186,9 +186,9 @@ for j, color_name in enumerate(sorted(overlap)):
     ax.text(2 + col_shift, y_pos + .5, '  ' + color_name, **text_args)
 
 for g in range(n_groups):
-    ax.hlines(range(n_rows), 3*g, 3*g + 2.8, color='0.7', linewidth=1)
-    ax.text(0.5 + 3*g, -0.5, 'X11', ha='center', va='center')
-    ax.text(1.5 + 3*g, -0.5, 'xkcd', ha='center', va='center')
+    ax.hlines(range(n_rows), 3 * g, 3 * g + 2.8, color='0.7', linewidth=1)
+    ax.text(0.5 + 3 * g, -0.5, 'X11', ha='center', va='center')
+    ax.text(1.5 + 3 * g, -0.5, 'xkcd', ha='center', va='center')
 
 ax.set_xlim(0, 3 * n_groups)
 ax.set_ylim(n_rows, -1)

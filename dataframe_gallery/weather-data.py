@@ -2,11 +2,9 @@
 # coding: utf-8
 
 # # Toy weather data
-# 
+#
 # Here is an example of how to easily manipulate a toy weather dataset using
 # xarray and other recommended Python libraries:
-
-# In[ ]:
 
 
 import numpy as np
@@ -34,29 +32,18 @@ ds = xr.Dataset(
     {"time": times, "location": ["IA", "IN", "IL"]},
 )
 
-ds
-
 
 # ## Examine a dataset with pandas and seaborn
 
 # ### Convert to a pandas DataFrame
 
-# In[ ]:
-
 
 df = ds.to_dataframe()
-df.head()
-
-
-# In[ ]:
-
-
-df.describe()
+print(df.head())
+print(df.describe())
 
 
 # ### Visualize using pandas
-
-# In[ ]:
 
 
 ds.mean(dim="location").to_dataframe().plot()
@@ -64,30 +51,20 @@ ds.mean(dim="location").to_dataframe().plot()
 
 # ### Visualize using seaborn
 
-# In[ ]:
-
 
 sns.pairplot(df.reset_index(), vars=ds.data_vars)
 
 
 # ## Probability of freeze by calendar month
 
-# In[ ]:
-
 
 freeze = (ds["tmin"] <= 0).groupby("time.month").mean("time")
-freeze
-
-
-# In[ ]:
 
 
 freeze.to_pandas().plot()
 
 
 # ## Monthly averaging
-
-# In[ ]:
 
 
 monthly_avg = ds.resample(time="1MS").mean()
@@ -102,8 +79,6 @@ monthly_avg.sel(location="IA").to_dataframe().plot(style="s-")
 # typical weather for a particular season. Unlike observations, anomalies should
 # not show any seasonal cycle.
 
-# In[ ]:
-
 
 climatology = ds.groupby("time.month").mean("time")
 anomalies = ds.groupby("time.month") - climatology
@@ -115,8 +90,6 @@ anomalies.mean("location").to_dataframe()[["tmin", "tmax"]].plot()
 # You can create standardized anomalies where the difference between the
 # observations and the climatological monthly mean is
 # divided by the climatological standard deviation.
-
-# In[ ]:
 
 
 climatology_mean = ds.groupby("time.month").mean("time")
@@ -135,8 +108,6 @@ stand_anomalies.mean("location").to_dataframe()[["tmin", "tmax"]].plot()
 
 # The ``fillna`` method on grouped objects lets you easily fill missing values by group:
 
-# In[ ]:
-
 
 # throw away the first half of every month
 some_missing = ds.tmin.sel(time=ds["time.day"] > 15).reindex_like(ds)
@@ -145,15 +116,9 @@ both = xr.Dataset({"some_missing": some_missing, "filled": filled})
 both
 
 
-# In[ ]:
-
-
-df = both.sel(time="2000").mean("location").reset_coords(drop=True).to_dataframe()
+df = both.sel(time="2000").mean(
+    "location").reset_coords(drop=True).to_dataframe()
 df.head()
 
 
-# In[ ]:
-
-
 df[["filled", "some_missing"]].plot()
-

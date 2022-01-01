@@ -21,4 +21,4 @@ ax.set_xlim(5000, 6000)
 ax.set_ylim(-0.6, 0.1)
 ax.set_xticks([])
 ax.set_yticks([])
-fig.savefig("membrane_frontpage.png", dpi=25)  # results in 160x120 px image
+fig.savefig("membrane_frontpage.png", dpi=1000)  # results in 160x120 px image
