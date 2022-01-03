@@ -1,4 +1,4 @@
-# Copyright 2010-2014 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2021 Thomas Paviot (tpaviot@gmail.com)
 ##
 # This file is part of pythonOCC.
 ##
@@ -15,13 +15,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
+import os
+
+from OCC.Core.RWStl import rwstl_ReadFile
 
 from OCC.Display.SimpleGui import init_display
-from OCC.Extend.DataExchange import read_iges_file
 
-shapes = read_iges_file("../assets/models/surf114.igs")
+stl_filename = os.path.join("..", "assets", "models", "fan.stl")
+
+a_stl_mesh = rwstl_ReadFile(stl_filename)
 
 display, start_display, add_menu, add_function_to_menu = init_display()
-display.DisplayShape(shapes, update=True)
+
+display.Context.Display(a_stl_mesh, True)
+display.FitAll()
 start_display()

@@ -1,5 +1,9 @@
 # OCC
 
+```bash
+conda install -c conda-forge pythonocc-core=7.5.1 occt=7.5.1
+```
+
 ## GTransform
 
 <https://www.opencascade.com/doc/occt-7.4.0/refman/html/classgp___g_trsf.html>
