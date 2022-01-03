@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2016 Luke Chen (@chentao807, https://github.com/chentao807)
+# Copyright 2016 Luke Chen (@chentao807, https://github.com/chentao807)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/
 
 # This example is a port of the C++ code
 # available at http://www.algotopia.com/contents/opencascade/opencascade_sprocket
@@ -23,20 +23,44 @@
 import sys
 from math import pi as M_PI, sin, cos, atan
 
-from OCC.Core.gp import (gp_Pnt2d, gp_Ax2d, gp_Dir2d, gp_Circ2d, gp_Origin2d, gp_DX2d,
-                         gp_Ax2, gp_OX2d, gp_Lin2d, gp_Trsf, gp_XOY,
-                         gp_Pnt, gp_Vec, gp_Ax3, gp_Pln, gp_Origin, gp_DX, gp_DY,
-                         gp_DZ, gp_OZ)
+from OCC.Core.gp import (
+    gp_Pnt2d,
+    gp_Ax2d,
+    gp_Dir2d,
+    gp_Circ2d,
+    gp_Origin2d,
+    gp_DX2d,
+    gp_Ax2,
+    gp_OX2d,
+    gp_Lin2d,
+    gp_Trsf,
+    gp_XOY,
+    gp_Pnt,
+    gp_Vec,
+    gp_Ax3,
+    gp_Pln,
+    gp_Origin,
+    gp_DX,
+    gp_DY,
+    gp_DZ,
+    gp_OZ,
+)
 from OCC.Core.GCE2d import GCE2d_MakeArcOfCircle, GCE2d_MakeCircle, GCE2d_MakeLine
 from OCC.Core.Geom2dAPI import Geom2dAPI_InterCurveCurve
 from OCC.Core.Geom2d import Geom2d_TrimmedCurve
 from OCC.Core.GeomAPI import geomapi_To3d
-from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge,
-                                     BRepBuilderAPI_MakeWire,
-                                     BRepBuilderAPI_MakeFace,
-                                     BRepBuilderAPI_Transform)
-from OCC.Core.BRepPrimAPI import (BRepPrimAPI_MakePrism, BRepPrimAPI_MakeRevol,
-                                  BRepPrimAPI_MakeCylinder, BRepPrimAPI_MakeCone)
+from OCC.Core.BRepBuilderAPI import (
+    BRepBuilderAPI_MakeEdge,
+    BRepBuilderAPI_MakeWire,
+    BRepBuilderAPI_MakeFace,
+    BRepBuilderAPI_Transform,
+)
+from OCC.Core.BRepPrimAPI import (
+    BRepPrimAPI_MakePrism,
+    BRepPrimAPI_MakeRevol,
+    BRepPrimAPI_MakeCylinder,
+    BRepPrimAPI_MakeCone,
+)
 from OCC.Core.GccAna import GccAna_Circ2d2TanRad
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Cut, BRepAlgoAPI_Fuse
 from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet2d
@@ -49,52 +73,59 @@ num_teeth = 40
 chain_width = 6.35
 
 #  Dimensions derived from the provided inputs
-roller_radius = roller_diameter / 2.
+roller_radius = roller_diameter / 2.0
 tooth_angle = (2 * M_PI) / num_teeth
-pitch_circle_diameter = pitch / sin(tooth_angle / 2.)
-pitch_circle_radius = pitch_circle_diameter / 2.
+pitch_circle_diameter = pitch / sin(tooth_angle / 2.0)
+pitch_circle_radius = pitch_circle_diameter / 2.0
 
-roller_contact_angle_min = (M_PI * 120 / 180) - ((M_PI / 2.) / num_teeth)
-roller_contact_angle_max = (M_PI * 140 / 180) - ((M_PI / 2.) / num_teeth)
-roller_contact_angle = (roller_contact_angle_min + roller_contact_angle_max) / 2.
+roller_contact_angle_min = (M_PI * 120 / 180) - ((M_PI / 2.0) / num_teeth)
+roller_contact_angle_max = (M_PI * 140 / 180) - ((M_PI / 2.0) / num_teeth)
+roller_contact_angle = (roller_contact_angle_min +
+                        roller_contact_angle_max) / 2.0
 
 tooth_radius_min = 0.505 * roller_diameter
 tooth_radius_max = tooth_radius_min + (0.069 * pow(roller_diameter, 1.0 / 3.0))
-tooth_radius = (tooth_radius_min + tooth_radius_max) / 2.
+tooth_radius = (tooth_radius_min + tooth_radius_max) / 2.0
 
 profile_radius = 0.12 * roller_diameter * (num_teeth + 2)
-top_diameter = pitch_circle_diameter + ((1 - (1.6 / num_teeth)) * pitch) - roller_diameter
-top_radius = top_diameter / 2.
+top_diameter = (
+    pitch_circle_diameter + ((1 - (1.6 / num_teeth)) * pitch) - roller_diameter
+)
+top_radius = top_diameter / 2.0
 
 thickness = chain_width * 0.95
 
 # Center hole data
-center_radius = 125.0 / 2.
+center_radius = 125.0 / 2.0
 
 # Mounting hole data
 mounting_hole_count = 6
-mounting_radius = 153.0 / 2.
-hole_radius = 8.5 / 2.
+mounting_radius = 153.0 / 2.0
+hole_radius = 8.5 / 2.0
 
 
 def build_tooth():
-    base_center = gp_Pnt2d(pitch_circle_radius + (tooth_radius - roller_radius), 0)
+    base_center = gp_Pnt2d(pitch_circle_radius +
+                           (tooth_radius - roller_radius), 0)
     base_circle = gp_Circ2d(gp_Ax2d(base_center, gp_Dir2d()), tooth_radius)
-    trimmed_base = GCE2d_MakeArcOfCircle(base_circle,
-                                         M_PI - (roller_contact_angle / 2.),
-                                         M_PI).Value()
+    trimmed_base = GCE2d_MakeArcOfCircle(
+        base_circle, M_PI - (roller_contact_angle / 2.0), M_PI
+    ).Value()
     trimmed_base.Reverse()  # just a trick
     p0 = trimmed_base.StartPoint()
     p1 = trimmed_base.EndPoint()
 
     # Determine the center of the profile circle
-    x_distance = cos(roller_contact_angle / 2.) * (profile_radius + tooth_radius)
-    y_distance = sin(roller_contact_angle / 2.) * (profile_radius + tooth_radius)
+    x_distance = cos(roller_contact_angle / 2.0) * \
+        (profile_radius + tooth_radius)
+    y_distance = sin(roller_contact_angle / 2.0) * \
+        (profile_radius + tooth_radius)
     profile_center = gp_Pnt2d(pitch_circle_radius - x_distance, y_distance)
 
     # Construct the profile circle gp_Circ2d
-    profile_circle = gp_Circ2d(gp_Ax2d(profile_center, gp_Dir2d()),
-                               profile_center.Distance(p1))
+    profile_circle = gp_Circ2d(
+        gp_Ax2d(profile_center, gp_Dir2d()), profile_center.Distance(p1)
+    )
     geom_profile_circle = GCE2d_MakeCircle(profile_circle).Value()
 
     # Construct the outer circle gp_Circ2d
@@ -118,14 +149,15 @@ def build_tooth():
     trimmed_profile = GCE2d_MakeArcOfCircle(profile_circle, p1, p2).Value()
 
     # Calculate the outermost point
-    p3 = gp_Pnt2d(cos(tooth_angle / 2.) * top_radius,
-                  sin(tooth_angle / 2.) * top_radius)
+    p3 = gp_Pnt2d(
+        cos(tooth_angle / 2.0) * top_radius, sin(tooth_angle / 2.0) * top_radius
+    )
 
     # and use it to create the third arc
     trimmed_outer = GCE2d_MakeArcOfCircle(outer_circle, p2, p3).Value()
 
     # Mirror and reverse the three arcs
-    mirror_axis = gp_Ax2d(gp_Origin2d(), gp_DX2d().Rotated(tooth_angle / 2.))
+    mirror_axis = gp_Ax2d(gp_Origin2d(), gp_DX2d().Rotated(tooth_angle / 2.0))
 
     mirror_base = Geom2d_TrimmedCurve.DownCast(trimmed_base.Copy())
     mirror_profile = Geom2d_TrimmedCurve.DownCast(trimmed_profile.Copy())
@@ -144,13 +176,16 @@ def build_tooth():
     outer_mid = trimmed_outer.EndPoint()
     outer_end = mirror_outer.EndPoint()
 
-    outer_arc = GCE2d_MakeArcOfCircle(outer_start, outer_mid, outer_end).Value()
+    outer_arc = GCE2d_MakeArcOfCircle(
+        outer_start, outer_mid, outer_end).Value()
 
     # Create an arc for the inside of the wedge
-    inner_circle = gp_Circ2d(gp_Ax2d(gp_Pnt2d(0, 0), gp_Dir2d()),
-                             top_radius - roller_diameter)
+    inner_circle = gp_Circ2d(
+        gp_Ax2d(gp_Pnt2d(0, 0), gp_Dir2d()), top_radius - roller_diameter
+    )
     inner_start = gp_Pnt2d(top_radius - roller_diameter, 0)
-    inner_arc = GCE2d_MakeArcOfCircle(inner_circle, inner_start, tooth_angle).Value()
+    inner_arc = GCE2d_MakeArcOfCircle(
+        inner_circle, inner_start, tooth_angle).Value()
     inner_arc.Reverse()
 
     # Convert the 2D arcs and two extra lines to 3D edges
@@ -164,13 +199,15 @@ def build_tooth():
     p4 = mirror_base.EndPoint()
     p5 = inner_arc.StartPoint()
 
-    lin1 = BRepBuilderAPI_MakeEdge(gp_Pnt(p4.X(), p4.Y(), 0),
-                                   gp_Pnt(p5.X(), p5.Y(), 0)).Edge()
+    lin1 = BRepBuilderAPI_MakeEdge(
+        gp_Pnt(p4.X(), p4.Y(), 0), gp_Pnt(p5.X(), p5.Y(), 0)
+    ).Edge()
     arc6 = BRepBuilderAPI_MakeEdge(geomapi_To3d(inner_arc, plane)).Edge()
 
     p6 = inner_arc.EndPoint()
-    lin2 = BRepBuilderAPI_MakeEdge(gp_Pnt(p6.X(), p6.Y(), 0),
-                                   gp_Pnt(p0.X(), p0.Y(), 0)).Edge()
+    lin2 = BRepBuilderAPI_MakeEdge(
+        gp_Pnt(p6.X(), p6.Y(), 0), gp_Pnt(p0.X(), p0.Y(), 0)
+    ).Edge()
 
     wire = BRepBuilderAPI_MakeWire(arc1)
     wire.Add(arc2)
@@ -199,19 +236,20 @@ def round_tooth(wedge):
 
     # Construct the rounding circle
     round_circle = GccAna_Circ2d2TanRad(p2d_1, p2d_2, round_radius, 0.01)
-    if (round_circle.NbSolutions() != 2):
+    if round_circle.NbSolutions() != 2:
         sys.exit(-2)
 
     round_circle_2d_1 = round_circle.ThisSolution(1)
     round_circle_2d_2 = round_circle.ThisSolution(2)
 
-    if (round_circle_2d_1.Position().Location().Coord()[1] >= 0):
+    if round_circle_2d_1.Position().Location().Coord()[1] >= 0:
         round_circle_2d = round_circle_2d_1
     else:
         round_circle_2d = round_circle_2d_2
 
     # Remove the arc used for rounding
-    trimmed_circle = GCE2d_MakeArcOfCircle(round_circle_2d, p2d_1, p2d_2).Value()
+    trimmed_circle = GCE2d_MakeArcOfCircle(
+        round_circle_2d, p2d_1, p2d_2).Value()
 
     # Calculate extra points used to construct lines
     p1 = gp_Pnt(p2d_1.X(), 0, p2d_1.Y())
@@ -239,17 +277,20 @@ def round_tooth(wedge):
     round_face = BRepBuilderAPI_MakeFace(round_wire.Wire()).Shape()
 
     # Revolve the face around the Z axis over the tooth angle
-    rounding_cut_1 = BRepPrimAPI_MakeRevol(round_face, gp_OZ(), tooth_angle).Shape()
+    rounding_cut_1 = BRepPrimAPI_MakeRevol(
+        round_face, gp_OZ(), tooth_angle).Shape()
 
     # Construct a mirrored copy of the first cutting shape
     mirror = gp_Trsf()
     mirror.SetMirror(gp_XOY())
-    mirrored_cut_1 = BRepBuilderAPI_Transform(rounding_cut_1, mirror, True).Shape()
+    mirrored_cut_1 = BRepBuilderAPI_Transform(
+        rounding_cut_1, mirror, True).Shape()
 
     # and translate it so that it ends up on the other side of the wedge
     translate = gp_Trsf()
     translate.SetTranslation(gp_Vec(0, 0, thickness))
-    rounding_cut_2 = BRepBuilderAPI_Transform(mirrored_cut_1, translate, False).Shape()
+    rounding_cut_2 = BRepBuilderAPI_Transform(
+        mirrored_cut_1, translate, False).Shape()
 
     # Cut the wedge using the first and second cutting shape
     cut_1 = BRepAlgoAPI_Cut(wedge, rounding_cut_1).Shape()
@@ -272,21 +313,24 @@ def clone_tooth(base_shape):
     multiplier = max_multiplier
     for i in range(1, multiplier):
         clone.SetRotation(gp_OZ(), -i * tooth_angle)
-        rotated_shape = BRepBuilderAPI_Transform(base_shape, clone, True).Shape()
+        rotated_shape = BRepBuilderAPI_Transform(
+            base_shape, clone, True).Shape()
         grouped_shape = BRepAlgoAPI_Fuse(grouped_shape, rotated_shape).Shape()
 
     # Rotate the basic tooth and fuse together
     aggregated_shape = grouped_shape
     for i in range(1, int(num_teeth / multiplier)):
-        clone.SetRotation(gp_OZ(), - i * multiplier * tooth_angle)
-        rotated_shape = BRepBuilderAPI_Transform(grouped_shape, clone, True).Shape()
-        aggregated_shape = BRepAlgoAPI_Fuse(aggregated_shape, rotated_shape).Shape()
+        clone.SetRotation(gp_OZ(), -i * multiplier * tooth_angle)
+        rotated_shape = BRepBuilderAPI_Transform(
+            grouped_shape, clone, True).Shape()
+        aggregated_shape = BRepAlgoAPI_Fuse(
+            aggregated_shape, rotated_shape).Shape()
 
-    cylinder = BRepPrimAPI_MakeCylinder(gp_XOY(),
-                                        top_radius - roller_diameter,
-                                        thickness)
-    aggregated_shape = BRepAlgoAPI_Fuse(aggregated_shape,
-                                        cylinder.Shape()).Shape()
+    cylinder = BRepPrimAPI_MakeCylinder(
+        gp_XOY(), top_radius - roller_diameter, thickness
+    )
+    aggregated_shape = BRepAlgoAPI_Fuse(
+        aggregated_shape, cylinder.Shape()).Shape()
 
     return aggregated_shape
 
@@ -300,17 +344,20 @@ def center_hole(base):
 def mounting_holes(base):
     result = base
     for i in range(0, mounting_hole_count):
-        center = gp_Pnt(cos(i * M_PI / 3) * mounting_radius,
-                        sin(i * M_PI / 3) * mounting_radius, 0.0)
+        center = gp_Pnt(
+            cos(i * M_PI / 3) * mounting_radius,
+            sin(i * M_PI / 3) * mounting_radius,
+            0.0,
+        )
         center_axis = gp_Ax2(center, gp_DZ())
 
-        cylinder = BRepPrimAPI_MakeCylinder(center_axis, hole_radius,
-                                            thickness).Shape()
+        cylinder = BRepPrimAPI_MakeCylinder(
+            center_axis, hole_radius, thickness).Shape()
         result = BRepAlgoAPI_Cut(result, cylinder).Shape()
 
-        cone = BRepPrimAPI_MakeCone(center_axis,
-                                    hole_radius + thickness / 2.,
-                                    hole_radius, thickness / 2.)
+        cone = BRepPrimAPI_MakeCone(
+            center_axis, hole_radius + thickness / 2.0, hole_radius, thickness / 2.0
+        )
         result = BRepAlgoAPI_Cut(result, cone.Shape()).Shape()
 
     return result
@@ -324,7 +371,7 @@ def cut_out(base):
     geom_inner = GCE2d_MakeCircle(inner).Value()
     geom_inner.Reverse()
 
-    base_angle = (2. * M_PI) / mounting_hole_count
+    base_angle = (2.0 * M_PI) / mounting_hole_count
     hole_angle = atan(hole_radius / mounting_radius)
     correction_angle = 3 * hole_angle
 
@@ -368,13 +415,15 @@ def cut_out(base):
 
     arc1 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_outer, plane)).Edge()
 
-    lin1 = BRepBuilderAPI_MakeEdge(gp_Pnt(p2.X(), p2.Y(), 0),
-                                   gp_Pnt(p3.X(), p3.Y(), 0)).Edge()
+    lin1 = BRepBuilderAPI_MakeEdge(
+        gp_Pnt(p2.X(), p2.Y(), 0), gp_Pnt(p3.X(), p3.Y(), 0)
+    ).Edge()
 
     arc2 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_inner, plane)).Edge()
 
-    lin2 = BRepBuilderAPI_MakeEdge(gp_Pnt(p4.X(), p4.Y(), 0),
-                                   gp_Pnt(p1.X(), p1.Y(), 0)).Edge()
+    lin2 = BRepBuilderAPI_MakeEdge(
+        gp_Pnt(p4.X(), p4.Y(), 0), gp_Pnt(p1.X(), p1.Y(), 0)
+    ).Edge()
 
     cutout_wire = BRepBuilderAPI_MakeWire(arc1)
     cutout_wire.Add(lin1)
@@ -391,17 +440,17 @@ def cut_out(base):
         filleted_face.AddFillet(vertex, roller_radius)
         explorer.Next()
 
-    cutout = BRepPrimAPI_MakePrism(filleted_face.Shape(),
-                                   gp_Vec(0.0, 0.0, thickness)).Shape()
+    cutout = BRepPrimAPI_MakePrism(
+        filleted_face.Shape(), gp_Vec(0.0, 0.0, thickness)
+    ).Shape()
 
     result = base
     rotate = gp_Trsf()
     for i in range(0, mounting_hole_count):
-        rotate.SetRotation(gp_OZ(), i * 2. * M_PI / mounting_hole_count)
+        rotate.SetRotation(gp_OZ(), i * 2.0 * M_PI / mounting_hole_count)
         rotated_cutout = BRepBuilderAPI_Transform(cutout, rotate, True)
 
-        result = BRepAlgoAPI_Cut(result,
-                                 rotated_cutout.Shape()).Shape()
+        result = BRepAlgoAPI_Cut(result, rotated_cutout.Shape()).Shape()
 
     return result
 

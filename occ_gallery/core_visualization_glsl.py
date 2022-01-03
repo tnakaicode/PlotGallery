@@ -1,25 +1,29 @@
-##Copyright 2016 Jelle Feringa (jelleferinga@gmail.com)
+# Copyright 2016 Jelle Feringa (jelleferinga@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 from OCC.Core.AIS import AIS_Shape
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeSphere
-from OCC.Core.Graphic3d import (Graphic3d_ShaderProgram, Graphic3d_TOS_VERTEX,
-	                            Graphic3d_TOS_FRAGMENT, Graphic3d_ShaderObject)
+from OCC.Core.Graphic3d import (
+    Graphic3d_ShaderProgram,
+    Graphic3d_TOS_VERTEX,
+    Graphic3d_TOS_FRAGMENT,
+    Graphic3d_ShaderObject,
+)
 from OCC.Core.TCollection import TCollection_AsciiString
 from OCC.Display.SimpleGui import init_display
 
@@ -46,8 +50,12 @@ void main()
 """
 
 # construct the shader, load, compile and attach the GLSL programs
-vs_shader = Graphic3d_ShaderObject.CreateFromSource(Graphic3d_TOS_VERTEX, TCollection_AsciiString(vs))
-fs_shader = Graphic3d_ShaderObject.CreateFromSource(Graphic3d_TOS_FRAGMENT, TCollection_AsciiString(fs))
+vs_shader = Graphic3d_ShaderObject.CreateFromSource(
+    Graphic3d_TOS_VERTEX, TCollection_AsciiString(vs)
+)
+fs_shader = Graphic3d_ShaderObject.CreateFromSource(
+    Graphic3d_TOS_FRAGMENT, TCollection_AsciiString(fs)
+)
 aProgram = Graphic3d_ShaderProgram()
 aProgram.AttachShader(fs_shader)
 aProgram.AttachShader(vs_shader)

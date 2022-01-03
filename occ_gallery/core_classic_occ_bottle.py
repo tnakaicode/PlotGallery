@@ -1,36 +1,54 @@
 #!/usr/bin/env python
 
-##Copyright 2009-2015 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2015 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 import math
 
-from OCC.Core.gp import (gp_Pnt, gp_OX, gp_Vec, gp_Trsf, gp_DZ, gp_Ax2, gp_Ax3,
-                         gp_Pnt2d, gp_Dir2d, gp_Ax2d, gp_Pln)
+from OCC.Core.gp import (
+    gp_Pnt,
+    gp_OX,
+    gp_Vec,
+    gp_Trsf,
+    gp_DZ,
+    gp_Ax2,
+    gp_Ax3,
+    gp_Pnt2d,
+    gp_Dir2d,
+    gp_Ax2d,
+    gp_Pln,
+)
 from OCC.Core.GC import GC_MakeArcOfCircle, GC_MakeSegment
 from OCC.Core.GCE2d import GCE2d_MakeSegment
 from OCC.Core.Geom import Geom_CylindricalSurface
 from OCC.Core.Geom2d import Geom2d_Ellipse, Geom2d_TrimmedCurve
-from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire,
-                                     BRepBuilderAPI_MakeFace, BRepBuilderAPI_Transform)
+from OCC.Core.BRepBuilderAPI import (
+    BRepBuilderAPI_MakeEdge,
+    BRepBuilderAPI_MakeWire,
+    BRepBuilderAPI_MakeFace,
+    BRepBuilderAPI_Transform,
+)
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakePrism, BRepPrimAPI_MakeCylinder
 from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
-from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakeThickSolid, BRepOffsetAPI_ThruSections
+from OCC.Core.BRepOffsetAPI import (
+    BRepOffsetAPI_MakeThickSolid,
+    BRepOffsetAPI_ThruSections,
+)
 from OCC.Core.BRepLib import breplib
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.GeomAbs import GeomAbs_Plane
@@ -39,6 +57,7 @@ from OCC.Core.TopoDS import topods, TopoDS_Compound, TopoDS_Face
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_FACE
 from OCC.Core.TopTools import TopTools_ListOfShape
+
 
 def face_is_plane(face: TopoDS_Face) -> bool:
     """
@@ -132,7 +151,7 @@ mkCylinder = BRepPrimAPI_MakeCylinder(neckAx2, myNeckRadius, myNeckHeight)
 myBody_step2 = BRepAlgoAPI_Fuse(mkFillet.Shape(), mkCylinder.Shape())
 
 # Our goal is to find the highest Z face and remove it
-zMax = -1.
+zMax = -1.0
 
 # We have to work our way through all the faces to find the highest Z face so we can remove it for the shell
 aFaceExplorer = TopExp_Explorer(myBody_step2.Shape(), TopAbs_FACE)
@@ -151,7 +170,9 @@ while aFaceExplorer.More():
 facesToRemove = TopTools_ListOfShape()
 facesToRemove.Append(aFace)
 
-myBody_step3 = BRepOffsetAPI_MakeThickSolid(myBody_step2.Shape(), facesToRemove, -thickness / 50.0, 0.001)
+myBody_step3 = BRepOffsetAPI_MakeThickSolid(
+    myBody_step2.Shape(), facesToRemove, -thickness / 50.0, 0.001
+)
 
 # Set up our surfaces for the threading on the neck
 neckAx2_Ax3 = gp_Ax3(neckLocation, gp_DZ())
@@ -183,8 +204,10 @@ anEdge2OnSurf1 = BRepBuilderAPI_MakeEdge(aSegment.Value(), aCyl1)
 anEdge1OnSurf2 = BRepBuilderAPI_MakeEdge(anArc2, aCyl2)
 anEdge2OnSurf2 = BRepBuilderAPI_MakeEdge(aSegment.Value(), aCyl2)
 
-threadingWire1 = BRepBuilderAPI_MakeWire(anEdge1OnSurf1.Edge(), anEdge2OnSurf1.Edge())
-threadingWire2 = BRepBuilderAPI_MakeWire(anEdge1OnSurf2.Edge(), anEdge2OnSurf2.Edge())
+threadingWire1 = BRepBuilderAPI_MakeWire(
+    anEdge1OnSurf1.Edge(), anEdge2OnSurf1.Edge())
+threadingWire2 = BRepBuilderAPI_MakeWire(
+    anEdge1OnSurf2.Edge(), anEdge2OnSurf2.Edge())
 
 # Compute the 3D representations of the edges/wires
 breplib.BuildCurves3d(threadingWire1.Shape())
@@ -207,6 +230,7 @@ print("bottle finished")
 
 if __name__ == "__main__":
     from OCC.Display.SimpleGui import init_display
+
     display, start_display, add_menu, add_function_to_menu = init_display()
     display.DisplayShape(bottle, update=True)
     start_display()

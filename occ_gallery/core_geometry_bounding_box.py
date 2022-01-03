@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2017 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2017 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.Bnd import Bnd_Box
 from OCC.Core.BRepBndLib import brepbndlib_Add
@@ -24,7 +24,7 @@ from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
 
 
 def get_boundingbox(shape, tol=1e-6, use_mesh=True):
-    """ return the bounding box of the TopoDS_Shape `shape`
+    """return the bounding box of the TopoDS_Shape `shape`
     Parameters
     ----------
     shape : TopoDS_Shape or a subclass such as TopoDS_Face
@@ -47,19 +47,20 @@ def get_boundingbox(shape, tol=1e-6, use_mesh=True):
     brepbndlib_Add(shape, bbox, use_mesh)
 
     xmin, ymin, zmin, xmax, ymax, zmax = bbox.Get()
-    return xmin, ymin, zmin, xmax, ymax, zmax, xmax-xmin, ymax-ymin, zmax-zmin
+    return xmin, ymin, zmin, xmax, ymax, zmax, xmax - xmin, ymax - ymin, zmax - zmin
+
 
 print("Box bounding box computation")
-box_shape = BRepPrimAPI_MakeBox(10., 20., 30.).Shape()
+box_shape = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0).Shape()
 bb1 = get_boundingbox(box_shape)
 print(bb1)
 
 print("Cylinder bounding box computation")
-cyl_shape = BRepPrimAPI_MakeCylinder(10., 20.).Shape()
+cyl_shape = BRepPrimAPI_MakeCylinder(10.0, 20.0).Shape()
 bb2 = get_boundingbox(cyl_shape)
 print(bb2)
 
 print("Torus bounding box computation")
-torus_shape = BRepPrimAPI_MakeCylinder(15., 5.).Shape()
+torus_shape = BRepPrimAPI_MakeCylinder(15.0, 5.0).Shape()
 bb3 = get_boundingbox(torus_shape)
 print(bb3)

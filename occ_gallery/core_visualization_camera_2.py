@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2016 Jelle Feringa (jelleferinga@gmail.com)
+# Copyright 2016 Jelle Feringa (jelleferinga@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 from OCC.Display.SimpleGui import init_display
@@ -32,9 +32,9 @@ def animate_viewpoint():
 
     center = cam.Center()
     eye = cam.Eye()
-    eye.SetX(0.)
-    eye.SetZ(0.)
-    eye.SetZ(0.)
+    eye.SetX(0.0)
+    eye.SetZ(0.0)
+    eye.SetZ(0.0)
     cam.SetEye(eye)
 
     display.FitAll()
@@ -44,6 +44,7 @@ def animate_viewpoint():
         eye.SetY(eye.Y() + i)
         cam.SetEye(eye)
         display.Context.UpdateCurrentViewer()
+
 
 add_menu("camera")
 add_function_to_menu("camera", animate_viewpoint)

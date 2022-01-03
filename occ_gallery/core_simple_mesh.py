@@ -1,19 +1,19 @@
-##Copyright 2009-2014 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2014 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRep import BRep_Builder, BRep_Tool
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeSphere
@@ -51,10 +51,10 @@ def simple_mesh():
     while ex.More():
         face = topods_Face(ex.Current())
         location = TopLoc_Location()
-        facing = (bt.Triangulation(face, location))
+        facing = bt.Triangulation(face, location)
         tab = facing.Nodes()
         tri = facing.Triangles()
-        for i in range(1, facing.NbTriangles()+1):
+        for i in range(1, facing.NbTriangles() + 1):
             trian = tri.Value(i)
             index1, index2, index3 = trian.Get()
             for j in range(1, 4):
@@ -73,6 +73,7 @@ def simple_mesh():
     display.DisplayShape(shape)
     display.DisplayShape(comp, update=True)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     simple_mesh()
     start_display()

@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2009-2014 Jelle Feringa (jelleferinga@gmail.com)
+# Copyright 2009-2014 Jelle Feringa (jelleferinga@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
@@ -24,6 +24,7 @@ from OCC.Core.Geom2dAPI import Geom2dAPI_Interpolate, Geom2dAPI_PointsToBSpline
 from OCC.Core.TColgp import TColgp_HArray1OfPnt2d, TColgp_Array1OfPnt2d
 
 from OCC.Display.SimpleGui import init_display
+
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 
@@ -60,17 +61,18 @@ def bspline():
     anInterpolation2.Perform()
     bspline_3 = anInterpolation2.Curve()
 
-    for j in range(array.Lower(), array.Upper()+1):
+    for j in range(array.Lower(), array.Upper() + 1):
         p = array.Value(j)
         display.DisplayShape(p, update=False)
-    for j in range(harray.Lower(), harray.Upper()+1):
+    for j in range(harray.Lower(), harray.Upper() + 1):
         p = harray.Value(j)
         display.DisplayShape(p, update=False)
 
     display.DisplayShape(bspline_1, update=False)
-    display.DisplayShape(bspline_2, update=False, color='GREEN')
-    display.DisplayShape(bspline_3, update=True, color='BLUE')
+    display.DisplayShape(bspline_2, update=False, color="GREEN")
+    display.DisplayShape(bspline_3, update=True, color="BLUE")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     bspline()
     start_display()

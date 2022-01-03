@@ -1,19 +1,19 @@
-##Copyright 2020 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2020 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_NurbsConvert
@@ -26,7 +26,7 @@ base_shape = BRepPrimAPI_MakeTorus(30, 10).Shape()
 
 # conversion to a nurbs representation
 nurbs_converter = BRepBuilderAPI_NurbsConvert(base_shape, True)
-#nurbs_converter.Perform()
+# nurbs_converter.Perform()
 converted_shape = nurbs_converter.Shape()
 
 # now, all edges should be BSpline curves and surfaces BSpline surfaces
@@ -44,7 +44,8 @@ for face in expl.faces():
     # check each of the is a BSpline surface
     # it should be, since we used the nurbs converter before
     if not surf_type == GeomAbs_BSplineSurface:
-        raise AssertionError("the face was not converted to a GeomAbs_BSplineSurface")
+        raise AssertionError(
+            "the face was not converted to a GeomAbs_BSplineSurface")
     # get the nurbs
     bsrf = surf.BSpline()
     print("UDegree:", bsrf.UDegree())

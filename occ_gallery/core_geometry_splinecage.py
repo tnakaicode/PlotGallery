@@ -2,20 +2,20 @@
 
 # #Copyright 2009-2011 Jelle Feringa (jelleferinga@gmail.com)
 # #
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 # TODO:
 # * need examples where the tangency to constraining faces is respected
@@ -35,19 +35,23 @@ from OCC.Extend.DataExchange import read_step_file
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
+
 def random_color():
     return rgb_color(random.random(), random.random(), random.random())
 
+
 def length_from_edge(edg):
     curve_adapt = BRepAdaptor_Curve(edg)
-    length = GCPnts_AbscissaPoint().Length(curve_adapt, curve_adapt.FirstParameter(),
-                                           curve_adapt.LastParameter(), 1e-6)
+    length = GCPnts_AbscissaPoint().Length(
+        curve_adapt, curve_adapt.FirstParameter(), curve_adapt.LastParameter(), 1e-6
+    )
     return length
 
+
 def divide_edge_by_nr_of_points(edg, n_pts):
-    '''returns a nested list of parameters and points on the edge
+    """returns a nested list of parameters and points on the edge
     at the requested interval [(param, gp_Pnt),...]
-    '''
+    """
     curve_adapt = BRepAdaptor_Curve(edg)
     _lbound, _ubound = curve_adapt.FirstParameter(), curve_adapt.LastParameter()
 
@@ -58,7 +62,7 @@ def divide_edge_by_nr_of_points(edg, n_pts):
     npts = GCPnts_UniformAbscissa(curve_adapt, n_pts, _lbound, _ubound)
     if npts.IsDone():
         tmp = []
-        for i in range (1, npts.NbPoints()+1):
+        for i in range(1, npts.NbPoints() + 1):
             param = npts.Parameter(i)
             pnt = curve_adapt.Value(param)
             tmp.append((param, pnt))
@@ -95,9 +99,9 @@ def hash_edge_length_to_face(faces):
 
 
 def build_curve_network(event=None, enforce_tangency=True):
-    '''
+    """
     mimic the curve network surfacing command from rhino
-    '''
+    """
     root_compound_shape = read_step_file("../assets/models/splinecage.stp")
     topology_explorer = TopologyExplorer(root_compound_shape)
 
@@ -105,11 +109,18 @@ def build_curve_network(event=None, enforce_tangency=True):
 
     # loop through the imported faces
     # associate the length of each of the faces edges to the corresponding face
-    _edge_length_to_face, _edge_length_to_edge = hash_edge_length_to_face(tangent_constraint_faces)
+    _edge_length_to_face, _edge_length_to_edge = hash_edge_length_to_face(
+        tangent_constraint_faces
+    )
 
     # loop through the imported curves, avoiding the imported faces
     # when we've got these filtered out, we retrieved the geometry to build the surface from
-    filtered_edges = [e for e in topology_explorer._loop_topo(TopAbs_EDGE, root_compound_shape, TopAbs_FACE)]
+    filtered_edges = [
+        e
+        for e in topology_explorer._loop_topo(
+            TopAbs_EDGE, root_compound_shape, TopAbs_FACE
+        )
+    ]
 
     filtered_length = {}
     for e in filtered_edges:
@@ -127,10 +138,12 @@ def build_curve_network(event=None, enforce_tangency=True):
     brep_plate_builder = BRepOffsetAPI_MakeFilling()
 
     if enforce_tangency:
-        print('going for surface quality...')
-        brep_plate_builder.SetConstrParam(0.0001, 0.001, 0.01, 0.01) # Tol2d=1.0, Tol3d=1.0, TolAng=1.0, TolCurv=1.0
-        brep_plate_builder.SetApproxParam(8, 240) # MaxDeg=8, MaxSegments=9
-        print('done.')
+        print("going for surface quality...")
+        brep_plate_builder.SetConstrParam(
+            0.0001, 0.001, 0.01, 0.01
+        )  # Tol2d=1.0, Tol3d=1.0, TolAng=1.0, TolCurv=1.0
+        brep_plate_builder.SetApproxParam(8, 240)  # MaxDeg=8, MaxSegments=9
+        print("done.")
     else:
         print("quick and dirty")
 

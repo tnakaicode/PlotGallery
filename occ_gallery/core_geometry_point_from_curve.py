@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-##Copyright 2009-2014 Jelle Feringa (jelleferinga@gmail.com)
+# Copyright 2009-2014 Jelle Feringa (jelleferinga@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.gp import gp_Pnt, gp_Pnt2d, gp_OX2d
 from OCC.Core.Geom2d import Geom2d_Circle
@@ -23,12 +23,13 @@ from OCC.Core.Geom2dAdaptor import Geom2dAdaptor_Curve
 from OCC.Core.GCPnts import GCPnts_UniformAbscissa
 
 from OCC.Display.SimpleGui import init_display
+
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 
 def points_from_curve():
-    radius = 5.
-    abscissa = 3.
+    radius = 5.0
+    abscissa = 3.0
     circle = Geom2d_Circle(gp_OX2d(), radius, True)
     gac = Geom2dAdaptor_Curve(circle)
     ua = GCPnts_UniformAbscissa(gac, abscissa)
@@ -44,12 +45,13 @@ def points_from_curve():
     i = 0
     for p in a_sequence:
         i = i + 1
-        pstring = 'P%i : parameter %f' % (i, ua.Parameter(i))
+        pstring = "P%i : parameter %f" % (i, ua.Parameter(i))
         pnt = gp_Pnt(p.X(), p.Y(), 0)
         # display points
         display.DisplayShape(pnt, update=True)
         display.DisplayMessage(pnt, pstring)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     points_from_curve()
     start_display()
