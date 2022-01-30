@@ -17,7 +17,7 @@ from pymor.tools.typer import Choices
 
 
 def main(
-    exp: float = Argument(..., help='Exponent'),
+    exp: float = Argument(default=0.1, help='Exponent'),
 
     grid: int = Option(60, help='Use grid with (2*NI)*NI elements.'),
     grid_type: Choices('rect tria') = Option('rect', help='Type of grid to use.'),

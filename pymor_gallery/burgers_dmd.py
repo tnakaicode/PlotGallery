@@ -19,7 +19,7 @@ from typer import Argument, Option, run
 
 
 def main(
-        exp: float = Argument(..., help='Exponent'),
+        exp: float = Argument(default=0.1, help='Exponent'),
 
         atol: float = Option(None, help='Absolute tolerance'),
         continuous_time: bool = Option(False, help='Show continous time system eigenvalues.'),

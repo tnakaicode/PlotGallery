@@ -20,12 +20,12 @@ from pymor.tools.typer import Choices
 
 
 def main(
-    exp_min: float = Argument(..., help='Minimal exponent'),
-    exp_max: float = Argument(..., help='Maximal exponent'),
-    ei_snapshots: int = Argument(..., help='Number of snapshots for empirical interpolation.'),
-    ei_size: int = Argument(..., help='Number of interpolation DOFs.'),
-    snapshots: int = Argument(..., help='Number of snapshots for basis generation.'),
-    rb_size: int = Argument(..., help='Size of the reduced basis.'),
+    exp_min: float = Argument(default=0, help='Minimal exponent'),
+    exp_max: float = Argument(default=1, help='Maximal exponent'),
+    ei_snapshots: int = Argument(default=10, help='Number of snapshots for empirical interpolation.'),
+    ei_size: int = Argument(default=5, help='Number of interpolation DOFs.'),
+    snapshots: int = Argument(default=10, help='Number of snapshots for basis generation.'),
+    rb_size: int = Argument(default=5, help='Size of the reduced basis.'),
 
     cache_region: Choices('none memory disk persistent') = Option(
         'disk',

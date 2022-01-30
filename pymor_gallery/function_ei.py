@@ -20,10 +20,10 @@ from pymor.reductors.coercive import CoerciveRBReductor
 
 
 def main(
-    ei_snapshots: int = Argument(..., help='Number of snapshots for empirical interpolation.'),
-    ei_size: int = Argument(..., help='Number of interpolation DOFs.'),
-    snapshots: int = Argument(..., help='Number of snapshots for basis generation.'),
-    rb_size: int = Argument(..., help='Size of the reduced basis.'),
+    ei_snapshots: int = Argument(default=100, help='Number of snapshots for empirical interpolation.'),
+    ei_size: int = Argument(default=10, help='Number of interpolation DOFs.'),
+    snapshots: int = Argument(default=10, help='Number of snapshots for basis generation.'),
+    rb_size: int = Argument(default=10, help='Size of the reduced basis.'),
     grid: int = Option(100, help='Use grid with 4*NI*NI elements'),
     plot_ei_err: bool = Option(False, help='Plot empirical interpolation error.'),
     plot_solutions: bool = Option(False, help='Plot some example solutions.'),

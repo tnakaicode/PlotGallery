@@ -13,9 +13,8 @@ from pymor.parameters.functionals import ProjectionParameterFunctional
 
 
 def main(
-    problem_number: int = Argument(..., min=0, max=1, help='Selects the problem to solve [0 or 1].'),
-    n: int = Argument(..., help='Grid interval count.'),
-
+    problem_number: int = Argument(default=0, min=0, max=1, help='Selects the problem to solve [0 or 1].'),
+    n: int = Argument(default=100, help='Grid interval count.'),
     fv: bool = Option(False, help='Use finite volume discretization instead of finite elements.'),
 ):
     """Solves the Poisson equation in 1D using pyMOR's builtin discreization toolkit."""

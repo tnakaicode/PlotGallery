@@ -14,16 +14,15 @@ from pymor.parameters.functionals import ProjectionParameterFunctional
 
 
 def main(
-    problem_number: int = Argument(..., min=0, max=1, help='Selects the problem to solve [0 or 1].'),
-    n: int = Argument(..., help='Triangle count per direction'),
+    problem_number: int = Argument(default=0, min=0, max=1, help='Selects the problem to solve [0 or 1].'),
+    n: int = Argument(default=100, help='Triangle count per direction'),
     norm: str = Argument(
-        ...,
+        default="h1",
         help="h1: compute the h1-norm of the last snapshot.\n\n"
              "l2: compute the l2-norm of the last snapshot.\n\n"
              "k: compute the energy norm of the last snapshot, where the energy-product"
              "is constructed with a parameter {'mu': k}."
     ),
-
     fv: bool = Option(False, help='Use finite volume discretization instead of finite elements.'),
 ):
     """Solves the Poisson equation in 2D using pyMOR's builtin discreization toolkit."""
