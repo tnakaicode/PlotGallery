@@ -3,12 +3,15 @@
 SVG Filter Pie
 ==============
 
-Demonstrate SVG filtering effects which might be used with mpl.
+Demonstrate SVG filtering effects which might be used with Matplotlib.
 The pie chart drawing code is borrowed from pie_demo.py
 
-Note that the filtering effects are only effective if your svg renderer
+Note that the filtering effects are only effective if your SVG renderer
 support it.
 """
+
+import io
+import xml.etree.ElementTree as ET
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Shadow
@@ -23,7 +26,7 @@ fracs = [15, 30, 45, 10]
 explode = (0, 0.05, 0, 0)
 
 # We want to draw the shadow for each pie but we will not use "shadow"
-# option as it does'n save the references to the shadow patches.
+# option as it doesn't save the references to the shadow patches.
 pies = ax.pie(fracs, explode=explode, labels=labels, autopct='%1.1f%%')
 
 for w in pies[0]:
@@ -42,19 +45,15 @@ for w in pies[0]:
 
 
 # save
-from io import BytesIO
-f = BytesIO()
+f = io.BytesIO()
 plt.savefig(f, format="svg")
 
-import xml.etree.ElementTree as ET
 
-
-# filter definition for shadow using a gaussian blur
-# and lightening effect.
-# The lightening filter is copied from http://www.w3.org/TR/SVG/filters.html
+# Filter definition for shadow using a gaussian blur and lighting effect.
+# The lighting filter is copied from http://www.w3.org/TR/SVG/filters.html
 
 # I tested it with Inkscape and Firefox3. "Gaussian blur" is supported
-# in both, but the lightening effect only in the Inkscape. Also note
+# in both, but the lighting effect only in Inkscape. Also note
 # that, Inkscape's exporting also may not support it.
 
 filter_def = """
@@ -94,5 +93,5 @@ for i, pie_name in enumerate(labels):
     shadow.set("filter", 'url(#dropshadow)')
 
 fn = "svg_filter_pie.svg"
-print("Saving '%s'" % fn)
+print(f"Saving '{fn}'")
 ET.ElementTree(tree).write(fn)

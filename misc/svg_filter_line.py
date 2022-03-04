@@ -3,12 +3,14 @@
 SVG Filter Line
 ===============
 
-Demonstrate SVG filtering effects which might be used with mpl.
+Demonstrate SVG filtering effects which might be used with Matplotlib.
 
-Note that the filtering effects are only effective if your svg renderer
+Note that the filtering effects are only effective if your SVG renderer
 support it.
 """
 
+import io
+import xml.etree.ElementTree as ET
 
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
@@ -52,12 +54,9 @@ ax.set_xlim(0., 1.)
 ax.set_ylim(0., 1.)
 
 # save the figure as a bytes string in the svg format.
-from io import BytesIO
-f = BytesIO()
+f = io.BytesIO()
 plt.savefig(f, format="svg")
 
-
-import xml.etree.ElementTree as ET
 
 # filter definition for a gaussian blur
 filter_def = """
@@ -83,5 +82,5 @@ for l in [l1, l2]:
     shadow.set("filter", 'url(#dropshadow)')
 
 fn = "svg_filter_line.svg"
-print("Saving '%s'" % fn)
+print(f"Saving '{fn}'")
 ET.ElementTree(tree).write(fn)

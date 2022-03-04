@@ -25,13 +25,12 @@ a data set is the following:
 """
 from matplotlib.tri import Triangulation, TriAnalyzer, UniformTriRefiner
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import numpy as np
 
 
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Analytical test function
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 def experiment_res(x, y):
     """An analytic function representing experiment results."""
     x = 2 * x
@@ -44,9 +43,9 @@ def experiment_res(x, y):
          2 * (x**2 + y**2))
     return (np.max(z) - z) / (np.max(z) - np.min(z))
 
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Generating the initial data test points and triangulation for the demo
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # User parameters for data test points
 
 # Number of test data points, tested from 3 to 5000 for subdiv=3
@@ -83,9 +82,9 @@ mask_init[masked_tri] = True
 tri.set_mask(mask_init)
 
 
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Improving the triangulation before high-res plots: removing flat triangles
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # masking badly shaped triangles at the border of the triangular mesh.
 mask = TriAnalyzer(tri).get_flat_tri_mask(min_circle_ratio)
 tri.set_mask(mask)
@@ -102,9 +101,9 @@ flat_tri = Triangulation(x_test, y_test)
 flat_tri.set_mask(~mask)
 
 
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Now the plots
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # User options for plots
 plot_tri = True          # plot of base triangulation
 plot_masked_tri = True   # plot of excessively flat excluded triangles
@@ -114,7 +113,6 @@ plot_expected = False    # plot of analytical function values for comparison
 
 # Graphical options for tricontouring
 levels = np.arange(0., 1., 0.025)
-cmap = cm.get_cmap(name='Blues', lut=None)
 
 fig, ax = plt.subplots()
 ax.set_aspect('equal')
@@ -122,11 +120,11 @@ ax.set_title("Filtering a Delaunay mesh\n"
              "(application to high-resolution tricontouring)")
 
 # 1) plot of the refined (computed) data contours:
-ax.tricontour(tri_refi, z_test_refi, levels=levels, cmap=cmap,
+ax.tricontour(tri_refi, z_test_refi, levels=levels, cmap='Blues',
               linewidths=[2.0, 0.5, 1.0, 0.5])
 # 2) plot of the expected (analytical) data contours (dashed):
 if plot_expected:
-    ax.tricontour(tri_refi, z_expected, levels=levels, cmap=cmap,
+    ax.tricontour(tri_refi, z_expected, levels=levels, cmap='Blues',
                   linestyles='--')
 # 3) plot of the fine mesh on which interpolation was done:
 if plot_refi_tri:

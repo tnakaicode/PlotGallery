@@ -33,4 +33,4 @@ surf = ax.plot_surface(x, y, z, rstride=1, cstride=1, facecolors=rgb,
 ax.set_xticks([])
 ax.set_yticks([])
 ax.set_zticks([])
-fig.savefig("surface3d_frontpage.png", dpi=1000)  # results in 160x120 px image
+fig.savefig("surface3d_frontpage.png", dpi=25)  # results in 160x120 px image

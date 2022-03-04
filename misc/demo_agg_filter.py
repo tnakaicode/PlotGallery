@@ -7,7 +7,7 @@ Most pixel-based backends in Matplotlib use `Anti-Grain Geometry (AGG)`_ for
 rendering. You can modify the rendering of Artists by applying a filter via
 `.Artist.set_agg_filter`.
 
-.. _Anti-Grain Geometry (AGG): http://antigrain.com
+.. _Anti-Grain Geometry (AGG): http://agg.sourceforge.net/antigrain.com
 """
 
 import matplotlib.cm as cm
@@ -19,7 +19,7 @@ import numpy as np
 
 
 def smooth1d(x, window_len):
-    # copied from http://www.scipy.org/Cookbook/SignalSmooth
+    # copied from https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
     s = np.r_[2*x[0] - x[window_len:1:-1], x, 2*x[-1] - x[-1:-window_len:-1]]
     w = np.hanning(window_len)
     y = np.convolve(w/w.sum(), s, mode='same')

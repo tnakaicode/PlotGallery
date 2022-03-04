@@ -9,8 +9,7 @@ import mpl_toolkits.axisartist as axisartist
 
 
 def setup_axes(fig, pos):
-    #ax = fig.add_subplot(pos, axes_class=axisartist.Axes)
-    ax = fig.add_subplot(pos)
+    ax = fig.add_subplot(pos, axes_class=axisartist.Axes)
 
     ax.set_ylim(-0.1, 1.5)
     ax.set_yticks([0, 1])
