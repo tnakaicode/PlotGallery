@@ -15,7 +15,7 @@ y = y.T
 for i in (1, 2):
     # Create 2 figure: only the second one will have the optimization
     # path
-    plt.figure(i)
+    plt.figure(i, figsize=(3, 2.5))
     plt.clf()
     plt.axes([0, 0, 1, 1])
 

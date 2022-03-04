@@ -18,7 +18,7 @@ def f(x):
 
 
 for epsilon in (0, 1, 2):
-    plt.figure()
+    plt.figure(figsize=(3, 2.5))
     plt.axes([0, 0, 1, 1])
 
     # A convex function
@@ -49,7 +49,7 @@ for epsilon in (0, 1, 2):
     plt.axis('off')
     plt.ylim(ymin=-1, ymax=8)
 
-    plt.figure()
+    plt.figure(figsize=(4, 3))
     plt.semilogy(np.abs(all_y - all_y[-1]), linewidth=2)
     plt.ylabel('Error on f(x)')
     plt.xlabel('Iteration')

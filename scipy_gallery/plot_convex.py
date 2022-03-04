@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 x = np.linspace(-1, 2)
 
-plt.figure(1)
+plt.figure(1, figsize=(3, 2.5))
 plt.clf()
 
 # A convex function
@@ -34,7 +34,7 @@ plt.axis('off')
 plt.tight_layout()
 
 # Convexity as barycenter
-plt.figure(2)
+plt.figure(2, figsize=(3, 2.5))
 plt.clf()
 plt.plot(x, x**2 + np.exp(-5 * (x - .5)**2), linewidth=2)
 plt.text(-.7, -.6**2, '$f$', size=20)

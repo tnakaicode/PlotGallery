@@ -17,7 +17,7 @@ X, Y = make_blobs(n_samples=50, centers=2,
 
 # fit the model
 clf = SGDClassifier(loss="hinge", alpha=0.01,
-                    max_iter=200, fit_intercept=True)
+                    n_iter=200, fit_intercept=True)
 clf.fit(X, Y)
 
 # plot the line, the points, and the nearest vectors to the plane
@@ -32,7 +32,7 @@ for (i, j), val in np.ndenumerate(X1):
     p = clf.decision_function([[x1, x2]])
     Z[i, j] = p[0]
 
-plt.figure()
+plt.figure(figsize=(4, 3))
 ax = plt.axes()
 ax.contour(X1, X2, Z, [-1.0, 0.0, 1.0], colors='k',
            linestyles=['dashed', 'solid', 'dashed'])
