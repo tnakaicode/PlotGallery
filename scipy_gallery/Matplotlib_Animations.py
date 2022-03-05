@@ -55,11 +55,10 @@
 # the "GUI neutral" animation technique described below and then run it
 # with the flag, as in:
 
-# In[ ]:
 
 
-> python anim.py -dWX
-> python anim.py -dGTKAgg
+# > python anim.py -dWX
+# > python anim.py -dGTKAgg
 
 
 # Here are the results. Note that these should be interpreted cautiously,
@@ -67,15 +66,13 @@
 # and return before it is complete, or drop a drawing operation while one
 # is in the queue. The most important assessment is qualitative.
 
-# In[ ]:
 
-
-Backend  Frames/second
- GTK         43   
- GTKAgg      36 
- TkAgg       20 
- WX          11
- WXAgg       27
+# Backend  Frames/second
+#  GTK         43   
+#  GTKAgg      36 
+#  TkAgg       20 
+#  WX          11
+#  WXAgg       27
 
 
 # GUI neutral animation in pylab
@@ -98,8 +95,6 @@ Backend  Frames/second
 # Here is the anim.py script that was used to generate the profiling
 # numbers across backends in the table above
 
-# In[ ]:
-
 
 from pylab import *
 import time
@@ -113,22 +108,17 @@ for i in arange(1,200):
     line.set_ydata(sin(x+i/10.0))  # update the data
     draw()                         # redraw the canvas
 
-print 'FPS:' , 200/(time.time()-tstart)
+print ('FPS:' , 200/(time.time()-tstart))
 
 
 # Note the technique of creating a line with the call to
 # [<http://matplotlib.sf.net/matplotlib.pylab.html>\#-plot plot]:
-
-# In[ ]:
 
 
 line, = plot(x,sin(x))
 
 
 # and then setting its data with the set\_ydata method and calling draw:
-
-# In[ ]:
-
 
 line.set_ydata(sin(x+i/10.0))  # update the data
 draw()                         # redraw the canvas
@@ -138,8 +128,6 @@ draw()                         # redraw the canvas
 # objects for each plot command.
 # 
 # To animate a pcolor plot use:
-
-# In[ ]:
 
 
 p = pcolor(XI,YI,C[0])
@@ -174,7 +162,6 @@ for i in range(1,len(C)):
 # updates your figure. You then pass that callback to the GUI idle handler
 # or timer. A simple example in GTK looks like
 
-# In[ ]:
 
 
 def callback(*args):  

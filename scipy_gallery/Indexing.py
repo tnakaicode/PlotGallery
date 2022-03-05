@@ -1148,12 +1148,12 @@ np.ix_([0,2],[0,2])
 
 class IndexDemo:
     def __getitem__(self, *args):
-        print "__getitem__", args
+        print ("__getitem__", args)
         return 1
     def __setitem__(self, *args):
-        print "__setitem__", args
+        print ("__setitem__", args)
     def __iadd__(self, *args):
-        print "__iadd__", args
+        print ("__iadd__", args)
 
 
 T = IndexDemo()

@@ -6,7 +6,6 @@
 # 
 # Some example code for how to plot an arrow using the Arrow function.
 
-# In[3]:
 
 
 from matplotlib.pyplot import *

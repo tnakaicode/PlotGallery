@@ -3,12 +3,9 @@
 
 # Histograms
 # ======================================================================
-# 
+#
 # Here is an example for creating a 2D histogram with variable bin size
 # and displaying it.
-
-# In[2]:
-
 
 #!/usr/bin/python
 import numpy as np
@@ -27,7 +24,7 @@ H, xedges, yedges = np.histogram2d(y, x, bins=(xedges, yedges))
 
 # Or we fill the histogram H with a determined bin content
 H = np.ones((4, 4)).cumsum().reshape(4, 4)
-print H[::-1]  # This shows the bin content in the order as plotted
+print(H[::-1])  # This shows the bin content in the order as plotted
 
 ml.rcParams['image.cmap'] = 'gist_heat'
 
@@ -57,7 +54,7 @@ ax.set_aspect('equal')
 # Imshow is useful for a simple equidistant representation of bin content
 ax = fig.add_subplot(133)
 ax.set_title('imshow:\nequitdistant')
-im = plt.imshow(H, interpolation='nearest', origin='low',
+im = plt.imshow(H, interpolation='nearest', origin='lower',
                 extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]])
 
 
@@ -68,6 +65,4 @@ cax.get_yaxis().set_visible(False)
 cax.patch.set_alpha(0)
 cax.set_frame_on(False)
 plt.colorbar(orientation='horizontal', ax=cax)
-plt.tight_layout()
 plt.show()
-

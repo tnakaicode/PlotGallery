@@ -28,41 +28,20 @@
 # way to read text data is via genfromtxt, (or derivative convenience
 # functions recfromtxt and recfromcsv).
 
-# In[ ]:
-
-
-from numpy import *
-data = zeros((3,3))
->>>#Write data:
-savetxt("myfile.txt", data)
->>>#Read:
-data = genfromtxt("myfile.txt") }}}
-
-== Matplotlib (pylab) ==
-
-Matplotlib  provides an easy solution which seems to load data faster than read_array:
-{{{#!python numbers=disable
-from numpy import *
+import numpy as np
 from pylab import load           # warning, the load() function of numpy will be shadowed
 from pylab import save
-data = zeros((3,3))
+data = np.zeros((3,3))
 save('myfile.txt', data)
 read_data = load("myfile.txt")
 
 
 # ### numPy
 
-# In[ ]:
 
+np.savetxt('myfile.txt', data, fmt="%12.6G")    # save to file
 
-savetxt('myfile.txt', data, fmt="%12.6G")    # save to file
-
-
-# In[ ]:
-
-
-from numpy import *
-data = genfromtxt('table.dat', unpack=True)
+data = np.genfromtxt('table.dat', unpack=True)
 
 
 # ### csv files
@@ -80,8 +59,6 @@ data = genfromtxt('table.dat', unpack=True)
 # arbitrary column types. You can also return a recarray, which let's you
 # assign 'column headings' to your array.
 
-# In[ ]:
-
 
 def read_array(filename, dtype, separator=','):
     """ Read a file with an arbitrary number of columns.
@@ -89,19 +66,17 @@ def read_array(filename, dtype, separator=','):
         It will be cast to the given dtype at runtime
     """
     cast = N.cast
-    data = [[] for dummy in xrange(len(dtype))]
+    data = [[] for dummy in range(len(dtype))]
     for line in open(filename, 'r'):
         fields = line.strip().split(separator)
         for i, number in enumerate(fields):
             data[i].append(number)
-    for i in xrange(len(dtype)):
+    for i in range(len(dtype)):
         data[i] = cast[dtype[i]](data[i])
     return N.rec.array(data, dtype=dtype)
 
 
 # This can then be called with the corresponding dtype:
-
-# In[ ]:
 
 
 mydescr = N.dtype([('column1', 'int32'), ('column2Name', 'uint32'), ('col3', 'uint64'), ('c4', 'float32')])
@@ -122,22 +97,17 @@ myrecarray = read_array('file.csv', mydescr)
 # The simplest possibility is to use 's own binary file format. See , and
 # .
 
-# In[ ]:
 
-
-numpy.save('test.npy', data)
-data2 = numpy.load('test.npy')
+np.save('test.npy', data)
+data2 = np.load('test.npy')
 
 
 # You can save several arrays in a single file using . When loading an
 # file you get an object of type . You can obtain a list of arrays and
 # load individual arrays like this:
 
-# In[ ]:
-
-
-numpy.savez('foo.npz', a=a,b=b)
-foo = numpy.load('foo.npz')
+np.savez('foo.npz', a=a,b=b)
+foo = np.load('foo.npz')
 foo.files
 ['a', 'b']
 a2 = foo['a']
@@ -160,15 +130,7 @@ b2 = foo['b']
 # For reading binary files, scipy.io.numpyio provides fread(). You have to
 # know the datatype of your array, its size and its shape.
 
-# In[ ]:
-
-
 from scipy.io.numpyio import fwrite, fread
-data = zeros((3,3))
->>>#write:  fd = open('myfile.dat', 'wb')
-fwrite(fd, data.size, data)
-fd.close()
->>>#read:
 fd = open('myfile.dat', 'rb')
 datatype = 'i'
 size = 9

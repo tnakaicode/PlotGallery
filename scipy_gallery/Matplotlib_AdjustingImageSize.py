@@ -44,9 +44,6 @@
 # [MPL_size_test.py](files/attachments/Matplotlib_AdjustingImageSize/MPL_size_test.py)
 # 
 
-# In[ ]:
-
-
 #!python
 
 """
@@ -56,7 +53,7 @@ for matplotlib
 """
 
 import matplotlib
-print "using MPL version:", matplotlib.__version__
+print ("using MPL version:", matplotlib.__version__)
 matplotlib.use("WXAgg") # do this before pylab so you don'tget the default back end.
 
 import pylab
