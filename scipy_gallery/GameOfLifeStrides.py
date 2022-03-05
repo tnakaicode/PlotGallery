@@ -30,18 +30,8 @@ xx = stride_tricks.as_strided(
 
 
 print(x)
-
-
 print(xx)
-
-
 print(xx[0, 0])
-
-
 print(xx[1, 2])
-
-
 print(x.strides)
-
-
 print(xx.strides)

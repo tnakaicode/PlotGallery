@@ -30,4 +30,4 @@ print("diff(Hares) vs. Lynxes correlation",
 
 import matplotlib.pyplot as plt
 plt.plot(year, hare_grad, year, -lynxes)
-plt.savefig('plot.png')
+plt.savefig('data_statistics_plot.png')
