@@ -13,8 +13,6 @@
 # As a rule of thumb, we want to count about 100 errors for each SNR
 # value, which determines the length of the np.signal (and noise) vector(s).
 
-# In[1]:
-
 
 #!/usr/bin/python
 # BPSK digital modulation example
@@ -23,6 +21,7 @@
 import numpy as np
 from scipy.special import erfc
 import matplotlib.pyplot as plt
+from scipy.special import erfc
 
 SNR_MIN = 0
 SNR_MAX = 9
@@ -35,7 +34,8 @@ BER = np.empty(np.shape(SNR))
 loop = 0
 for snr in SNR:      # SNR loop
     Pe[loop] = 0.5 * erfc(np.sqrt(snr))
-    VEC_SIZE = np.ceil(100 / Pe[loop])  # vector length is a function of Pe
+    # vector length is a function of Pe
+    VEC_SIZE = int(np.ceil(100 / Pe[loop]))
 
     # np.signal vector, new vector for each SNR value
     s = 2 * np.random.randint(0, high=2, size=VEC_SIZE) - 1
@@ -60,6 +60,7 @@ for snr in SNR:      # SNR loop
           (Eb_No_dB[loop], BER[loop], Pe[loop]))
     loop += 1
 
+plt.figure()
 #plt.semilogy(Eb_No_dB, Pe,'r',Eb_No_dB, BER,'s')
 plt.semilogy(Eb_No_dB, Pe, 'r', linewidth=2)
 plt.semilogy(Eb_No_dB, BER, '-s')
@@ -67,7 +68,6 @@ plt.grid(True)
 plt.legend(('analytical', 'simulation'))
 plt.xlabel('Eb/No (dB)')
 plt.ylabel('BER')
-plt.show()
 
 
 # In the second, slightly modified example, the problem of np.signal length
@@ -75,15 +75,10 @@ plt.show()
 # samples for a given SNR grows quickly, so that the simulation above is
 # not practical for Eb/No values greater than 9 or 10 dB.
 
-# In[2]:
-
 
 # BPSK digital modulation: modified example
 # by Ivo Maljevic
 
-from scipy import *
-from scipy.special import erfc
-import matplotlib.pyplot as plt
 
 rand = np.random.rand
 normal = np.random.normal
@@ -131,6 +126,7 @@ for snr in Eb_No_lin:
         Eb_No_dB[loop], BER[loop], Pe[loop]))
     loop += 1
 
+plt.figure()
 plt.semilogy(Eb_No_dB, Pe, 'r', linewidth=2)
 plt.semilogy(Eb_No_dB, BER, '-s')
 plt.grid(True)

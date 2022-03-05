@@ -27,33 +27,27 @@
 
 # Now let's start solving some real bundle adjusment problem. We'll take a problem from http://grail.cs.washington.edu/projects/bal/.
 
-# In[1]:
-
-
 from __future__ import print_function
-
-
-# In[2]:
-
 
 import urllib
 import bz2
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 
+import time
+from scipy.optimize import least_squares
+from scipy.sparse import lil_matrix
 
 # First download the data file:
-
-# In[3]:
 
 
 BASE_URL = "http://grail.cs.washington.edu/projects/bal/data/ladybug/"
 FILE_NAME = "problem-49-7776-pre.txt.bz2"
 URL = BASE_URL + FILE_NAME
 
-
-# In[4]:
-
+# https://grail.cs.washington.edu/projects/bal/ladybug.html
+# https://grail.cs.washington.edu/projects/bal/data/ladybug/problem-49-7776-pre.txt.bz2
 
 if not os.path.isfile(FILE_NAME):
     urllib.request.urlretrieve(URL, FILE_NAME)
@@ -61,13 +55,11 @@ if not os.path.isfile(FILE_NAME):
 
 # Now read the data from the file:
 
-# In[5]:
 
 
 def read_bal_data(file_name):
     with bz2.open(file_name, "rt") as file:
-        n_cameras, n_points, n_observations = map(
-            int, file.readline().split())
+        n_cameras, n_points, n_observations = map(int, file.readline().split())
 
         camera_indices = np.empty(n_observations, dtype=int)
         point_indices = np.empty(n_observations, dtype=int)
@@ -92,7 +84,6 @@ def read_bal_data(file_name):
     return camera_params, points_3d, camera_indices, point_indices, points_2d
 
 
-# In[6]:
 
 
 camera_params, points_3d, camera_indices, point_indices, points_2d = read_bal_data(FILE_NAME)
@@ -108,7 +99,6 @@ camera_params, points_3d, camera_indices, point_indices, points_2d = read_bal_da
 # 
 # And the numbers are:
 
-# In[7]:
 
 
 n_cameras = camera_params.shape[0]
@@ -127,7 +117,6 @@ print("Total number of residuals: {}".format(m))
 
 # Now define the function which returns a vector of residuals. We use numpy vectorized computations:
 
-# In[8]:
 
 
 def rotate(points, rot_vecs):
@@ -146,7 +135,6 @@ def rotate(points, rot_vecs):
     return cos_theta * points + sin_theta * np.cross(v, points) + dot * (1 - cos_theta) * v
 
 
-# In[9]:
 
 
 def project(points, camera_params):
@@ -163,7 +151,6 @@ def project(points, camera_params):
     return points_proj
 
 
-# In[10]:
 
 
 def fun(params, n_cameras, n_points, camera_indices, point_indices, points_2d):
@@ -179,13 +166,9 @@ def fun(params, n_cameras, n_points, camera_indices, point_indices, points_2d):
 
 # You can see that computing Jacobian of `fun` is cumbersome, thus we will rely on the finite difference approximation. To make this process time feasible we provide Jacobian sparsity structure (i. e. mark elements which are known to be non-zero):
 
-# In[11]:
 
 
-from scipy.sparse import lil_matrix
 
-
-# In[12]:
 
 
 def bundle_adjustment_sparsity(n_cameras, n_points, camera_indices, point_indices):
@@ -207,55 +190,25 @@ def bundle_adjustment_sparsity(n_cameras, n_points, camera_indices, point_indice
 
 # Now we are ready to run optimization. Let's visualize residuals evaluated with the initial parameters.
 
-# In[13]:
 
-
-get_ipython().run_line_magic('matplotlib', 'inline')
-import matplotlib.pyplot as plt
-
-
-# In[14]:
 
 
 x0 = np.hstack((camera_params.ravel(), points_3d.ravel()))
 
-
-# In[15]:
-
-
 f0 = fun(x0, n_cameras, n_points, camera_indices, point_indices, points_2d)
 
 
-# In[16]:
-
-
+plt.figure()
 plt.plot(f0)
 
 
-# In[17]:
-
-
 A = bundle_adjustment_sparsity(n_cameras, n_points, camera_indices, point_indices)
-
-
-# In[18]:
-
-
-import time
-from scipy.optimize import least_squares
-
-
-# In[19]:
 
 
 t0 = time.time()
 res = least_squares(fun, x0, jac_sparsity=A, verbose=2, x_scale='jac', ftol=1e-4, method='trf',
                     args=(n_cameras, n_points, camera_indices, point_indices, points_2d))
 t1 = time.time()
-
-
-# In[20]:
-
 
 print("Optimization took {0:.0f} seconds".format(t1 - t0))
 
@@ -264,10 +217,8 @@ print("Optimization took {0:.0f} seconds".format(t1 - t0))
 
 # Now let's plot residuals at the found solution:
 
-# In[21]:
-
-
+plt.figure()
 plt.plot(res.fun)
-
+plt.show()
 
 # We see much better picture of residuals now, with the mean being very close to zero. There are some spikes left. It can be explained by outliers in the data, or, possibly, the algorithm found a local minimum (very good one though) or didn't converged enough. Note that the algorithm worked with Jacobian finite difference aproximate, which can potentially block the progress near the minimum because of insufficient accuracy (but again, computing exact Jacobian for this problem is quite difficult).

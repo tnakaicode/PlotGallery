@@ -12,6 +12,7 @@ from scipy import special, linalg
 ##############################################################################
 # Function to caculate the field of a loop
 
+
 def base_vectors(n):
     """ Returns 3 orthognal base vectors, the first one colinear to n.
     """
@@ -20,7 +21,7 @@ def base_vectors(n):
 
     # choose two vectors perpendicular to n
     # choice is arbitrary since the coil is symetric about n
-    if abs(n[0]) == 1 :
+    if abs(n[0]) == 1:
         l = np.r_[n[2], 0, -n[0]]
     else:
         l = np.r_[0, n[2], -n[1]]
@@ -51,7 +52,7 @@ def B_field(r, n, r0, R):
     (mu I) / (2 pi d)
     for I in amps and d in meters and mu = 4 pi * 10^-7 we get Tesla
     """
-    ### Translate the coordinates in the coil's frame
+    # Translate the coordinates in the coil's frame
     n, l, m = base_vectors(n)
 
     # transformation matrix coil frame to lab frame
@@ -59,10 +60,10 @@ def B_field(r, n, r0, R):
     # transformation matrix to lab frame to coil frame
     inv_trans = linalg.inv(trans)
 
-    r = r - r0	  #point location from center of coil
-    r = np.dot(r, inv_trans) 	    #transform vector to coil frame
+    r = r - r0  # point location from center of coil
+    r = np.dot(r, inv_trans)  # transform vector to coil frame
 
-    #### calculate field
+    # calculate field
 
     # express the coordinates in polar form
     x = r[:, 0]
@@ -73,24 +74,24 @@ def B_field(r, n, r0, R):
     # NaNs are generated where y is zero.
     theta[y == 0] = np.pi / 2
 
-    E = special.ellipe((4 * R * rho)/( (R + rho)**2 + z**2))
-    K = special.ellipk((4 * R * rho)/( (R + rho)**2 + z**2))
+    E = special.ellipe((4 * R * rho) / ((R + rho)**2 + z**2))
+    K = special.ellipk((4 * R * rho) / ((R + rho)**2 + z**2))
     dist = ((R - rho)**2 + z**2)
     Bz = 1 / np.sqrt((R + rho)**2 + z**2) * (
-                K
-              + E * (R**2 - rho**2 - z**2) / dist
-              )
-    Brho = z / (rho*np.sqrt((R + rho)**2 + z**2)) * (
-               -K
-              + E * (R**2 + rho**2 + z**2)/ dist
-              )
+        K
+        + E * (R**2 - rho**2 - z**2) / dist
+    )
+    Brho = z / (rho * np.sqrt((R + rho)**2 + z**2)) * (
+        -K
+        + E * (R**2 + rho**2 + z**2) / dist
+    )
     # On the axis of the coil we get a divided by zero here. This returns a
     # NaN, where the field is actually zero :
     Brho[dist == 0] = 0
     Brho[rho == 0] = 0
     Bz[dist == 0] = 0
 
-    B = np.c_[np.cos(theta)*Brho, np.sin(theta)*Brho, Bz ]
+    B = np.c_[np.cos(theta) * Brho, np.sin(theta) * Brho, Bz]
 
     # Rotate the field back in the lab's frame
     B = np.dot(B, trans)
@@ -114,14 +115,14 @@ r = np.c_[np.ravel(X), np.ravel(Y), np.ravel(Z)]
 # The coil positions
 
 # The center of the coil
-r0  = np.r_[0, 0, 0.1]
+r0 = np.r_[0, 0, 0.1]
 # The normal to the coils
-n  = np.r_[0, 0, 1]
+n = np.r_[0, 0, 1]
 # The radius
-R  = 0.1
+R = 0.1
 
 # Add the mirror image of this coils relatively to the xy plane :
-r0 = np.vstack((r0, -r0 ))
+r0 = np.vstack((r0, -r0))
 R = np.r_[R, R]
 n = np.vstack((n, n))	    # Helmoltz like configuration
 
@@ -131,8 +132,7 @@ n = np.vstack((n, n))	    # Helmoltz like configuration
 B = np.zeros_like(r)
 # Then loop through the different coils and sum the fields :
 for this_n, this_r0, this_R in zip(n, r0, R):
-  this_n    = np.array(this_n)
-  this_r0   = np.array(this_r0)
-  this_R    = np.array(this_R)
-  B += B_field(r, this_n, this_r0, this_R)
-
+    this_n = np.array(this_n)
+    this_r0 = np.array(this_r0)
+    this_R = np.array(this_R)
+    B += B_field(r, this_n, this_r0, this_R)

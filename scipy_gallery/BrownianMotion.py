@@ -3,28 +3,31 @@
 
 # Brownian Motion
 # ===============
-# 
+#
 # *Brownian motion* is a stochastic process. One form of the equation for
 # Brownian motion is
-# 
+#
 # $X(0) = X_0$
-# 
+#
 # $X(t + dt) = X(t) + N(0, (delta)^2 dt; t, t+dt)$
-# 
+#
 # where $N(a, b; t_1, t_2)$ is a normally distributed random
 # variable with mean a and variance b. The parameters $t_1$ and $t_2$
 # make explicit the statistical independence of *N* on different time
 # intervals; that is, if $[t_1, t_2)$ and $[t_3, t_4)$ are
 # disjoint intervals, then $N(a, b; t_1, t_2)$ and $N(a, b; t_3,
 # t_4)$ are independent.
-# 
+#
 # The calculation is actually very simple. A naive implementation that
 # prints *n* steps of the Brownian motion might look like this:
 
-# In[1]:
-
 
 from scipy.stats import norm
+from math import sqrt
+from scipy.stats import norm
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 # Process parameters
 delta = 0.25
@@ -38,13 +41,13 @@ n = 20
 
 # Iterate to compute the steps of the Brownian motion.
 for k in range(n):
-    x = x + norm.rvs(scale=delta**2*dt)
-    print x
+    x = x + norm.rvs(scale=delta**2 * dt)
+    print(x)
 
 
 # The above code could be easily modified to save the iterations in an
 # array instead of printing them.
-# 
+#
 # The problem with the above code is that it is slow. If we want to
 # compute a large number of iterations, we can do much better. The key is
 # to note that the calculation is the cumulative sum of samples from the
@@ -52,13 +55,11 @@ for k in range(n):
 # generating all the samples from the normal distribution with one call to
 # scipy.stats.norm.rvs(), and then using the numpy *cumsum* function to
 # form the cumulative sum.
-# 
+#
 # The following function uses this idea to implement the function
 # *brownian()*. The function allows the initial condition to be an array
 # (or anything that can be converted to an array). Each element of *x0* is
 # treated as an initial condition for a Brownian motion.
-
-# In[3]:
 
 
 """
@@ -66,10 +67,6 @@ brownian() implements one dimensional Brownian motion (i.e. the Wiener process).
 """
 
 # File: brownian.py
-
-from math import sqrt
-from scipy.stats import norm
-import numpy as np
 
 
 def brownian(x0, n, dt, delta, out=None):
@@ -83,7 +80,7 @@ def brownian(x0, n, dt, delta, out=None):
     independence of N on different time intervals; that is, if [t0, t1) and
     [t2, t3) are disjoint intervals, then N(a, b; t0, t1) and N(a, b; t2, t3)
     are independent.
-    
+
     Written as an iteration scheme,
 
         X(t + dt) = X(t) + N(0, delta**2 * dt; t, t+dt)
@@ -113,7 +110,7 @@ def brownian(x0, n, dt, delta, out=None):
     Returns
     -------
     A numpy array of floats with shape `x0.shape + (n,)`.
-    
+
     Note that the initial value `x0` is not included in the returned array.
     """
 
@@ -121,14 +118,14 @@ def brownian(x0, n, dt, delta, out=None):
 
     # For each element of x0, generate a sample of n numbers from a
     # normal distribution.
-    r = norm.rvs(size=x0.shape + (n,), scale=delta*sqrt(dt))
+    r = norm.rvs(size=x0.shape + (n,), scale=delta * sqrt(dt))
 
     # If `out` was not given, create an output array.
     if out is None:
         out = np.empty(r.shape)
 
     # This computes the Brownian motion by forming the cumulative sum of
-    # the random samples. 
+    # the random samples.
     np.cumsum(r, axis=-1, out=out)
 
     # Add the initial condition.
@@ -138,15 +135,10 @@ def brownian(x0, n, dt, delta, out=None):
 
 
 # ### Example
-# 
+#
 # Here's a script that uses this function and matplotlib's pylab module to
 # plot several realizations of Brownian motion.
 
-# In[5]:
-
-
-import numpy
-from pylab import plot, show, grid, xlabel, ylabel
 
 # The Wiener process parameter.
 delta = 2
@@ -155,38 +147,33 @@ T = 10.0
 # Number of steps.
 N = 500
 # Time step size
-dt = T/N
+dt = T / N
 # Number of realizations to generate.
 m = 20
 # Create an empty array to store the realizations.
-x = numpy.empty((m,N+1))
+x = np.empty((m, N + 1))
 # Initial values of x.
 x[:, 0] = 50
 
-brownian(x[:,0], N, dt, delta, out=x[:,1:])
+brownian(x[:, 0], N, dt, delta, out=x[:, 1:])
 
-t = numpy.linspace(0.0, N*dt, N+1)
+plt.figure()
+t = np.linspace(0.0, N * dt, N + 1)
 for k in range(m):
-    plot(t, x[k])
-xlabel('t', fontsize=16)
-ylabel('x', fontsize=16)
-grid(True)
-show()
+    plt.plot(t, x[k])
+plt.xlabel('t', fontsize=16)
+plt.ylabel('x', fontsize=16)
+plt.grid(True)
 
 
 # ### 2D Brownian Motion
-# 
+#
 # The same function can be used to generate Brownian motion in two
 # dimensions, since each dimension is just a one-dimensional Brownian
 # motion.
-# 
+#
 # The following script provides a demo.
 
-# In[6]:
-
-
-import numpy
-from pylab import plot, show, grid, axis, xlabel, ylabel, title
 
 # The Wiener process parameter.
 delta = 0.25
@@ -195,25 +182,25 @@ T = 10.0
 # Number of steps.
 N = 500
 # Time step size
-dt = T/N
+dt = T / N
 # Initial values of x.
-x = numpy.empty((2,N+1))
+x = np.empty((2, N + 1))
 x[:, 0] = 0.0
 
-brownian(x[:,0], N, dt, delta, out=x[:,1:])
+brownian(x[:, 0], N, dt, delta, out=x[:, 1:])
 
+plt.figure()
 # Plot the 2D trajectory.
-plot(x[0],x[1])
-    
+plt.plot(x[0], x[1])
+
 # Mark the start and end points.
-plot(x[0,0],x[1,0], 'go')
-plot(x[0,-1], x[1,-1], 'ro')
+plt.plot(x[0, 0], x[1, 0], 'go')
+plt.plot(x[0, -1], x[1, -1], 'ro')
 
 # More plot decorations.
-title('2D Brownian Motion')
-xlabel('x', fontsize=16)
-ylabel('y', fontsize=16)
-axis('equal')
-grid(True)
-show()
-
+plt.title('2D Brownian Motion')
+plt.xlabel('x', fontsize=16)
+plt.ylabel('y', fontsize=16)
+plt.axis('equal')
+plt.grid(True)
+plt.show()

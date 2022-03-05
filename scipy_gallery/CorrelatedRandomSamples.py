@@ -3,19 +3,17 @@
 
 # Correlated Random Samples
 # =========================
-# 
+#
 # ***Note:*** *This cookbook entry shows how to generate random samples
 # from a multivariate normal distribution using tools from SciPy, but in
 # fact NumPy includes the function \`numpy.random.multivariate\_normal\`
 # to accomplish the same task.*
-# 
+#
 # To generate correlated normally distributed random samples, one can
 # first generate uncorrelated samples, and then multiply them by a matrix
 # *C* such that $C C^T = R$, where *R* is the desired covariance
 # matrix. *C* can be created, for example, by using the Cholesky
 # decomposition of *R*, or from the eigenvalues and eigenvectors of *R*.
-
-# In[1]:
 
 
 """Example of generating correlated normally distributed random samples."""
@@ -23,8 +21,7 @@
 import numpy as np
 from scipy.linalg import eigh, cholesky
 from scipy.stats import norm
-
-from pylab import plot, show, axis, subplot, xlabel, ylabel, grid
+import matplotlib.pyplot as plt
 
 
 # Choice of cholesky or eigenvector method.
@@ -35,10 +32,10 @@ num_samples = 400
 
 # The desired covariance matrix.
 r = np.array([
-        [  3.40, -2.75, -2.00],
-        [ -2.75,  5.50,  1.50],
-        [ -2.00,  1.50,  1.25]
-    ])
+    [3.40, -2.75, -2.00],
+    [-2.75, 5.50, 1.50],
+    [-2.00, 1.50, 1.25]
+])
 
 # Generate samples from three independent normally distributed random
 # variables (with mean 0 and std. dev. 1).
@@ -57,30 +54,30 @@ else:
     # Construct c, so c*c^T = r.
     c = np.dot(evecs, np.diag(np.sqrt(evals)))
 
-# Convert the data to correlated random variables. 
+# Convert the data to correlated random variables.
 y = np.dot(c, x)
 
 #
 # Plot various projections of the samples.
 #
-subplot(2,2,1)
-plot(y[0], y[1], 'b.')
-ylabel('y[1]')
-axis('equal')
-grid(True)
+plt.figure()
+plt.subplot(2, 2, 1)
+plt.plot(y[0], y[1], 'b.')
+plt.ylabel('y[1]')
+plt.axis('equal')
+plt.grid(True)
 
-subplot(2,2,3)
-plot(y[0], y[2], 'b.')
-xlabel('y[0]')
-ylabel('y[2]')
-axis('equal')
-grid(True)
+plt.subplot(2, 2, 3)
+plt.plot(y[0], y[2], 'b.')
+plt.xlabel('y[0]')
+plt.ylabel('y[2]')
+plt.axis('equal')
+plt.grid(True)
 
-subplot(2,2,4)
-plot(y[1], y[2], 'b.')
-xlabel('y[1]')
-axis('equal')
-grid(True)
+plt.subplot(2, 2, 4)
+plt.plot(y[1], y[2], 'b.')
+plt.xlabel('y[1]')
+plt.axis('equal')
+plt.grid(True)
 
-show()
-
+plt.show()

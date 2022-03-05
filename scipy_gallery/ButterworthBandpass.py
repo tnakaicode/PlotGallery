@@ -3,7 +3,7 @@
 
 # Butterworth Bandpass
 # ======================================================================
-# 
+#
 # This cookbook recipe demonstrates the use of `scipy.signal.butter` to
 # create a bandpass Butterworth filter. `scipy.signal.freqz` is used to
 # compute the frequency response, and `scipy.signal.lfilter` is used to
@@ -11,10 +11,11 @@
 # answer to a [question at
 # stackoverflow.com](http://stackoverflow.com/questions/12093594/how-to-implement-band-pass-butterworth-filter-with-scipy-signal-butter).)
 
-# In[5]:
-
-
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import freqz
 from scipy.signal import butter, lfilter
+
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
@@ -31,9 +32,6 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 
 
 def run():
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from scipy.signal import freqz
 
     # Sample rate and desired cutoff frequencies (in Hz).
     fs = 5000.0
@@ -81,4 +79,3 @@ def run():
 
 
 run()
-
