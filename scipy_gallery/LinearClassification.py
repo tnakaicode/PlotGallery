@@ -24,27 +24,25 @@
 # format) - [bezdekIris.data.txt](files/attachments/LinearClassification/bezdekIris.data.txt)
 #
 
-# In[ ]:
 
-
-#! python
 from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 
 def read_data():
-    f = open("Iris.txt", 'r')
+    f = open("iris.data", 'r')
     lines = [line.strip() for line in f.readlines()]
     f.close()
 
     lines = [line.split(",") for line in lines if line]
 
     class1 = np.array([line[:4] for line in lines if line[-1]
-                       == "Iris-setosa"], dtype=np.float)
+                      == "Iris-setosa"], dtype=np.float)
 
     class2 = np.array([line[:4] for line in lines if line[-1]
-                       != "Iris-setosa"], dtype=np.float)
+                      != "Iris-setosa"], dtype=np.float)
 
     return class1, class2
 
@@ -66,8 +64,6 @@ plt.plot(np.dot(class2, w), [0] * class2.shape[0],
          "go", label="Iris-versicolor and Iris-virginica")
 plt.legend()
 
-plt.show()
-
 
 # ![](files/attachments/LinearClassification/Fisher_disrciminant.JPG)
 #
@@ -85,18 +81,9 @@ plt.show()
 # compute so called quantities ak (variables pc's in the program) and if
 # ak\>\>aj for all k!=j then assign p(Ck|x)=1 and p(Cj|x)=0.
 
-# In[ ]:
-
-
-#! python
-from __future__ import division
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-
 
 def read_data():
-    f = open("Iris.txt", 'r')
+    f = open("iris.data", 'r')
     lines = [line.strip() for line in f.readlines()]
     f.close()
 

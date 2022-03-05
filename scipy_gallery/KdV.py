@@ -3,7 +3,7 @@
 
 # Korteweg de Vries equation
 # ======================================================================
-# 
+#
 # This page shows how the [Korteweg-de Vries
 # equation](http://en.wikipedia.org/wiki/Korteweg-de_Vries_equation) can
 # be solved on a periodic domain using the [method of
@@ -14,7 +14,7 @@
 # and converting back to the spatial domain with the inverse FFT. This
 # method of differentiation is implemented by the **diff** function in the
 # module **scipy.fftpack**.
-# 
+#
 # We discretize the spatial domain, and compute the spatial derivatives
 # using the **diff** function defined in the **scipy.fftpack** module. In
 # the following code, this function is given the alias **psdiff** to avoid
@@ -24,20 +24,20 @@
 # function **kdv\_solution(u0, t, L)** uses **scipy.integrate.odeint** to
 # solve this system.
 
-# In[1]:
-
 
 #!python
 
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.fftpack import diff as psdiff
 
 
 def kdv_exact(x, c):
     """Profile of the exact solution to the KdV for a single soliton on the real line."""
-    u = 0.5*c*np.cosh(0.5*np.sqrt(c)*x)**(-2)
+    u = 0.5 * c * np.cosh(0.5 * np.sqrt(c) * x)**(-2)
     return u
+
 
 def kdv(u, t, L):
     """Differential equations for the KdV equation, discretized in x."""
@@ -45,14 +45,15 @@ def kdv(u, t, L):
     ux = psdiff(u, period=L)
     uxxx = psdiff(u, period=L, order=3)
 
-    # Compute du/dt.    
-    dudt = -6*u*ux - uxxx
+    # Compute du/dt.
+    dudt = -6 * u * ux - uxxx
 
     return dudt
 
+
 def kdv_solution(u0, t, L):
     """Use odeint to solve the KdV equation on a periodic domain.
-    
+
     `u0` is initial condition, `t` is the array of time values at which
     the solution is to be computed, and `L` is the length of the periodic
     domain."""
@@ -66,11 +67,11 @@ if __name__ == "__main__":
     L = 50.0
     N = 64
     dx = L / (N - 1.0)
-    x = np.linspace(0, (1-1.0/N)*L, N)
+    x = np.linspace(0, (1 - 1.0 / N) * L, N)
 
     # Set the initial conditions.
     # Not exact for two solitons on a periodic domain, but close enough...
-    u0 = kdv_exact(x-0.33*L, 0.75) + kdv_exact(x-0.65*L, 0.4)
+    u0 = kdv_exact(x - 0.33 * L, 0.75) + kdv_exact(x - 0.65 * L, 0.4)
 
     # Set the time sample grid.
     T = 200
@@ -79,17 +80,12 @@ if __name__ == "__main__":
     print("Computing the solution.")
     sol = kdv_solution(u0, t, L)
 
-
     print("Plotting.")
 
-    import matplotlib.pyplot as plt
-
-    plt.figure(figsize=(6,5))
-    plt.imshow(sol[::-1, :], extent=[0,L,0,T])
+    plt.figure(figsize=(6, 5))
+    plt.imshow(sol[::-1, :], extent=[0, L, 0, T])
     plt.colorbar()
     plt.xlabel('x')
     plt.ylabel('t')
-    plt.axis('normal')
     plt.title('Korteweg-de Vries on a Periodic Domain')
     plt.show()
-

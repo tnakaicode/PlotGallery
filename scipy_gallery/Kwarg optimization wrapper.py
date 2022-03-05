@@ -2,28 +2,30 @@
 # coding: utf-8
 
 # # Kwargs optimization wrapper
-# 
+#
 # TAGS: Optimization and fitting
-# 
+#
 # ## This ia a method to implement optimization for functions taking keywords instead of a vector (python 3 only since 2 doesn't support multiple dictionnary unpacking simultaneously)
 # This was mostly implemented out of the need to optimize a ml algorythm's hyper-parameters, by using factory function and dictionnary packing and unpacking it is possible to achieve this.
-# 
+#
 # ### This is a prototype, some minimal tweaking may be necessary though the functions should be modular enough and have enough safety nets to work as is.
-# 
-# 
+#
+#
 
 # ## First function, a random distribution generator
 # This first function is a random generator to create an array of X rows(Size parameter), iterating over those row and passing the values to the function can be useful.
 # Using a Size of 1 is the recommended way to create a single vector to initiate the optimization process.
 
-# In[ ]:
-
-
+from collections import OrderedDict as OD
+import numpy as np
 from pandas import DataFrame
-from randon import randint, uniform
+from random import randint, uniform
+from scipy.optimize import minimize
+import pandas as pd
+from pandas import DataFrame  # to make sure adpt_dstr works
 
 
-def adpt_distr(boundict, Method: bool=True, Size=1, out='df', hardfloat=True):
+def adpt_distr(boundict, Method: bool = True, Size=1, out='df', hardfloat=True):
     """
     Takes input with bounds, check bounds, if bounds are (float) sample from uniform 0,1
     otherwise if bounds are (bool) sample from randint 0,1 and otherwise sample from randint bound to bound
@@ -121,25 +123,19 @@ def adpt_distr(boundict, Method: bool=True, Size=1, out='df', hardfloat=True):
 
 # ## The core of the method: the dicwrap function
 # This is where everything happens, this function is used as a function factory to create a simple function with most things preset, this way minimize can handle the function properly.
-# 
+#
 # There should be enough modularity and safety nets to make this work out of the box. It is possible that something may go wrong ( it has not been tested extensively).
-# 
+#
 # Check the function doc for more details.
-
-# In[ ]:
-
-
-from collections import OrderedDict as OD
-import numpy as np
 
 
 def dicwrap(funck,
             boundings,
-            lenit: int=1,
+            lenit: int = 1,
             inpt=None,
-            i_as_meth_arg: bool=False,
-            factory: bool=True,
-            Cmeth: str="RUN",
+            i_as_meth_arg: bool = False,
+            factory: bool = True,
+            Cmeth: str = "RUN",
             staticD=dict(),
             hardfloat=False,
             inner_bounding=False):
@@ -291,12 +287,8 @@ def dicwrap(funck,
 
 # ## Example 1: single stage function optimization
 
-# In[ ]:
-
 
 # example use
-from scipy.optimize import minimize
-from pandas import DataFrame  # to make sure adpt_dstr works
 
 # foo is our function to optimize
 
@@ -319,12 +311,8 @@ optimize_kwargs = zip(Args, optimized)
 # ## Example 2: Multi-stage class optimization
 # If you want to implement optimization in many stages and for a class, this would be the way to do so:
 
-# In[ ]:
-
 
 # example use
-from scipy.optimize import minimize
-from pandas import DataFrame  # to make sure adpt_dstr works
 
 # foo is our function to optimize
 
@@ -366,4 +354,3 @@ for dicto in [kwarg1, kwarg2]:
     optim_kwargs = zip(Args, optimized)
     optimized_kwargs = {**optimized_kwargs, **
                         optim_kwargs}  # merge the two dicts
-
