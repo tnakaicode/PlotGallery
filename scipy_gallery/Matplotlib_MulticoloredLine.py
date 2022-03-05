@@ -3,22 +3,20 @@
 
 # Matplotlib: multicolored line
 # ======================================================================
-# 
+#
 # Defining colors manually
 # ------------------------
-# 
+#
 # [colored_line.py](files/attachments/Matplotlib_MulticoloredLine/colored_line.py) is a simple illustration of how to make the
 # )# color of each segment of a line depend on some property of the data
 # being plotted.
-# 
+#
 # An up to date version of the script can be found
 # [here](http://matplotlib.sourceforge.net/gallery.html).
-# 
+#
 # ![](files/attachments/Matplotlib_MulticoloredLine/colored_line.png)
-# 
+#
 # Here is the script:
-
-# In[ ]:
 
 
 #!/usr/bin/env python
@@ -48,6 +46,7 @@ segments = np.concatenate([points[:-1], points[1:]], axis=1)
 
 # Create the line collection object, setting the colormapping parameters.
 # Have to set the actual values used for colormapping separately.
+plt.figure()
 lc = LineCollection(segments, cmap=cmap, norm=norm)
 lc.set_array(z)
 lc.set_linewidth(3)
@@ -55,28 +54,21 @@ plt.gca().add_collection(lc)
 
 plt.xlim(x.min(), x.max())
 plt.ylim(-1.1, 1.1)
-plt.show()
 
 
 # Note that the number of segments is one less than the number of points.
-# 
+#
 # An alternative strategy would be to generate one segment for each
 # contiguous region of a given color.
-# 
+#
 # Using a smooth, builtin colormap
 # --------------------------------
-# 
+#
 # If you have a parametric curve to display, and want to represent the
 # parameter using color.
-# 
+#
 # ![](files/attachments/Matplotlib_MulticoloredLine/colored_line2.png)
 
-# In[ ]:
-
-
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.collections import LineCollection
 
 t = np.linspace(0, 10, 200)
 x = np.cos(np.pi * t)
@@ -91,8 +83,9 @@ segments = np.concatenate([points[:-1], points[1:]], axis=1)
 
 # Create the line collection object, setting the colormapping parameters.
 # Have to set the actual values used for colormapping separately.
+plt.figure()
 lc = LineCollection(segments, cmap=plt.get_cmap('copper'),
-    norm=plt.Normalize(0, 10))
+                    norm=plt.Normalize(0, 10))
 lc.set_array(t)
 lc.set_linewidth(3)
 
@@ -100,4 +93,3 @@ plt.gca().add_collection(lc)
 plt.xlim(-1, 1)
 plt.ylim(-1, 1)
 plt.show()
-

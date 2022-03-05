@@ -12,8 +12,6 @@
 # can use a single axis label, centered in the plot frame, to label
 # multiple subplot axes. Here is how to do it:
 
-# In[ ]:
-
 
 #!python
 # note that this a code fragment...you will have to define your own data to plot

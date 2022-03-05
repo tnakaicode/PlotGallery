@@ -3,30 +3,28 @@
 
 # Mayavi: examples
 # ======================================================================
-# 
+#
 # ||\<\#80FF80\> This page presents scripting Mayavi2 using the advanced,
 # object-oriented API. Mayavi2 has recently acquired an easy-to-use,
 # thought maybe not as powerful, scripting module: mlab. You are invited
 # to refer to the
 # [section](http://enthought.github.com/mayavi/mayavi/mlab.html) of
 # [Mayavi2 user guide](http://enthought.github.com/mayavi/mayavi). ||
-# 
+#
 # Introduction
 # ------------
-# 
+#
 # Here, you will be presented some examples of rendering scenes you can
 # get with !MayaVi2. You are advised to read
 # [:Cookbook/MayaVi/ScriptingMayavi2] to understand what you see, although
 # most examples given here are self-explanatory.
-# 
+#
 # ||\<\#FF8080\> Please note that these examples are not up to date. The
 # example gallery for the latest version of Mayavi can be found at
 # <http://enthought.github.com/mayavi/mayavi/auto/examples.html>. ||
-# 
+#
 # Example using IsoSurface Module (contour.py)
 # --------------------------------------------
-
-# In[ ]:
 
 
 #!/usr/bin/env mayavi2
@@ -39,17 +37,33 @@ contour related modules.  Notice the magic line at the top.
 # License: BSD Style.
 
 # Standard library imports
+
+import numpy
+import scipy
 from os.path import join, dirname
 
 # Enthought library imports
-import enthought.mayavi
-from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
-from enthought.mayavi.filters.threshold import Threshold
-from enthought.mayavi.modules.outline import Outline
-from enthought.mayavi.modules.grid_plane import GridPlane
-from enthought.mayavi.modules.contour_grid_plane import ContourGridPlane
-from enthought.mayavi.modules.iso_surface import IsoSurface
-from enthought.mayavi.modules.scalar_cut_plane import ScalarCutPlane
+import mayavi
+from mayavi.api import Mayavi
+from mayavi.sources.vtk_file_reader import VTKFileReader
+from mayavi.sources.vtk_data_source import VTKDataSource
+from mayavi.sources.vtk_xml_file_reader import VTKXMLFileReader
+from mayavi.filters.threshold import Threshold
+from mayavi.modules.outline import Outline
+from mayavi.modules.streamline import Streamline
+from mayavi.modules.grid_plane import GridPlane
+from mayavi.modules.contour_grid_plane import ContourGridPlane
+from mayavi.modules.iso_surface import IsoSurface
+from mayavi.modules.scalar_cut_plane import ScalarCutPlane
+from mayavi.modules.surface import Surface
+from mayavi.filters.warp_scalar import WarpScalar
+from mayavi.modules.glyph import Glyph
+from mayavi.modules.vector_cut_plane import VectorCutPlane
+from mayavi.modules.vectors import Vectors
+from mayavi.filters.mask_points import MaskPoints
+from mayavi.sources.array_source import ArraySource
+from mayavi.modules.image_plane_widget import ImagePlaneWidget
+from tvtk.tools import mlab
 
 
 def contour():
@@ -62,7 +76,7 @@ def contour():
 
     # Read a VTK (old style) data file.
     r = VTKFileReader()
-    r.initialize(join(dirname(enthought.mayavi.__file__),
+    r.initialize(join(dirname(mayavi.__file__),
                       'examples', 'data', 'heart.vtk'))
     mayavi.add_source(r)
 
@@ -105,23 +119,16 @@ def contour():
     # An interactive scalar cut plane.
     cp = ScalarCutPlane()
     mayavi.add_module(cp)
-    cp.implicit_plane.normal = 0,0,1
-    
-
-if __name__ == '__main__':
-    contour()
+    cp.implicit_plane.normal = 0, 0, 1
 
 
 # ![](files/attachments/MayaVi_examples/contour.png)
-# 
+#
 # Example using Glyph Module (glyph.py)
 # -------------------------------------
 
-# In[ ]:
-
 
 #!/usr/bin/env mayavi2
-
 """This script demonstrates the use of a VectorCutPlane, splitting the
 pipeline using a MaskPoints filter and then viewing the filtered data
 with the Glyph module.
@@ -129,18 +136,6 @@ with the Glyph module.
 # Author: Prabhu Ramachandran <prabhu_r@users.sf.net>
 # Copyright (c) 2005-2007, Enthought, Inc.
 # License: BSD Style.
-
-# Standard library imports
-from os.path import join, dirname
-
-# Enthought library imports
-import enthought.mayavi
-from enthought.mayavi.sources.vtk_xml_file_reader import VTKXMLFileReader
-from enthought.mayavi.modules.outline import Outline
-from enthought.mayavi.modules.glyph import Glyph
-from enthought.mayavi.modules.vector_cut_plane import VectorCutPlane
-from enthought.mayavi.modules.vectors import Vectors
-from enthought.mayavi.filters.mask_points import MaskPoints
 
 
 def glyph():
@@ -178,20 +173,12 @@ def glyph():
     g.glyph.glyph_source = g.glyph.glyph_list[1]
 
 
-if __name__ == '__main__':
-    glyph()
-
-
 # ![](files/attachments/MayaVi_examples/glyph.png)
-# 
+#
 # Example without Mayavi2 UI (nongui.py)
 # --------------------------------------
 
-# In[ ]:
-
-
 #!/usr/bin/env python
-
 """This script demonstrates how one can use the MayaVi framework
 without displaying MayaVi's UI.  Note: look at the end of this file to
 see how the non gui plugin is chosen instead of the default gui
@@ -210,29 +197,22 @@ try:
 except ImportError:
     pass
 
-# Standard library imports
-import sys
-from os.path import join, dirname
 
-# Enthought library imports
-from enthought.mayavi.app import Mayavi, NONGUI_PLUGIN_DEFINITIONS
-
-
-class MyApp(Mayavi):
+class MyApp1(Mayavi):
     def run(self):
         """This is executed once the application GUI has started.
         *Make sure all other MayaVi specific imports are made here!*
         """
 
         # Various imports to do different things.
-        from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
-        from enthought.mayavi.modules.outline import Outline
-        from enthought.mayavi.modules.axes import Axes
-        from enthought.mayavi.modules.grid_plane import GridPlane
-        from enthought.mayavi.modules.image_plane_widget import ImagePlaneWidget
-        from enthought.mayavi.modules.text import Text
-        from enthought.mayavi.modules.contour_grid_plane import ContourGridPlane
-        from enthought.mayavi.modules.iso_surface import IsoSurface
+        from mayavi.sources.vtk_file_reader import VTKFileReader
+        from mayavi.modules.outline import Outline
+        from mayavi.modules.axes import Axes
+        from mayavi.modules.grid_plane import GridPlane
+        from mayavi.modules.image_plane_widget import ImagePlaneWidget
+        from mayavi.modules.text import Text
+        from mayavi.modules.contour_grid_plane import ContourGridPlane
+        from mayavi.modules.iso_surface import IsoSurface
 
         script = self.script
 
@@ -246,7 +226,8 @@ class MyApp(Mayavi):
         script.add_source(r)
 
         # Put up some text.
-        t = Text(text='MayaVi rules!', x_position=0.2, y_position=0.9, width=0.8)
+        t = Text(text='MayaVi rules!', x_position=0.2,
+                 y_position=0.9, width=0.8)
         t.property.color = 1, 1, 0  # Bright yellow, yeah!
         script.add_module(t)
 
@@ -287,7 +268,7 @@ class MyApp(Mayavi):
         # An isosurface module.
         iso = IsoSurface(compute_normals=True)
         script.add_module(iso)
-        iso.contour.contours = [200.0]    
+        iso.contour.contours = [200.0]
 
         # Set the view.
         s = script.engine.current_scene
@@ -295,24 +276,15 @@ class MyApp(Mayavi):
         cam.azimuth(45)
         cam.elevation(15)
         s.render()
-    
-    
-if __name__ == '__main__':
-    m = MyApp()
-    # Note how we change the plugins that are loaded only here.
-    m.main(plugin_defs=NONGUI_PLUGIN_DEFINITIONS)
 
 
 # ![](files/attachments/MayaVi_examples/nongui.png)
-# 
+#
 # Example with a 3D array as numerical source (numeric\_source.py)
 # ----------------------------------------------------------------
 
-# In[ ]:
-
 
 #!/usr/bin/env mayavi2
-
 """This script demonstrates how to create a numpy array data and
 visualize it as image data using a few modules.
 
@@ -321,28 +293,21 @@ visualize it as image data using a few modules.
 # Copyright (c) 2005-2007, Enthought, Inc.
 # License: BSD Style.
 
-# Standard library imports
-import enthought.util.scipyx as scipy
-
-# Enthought library imports
-from enthought.mayavi.sources.array_source import ArraySource
-from enthought.mayavi.modules.outline import Outline
-from enthought.mayavi.modules.image_plane_widget import ImagePlaneWidget
-
 
 def make_data(dims=(128, 128, 128)):
     """Creates some simple array data of the given dimensions to test
     with."""
-    np = dims[0]*dims[1]*dims[2]
+    np = dims[0] * dims[1] * dims[2]
 
     # Create some scalars to render.
-    x, y, z = scipy.ogrid[-5:5:dims[0]*1j,-5:5:dims[1]*1j,-5:5:dims[2]*1j]
+    x, y, z = scipy.ogrid[-5:5:dims[0] * 1j, -
+                          5:5:dims[1] * 1j, -5:5:dims[2] * 1j]
     x = x.astype('f')
     y = y.astype('f')
     z = z.astype('f')
 
-    scalars = (scipy.sin(x*y*z)/(x*y*z))
-    return scipy.transpose(scalars).copy() # This makes the data contiguous.
+    scalars = (scipy.sin(x * y * z) / (x * y * z))
+    return scipy.transpose(scalars).copy()  # This makes the data contiguous.
 
 
 def view_numpy():
@@ -353,7 +318,7 @@ def view_numpy():
     # Make the data and add it to the pipeline.
     data = make_data()
     src = ArraySource(transpose_input_array=False)
-    src.scalar_data = data    
+    src.scalar_data = data
     mayavi.add_source(src)
     # Visualize the data.
     o = Outline()
@@ -366,19 +331,11 @@ def view_numpy():
     mayavi.add_module(ipw_y)
     ipw_y.ipw.plane_orientation = 'y_axes'
 
-    
-if __name__ == '__main__':
-    view_numpy()
-
 
 # ![](files/attachments/MayaVi_examples/numeric_source.png)
-# 
+#
 # Example using Streamline Module (streamline.py)
 # -----------------------------------------------
-
-# In[ ]:
-
-
 #!/usr/bin/env mayavi2
 """This script demonstrates how one can script MayaVi to display
 streamlines and an iso surface.
@@ -386,15 +343,6 @@ streamlines and an iso surface.
 # Author: Prabhu Ramachandran <prabhu_r@users.sf.net>
 # Copyright (c) 2005-2007, Enthought, Inc.
 # License: BSD Style.
-
-# Standard library imports
-from os.path import join, dirname
-
-# Enthought library imports
-from enthought.mayavi.sources.vtk_xml_file_reader import VTKXMLFileReader
-from enthought.mayavi.modules.outline import Outline
-from enthought.mayavi.modules.streamline import Streamline
-from enthought.mayavi.modules.iso_surface import IsoSurface
 
 
 def setup_data(fname):
@@ -407,6 +355,7 @@ def setup_data(fname):
     r.initialize(fname)
     mayavi.add_source(r)
     return r
+
 
 def streamline():
     """Sets up the mayavi pipeline for the visualization.
@@ -427,24 +376,13 @@ def streamline():
     i.actor.property.opacity = 0.5
 
 
-if __name__ == '__main__':
-    import enthought.mayavi
-    fname = join(dirname(enthought.mayavi.__file__),
-                 'examples', 'data', 'fire_ug.vtu')
-    r = setup_data(fname)
-    streamline()
-
-
 # ![](files/attachments/MayaVi_examples/streamline.png)
-# 
+#
 # Example using ImagePlaneWidget Module (test.py)
 # -----------------------------------------------
 
-# In[ ]:
-
 
 #!/usr/bin/env python
-
 """This script demonstrates how one can script MayaVi, set its size,
 create a new VTK scene and create a few simple modules.
 
@@ -461,27 +399,20 @@ try:
 except ImportError:
     pass
 
-# Standard library imports
-import sys
-from os.path import join, dirname
 
-# Enthought library imports
-from enthought.mayavi.app import Mayavi
-
-
-class MyApp(Mayavi):
+class MyApp2(Mayavi):
     def run(self):
         """This is executed once the application GUI has started.
         *Make sure all other MayaVi specific imports are made here!*
         """
         # Various imports to do different things.
-        from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
-        from enthought.mayavi.filters.threshold import Threshold
-        from enthought.mayavi.modules.outline import Outline
-        from enthought.mayavi.modules.axes import Axes
-        from enthought.mayavi.modules.grid_plane import GridPlane
-        from enthought.mayavi.modules.image_plane_widget import ImagePlaneWidget
-        from enthought.mayavi.modules.text import Text
+        from mayavi.sources.vtk_file_reader import VTKFileReader
+        from mayavi.filters.threshold import Threshold
+        from mayavi.modules.outline import Outline
+        from mayavi.modules.axes import Axes
+        from mayavi.modules.grid_plane import GridPlane
+        from mayavi.modules.image_plane_widget import ImagePlaneWidget
+        from mayavi.modules.text import Text
 
         script = self.script
         # Create a new scene.
@@ -509,7 +440,7 @@ class MyApp(Mayavi):
         # Create an orientation axes for the scene.  This only works with
         # VTK-4.5 and above which is why we have the try block.
         try:
-            from enthought.mayavi.modules.orientation_axes import OrientationAxes
+            from mayavi.modules.orientation_axes import OrientationAxes
         except ImportError:
             pass
         else:
@@ -536,23 +467,13 @@ class MyApp(Mayavi):
         # Set the position to the middle of the data.
         ipw.ipw.slice_position = 16
 
-    
-
-if __name__ == '__main__':
-    a = MyApp()
-    a.main()
-
 
 # ![](files/attachments/MayaVi_examples/test.png)
-# 
+#
 # Example using mlab (surf\_regular\_mlab.py)
 # -------------------------------------------
-# 
+#
 # See also [:Cookbook/MayaVi/Surf] for another way of doing this.
-
-# In[ ]:
-
-
 #!/usr/bin/env mayavi2
 """Shows how to view data created by `enthought.tvtk.tools.mlab` with
 mayavi2.
@@ -562,28 +483,22 @@ mayavi2.
 # Copyright (c) 2006-2007, Enthought Inc.
 # License: BSD Style.
 
-import numpy
-
-from enthought.tvtk.tools import mlab
-from enthought.mayavi.sources.vtk_data_source import VTKDataSource
-from enthought.mayavi.filters.warp_scalar import WarpScalar
-from enthought.mayavi.modules.outline import Outline
-from enthought.mayavi.modules.surface import Surface
-
 
 def f(x, y):
     """Some test function.
     """
-    return numpy.sin(x*y)/(x*y)
+    return numpy.sin(x * y) / (x * y)
+
 
 def make_data():
     """Make some test numpy data and create a TVTK data object from it
     that we will visualize.
-    """    
+    """
     x = numpy.arange(-7., 7.05, 0.1)
     y = numpy.arange(-5., 5.05, 0.05)
     s = mlab.SurfRegular(x, y, f)
     return s.data
+
 
 def add_data(tvtk_data):
     """Add a TVTK data object `tvtk_data` to the mayavi pipleine.
@@ -591,6 +506,7 @@ def add_data(tvtk_data):
     d = VTKDataSource()
     d.data = tvtk_data
     mayavi.add_source(d)
+
 
 def surf_regular():
     """Now visualize the data as done in mlab.
@@ -604,8 +520,26 @@ def surf_regular():
 
 
 if __name__ == '__main__':
+    contour()
+
+    view_numpy()
+
+    glyph()
+
+    m = MyApp1()
+    # Note how we change the plugins that are loaded only here.
+    #m.main(plugin_defs=NONGUI_PLUGIN_DEFINITIONS)
+    m.main()
+
+    a = MyApp2()
+    a.main()
+
+    fname = join(dirname(mayavi.__file__),
+                 'examples', 'data', 'fire_ug.vtu')
+    r = setup_data(fname)
+    streamline()
+
     mayavi.new_scene()
     d = make_data()
     add_data(d)
     surf_regular()
-

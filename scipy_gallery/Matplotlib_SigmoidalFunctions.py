@@ -8,8 +8,6 @@
 # x and y vertices of the curves you want to plot and then pass it off to
 # plot. Eg for a normal pdf, matplotlib.mlab provides such a function:
 
-# In[ ]:
-
 
 from matplotlib.mlab import normpdf
 import matplotlib.numerix as nx

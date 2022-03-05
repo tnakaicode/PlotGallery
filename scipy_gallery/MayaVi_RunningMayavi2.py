@@ -30,10 +30,9 @@
 # 
 # Begin to run !MayaVi2:
 
-# In[ ]:
 
 
-mayavi2
+# mayavi2
 
 
 # !MayaVi2 will be launched with a TVTK Scene which is blank.
@@ -68,10 +67,8 @@ mayavi2
 # In order to know what you can set as parameters on the command line,
 # type
 
-# In[ ]:
 
-
-mayavi2 -h
+# mayavi2 -h
 
 
 # This will list all the available options. Amongst all these options are:

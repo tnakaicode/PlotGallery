@@ -3,7 +3,7 @@
 
 # Mayavi surf
 # ===========
-# 
+#
 # If you want to plot a surface representing a matrix by elevation and
 # colour of its points you have to transform the matrix data in a 3D data
 # that !MayaVi2 can understand. [:Cookbook/MayaVi/mlab:mlab] knows how to
@@ -12,25 +12,28 @@
 # it in !MayaVi2. A more detailed version of this script is given in the
 # examples pages [:Cookbook/MayaVi/Examples].
 
-# In[ ]:
 
-
+import mayavi
 import numpy
+from tvtk.tools import mlab
+from mayavi.sources.vtk_data_source import VTKDataSource
+from mayavi.filters.warp_scalar import WarpScalar
+from mayavi.modules.outline import Outline
+from mayavi.modules.surface import Surface
+
+
 def f(x, y):
-    return numpy.sin(x*y)/(x*y)
+    return numpy.sin(x * y) / (x * y)
+
+
 x = numpy.arange(-7., 7.05, 0.1)
 y = numpy.arange(-5., 5.05, 0.05)
-from enthought.tvtk.tools import mlab
 s = mlab.SurfRegular(x, y, f)
-from enthought.mayavi.sources.vtk_data_source import VTKDataSource
 d = VTKDataSource()
 d.data = s.data
 mayavi.add_source(d)
-from enthought.mayavi.filters.warp_scalar import WarpScalar
 w = WarpScalar()
 mayavi.add_filter(w)
-from enthought.mayavi.modules.outline import Outline
-from enthought.mayavi.modules.surface import Surface
 o = Outline()
 s = Surface()
 mayavi.add_module(o)

@@ -3,42 +3,39 @@
 
 # Matplotlib: multiline plots
 # ======================================================================
-# 
+#
 # Multiple line plots
 # -------------------
-# 
+#
 # Often one wants to plot many signals over one another. There are a few
 # ways to do this. The naive implementation is just to add a constant
 # offset to each signal:
 
-# In[ ]:
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.transforms import Bbox, Value, Point, get_bbox_transform, unit_bbox
 
+t = np.arange(0.0, 2.0, 0.01)
+s1 = np.sin(2 * np.pi * t)
+s2 = np.exp(-t)
+s3 = np.sin(2 * np.pi * t) * np.exp(-t)
+s4 = np.sin(2 * np.pi * t) * np.cos(4 * np.pi * t)
 
-from pylab import plot, show, ylim, yticks
-from matplotlib.numerix import sin, cos, exp, pi, arange
-
-t = arange(0.0, 2.0, 0.01)
-s1 = sin(2*pi*t)
-s2 = exp(-t)
-s3 = sin(2*pi*t)*exp(-t)
-s4 = sin(2*pi*t)*cos(4*pi*t)
-
-t = arange(0.0, 2.0, 0.01)
-plot(t, s1, t, s2+1, t, s3+2, t, s4+3, color='k')
-ylim(-1,4)
-yticks(arange(4), ['S1', 'S2', 'S3', 'S4']) 
-
-show()
+t = np.arange(0.0, 2.0, 0.01)
+plt.figure()
+plt.plot(t, s1, t, s2 + 1, t, s3 + 2, t, s4 + 3, color='k')
+plt.ylim(-1, 4)
+plt.yticks(np.arange(4), ['S1', 'S2', 'S3', 'S4'])
 
 
 # but then it is difficult to do change the y scale in a reasonable way.
 # For example when you zoom in on y, the signals on top and bottom will go
 # off the screen. Often what one wants is for the y location of each
 # signal to remain in place and the gain of the signal to be changed.
-# 
+#
 # Using multiple axes
 # -------------------
-# 
+#
 # If you have just a few signals, you could make each signal a separate
 # axes and make the y label horizontal. This works fine for a small number
 # of signals (4-10 say) except the extra horizontal lines and ticks around
@@ -46,29 +43,24 @@ show()
 # these axes lines are draw so that you can remove it, but it isn't done
 # yet:
 
-# In[ ]:
 
+t = np.arange(0.0, 2.0, 0.01)
+s1 = np.sin(2 * np.pi * t)
+s2 = np.exp(-t)
+s3 = np.sin(2 * np.pi * t) * np.exp(-t)
+s4 = np.sin(2 * np.pi * t) * np.cos(4 * np.pi * t)
 
-from pylab import figure, show, setp
-from matplotlib.numerix import sin, cos, exp, pi, arange
+fig = plt.figure()
+t = np.arange(0.0, 2.0, 0.01)
 
-t = arange(0.0, 2.0, 0.01)
-s1 = sin(2*pi*t)
-s2 = exp(-t)
-s3 = sin(2*pi*t)*exp(-t)
-s4 = sin(2*pi*t)*cos(4*pi*t)
-
-fig = figure()
-t = arange(0.0, 2.0, 0.01)
-
-yprops = dict(rotation=0,  
+yprops = dict(rotation=0,
               horizontalalignment='right',
               verticalalignment='center',
               x=-0.01)
 
 axprops = dict(yticks=[])
 
-ax1 =fig.add_axes([0.1, 0.7, 0.8, 0.2], **axprops)
+ax1 = fig.add_axes([0.1, 0.7, 0.8, 0.2], **axprops)
 ax1.plot(t, s1)
 ax1.set_ylabel('S1', **yprops)
 
@@ -90,23 +82,21 @@ ax4.set_ylabel('S4', **yprops)
 
 # turn off x ticklabels for all but the lower axes
 for ax in ax1, ax2, ax3:
-    setp(ax.get_xticklabels(), visible=False)
-
-show()
+    plt.setp(ax.get_xticklabels(), visible=False)
 
 
 # ![](files/attachments/Matplotlib_MultilinePlots/multipleaxes.png)
-# 
+#
 # Manipulating transforms
 # -----------------------
-# 
+#
 # For large numbers of lines the approach above is inefficient because
 # creating a separate axes for each line creates a lot of useless
 # overhead. The application that gave birth to matplotlib is an [EEG
 # viewer](http://matplotlib.sourceforge.net/screenshots/eeg_small.png)
 # which must efficiently handle hundreds of lines; this is is available as
 # part of the [pbrain package](http://pbrain.sf.net).
-# 
+#
 # Here is an example of how that application does multiline plotting with
 # "in place" gain changes. Note that this will break the y behavior of the
 # toolbar because we have changed all the default transforms. In my
@@ -119,30 +109,24 @@ show()
 # module](http://matplotlib.sourceforge.net/matplotlib.transforms.html)
 # before trying to understand this example:
 
-# In[ ]:
 
-
-from pylab import figure, show, setp, connect, draw
-from matplotlib.numerix import sin, cos, exp, pi, arange
-from matplotlib.numerix.mlab import mean
-from matplotlib.transforms import Bbox, Value, Point,      get_bbox_transform, unit_bbox
 # load the data
 
-t = arange(0.0, 2.0, 0.01)
-s1 = sin(2*pi*t)
-s2 = exp(-t)
-s3 = sin(2*pi*t)*exp(-t)
-s4 = sin(2*pi*t)*cos(4*pi*t)
-s5 = s1*s2
-s6 = s1-s4
-s7 = s3*s4-s1
+t = np.arange(0.0, 2.0, 0.01)
+s1 = np.sin(2 * np.pi * t)
+s2 = np.exp(-t)
+s3 = np.sin(2 * np.pi * t) * np.exp(-t)
+s4 = np.sin(2 * np.pi * t) * np.cos(4 * np.pi * t)
+s5 = s1 * s2
+s6 = s1 - s4
+s7 = s3 * s4 - s1
 
 signals = s1, s2, s3, s4, s5, s6, s7
 for sig in signals:
-    sig = sig-mean(sig)
+    sig = sig - np.mean(sig)
 
 lineprops = dict(linewidth=1, color='black', linestyle='-')
-fig = figure()
+fig = plt.figure()
 ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
 
 # The normal matplotlib transformation is the view lim bounding box
@@ -165,7 +149,7 @@ height = ax.bbox.ur().y() - ax.bbox.ll().y()
 
 boxout = Bbox(
     Point(ax.bbox.ll().x(), Value(-0.5) * height),
-    Point(ax.bbox.ur().x(), Value( 0.5) * height))
+    Point(ax.bbox.ur().x(), Value(0.5) * height))
 
 
 # matplotlib transforms can accepts an offset, which is defined as a
@@ -175,36 +159,36 @@ boxout = Bbox(
 # and ticks vertically
 transOffset = get_bbox_transform(
     unit_bbox(),
-    Bbox( Point( Value(0), ax.bbox.ll().y()),
-          Point( Value(1), ax.bbox.ur().y())
-          ))
+    Bbox(Point(Value(0), ax.bbox.ll().y()),
+         Point(Value(1), ax.bbox.ur().y())
+         ))
 
 # now add the signals, set the transform, and set the offset of each
 # line
 ticklocs = []
 for i, s in enumerate(signals):
-    trans = get_bbox_transform(boxin, boxout) 
-    offset = (i+1.)/(len(signals)+1.)
-    trans.set_offset( (0, offset), transOffset)
+    trans = get_bbox_transform(boxin, boxout)
+    offset = (i + 1.) / (len(signals) + 1.)
+    trans.set_offset((0, offset), transOffset)
 
     ax.plot(t, s, transform=trans, **lineprops)
     ticklocs.append(offset)
 
 
 ax.set_yticks(ticklocs)
-ax.set_yticklabels(['S%d'%(i+1) for i in range(len(signals))])
+ax.set_yticklabels(['S%d' % (i + 1) for i in range(len(signals))])
 
-# place all the y tick attributes in axes coords  
+# place all the y tick attributes in axes coords
 all = []
 labels = []
 ax.set_yticks(ticklocs)
 for tick in ax.yaxis.get_major_ticks():
-    all.extend(( tick.label1, tick.label2, tick.tick1line,
-                 tick.tick2line, tick.gridline))
+    all.extend((tick.label1, tick.label2, tick.tick1line,
+                tick.tick2line, tick.gridline))
     labels.append(tick.label1)
 
-setp(all, transform=ax.transAxes)
-setp(labels, x=-0.01)
+plt.setp(all, transform=ax.transAxes)
+plt.setp(labels, x=-0.01)
 
 ax.set_xlabel('time (s)')
 
@@ -215,22 +199,27 @@ ax.set_xlabel('time (s)')
 # exponential rather than linear) but it gives you the idea
 def set_ygain(direction):
     set_ygain.scale += direction
-    if set_ygain.scale <=0:
+    if set_ygain.scale <= 0:
         set_ygain.scale -= direction
         return
 
     for line in ax.lines:
         trans = line.get_transform()
-        box1 =  trans.get_bbox1()
+        box1 = trans.get_bbox1()
         box1.intervaly().set_bounds(-set_ygain.scale, set_ygain.scale)
-    draw()
-set_ygain.scale = scale    
+    plt.draw()
+
+
+set_ygain.scale = scale
+
 
 def keypress(event):
-    if event.key in ('+', '='): set_ygain(-1)
-    elif event.key in ('-', '_'): set_ygain(1)
+    if event.key in ('+', '='):
+        set_ygain(-1)
+    elif event.key in ('-', '_'):
+        set_ygain(1)
 
-connect('key_press_event', keypress)
-ax.set_title('Use + / - to change y gain')    
-show()
 
+plt.connect('key_press_event', keypress)
+ax.set_title('Use + / - to change y gain')
+plt.show()

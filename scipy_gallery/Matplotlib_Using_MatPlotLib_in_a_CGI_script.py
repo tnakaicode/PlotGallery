@@ -3,19 +3,16 @@
 
 # Matplotlib: using matplotlib in a CGI script
 # ======================================================================
-# 
+#
 # Trying to use matplotlib in a python CGI script naïvely will most likely
 # result in the following error:
 
-# In[ ]:
 
-
-...
-352, in _get_configdir
-raise RuntimeError("'%s' is not a writable dir; you must set
-environment variable HOME to be a writable dir "%h)
-RuntimeError: '<WebServer DocumentRoot>' is not a writable dir; you must set
-environment variable HOME to be a writable dir
+# 352, in _get_configdir
+# raise RuntimeError("'%s' is not a writable dir; you must set
+# environment variable HOME to be a writable dir "%h)
+# RuntimeError: '<WebServer DocumentRoot>' is not a writable dir; you must set
+# environment variable HOME to be a writable dir
 
 
 # Matplotlib needs the environment variable HOME to point to a writable
@@ -25,38 +22,38 @@ environment variable HOME to be a writable dir
 # template can be used for a cgi that uses matplotlib to create a png
 # image:
 
-# In[ ]:
-
 
 #!/usr/bin/python
-import os,sys
+import os
+import sys
 import cgi
-import cgitb; cgitb.enable()
+import cgitb
+cgitb.enable()
 
 # set HOME environment variable to a directory the httpd server can write to
-os.environ[ 'HOME' ] = '/tmp/'
+os.environ['HOME'] = '/tmp/'
 
 import matplotlib
 # chose a non-GUI backend
-matplotlib.use( 'Agg' )
+matplotlib.use('Agg')
 
 import pylab
 
-#Deals with inputing data into python from the html form
+# Deals with inputing data into python from the html form
 form = cgi.FieldStorage()
 
 # construct your plot
-pylab.plot([1,2,3])
+pylab.plot([1, 2, 3])
 
-print "Content-Type: image/png\n"
+print("Content-Type: image/png\n")
 
 # save the plot as a png and output directly to webserver
-pylab.savefig( sys.stdout, format='png' )
+pylab.savefig(sys.stdout, format='png')
 
 
 # This image can then be accessed with a URL such as:
 # <http://localhost/showpng.py>
-# 
+#
 # As documented,some backends will not allow the output to be sent to
 # sys.stdout. It is possible to replace the last line with the following
 # to work around this:
@@ -64,9 +61,9 @@ pylab.savefig( sys.stdout, format='png' )
 # In[ ]:
 
 
-pylab.savefig( "tempfile.png", format='png' )
+pylab.savefig("tempfile.png", format='png')
 import shutil
-shutil.copyfileobj(open("tempfile.png",'rb'), sys.stdout)
+shutil.copyfileobj(open("tempfile.png", 'rb'), sys.stdout)
 
 
 # (Of course it is necessary to create and delete proper temp files to use this in production.)

@@ -3,11 +3,9 @@
 
 # Matplotlib: shaded regions
 # ======================================================================
-# 
+#
 # Use the fill function to make shaded regions of any color tint. Here is
 # an example.
-
-# In[1]:
 
 
 from pylab import *
@@ -19,7 +17,7 @@ y = x
 plot(x, y)
 
 # Make a blue box that is somewhat see-through
-# and has a red border. 
-# WARNING: alpha doesn't work in postscript output.... 
-fill([3,4,4,3], [2,2,4,4], 'b', alpha=0.2, edgecolor='r')
-
+# and has a red border.
+# WARNING: alpha doesn't work in postscript output....
+fill([3, 4, 4, 3], [2, 2, 4, 4], 'b', alpha=0.2, edgecolor='r')
+show()

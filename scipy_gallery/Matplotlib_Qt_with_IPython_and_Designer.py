@@ -67,10 +67,8 @@
 # [PyQt](http://www.riverbankcomputing.co.uk/pyqt/index.php) to convert
 # this .ui file into a Python class. This is easily accomplished with:
 
-# In[ ]:
 
-
-pyuic mplwidget_tutorial.ui > mplwidget_tutorial.py
+# pyuic mplwidget_tutorial.ui > mplwidget_tutorial.py
 
 
 # Go ahead and view the contents of mplwidget\_tutorial.py and compare it
