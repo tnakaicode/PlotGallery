@@ -1,8 +1,8 @@
 import numpy as np
 
-data = np.loadtxt('../../../data/populations.txt')
+data = np.loadtxt('./data/populations.txt')
 year, hares, lynxes, carrots = data.T
-populations = data[:,1:]
+populations = data[:, 1:]
 
 print("       Hares, Lynxes, Carrots")
 print("Mean:", populations.mean(axis=0))
@@ -25,7 +25,8 @@ print("Top 2 years with lowest populations for each:")
 print(year[j_top_2])
 
 hare_grad = np.gradient(hares, 1.0)
-print("diff(Hares) vs. Lynxes correlation", np.corrcoef(hare_grad, lynxes)[0,1])
+print("diff(Hares) vs. Lynxes correlation",
+      np.corrcoef(hare_grad, lynxes)[0, 1])
 
 import matplotlib.pyplot as plt
 plt.plot(year, hare_grad, year, -lynxes)
