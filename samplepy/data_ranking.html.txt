@@ -1,0 +1,1231 @@
+  <!DOCTYPE HTML>
+  <html>
+  <head>
+  <script>
+var dataLayer = dataLayer || [];
+  dataLayer.push({
+    'trackPageview':'SECOJP/book/ranking',
+    'member' : 'nonmember',
+  });
+</script>
+<!-- Google Tag Manager -->
+<noscript><iframe src="../../www.googletagmanager.com/ns.html?id=GTM-PS58RX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PS58RX');</script>
+<!-- End Google Tag Manager -->
+          <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta http-equiv="Imagetoolbar" content="no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ランキング
+｜翔泳社の本</title>
+  <meta name="Keywords" content="翔泳社,ランキング">
+  <meta name="Description" content="販売冊数を元にした最新の翔泳社書籍ランキングです。">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@shoeisha">
+  <meta name="twitter:creator" content="@shoeisha">
+    <meta property="og:title" content="ランキング
+ ｜ 翔泳社">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.shoeisha.co.jp/book/ranking">
+  <meta property="og:image" content="https://www.shoeisha.co.jp/assets/img/logo/fb-1200.png" />
+  <meta property="og:site_name" content="Shoeisha">
+  <meta property="og:description" content="販売冊数を元にした最新の翔泳社書籍ランキングです。">
+  <meta property="fb:admins" content="100002509171990">
+          <!--
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      -->    <meta name="cXenseParse:pageclass" content="frontpage"/>  <script src="../../ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="../assets/js/bootstrap.js"></script>
+  <script src="../assets/js/responsiveslides.min.js"></script>
+  <script src="../assets/js/slick.js"></script>
+  <script src="../assets/js/application.js"></script>
+  <script src="../assets/js/masterslider.min.js"></script>
+  <script src="../assets/js/tab.js"></script>
+  <script src="../assets/js/jquery.easing.min.js"></script>
+  <script src="../assets/js/jquery.matchHeight-min.js"></script>
+  <script src="../assets/js/dfp.js"></script>
+  <script src="../../cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
+  <link rel="alternate" type="application/rss+xml" title="" href="https://www.shoeisha.co.jp/rss/index.xml">
+  <link rel="alternate" type="application/rss+xml" title="" href="https://www.shoeisha.co.jp/rss/book/index.xml">
+  <link href="../assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+  <link href="../assets/css/responsiveslides.css" rel="stylesheet" type="text/css">
+  <link href="../assets/css/slick.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="../assets/css/masterslider.css" />
+  <link href='../assets/css/ms-tabs-style.css' rel='stylesheet' type='text/css'>
+  <link href="../assets/css/books.css?20200722" rel="stylesheet" type="text/css">
+  <script src="../assets/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+  <link href="../assets/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+
+  
+  
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+    <script>
+      var _UA = navigator.userAgent;
+      if (_UA.indexOf('iPhone') > -1 || _UA.indexOf('iPod') > -1 || _UA.indexOf('iPad') > -1 || _UA.indexOf('Android') > -1 ) {
+      }else{
+                    document.write('<link rel="stylesheet" href="../assets/css/non-responsive.css">');
+                }
+      // navbar opacity
+      $(window).scroll(function() {
+          var s = $(this).scrollTop();
+          if (s > 33) {
+              $(".navbar-fixed-top").addClass("navbar-fixed-top-bg1");
+              $(".navbar-fixed-top input.header-search").addClass("navbar-fixed-top-bg2");
+              $(".navbar-fixed-top .nav > li > a").addClass("navbar-fixed-top-bg3");
+          } else if (s <= 33) {
+              $(".navbar-fixed-top").removeClass("navbar-fixed-top-bg1");
+              $(".navbar-fixed-top input.header-search").removeClass("navbar-fixed-top-bg2");
+              $(".navbar-fixed-top .nav > li > a").removeClass("navbar-fixed-top-bg3");
+          }
+      });
+  </script>
+  <script type='text/javascript'>
+  init_dfp();
+  // hide menus
+  /*
+  $(document).ready(function(){
+      if (location.pathname.search('/book') < 0) {
+          $('.container-fluid').hide();
+          $('#menu_readers').hide();
+          $('#menu_houjin').hide();
+      }
+  });
+  */
+  </script>
+  <!-- Cxense script start -->
+<script type="text/javascript">
+  var cX = cX || {}; cX.callQueue = cX.callQueue || [];
+  cX.CCE = cX.CCE || {}; cX.CCE.callQueue = cX.CCE.callQueue || [];
+  var cx_props = cx_props || {}; cx_props['k'] = [];
+  var cpl = [];
+  var spl = [];
+  cX.callQueue.push(['invoke', function() {
+    var cp = {}, sa = {};
+    var cpMaxLen = 40;
+    var cpKeyLen = 20;
+    try{
+      var refhost = cX.library._findRealReferrer().split('/')[2];
+      if(refhost && location.hostname !== refhost) {
+        cp["referrer_host"] = sa["referrer_host_S"] = refhost.slice(0,cpMaxLen);
+      }
+    }catch(e){}
+    var u = ["utm_source", "utm_medium", "utm_term", "utm_content", "utm_campaign"];
+    if((typeof(spl) !== "undefined") && (Object.prototype.toString.call(spl) === "[object Array]")) {
+      Array.prototype.push.apply(u, spl);
+    }
+    if(location.search) location.search.substring(1).split("&").forEach(function(k){
+      try{
+        var v = k.split("=");
+        if(v[0].slice(0,3)==="cx_" && v[1]) {
+          sa[v[0].replace(/^cx_/,"")+"_S"] = decodeURIComponent(v[1]).slice(0,cpMaxLen);
+        } else if(u.indexOf(v[0].toLowerCase())!==-1 && v[1]) {
+          cp[v[0].toLowerCase().slice(0,cpKeyLen)] = sa[v[0].toLowerCase()+"_S"] = decodeURIComponent(v[1]).slice(0,cpMaxLen);
+        } else if((typeof(cpl) !== "undefined") && (Object.prototype.toString.call(cpl) === "[object Array]") && (cpl.indexOf(v[0].toLowerCase())!==-1 && v[1])) {
+          cp[v[0].toLowerCase().slice(0,cpKeyLen)] = decodeURIComponent(v[1]).slice(0,cpMaxLen);
+        }
+      }catch(e){}
+    });
+    if(!cX.getUserId(false)) {
+      cp["newuser"] = sa["newuser_S"] = "true";
+    }
+    else {
+      try{
+        var t = new Date().getTime() - parseInt(cX.library.m_atfr.match(/altm=(\d+)/)[1]);
+        if (t >= 1000*60*30) {
+          cX.stopAllSessionAnnotations();
+          var da = Math.floor(t/(1000*60*60*24));
+          if(da < 1) {
+            cp["elapsed"] = sa["elapsed_S"] = "\u0031\u65E5\u4EE5\u5185";
+          } else if(da < 7) {
+            cp["elapsed"] = sa["elapsed_S"] = String(da)+"\u65E5\u3076\u308A";
+          } else if(da < 31) {
+            cp["elapsed"] = sa["elapsed_S"] = String(Math.floor(da/7))+"\u9031\u9593\u3076\u308A";
+          } else if(da < 365) {
+            cp["elapsed"] = sa["elapsed_S"] = String(Math.floor(da/31))+"\u30F6\u6708\u3076\u308A";
+          } else {
+            cp["elapsed"] = sa["elapsed_S"] = "1\u5E74\u4EE5\u4E0A";
+          }
+        }
+      } catch(e) {}
+    }
+    var cx_eu = cX.getCookie('eu');
+    if (cx_eu){
+        cX.setCustomParameters({'status': 'login'});
+        cX.addExternalId({'id': cx_eu, 'type': 'sho'});
+    }
+    if (typeof eU !== 'undefined' && typeof eU.isLoggingIn === 'function') {
+        cX.setCustomParameters({'logging_in': eU.isLoggingIn()});
+    }
+    var cx_op = cX.getCookie('cx_op');
+    if (cx_op) {
+        cX.setCustomParameters({'optin_url': cx_op});
+    }
+
+    var originalRef=document.referrer;
+    if(originalRef.match(/faeb92b469b40c9d72e4-dc920caace12a27e58d45a42e86d29a2\.ssl\.cf2\.rackcdn\.com\/generic_v[0-9]+\.html/) || originalRef.match(/cdn\.cxpublic\.com\/generic_v[0-9]+\.html/)){
+        sa["cx_source_S"] = "cxrecs";
+    }
+    if(Object.keys(cp).length>0) {
+      cX.setCustomParameters(cp);
+    }
+    if(Object.keys(sa).length>0) {
+      cX.startSessionAnnotation(sa);
+    }
+    try {
+      "newuser_S" in cX.library._getSessionAnnotations() && cx_props['k'].push("newuser");
+    } catch(e) {}
+  }]);
+  cX.callQueue.push(['setSiteId', '1142970223097374056']);
+  cX.CCE.callQueue.push(['sendPageViewEvent']);
+
+</script>
+<script type="text/javascript">
+    var cX = window.cX = window.cX || {}; cX.callQueue = cX.callQueue || [];
+    cX.CCE = cX.CCE || {}; cX.CCE.callQueue = cX.CCE.callQueue || [];
+    (function(d,s,e,t){e=d.createElement(s);e.type='text/java'+s;e.async='async';e.src='https://cdn.cxense.com/cx.cce.js';t=d.getElementsByTagName(s)[0];t.parentNode.insertBefore(e,t);})(document,'script');
+</script>
+<!-- Cxense script end -->
+<!-- Cxense Customized script start -->
+<script type="text/javascript">
+  window.cXcustom = window.cXcustom || function() {(window.cXcustom.q = window.cXcustom.q || []).push(arguments)};
+  cX.callQueue.push(['invoke', function() {
+    var cx_reading_params = {origin: "sho-web", persistedQueryId: "15407cc43187c9b0981171abc4e9b4dc4e1d7c22"};
+    cXcustom("scrollDepth", function(pos){cX.sendEvent("scroll", {pos_entire_page:String(pos)+'%'}, cx_reading_params);} , 0, '', false, 1000);
+    cXcustom("scrollDepth", function(pos){cX.sendEvent("scroll", {pos_in_article:String(pos)+'%'}, cx_reading_params);}, 1, 'container_contents', true, 1000);
+    //    cXcustom("scrollDepth", function(pos){cX.sendEvent("scroll", {pos_in_articleBottom:String(pos)+'%'}, cx_reading_params);} , 2, 'top-menu', false, 1000);
+    cX.loadScript("/assets/js/cx-custom.js");
+  }]);
+</script>
+<!-- Cxense Customized script end -->
+  <!-- Facebook Pixel Code -->
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '1704151296468367'); fbq('track', 'PageView');</script><noscript><img height="1" width="1" src="../../www.facebook.com/tr?id=1704151296468367&amp;ev=PageView&amp;noscript=1"/></noscript>
+<!-- End Facebook Pixel Code -->  </head>
+  <body style="">  <div class="container">
+    <!-- CXENSE Overlay Start-->
+<script type="text/javascript" src="../assets/js/cxOverlay.js?v8"></script>
+<style>
+.toggle-panel-ad {
+    width: 100%;
+}
+.toggle-panel-ad iframe {
+    width: 100% !important;
+}
+@media screen and (max-width: 480px) {
+    .toggle-title {
+        width: 270px;
+        height: 35px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+}
+</style>
+<link href="../assets/css/cxOverlay.css" rel="stylesheet" type="text/css" >
+<div id="cxOverlayParent" class="toggle-panel">
+    <div id="parent-toggle-title" class="toggle-title"></div>
+    <div class="toggle-close"></div>
+    <div class="toggle-panel-ad">
+      <!-- Ad tag begin -->
+      <div id="adsTarget" style="display:none;"></div>
+      <script type="text/javascript">
+          var device = 'pc';
+          var template = 'https://cdn.cxpublic.com/sho-template-overlay.html';
+          var ua = navigator.userAgent;
+          var titleHeight = 50;
+
+          if(ua.indexOf("iPhone") != -1 || ua.indexOf("iPod") != -1|| (ua.indexOf("Android") != -1 && ua.indexOf("Mobile") != -1)){
+              template = 'https://cdn.cxpublic.com/sho-template-overlay-sp.html';
+              device = 'sp';
+              titleHeight = 35;
+          } else {
+              $('#parent-toggle-title').hide();
+          }
+
+          var cX = cX || {}; cX.callQueue = cX.callQueue || [];
+          cX.callQueue.push(['invoke', function() {
+              //var cx_window = cX.getCookie('cx_window_close');
+              //var cx_recency = cX.getCookie('cx_recency_capping');
+              var cx_window = "";
+              var cx_recency = "";
+              if (!cx_window && !cx_recency){
+                  cX.setSiteId('1142970223097374056');
+                  cX.insertAdSpace({
+                      adSpaceId:'0000000164466249',
+                      insertBeforeElementId: 'adsTarget',
+                      resizeToContentSize: true,
+                      renderTemplateUrl: template,
+                      titleHeight: titleHeight,
+                      onImpressionResult: cxOverlay.init(titleHeight,"sho-web","15407cc43187c9b0981171abc4e9b4dc4e1d7c22", device)
+                  });
+              }
+          }]);
+      </script>
+      <script type="text/javascript">
+          (function() { try { var scriptEl = document.createElement('script'); scriptEl.type = 'text/javascript'; scriptEl.async = 'async';
+          scriptEl.src = ('https:' == document.location.protocol) ? 'https://scdn.cxense.com/cx.js' : 'http://cdn.cxense.com/cx.js';
+          var targetEl = document.getElementsByTagName('script')[0]; targetEl.parentNode.insertBefore(scriptEl, targetEl); } catch (e) {}; }());
+      </script>
+      <!-- Ad tag end end -->
+    </div>
+</div>
+<!-- CXENSE Overlay End-->
+  </div>
+    <script src="../assets/js/cxCommonAd.js"></script>
+<script type="text/javascript">
+    var cX = cX || {}; cX.callQueue = cX.callQueue || [];
+    (function() {
+    var ua = navigator.userAgent;
+    if ((ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || (ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0) || ua.indexOf('Windows Phone') > 0 || ua.indexOf('BlackBerry') > 0)) {
+    } else {
+        if (ua.indexOf('cXensebot') === -1) {
+        cxImpressionCapping('0000000166678cfd');
+        }
+    }
+    })();
+</script>
+    <a id="pagetop" name="pagetop"></a>
+  <div id="cx_contents_block">
+  <header role="banner" id="top-menu" class="navbar">
+    <button data-target=".bs-navbar-collapse" data-toggle="collapse" type="button" class="navbar-toggle"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+    <div class="navbar-header mobile"> <a class="navbar-brand" href="https://www.shoeisha.co.jp/book"> <img src="../assets/img/logo/sebook.png" class="img-responsive"> </a> </div>
+    <nav class="navbar navbar-fixed-top collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li> <a href="https://www.shoeisha.co.jp/book/genre/1">コンピュータ</a> </li>
+          <li class="dropdown"> <a data-toggle="dropdown" class="dropdown-toggle" href="ranking#">資格 <b class="caret"></b> </a>
+            <ul class="dropdown-menu">
+              <li> <a onclick="$('#navtop').attr('class', 'navbar navbar-default')" href="https://www.shoeisha.co.jp/exampress/it/">IT資格</a> </li>
+              <li> <a onclick="$('#navtop').attr('class', 'navbar navbar-default')" href="https://www.shoeisha.co.jp/exampress/biz">ビジネス資格</a> </li>
+              <li> <a onclick="$('#navtop').attr('class', 'navbar navbar-default1')" href="https://www.shoeisha.co.jp/exampress/fukushi">福祉資格</a> </li>
+              <li> <a onclick="$('#navtop').attr('class', 'navbar navbar-default1')" href="https://www.shoeisha.co.jp/exampress/eng">工学資格</a> </li>
+            </ul>
+          </li>
+          <li> <a href="https://www.shoeisha.co.jp/book/genre/5">ビジネス</a> </li>
+          <li> <a href="https://www.shoeisha.co.jp/book/genre/7">実用</a> </li>
+          <li class="dropdown"> <a data-toggle="dropdown" class="dropdown-toggle" href="ranking#">電子書籍 <b class="caret"></b> </a>
+            <ul class="dropdown-menu">
+              <li> <a href="https://www.shoeisha.co.jp/book/ebooks">電子書籍一覧</a> </li>
+              <li> <a href="http://www.seshop.com/product/327/" target="_blank">電子書籍【PDF版】</a> </li>
+              <li> <a href="https://www.shoeisha.co.jp/campaign/book/digitalfirst/" target="_blank">デジタルファースト</a> </li>
+            </ul>
+          </li>
+          <li> <a href="https://www.shoeisha.co.jp/book/app/">アプリ</a> </li>
+          <li class="dropdown"> <a data-toggle="dropdown" class="dropdown-toggle" href="ranking#">POD <b class="caret"></b> </a>
+            <ul class="dropdown-menu">
+              <li> <a href="https://www.shoeisha.co.jp/book/pod">POD一覧</a> </li>
+              <li> <a href="https://www.shoeisha.co.jp/campaign/book/digitalfirst/">デジタルファースト</a> </li>
+            </ul>
+          </li>
+          <li> <a href="https://www.shoeisha.co.jp/book/audio/">音声</a> </li>
+                    <li><div id="social">
+  <ul style=" margin-top: 5px;">
+    <li> <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.shoeisha.co.jp%2Fbook%2Franking" target="_blank"><img src="../assets/img/bo-facebook.png"></a>
+    </li>
+    <li> 
+    <a href="https://twitter.com/intent/tweet?text=ランキング
+｜翔泳社の本&url=https%3A%2F%2Fwww.shoeisha.co.jp%2Fbook%2Franking" rel=”nofollow” target="_blank"><img src="../assets/img/bo-twitter.png"></a>
+    </li>
+    <li> <a href="https://plus.google.com/share?url=https%3A%2F%2Fwww.shoeisha.co.jp%2Fbook%2Franking" onclick="window.open(this.href, 'Gwindow', 'width=650, height=450, menubar=no, toolbar=no, scrollbars=yes'); return false;"><img src="../assets/img/bo-google.png"></a>
+    <li>
+    <a href="http://b.hatena.ne.jp/entry/https%3A%2F%2Fwww.shoeisha.co.jp%2Fbook%2Franking" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="翔泳社の本"><img src="../assets/img/bo-hatena.png" alt="はてなブックマークに追加"/></a><script type="text/javascript" src="../../b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    </li>
+        <li><div class="line-it-button" data-lang="ja" data-type="share-b" data-url="" style="display: none;"></div>
+ <script src="../../d.line-scdn.net/r/web/social-plugin/js/thirdparty/loader.min.js" async="async" defer="defer"></script></li>
+  </ul>
+</div>
+</li>
+        </ul>
+        <form action="https://www.shoeisha.co.jp/search" role="search" class="navbar-form navbar-right search-box">
+          <div class="input-group input-group-sm">
+            <input type="text" placeholder="本を探す" name="search" class="form-control" value="" >
+            <span class="input-group-btn">
+            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+            </span> </div>
+
+
+          <!--
+              <div class="form-group">
+                <label for="search">
+                  <span class="glyphicon glyphicon-search"></span>
+                </label>
+                <input type="text" name="search" placeholder="本を探す" value="" class="form-control input-sm header-search">
+              </div>
+              -->
+        </form>
+      </div>
+    </nav>
+    <div class="container second-navbar">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-5">
+          <div class="navbar-header"> <a class="navbar-brand" href="https://www.shoeisha.co.jp/book"><img src="../assets/img/logo/sebook.png" class="img-responsive"></a></div>
+          <p class="pull-left"><strong>翔泳社の本</strong></p>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-7">
+            <div class="login-menu pull-right">
+  
+
+<script>
+  $(function(){
+    //if (get_view_mode() == 'pc') $('a[rel=popover]').popover();
+
+    $('#modal_login').on('shown.bs.modal', function(e) {
+      $("#email").focus();
+    });
+
+    $('#modal_login').on('hidden.bs.modal', function(e) {
+      $('#valid_message').html('');
+    });
+
+    if (location.hash.indexOf('#login_e') == 0){
+      $('#valid_message').html('<font color="red"><b>IDまたはパスワードが違います。</b></font>');
+      $('#modal_login').modal('show')
+    }
+  });
+</script>
+
+        <a class="btn btn-warning" href="https://www.shoeisha.co.jp/book/id/?ref=/book/ranking" role="button">会員登録（無料）</a>
+      <a class="btn btn-default" data-toggle="modal" href="ranking#modal_login">ログイン</a>
+  
+        </div>
+
+        <div class="second-navmenu pull-right">
+            <div class="btn-group"> <a data-toggle="dropdown" class="btn btn-default dropdown-toggle" id="menu_press">お知らせ <span class="caret"></span> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li> <a href="https://www.shoeisha.co.jp/press/detail/500">翔泳社書籍取り扱いオンラインストアのご案内</a> </li>
+              </ul>
+            </div>
+            <div class="btn-group"> <a data-toggle="dropdown" class="btn btn-default dropdown-toggle" id="menu_readers">読者の皆様へ <span class="caret"></span> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li> <a href="https://www.shoeisha.co.jp/book/copyright">著作権について</a> </li>
+                <li> <a href="https://www.shoeisha.co.jp/book/errata">正誤表</a> </li>
+                <li> <a href="https://www.shoeisha.co.jp/book/faq">よくある質問</a> </li>
+                <li> <a href="https://www.shoeisha.co.jp/book/qa">書籍に関する問い合わせ</a> </li>
+                <li> <a href="https://www.shoeisha.co.jp/book/download">ダウンロード</a> </li>
+                <li> <a href="https://www.shoeisha.co.jp/article">コラム</a> </li>
+              </ul>
+            </div>
+            <div class="btn-group"> <a data-toggle="dropdown" class="btn btn-default dropdown-toggle" id="menu_houjin">書店・法人様 <span class="caret"></span> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li> <a href="https://www.shoeisha.co.jp/bookstore">書店様</a> </li>
+                <li> <a href="https://www.shoeisha.co.jp/biz">企業・教育機関様</a> </li>
+              </ul>
+            </div>
+            </div>
+
+
+      </div>
+    </div>
+    </div>
+
+    <div class="mobile sp-search-box" style="display:none">
+      <form action="https://www.shoeisha.co.jp/search" role="search" class="navbar-form navbar-right">
+        <div class="input-group input-group-sm">
+          <input type="text" placeholder="本を探す" name="search" class="form-control" value="" style="font-size: 16px;">
+          <span class="input-group-btn">
+          <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+          </span> </div>
+      </form>
+    </div>
+
+    <div class="login-menu mobile text-center">
+  
+
+<script>
+  $(function(){
+    //if (get_view_mode() == 'pc') $('a[rel=popover]').popover();
+
+    $('#modal_login').on('shown.bs.modal', function(e) {
+      $("#email").focus();
+    });
+
+    $('#modal_login').on('hidden.bs.modal', function(e) {
+      $('#valid_message').html('');
+    });
+
+    if (location.hash.indexOf('#login_e') == 0){
+      $('#valid_message').html('<font color="red"><b>IDまたはパスワードが違います。</b></font>');
+      $('#modal_login').modal('show')
+    }
+  });
+</script>
+
+        <a class="btn btn-warning" href="https://www.shoeisha.co.jp/book/id/?ref=/book/ranking" role="button">会員登録（無料）</a>
+      <a class="btn btn-default" data-toggle="modal" href="ranking#modal_login">ログイン</a>
+      </div>
+
+  </header>
+  <div class="container container_contents"><script type="text/javascript">
+$(document).ready(function(){
+  $('.newbooks').slick({
+    infinite: true,
+    speed: 300,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        infinite: true,
+        dots: false
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+            dots: false
+
+      }
+    }
+  ]
+  });
+});
+</script>
+<h1>ランキング</h1>
+
+<section>
+<a class="btn btn-default" href="ranking#cate1">書籍ランキング</a>
+<a class="btn btn-default" href="ranking#cate2">電子書籍ランキング</a>
+<a class="btn btn-default" href="ranking#cate3">コンピュータ入門書ランキング</a>
+<a class="btn btn-default" href="ranking#cate4">コンピュータ専門書ランキング</a>
+<a class="btn btn-default" href="ranking#cate5">資格書ランキング</a>
+<a class="btn btn-default" href="ranking#cate6">ビジネス書ランキング</a>
+<a class="btn btn-default" href="ranking#cate7">福祉書ランキング</a>
+<a class="btn btn-default" href="ranking#cate8">デザイン書ランキング</a>
+<a class="btn btn-default" href="ranking#cate9">実用書ランキング</a>
+</section>
+
+<section id="cate1">
+  <h2>書籍ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798158167">
+                        <img src="../../www.seshop.com/static/images/product/22214/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798153193">
+                        <img src="../../www.seshop.com/static/images/product/21099/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798156910">
+                        <img src="../../www.seshop.com/static/images/product/21970/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798163987">
+                        <img src="../../www.seshop.com/static/images/product/23291/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798157559">
+                        <img src="../../www.seshop.com/static/images/product/22076/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798162171">
+                        <img src="../../www.seshop.com/static/images/product/23176/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160948">
+                        <img src="../../www.seshop.com/static/images/product/23078/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160078">
+                        <img src="../../www.seshop.com/static/images/product/22562/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798167695">
+                        <img src="../../www.seshop.com/static/images/product/23902/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798166285">
+                        <img src="../../www.seshop.com/static/images/product/23726/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798158167"><span class="date">1位</span>THE MODEL（MarkeZine BOOKS）  マーケティング・インサイドセールス・営業・カスタマーサクセスの共業プロセス</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798153193"><span class="date">2位</span>Python 1年生  体験してわかる！会話でまなべる！プログラミングのしくみ</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798156910"><span class="date">3位</span>ビジネスフレームワーク図鑑  すぐ使える問題解決・アイデア発想ツール70</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798163987"><span class="date">4位</span>簿記教科書 パブロフ流でみんな合格 日商簿記3級 テキスト＆問題集 第5版</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798157559"><span class="date">5位</span>深層学習教科書 ディープラーニング G検定（ジェネラリスト） 公式テキスト</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798162171"><span class="date">6位</span>情報処理教科書 出るとこだけ！基本情報技術者［午後］第2版</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160948"><span class="date">7位</span>思考法図鑑  ひらめきを生む問題解決・アイデア発想のアプローチ60</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160078"><span class="date">8位</span>たった一人の分析から事業は成長する 実践 顧客起点マーケティング（MarkeZine BOOKS）</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798167695"><span class="date">9位</span>アフターコロナの経営戦略  コロナショックを生き延びる！ 事業経営の実践ノウハウ</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798166285"><span class="date">10位</span>デジタル時代の基礎知識『SNSマーケティング』 第2版  「つながり」と「共感」で利益を生み出す新しいルール（MarkeZine BOOKS）</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate2">
+  <h2>電子書籍ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798161075">
+                        <img src="../../www.seshop.com/static/images/product/22214/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160085">
+                        <img src="../../www.seshop.com/static/images/product/22562/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798151687">
+                        <img src="../../www.seshop.com/static/images/product/20675/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798154947">
+                        <img src="../../www.seshop.com/static/images/product/21099/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798164083">
+                        <img src="../../www.seshop.com/static/images/product/23086/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798166117">
+                        <img src="../../www.seshop.com/static/images/product/23282/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798132655">
+                        <img src="../../www.seshop.com/static/images/product/15198/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798157238">
+                        <img src="../../www.seshop.com/static/images/product/21970/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798154008">
+                        <img src="../../www.seshop.com/static/images/product/20576/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798151823">
+                        <img src="../../www.seshop.com/static/images/product/19836/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798161075"><span class="date">1位</span>THE MODEL（MarkeZine BOOKS） マーケティング・インサイドセールス・営業・カスタマーサクセスの共業プロセス</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160085"><span class="date">2位</span>たった一人の分析から事業は成長する 実践 顧客起点マーケティング（MarkeZine BOOKS）</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798151687"><span class="date">3位</span>ドメイン駆動設計入門 ボトムアップでわかる！ドメイン駆動設計の基本</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798154947"><span class="date">4位</span>Python 1年生 体験してわかる！会話でまなべる！プログラミングのしくみ</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798164083"><span class="date">5位</span>Python2年生 スクレイピングのしくみ 体験してわかる！会話でまなべる！</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798166117"><span class="date">6位</span>チーム・ジャーニー 逆境を越える、変化に強いチームをつくりあげるまで</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798132655"><span class="date">7位</span>イノベーション・オブ・ライフ ハーバード・ビジネススクールを巣立つ君たちへ</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798157238"><span class="date">8位</span>ビジネスフレームワーク図鑑 すぐ使える問題解決・アイデア発想ツール70</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798154008"><span class="date">9位</span>暗号技術のすべて</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798151823"><span class="date">10位</span>やってはいけないデザイン</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate3">
+  <h2>コンピュータ入門書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798161181">
+                        <img src="../../www.seshop.com/static/images/product/22858/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160016">
+                        <img src="../../www.seshop.com/static/images/product/22678/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798155784">
+                        <img src="../../www.seshop.com/static/images/product/21740/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798146720">
+                        <img src="../../www.seshop.com/static/images/product/19350/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798143491">
+                        <img src="../../www.seshop.com/static/images/product/19037/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798161181"><span class="date">1位</span>Excelパワーピボット  7つのステップでデータ集計・分析を「自動化」する本</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160016"><span class="date">2位</span>IT用語図鑑  ビジネスで使える厳選キーワード256</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798155784"><span class="date">3位</span>Excelピボットテーブル データ集計・分析の「引き出し」が増える本</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798146720"><span class="date">4位</span>Excel関数逆引き辞典パーフェクト 第3版</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798143491"><span class="date">5位</span>ルビィのぼうけん  こんにちは！プログラミング</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate4">
+  <h2>コンピュータ専門書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798153193">
+                        <img src="../../www.seshop.com/static/images/product/21099/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798161914">
+                        <img src="../../www.seshop.com/static/images/product/23086/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798150727">
+                        <img src="../../www.seshop.com/static/images/product/20675/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798144450">
+                        <img src="../../www.seshop.com/static/images/product/19054/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798124704">
+                        <img src="../../www.seshop.com/static/images/product/14106/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798153193"><span class="date">1位</span>Python 1年生  体験してわかる！会話でまなべる！プログラミングのしくみ</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798161914"><span class="date">2位</span>Python2年生 スクレイピングのしくみ 体験してわかる！会話でまなべる！</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798150727"><span class="date">3位</span>ドメイン駆動設計入門  ボトムアップでわかる！ドメイン駆動設計の基本</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798144450"><span class="date">4位</span>SQL 第2版  ゼロからはじめるデータベース操作</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798124704"><span class="date">5位</span>達人に学ぶDB設計 徹底指南書  ～初級者で終わりたくないあなたへ</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate5">
+  <h2>資格書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798157559">
+                        <img src="../../www.seshop.com/static/images/product/22076/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798162171">
+                        <img src="../../www.seshop.com/static/images/product/23176/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798165776">
+                        <img src="../../www.seshop.com/static/images/product/23720/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798163833">
+                        <img src="../../www.seshop.com/static/images/product/23171/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160498">
+                        <img src="../../www.seshop.com/static/images/product/22604/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798157559"><span class="date">1位</span>深層学習教科書 ディープラーニング G検定（ジェネラリスト） 公式テキスト</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798162171"><span class="date">2位</span>情報処理教科書 出るとこだけ！基本情報技術者［午後］第2版</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798165776"><span class="date">3位</span>シスコ技術者認定教科書 CCNA 完全合格テキスト＆問題集［対応試験］200-301</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798163833"><span class="date">4位</span>情報処理教科書 出るとこだけ！情報セキュリティマネジメント テキスト＆問題集 2020年版</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160498"><span class="date">5位</span>Linux教科書 LPICレベル1 Version5.0対応</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate6">
+  <h2>ビジネス書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798158167">
+                        <img src="../../www.seshop.com/static/images/product/22214/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160078">
+                        <img src="../../www.seshop.com/static/images/product/22562/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798156910">
+                        <img src="../../www.seshop.com/static/images/product/21970/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798160948">
+                        <img src="../../www.seshop.com/static/images/product/23078/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798166285">
+                        <img src="../../www.seshop.com/static/images/product/23726/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798158167"><span class="date">1位</span>THE MODEL（MarkeZine BOOKS）  マーケティング・インサイドセールス・営業・カスタマーサクセスの共業プロセス</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160078"><span class="date">2位</span>たった一人の分析から事業は成長する 実践 顧客起点マーケティング（MarkeZine BOOKS）</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798156910"><span class="date">3位</span>ビジネスフレームワーク図鑑  すぐ使える問題解決・アイデア発想ツール70</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798160948"><span class="date">4位</span>思考法図鑑  ひらめきを生む問題解決・アイデア発想のアプローチ60</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798166285"><span class="date">5位</span>デジタル時代の基礎知識『SNSマーケティング』 第2版  「つながり」と「共感」で利益を生み出す新しいルール（MarkeZine BOOKS）</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate7">
+  <h2>福祉書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798163291">
+                        <img src="../../www.seshop.com/static/images/product/23693/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798159881">
+                        <img src="../../www.seshop.com/static/images/product/22900/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798152554">
+                        <img src="../../www.seshop.com/static/images/product/20773/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798158457">
+                        <img src="../../www.seshop.com/static/images/product/22126/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798165844">
+                        <img src="../../www.seshop.com/static/images/product/23486/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798163291"><span class="date">1位</span>親が認知症!?離れて暮らす親の介護・見守り・お金のこと</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798159881"><span class="date">2位</span>対人援助の現場で使える 質問する技術 便利帖</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798152554"><span class="date">3位</span>対人援助の現場で使える 聴く・伝える・共感する技術 便利帖</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798158457"><span class="date">4位</span>親が倒れた！親の入院・介護ですぐやること・考えること・お金のこと 第2版</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798165844"><span class="date">5位</span>福祉教科書 介護福祉士 完全合格過去＆模擬問題集 2021年版</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate8">
+  <h2>デザイン書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798145938">
+                        <img src="../../www.seshop.com/static/images/product/19836/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798163185">
+                        <img src="../../www.seshop.com/static/images/product/23180/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798157214">
+                        <img src="../../www.seshop.com/static/images/product/22559/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798166704">
+                        <img src="../../www.seshop.com/static/images/product/23709/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798162621">
+                        <img src="../../www.seshop.com/static/images/product/23236/L.png" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798145938"><span class="date">1位</span>やってはいけないデザイン</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798163185"><span class="date">2位</span>ILLUSTRATION 2020</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798157214"><span class="date">3位</span>“主線なし”イラストの描き方</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798166704"><span class="date">4位</span>失敗しないデザイン</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798162621"><span class="date">5位</span>大人女子デザイン 女性の心を動かすデザインアイデア53</a></li>
+                  </ul>
+      </div>
+</section>
+<section id="cate9">
+  <h2>実用書ランキング</h2>
+      <div class="newbooks">
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798164878">
+                        <img src="../../www.seshop.com/static/images/product/23718/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798163123">
+                        <img src="../../www.seshop.com/static/images/product/23359/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798165165">
+                        <img src="../../www.seshop.com/static/images/product/23719/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798164694">
+                        <img src="../../www.seshop.com/static/images/product/23676/L.png" class="img-responsive book">
+                        </a>
+          </div>
+                  <div>
+            <a href="https://www.shoeisha.co.jp/book/detail/9784798154572">
+                        <img src="../../www.seshop.com/static/images/product/21759/L.jpg" class="img-responsive book">
+                        </a>
+          </div>
+              </div>
+      <div class="column">
+        <ul class="list-unstyled">
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798164878"><span class="date">1位</span>暮らしの図鑑 ガラス  楽しむ工夫×基礎知識×注目の作家・ブランド50</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798163123"><span class="date">2位</span>暮らしの図鑑 グリーン  楽しむ工夫×いま取り入れたい観葉植物64×基礎知識</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798165165"><span class="date">3位</span>台湾の美味しい調味料 台湾醤</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798164694"><span class="date">4位</span>整理収納を仕事にする  片づけのプロ10人に聞く、暮らしと人生の整え方</a></li>
+                    <li> <a href="https://www.shoeisha.co.jp/book/detail/9784798154572"><span class="date">5位</span>食のパラドックス  6週間で体がよみがえる食事法</a></li>
+                  </ul>
+      </div>
+</section>
+
+
+</div>
+  </div>
+  <footer>       <div class="container support_link">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="ranking#footer-press">お知らせ
+                  <span class="caret"></span>
+                </a>
+              </div>
+              <div id="footer-press" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <ul>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/press/detail/500">翔泳社書籍取り扱いオンラインストアのご案内</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="ranking#support">読者の皆様へ
+                  <span class="caret"></span>
+                </a>
+              </div>
+              <div id="support" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <ul>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/book/errata">正誤表</a>
+                    </li>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/book/faq">よくある質問</a>
+                    </li>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/book/qa">刊行物Ｑ＆Ａ</a>
+                    </li>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/book/download">ダウンロード</a>
+                    </li>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/article">コラム</a>
+                    </li>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/ml">メールマガジン</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" href="ranking#custmor">書店・法人様
+                  <span class="caret"></span>
+                </a>
+              </div>
+              <div id="custmor" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <ul>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/bookstore">書店様</a>
+                    </li>
+                    <li>
+                      <a href="https://www.shoeisha.co.jp/biz">企業・教育機関様</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+          <div class="link">
+       <div class="container">
+          <div class="row">
+            <div class="col-md-3">
+              <h2>会社情報</h2>
+              <ul>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/">TOP</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/about">会社案内</a>
+                </li>
+                 <li>
+                  <a href="https://www.shoeisha.co.jp/mission">企業理念</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/service">サービス案内</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/press">お知らせ</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/ir">IR情報</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/map">アクセス</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/recruit">採用情報</a>
+                </li>
+                <li class="last">
+                  <a href="https://www.shoeisha.co.jp/contact">お問い合わせ</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/privacy">個人情報保護</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/exemption">免責事項</a>
+                </li>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/privacy/social-policy/">SNS利用ポリシー</a>
+                </li>
+                 <li>
+                  <a href="https://www.shoeisha.co.jp/toauthors/">著作者様へ</a>
+                </li>
+                <li>
+                  <a href="https://shoeisha.jp" target="_blank">SHOEISHA iD</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-3">
+              <h2>運営サイト</h2>
+              <ul>
+                <li>
+                  <a href="https://www.shoeisha.co.jp/book/">本</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://codezine.jp/">プログラミング</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://enterprisezine.jp/">企業ITとマネジメント</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://markezine.jp/">マーケティング</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://moneyzine.jp/">株式投資</a>
+                </li>
+                <li>
+                  <a target="_blank" href="http://selectbox.shoeisha.jp/">ホワイトペーパー</a>
+                </li>
+                <li >
+                  <a target="_blank" href="https://eczine.jp/">ECマーケティング</a>
+                </li>
+                <li >
+                  <a target="_blank" href="https://bizzine.jp/">イノベーション</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://hrzine.jp/">人事</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://edtechzine.jp/">教育ICT</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://minna-no-kurashi.jp/">暮らし・家事</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://saleszine.jp/">セールス</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://event.shoeisha.jp/">イベント・セミナー</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://www.shoeisha.co.jp/ad/">広告掲載のご案内</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-3">
+              <h2>直販サイト</h2>
+              <ul>
+                <li>
+                  <a target="_blank" href="https://www.seshop.com/">SEshop.com</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-3">
+              <h2>グループ企業</h2>
+              <ul>
+                <li>
+                  <a target="_blank" href="http://www.sehi.co.jp/">SE H&amp;I</a>
+                </li>
+                <li>
+                  <a target="_blank" href="https://shoeishaacademy.co.jp/">翔泳社アカデミー</a>
+                  <ul style="list-style-type:disc;margin: 0 0 0 1.5em;">
+                        <li style="margin: 5px;">
+                          <a target="_blank" href="https://www.denken3.com/">電験三種</a>
+                        </li>
+                        <li style="margin: 5px;">
+                          <a target="_blank" href="https://www.denkou.info/">電気工事士講座</a>
+                        </li>
+                        <li style="margin: 5px;">
+                          <a target="_blank" href="https://www.denkou.info/kouza/denkou1/">第一種電気工事士</a>
+                        </li>
+                        <li  style="margin: 5px;">
+                          <a target="_blank" href="https://www.denkou.info/kouza/denkou2/">第二種電気工事士</a>
+                        </li>
+                  </ul>
+                </li>
+                <li>
+                  <a target="_blank" href="https://www.seplus.jp/">SEプラス</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="copyright">Copyright © 1985-2020 SHOEISHA, All rights reserved.</div>
+          </div>
+          <div class="col-md-7 companybanner">
+            <div class=" pull-right">
+              <a href="https://privacymark.jp/" target="_blank"><img alt="" src="../static/common/images/pmark.gif"></a>
+              <a href="http://www.sehi.co.jp/" target="_blank"><img alt="" src="../static/common/images/ToshoJasdaqSEHIG_land.png"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+ </footer>
+  <p id="page-top" style="display: block;"> <a href="ranking#top-menu"> <span class="glyphicon glyphicon-chevron-up"></span> </a> </p>
+
+
+
+
+<script type="text/javascript">
+<!--
+$(function(){
+  function changeInputType(inputId, type) {
+      var input = $("#" + inputId);
+      $(input).replaceWith($('<input class="form-control" placeholder="Password" />').val(input.val()).attr("placeholder", input.attr("placeholder")).attr("id", inputId).attr("type", type).attr("name", 'password'));
+  }
+
+  $("#show-ps").change(function() {
+      //チェックされてるときはtextを適応する
+      if ($(this).prop('checked')) {
+          changeInputType("password", "text");
+      } else {
+          changeInputType("password", "password");
+      }
+  });
+
+  if ($("#show-ps").attr("checked")) {
+      changeInputType("password", "text");
+  }
+});
+// -->
+</script>
+​
+<div class="modal" id="modal_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="closebox" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">ログイン</h4>
+
+      </div>
+      <form class="form-horizontal" id="LoginForm" role="form" action="https://www.shoeisha.co.jp/secom/user/login" method="POST">
+      <div class="modal-body">
+          <div id="valid_message"></div>
+          <input type="hidden" name="ref" value="/book/ranking">
+          <div class="form-group">
+            <label for="inputEmail1" class="col-md-3 control-label">Eメール</label>
+            <div class="col-md-9">
+              <input type="text" name="email" class="form-control" id="email" placeholder="Email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword1" class="col-md-3 control-label">パスワード</label>
+            <div class="col-md-9">
+              <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+              <br /><input id="show-ps" type="checkbox" /><label for="show-ps">パスワードを表示</label>
+            </div>
+          </div>
+          <p style="margin: 0;font-size:12px;font-weight: bold;">※旧SEメンバーシップ会員の方は、同じ登録情報（Eメール＆パスワード）でログインいただけます。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-warning" id="login_submit">ログイン</button>
+        <a href="https://shoeisha.jp/users/password" class="btn btn-default" target="_blank">パスワードを忘れた</a>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+  <!-- TemplateEnd -->
+
+  </body>
+</html>
