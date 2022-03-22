@@ -1,6 +1,6 @@
 import cv2
 
-img = cv2.imread('data/block.jpg')
+img = cv2.imread('data_block.jpg')
 height = img.shape[0]
 width = img.shape[1]
 resized_img = cv2.resize(img, (int(width/2), height))

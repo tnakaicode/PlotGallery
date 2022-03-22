@@ -1,7 +1,7 @@
 import cv2
 import sys
 
-img = cv2.imread('data/road_sign.jpg')
+img = cv2.imread('data_road_sign.jpg')
 gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 canny_img = cv2.Canny(gray_img, 600, 650) 
 

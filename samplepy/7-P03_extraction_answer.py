@@ -9,4 +9,4 @@ for sec in soup.select('section'):
         url = sec.select_one('ul').select_one('li').select_one('a').get('href')
         
         print('カテゴリ：', category)
-        print('書籍のURL：', url)
+        print('書籍のURL:', url)
