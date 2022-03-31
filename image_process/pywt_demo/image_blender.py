@@ -148,17 +148,17 @@ def main():
     parser.add_argument("-w", "--wavelet", dest="wavelet", metavar="WAVELET",
                       default='db2', help="wavelet name [default: %default]")
     parser.add_argument("-l", "--level", dest="level", metavar="LEVEL",
-                      type="int", default=4,
+                      type=int, default=4,
                       help="decomposition level [default: %default]")
     parser.add_argument("-m", "--mode", dest="mode", metavar="MODE",
                       default='symmetric',
                       help="decomposition mode. Adjust this if"
                       " getting edge artifacts [default: %default]")
     parser.add_argument("-x", "--base_gain", dest="base_gain", metavar="BG",
-                      type="float", default=None,
+                      type=float, default=None,
                       help="Base image gain [default: %default]")
     parser.add_argument("-y", "--texture_gain", dest="texture_gain",
-                      metavar="TG", type="float", default=None,
+                      metavar="TG", type=float, default=None,
                       help="Texture image gain [default: %default]")
     parser.add_argument("--timeit", dest="timeit", action="store_true",
                       default=False, help="time blending operations")
