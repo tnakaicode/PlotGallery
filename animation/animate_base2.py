@@ -9,7 +9,7 @@ import os
 from io import BytesIO, TextIOWrapper
 from matplotlib.animation import FuncAnimation, MovieWriterRegistry, MovieWriter, Animation
 from matplotlib import cbook, rcParams, rcParamsDefault, rc_context
-from optparse import OptionParser
+import argparse
 
 writers = MovieWriterRegistry()
 
@@ -219,10 +219,10 @@ class Aniamte2D (FuncAnimation):
 
 if __name__ == '__main__':
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default=None)
-    opt, argc = parser.parse_args(argvs)
-    print(opt, argc)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default=None)
+    opt = parser.parse_args()
+    print(opt, argvs)
 
     obj = Aniamte2D()
     obj.savegif("./animate_base.gif", writer='pillow')

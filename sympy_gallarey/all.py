@@ -223,12 +223,12 @@ def show_summary(successes, failures, *, reporter=None):
 def main(*args, **kws):
     """Main script runner"""
     parser = optparse.OptionParser()
-    parser.add_option('-w', '--windowed', action="store_true", dest="windowed",
+    parser.add_argument('-w', '--windowed', action="store_true", dest="windowed",
         help="also run examples requiring windowed environment")
-    parser.add_option('-q', '--quiet', action="store_true", dest="quiet",
+    parser.add_argument('-q', '--quiet', action="store_true", dest="quiet",
         help="runs examples in 'quiet mode' suppressing example output and \
               showing simple status messages.")
-    parser.add_option('--no-summary', action="store_true", dest="no_summary",
+    parser.add_argument('--no-summary', action="store_true", dest="no_summary",
         help="hides the summary at the end of testing the examples")
 
     (options, _) = parser.parse_args()

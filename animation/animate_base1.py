@@ -7,7 +7,7 @@ import sys
 import time
 import os
 from matplotlib.animation import FuncAnimation
-from optparse import OptionParser
+import argparse
 
 
 class Aniamte2D (object):
@@ -69,10 +69,10 @@ class Aniamte2D (object):
 
 if __name__ == '__main__':
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default=None)
-    opt, argc = parser.parse_args(argvs)
-    print(opt, argc)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default=None)
+    opt = parser.parse_args()
+    print(opt, argvs)
 
     obj = Aniamte2D()
     obj.ani.save("./animate_base.gif", writer='pillow')

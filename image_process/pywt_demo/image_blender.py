@@ -139,28 +139,28 @@ def main():
     usage = "usage: %prog -b BASE -t TEXTURE -o OUTPUT "\
             "[-w WAVELET] [-l LEVEL] [-m MODE]"
     parser = optparse.OptionParser(usage=usage)
-    parser.add_option("-b", "--base", dest="base", metavar="BASE",
+    parser.add_argument("-b", "--base", dest="base", metavar="BASE",
                       help="base image name")
-    parser.add_option("-t", "--texture", dest="texture", metavar="TEXTURE",
+    parser.add_argument("-t", "--texture", dest="texture", metavar="TEXTURE",
                       help="texture image name")
-    parser.add_option("-o", "--output", dest="output", metavar="OUTPUT",
+    parser.add_argument("-o", "--output", dest="output", metavar="OUTPUT",
                       help="output image name")
-    parser.add_option("-w", "--wavelet", dest="wavelet", metavar="WAVELET",
+    parser.add_argument("-w", "--wavelet", dest="wavelet", metavar="WAVELET",
                       default='db2', help="wavelet name [default: %default]")
-    parser.add_option("-l", "--level", dest="level", metavar="LEVEL",
+    parser.add_argument("-l", "--level", dest="level", metavar="LEVEL",
                       type="int", default=4,
                       help="decomposition level [default: %default]")
-    parser.add_option("-m", "--mode", dest="mode", metavar="MODE",
+    parser.add_argument("-m", "--mode", dest="mode", metavar="MODE",
                       default='symmetric',
                       help="decomposition mode. Adjust this if"
                       " getting edge artifacts [default: %default]")
-    parser.add_option("-x", "--base_gain", dest="base_gain", metavar="BG",
+    parser.add_argument("-x", "--base_gain", dest="base_gain", metavar="BG",
                       type="float", default=None,
                       help="Base image gain [default: %default]")
-    parser.add_option("-y", "--texture_gain", dest="texture_gain",
+    parser.add_argument("-y", "--texture_gain", dest="texture_gain",
                       metavar="TG", type="float", default=None,
                       help="Texture image gain [default: %default]")
-    parser.add_option("--timeit", dest="timeit", action="store_true",
+    parser.add_argument("--timeit", dest="timeit", action="store_true",
                       default=False, help="time blending operations")
 
     (options, args) = parser.parse_args()

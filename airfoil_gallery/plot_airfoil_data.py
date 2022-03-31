@@ -6,7 +6,7 @@ import time
 import json
 import shutil
 import urllib.request as urllib2
-from optparse import OptionParser
+import argparse
 
 sys.path.append(os.path.join("../"))
 from base import plot2d, plot3d
@@ -41,11 +41,11 @@ def uiuc_database(name="dae51"):
 
 if __name__ == '__main__':
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--name", dest="name", default="dae51")
-    opt, argc = parser.parse_args(argvs)
-    print(opt, argc)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--name", dest="name", default="dae51")
+    opt = parser.parse_args()
+    print(opt, argvs)
 
     obj = plot2d(aspect="equal")
     cfg = json.load(open("./cfg.json", "r"))

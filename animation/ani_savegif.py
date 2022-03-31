@@ -10,7 +10,7 @@ import shutil
 import datetime
 import string
 import requests
-from optparse import OptionParser
+import argparse
 from io import StringIO
 from matplotlib import cm
 
@@ -32,10 +32,10 @@ def create_tempdir(flag=1):
 
 if __name__ == '__main__':
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--flag", dest="flag", default=1, type="int")
-    opt, argc = parser.parse_args(argvs)
-    print(opt, argc)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--flag", dest="flag", default=1, type="int")
+    opt = parser.parse_args()
+    print(opt, argvs)
     tmpdir = create_tempdir(opt.flag)
 
     """
