@@ -5,10 +5,10 @@ Image interpolation
 The example demonstrates image interpolation on a Racoon face.
 """
 
-import scipy.misc
+from scipy import misc
 import matplotlib.pyplot as plt
 
-f = scipy.misc.face(gray=True)
+f = misc.face(gray=True)
 
 plt.figure(figsize=(8, 4))
 

@@ -7,10 +7,11 @@ applying the filter inverse to the blur.
 """
 
 import scipy
+from scipy import misc
 from scipy import ndimage
 import matplotlib.pyplot as plt
 
-f = scipy.misc.face(gray=True).astype(float)
+f = misc.face(gray=True).astype(float)
 blurred_f = ndimage.gaussian_filter(f, 3)
 
 filter_blurred_f = ndimage.gaussian_filter(blurred_f, 1)
