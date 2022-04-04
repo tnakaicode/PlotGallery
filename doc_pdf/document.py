@@ -7,8 +7,8 @@ import os
 import glob
 import shutil
 import datetime
-from linecache import getline, clearcache
 import argparse
+from linecache import getline, clearcache
 
 from reportlab.lib import pdfencrypt, colors
 from reportlab.lib.units import mm, cm
