@@ -31,22 +31,26 @@ from pymor.basic import (InstationaryProblem, StationaryProblem, RectDomain, Con
 from pymor.core.config import config
 
 import logging
-logging.getLogger('pymor.algorithms.gram_schmidt.gram_schmidt').setLevel(logging.ERROR)
+logging.getLogger(
+    'pymor.algorithms.gram_schmidt.gram_schmidt').setLevel(logging.ERROR)
 
 
 if __name__ == '__main__':
     p = InstationaryProblem(
         StationaryProblem(
-            domain=RectDomain([[0., 0.], [1., 1.]], left='robin', right='robin', top='robin', bottom='robin'),
+            domain=RectDomain([[0., 0.], [1., 1.]], left='robin',
+                              right='robin', top='robin', bottom='robin'),
             diffusion=ConstantFunction(1., 2),
-            robin_data=(ConstantFunction(1., 2), ExpressionFunction('(x[...,0] < 1e-10) * 1.', 2)),
-            outputs=[('l2_boundary', ExpressionFunction('(x[...,0] > (1 - 1e-10)) * 1.', 2))]
+            robin_data=(ConstantFunction(1., 2),
+                        ExpressionFunction('(x[...,0] < 1e-10) * 1.', 2)),
+            outputs=[('l2_boundary',
+                      ExpressionFunction('(x[...,0] > (1 - 1e-10)) * 1.', 2))]
         ),
         ConstantFunction(0., 2),
         T=1.
     )
 
-    fom, _ = discretize_instationary_cg(p, diameter=1/10, nt=100)
+    fom, _ = discretize_instationary_cg(p, diameter=1 / 10, nt=100)
 
     fom.visualize(fom.solve())
 
@@ -92,10 +96,12 @@ if __name__ == '__main__':
     err_bt = lti - rom_bt
     print(f'BT relative H_2-error:    {err_bt.h2_norm() / lti.h2_norm():e}')
     if config.HAVE_SLYCOT:
-        print(f'BT relative H_inf-error:  {err_bt.hinf_norm() / lti.hinf_norm():e}')
+        print(
+            f'BT relative H_inf-error:  {err_bt.hinf_norm() / lti.hinf_norm():e}')
     else:
         print('Skipped H_inf-norm calculation due to missing slycot.')
-    print(f'BT relative Hankel-error: {err_bt.hankel_norm() / lti.hankel_norm():e}')
+    print(
+        f'BT relative Hankel-error: {err_bt.hankel_norm() / lti.hankel_norm():e}')
 
     # Magnitude plot of the full and BT reduced model
     fig, ax = plt.subplots()
@@ -121,12 +127,15 @@ if __name__ == '__main__':
     plt.show()
 
     err_irka = lti - rom_irka
-    print(f'IRKA relative H_2-error:    {err_irka.h2_norm() / lti.h2_norm():e}')
+    print(
+        f'IRKA relative H_2-error:    {err_irka.h2_norm() / lti.h2_norm():e}')
     if config.HAVE_SLYCOT:
-        print(f'IRKA relative H_inf-error:  {err_irka.hinf_norm() / lti.hinf_norm():e}')
+        print(
+            f'IRKA relative H_inf-error:  {err_irka.hinf_norm() / lti.hinf_norm():e}')
     else:
         print('Skipped H_inf-norm calculation due to missing slycot.')
-    print(f'IRKA relative Hankel-error: {err_irka.hankel_norm() / lti.hankel_norm():e}')
+    print(
+        f'IRKA relative Hankel-error: {err_irka.hankel_norm() / lti.hankel_norm():e}')
 
     # Magnitude plot of the full and IRKA reduced model
     fig, ax = plt.subplots()

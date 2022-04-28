@@ -69,7 +69,7 @@ from pymor.reductors.basic import InstationaryRBReductor
 
 
 def main(args):
-    args = docopt(__doc__, args)
+    args = docopt(__doc__, ['1', '2', '10', '10', '10', '1'])
     args['--cache-region'] = args['--cache-region'].lower()
     args['--ei-alg'] = args['--ei-alg'].lower()
     assert args['--ei-alg'] in ('ei_greedy', 'deim')
