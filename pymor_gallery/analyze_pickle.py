@@ -1,18 +1,24 @@
 #!/usr/bin/env python
-# This file is part of the pyMOR project (https://www.pymor.org).
-# Copyright pyMOR developers and contributors. All rights reserved.
-# License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
+# This file is part of the pyMOR project (http://www.pymor.org).
+# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 
 import sys
 import time
 
 import numpy as np
 import matplotlib.pyplot as plt
-from typer import Argument, Option, Typer
+from docopt import docopt
 
 from pymor.core.pickle import load
 
-app = Typer(help='''
+"""Analyze pickled data demo.
+
+Usage:
+  analyze_pickle.py histogram [--detailed=DETAILED_DATA] [--error-norm=NORM] REDUCED_DATA SAMPLES
+  analyze_pickle.py convergence [--detailed=DETAILED_DATA] [--error-norm=NORM] [--ndim=NDIM] REDUCED_DATA SAMPLES
+  analyze_pickle.py (-h | --help)
+
 This demo loads a pickled reduced model, solves for random
 parameters, estimates the reduction errors and then visualizes these
 estimates. If the detailed model and the reductor are
@@ -21,25 +27,40 @@ the real reduction error.
 
 The needed data files are created by the thermal block demo, by
 setting the '--pickle' option.
-'''[1:])
 
-REDUCED_DATA = Argument(..., help='File containing the pickled reduced model.')
-SAMPLES = Argument(..., min=1, help='Number of parameter samples to test with. ')
-ERROR_NORM = Option(None, help='Name of norm in which to compute the errors.')
+Arguments:
+  REDUCED_DATA  File containing the pickled reduced model.
+
+  SAMPLES       Number of parameter samples to test with.
+
+Options:
+  --detailed=DETAILED_DATA  File containing the high-dimensional model
+                            and the reductor.
+
+  --error-norm=NORM         Name of norm in which to compute the errors.
+
+  --ndim=NDIM               Number of reduced basis dimensions for which to estimate
+                            the error.
+"""
 
 
-@app.command()
-def histogram(
-    reduced_data: str = REDUCED_DATA,
-    samples: int = SAMPLES,
+def _bins(start, stop, steps=100):
+    ''' numpy has a quirk in unreleased master where logspace
+    might sometimes not return a 1d array
+    '''
+    bins = np.logspace(np.log10(start), np.log10(stop), steps)
+    if bins.shape == (steps, 1):
+        bins = bins[:, 0]
+    return bins
 
-    detailed_data: str = Option(None, help='File containing the high-dimensional model and the reductor.'),
-    error_norm: str = ERROR_NORM
-):
+
+def analyze_pickle_histogram(args):
+    args['SAMPLES'] = int(args['SAMPLES'])
+
     print('Loading reduced model ...')
-    rom, parameter_space = load(open(reduced_data, 'rb'))
+    rom, parameter_space = load(open(args['REDUCED_DATA'], 'rb'))
 
-    mus = parameter_space.sample_randomly(samples)
+    mus = parameter_space.sample_randomly(args['SAMPLES'])
     us = []
     for mu in mus:
         print(f'Solving reduced for {mu} ... ', end='')
@@ -49,7 +70,7 @@ def histogram(
 
     print()
 
-    if hasattr(rom, 'estimate_error'):
+    if hasattr(rom, 'estimate'):
         ests = []
         for mu in mus:
             print(f'Estimating error for {mu} ... ', end='')
@@ -57,17 +78,18 @@ def histogram(
             ests.append(rom.estimate_error(mu))
             print('done')
 
-    if detailed_data:
+    if args['--detailed']:
         print('Loading high-dimensional data ...')
-        fom, reductor = load(open(detailed_data, 'rb'))
+        fom, reductor = load(open(args['--detailed'], 'rb'))
 
         errs = []
         for u, mu in zip(us, mus):
             print(f'Calculating error for {mu} ... ')
             sys.stdout.flush()
             err = fom.solve(mu) - reductor.reconstruct(u)
-            if error_norm:
-                errs.append(np.max(getattr(fom, error_norm + '_norm')(err)))
+            if args['--error-norm']:
+                errs.append(
+                    np.max(getattr(fom, args['--error-norm'] + '_norm')(err)))
             else:
                 errs.append(np.max(err.norm()))
             print('done')
@@ -79,12 +101,12 @@ def histogram(
     except AttributeError:
         pass  # plt.style is only available in newer matplotlib versions
 
-    if hasattr(rom, 'estimate_error') and detailed_data:
+    if hasattr(rom, 'estimate') and args['--detailed']:
 
         # setup axes
         left, width = 0.1, 0.65
         bottom, height = 0.1, 0.65
-        bottom_h = left_h = left+width+0.02
+        bottom_h = left_h = left + width + 0.02
         rect_scatter = [left, bottom, width, height]
         rect_histx = [left, bottom_h, width, 0.2]
         rect_histy = [left_h, bottom, 0.2, height]
@@ -106,10 +128,14 @@ def histogram(
         axScatter.scatter(errs, ests)
 
         # plot histograms
-        x_hist, x_bin_edges = np.histogram(errs, bins=_bins(total_min, total_max))
-        axHistx.bar(x_bin_edges[1:], x_hist, width=x_bin_edges[:-1] - x_bin_edges[1:], color='blue')
-        y_hist, y_bin_edges = np.histogram(ests, bins=_bins(total_min, total_max))
-        axHisty.barh(y_bin_edges[1:], y_hist, height=y_bin_edges[:-1] - y_bin_edges[1:], color='blue')
+        x_hist, x_bin_edges = np.histogram(
+            errs, bins=_bins(total_min, total_max))
+        axHistx.bar(
+            x_bin_edges[1:], x_hist, width=x_bin_edges[:-1] - x_bin_edges[1:], color='blue')
+        y_hist, y_bin_edges = np.histogram(
+            ests, bins=_bins(total_min, total_max))
+        axHisty.barh(
+            y_bin_edges[1:], y_hist, height=y_bin_edges[:-1] - y_bin_edges[1:], color='blue')
         axHistx.set_xscale('log')
         axHisty.set_yscale('log')
         axHistx.set_xticklabels([])
@@ -121,26 +147,28 @@ def histogram(
 
         plt.show()
 
-    elif hasattr(rom, 'estimate_error'):
+    elif hasattr(rom, 'estimate'):
 
         total_min = np.min(ests) * 0.9
         total_max = np.max(ests) * 1.1
 
         hist, bin_edges = np.histogram(ests, bins=_bins(total_min, total_max))
-        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] - bin_edges[1:], color='blue')
+        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] -
+                bin_edges[1:], color='blue')
         plt.xlim([total_min, total_max])
         plt.xscale('log')
         plt.xlabel('estimated error')
 
         plt.show()
 
-    elif detailed_data:
+    elif args['--detailed']:
 
         total_min = np.min(ests) * 0.9
         total_max = np.max(ests) * 1.1
 
         hist, bin_edges = np.histogram(errs, bins=_bins(total_min, total_max))
-        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] - bin_edges[1:], color='blue')
+        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] -
+                bin_edges[1:], color='blue')
         plt.xlim([total_min, total_max])
         plt.xscale('log')
         plt.xlabel('error')
@@ -151,29 +179,25 @@ def histogram(
         raise ValueError('Nothing to plot!')
 
 
-@app.command()
-def convergence(
-    reduced_data: str = REDUCED_DATA,
-    detailed_data: str = Argument(..., help='File containing the high-dimensional model and the reductor.'),
-    samples: int = SAMPLES,
+def analyze_pickle_convergence(args):
+    args['SAMPLES'] = int(args['SAMPLES'])
 
-    error_norm: str = ERROR_NORM,
-    ndim: int = Option(None, help='Number of reduced basis dimensions for which to estimate the error.')
-):
     print('Loading reduced model ...')
-    rom, parameter_space = load(open(reduced_data, 'rb'))
+    rom, parameter_space = load(open(args['REDUCED_DATA'], 'rb'))
 
+    if not args['--detailed']:
+        raise ValueError('High-dimensional data file must be specified.')
     print('Loading high-dimensional data ...')
-    fom, reductor = load(open(detailed_data, 'rb'))
+    fom, reductor = load(open(args['--detailed'], 'rb'))
     fom.enable_caching('disk')
 
     dim = rom.solution_space.dim
-    if ndim:
-        dims = np.linspace(0, dim, ndim, dtype=int)
+    if args['--ndim']:
+        dims = np.linspace(0, dim, args['--ndim'], dtype=np.int)
     else:
         dims = np.arange(dim + 1)
 
-    mus = parameter_space.sample_randomly(samples)
+    mus = parameter_space.sample_randomly(args['SAMPLES'])
 
     ESTS = []
     ERRS = []
@@ -185,30 +209,31 @@ def convergence(
         us = []
         print('solve ', end='')
         sys.stdout.flush()
-        start = time.perf_counter()
+        start = time.time()
         for mu in mus:
             us.append(rom.solve(mu))
-        T_SOLVES.append((time.perf_counter() - start) * 1000. / len(mus))
+        T_SOLVES.append((time.time() - start) * 1000. / len(mus))
 
         print('estimate ', end='')
         sys.stdout.flush()
         if hasattr(rom, 'estimate'):
             ests = []
-            start = time.perf_counter()
+            start = time.time()
             for mu in mus:
                 # print('e', end='')
                 # sys.stdout.flush()
                 ests.append(rom.estimate_error(mu))
             ESTS.append(max(ests))
-            T_ESTS.append((time.perf_counter() - start) * 1000. / len(mus))
+            T_ESTS.append((time.time() - start) * 1000. / len(mus))
 
         print('errors', end='')
         sys.stdout.flush()
         errs = []
         for u, mu in zip(us, mus):
             err = fom.solve(mu) - reductor.reconstruct(u)
-            if error_norm:
-                errs.append(np.max(getattr(fom, error_norm + '_norm')(err)))
+            if args['--error-norm']:
+                errs.append(
+                    np.max(getattr(fom, args['--error-norm'] + '_norm')(err)))
             else:
                 errs.append(np.max(err.norm()))
         ERRS.append(max(errs))
@@ -240,15 +265,15 @@ def convergence(
     plt.show()
 
 
-def _bins(start, stop, steps=100):
-    """NumPy has a quirk in unreleased master where logspace might sometimes not return a 1d
-    array.
-    """
-    bins = np.logspace(np.log10(start), np.log10(stop), steps)
-    if bins.shape == (steps, 1):
-        bins = bins[:, 0]
-    return bins
+def analyze_pickle_demo(args):
+    if args['histogram']:
+        analyze_pickle_histogram(args)
+    else:
+        analyze_pickle_convergence(args)
 
 
 if __name__ == '__main__':
-    app()
+    # parse arguments
+    args = docopt(__doc__)
+    # run demo
+    analyze_pickle_demo(args)
