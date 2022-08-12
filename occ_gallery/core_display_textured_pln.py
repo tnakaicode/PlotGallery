@@ -29,6 +29,9 @@ from OCC.Display.SimpleGui import init_display
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
+import logging
+logging.getLogger('matplotlib').setLevel(logging.ERROR)
+
 
 class Texture(object):
     """
@@ -80,7 +83,8 @@ name = "./images/texture.png"
 
 plt.figure()
 plt.contourf(*mesh, mesh[0])
-plt.savefig(name, transparent=0.9)
+#plt.savefig(name, transparent=True)
+plt.savefig(name)
 
 #
 # First create texture and a material
@@ -92,5 +96,5 @@ t = Texture(texture_filename)
 #
 pln = make_face(gp_Pln(gp_Ax3()), xs, xe, ys, ye)
 s = BRepPrimAPI_MakeCylinder(60, 200)
-display.DisplayShape(pln, texture=t, update=True)
+display.DisplayShape(pln, texture=t, update=True, transparency=0.5)
 start_display()
