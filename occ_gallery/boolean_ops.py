@@ -5,30 +5,14 @@
 
 # Example of the ***BRepAlgoAPI*** functions performing boolean operations: Fuse, Common, Section and Cut.<br>
 
-# In[ ]:
-
 
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Common, BRepAlgoAPI_Section, BRepAlgoAPI_Cut
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace, BRepBuilderAPI_Transform
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeWedge, BRepPrimAPI_MakeSphere, BRepPrimAPI_MakeTorus
 from OCC.Core.gp import gp_Vec, gp_Ax2, gp_Pnt, gp_Dir, gp_Pln, gp_Trsf
 
-
-# In[ ]:
-
-
-from OCC.Display.WebGl.jupyter_renderer import JupyterRenderer
-
-
-# In[ ]:
-
-
-from ipywidgets import interact, interactive, fixed, interact_manual
-import ipywidgets as widgets
-
-
-# In[ ]:
-
+from OCC.Display.SimpleGui import init_display
+display, start_display, add_menu, add_functionto_menu = init_display()
 
 def translate_topods_from_vector(brep_or_iterable, vec, copy=False):
     '''
@@ -44,22 +28,14 @@ def translate_topods_from_vector(brep_or_iterable, vec, copy=False):
     return brep_trns.Shape()
 
 
-# In[ ]:
-
-
 def fuse(event=None):
     box1 = BRepPrimAPI_MakeBox(2, 1, 1).Shape()
     box2 = BRepPrimAPI_MakeBox(2, 1, 1).Shape()
     box1 = translate_topods_from_vector(box1, gp_Vec(.5, .5, 0))
     fusedshp = BRepAlgoAPI_Fuse(box1, box2).Shape()
     
-    rnd = JupyterRenderer()
-    rnd.DisplayShape(fusedshp, render_edges=True)
-    rnd.Display()
-
-
-# In[ ]:
-
+    display.DisplayShape(fusedshp)
+    
 
 def common(event=None):
     # Create Box
