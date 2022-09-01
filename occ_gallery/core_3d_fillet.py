@@ -16,7 +16,7 @@
 # along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.gp import gp_Pnt, gp_Pln, gp_Vec
-from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo
+from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo, ChFi3d_Builder, ChFi2d_ChamferAPI
 from OCC.Core.ChFi3d import ChFi3d_Builder, ChFi3d_FilBuilder, ChFi3d_ChBuilder, ChFi3d_FilletShape
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCCUtils.Construct import make_plane
