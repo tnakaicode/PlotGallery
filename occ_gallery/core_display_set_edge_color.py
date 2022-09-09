@@ -1,23 +1,24 @@
 #!/usr/bin/env python
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 from OCC.Core.AIS import AIS_Shape
 from OCC.Display.SimpleGui import init_display
+from OCC.Core.Quantity import Quantity_Color, Quantity_NameOfColor
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -32,7 +33,8 @@ context.Display(aisShape, True)
 context.SetTransparency(aisShape, 0.6, True)
 owner = aisShape.GetOwner()
 drawer = aisShape.DynamicHilightAttributes()
-# TODO: how do we set the color ? Quantity_NOC_RED
+col = Quantity_Color(Quantity_NameOfColor.Quantity_NOC_RED)
+context.SetColor(aisShape, col, True)
 context.HilightWithColor(aisShape, drawer, True)
 
 display.View_Iso()
