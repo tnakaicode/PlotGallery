@@ -13,9 +13,9 @@ from pymor.discretizers.builtin import discretize_stationary_cg
 
 
 def main(
-    angle: float = Argument(..., help='The angle of the circular sector.'),
-    num_points: int = Argument(..., help='The number of points that form the arc of the circular sector.'),
-    clscale: float = Argument(..., help='Mesh element size scaling factor.'),
+    angle: float = Argument(default=1, help='The angle of the circular sector.'),
+    num_points: int = Argument(default=100, help='The number of points that form the arc of the circular sector.'),
+    clscale: float = Argument(default=0.1, help='Mesh element size scaling factor.'),
 ):
     """Solves the 2D-Poisson equation on a circular sector of radius 1 with an unstructured mesh.
 

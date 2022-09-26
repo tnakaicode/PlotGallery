@@ -13,11 +13,11 @@ from pymor.discretizers.builtin import discretize_stationary_cg, discretize_stat
 
 
 def main(
-    problem_number: int = Argument(..., min=0, max=1, help='Selects the problem to solve [0 or 1].'),
-    dirichlet_number: int = Argument(..., min=0, max=2, help='Selects the Dirichlet data function [0 to 2].'),
-    neumann_number: int = Argument(..., min=0, max=2, help='Selects the Neumann data function.'),
+    problem_number: int = Argument(default=0, min=0, max=1, help='Selects the problem to solve [0 or 1].'),
+    dirichlet_number: int = Argument(default=0, min=0, max=2, help='Selects the Dirichlet data function [0 to 2].'),
+    neumann_number: int = Argument(default=1, min=0, max=2, help='Selects the Neumann data function.'),
     neumann_count: int = Argument(
-        ...,
+        default=0,
         min=0,
         max=3,
         help='0: no neumann boundary\n\n'
