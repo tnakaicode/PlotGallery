@@ -1,24 +1,18 @@
 #!/usr/bin/env python
-# This file is part of the pyMOR project (http://www.pymor.org).
-# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# This file is part of the pyMOR project (https://www.pymor.org).
+# Copyright pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
 
 import sys
 import time
 
 import numpy as np
 import matplotlib.pyplot as plt
-from docopt import docopt
+from typer import Argument, Option, Typer
 
 from pymor.core.pickle import load
 
-"""Analyze pickled data demo.
-
-Usage:
-  analyze_pickle.py histogram [--detailed=DETAILED_DATA] [--error-norm=NORM] REDUCED_DATA SAMPLES
-  analyze_pickle.py convergence [--detailed=DETAILED_DATA] [--error-norm=NORM] [--ndim=NDIM] REDUCED_DATA SAMPLES
-  analyze_pickle.py (-h | --help)
-
+app = Typer(help='''
 This demo loads a pickled reduced model, solves for random
 parameters, estimates the reduction errors and then visualizes these
 estimates. If the detailed model and the reductor are
@@ -27,40 +21,27 @@ the real reduction error.
 
 The needed data files are created by the thermal block demo, by
 setting the '--pickle' option.
+'''[1:])
 
-Arguments:
-  REDUCED_DATA  File containing the pickled reduced model.
-
-  SAMPLES       Number of parameter samples to test with.
-
-Options:
-  --detailed=DETAILED_DATA  File containing the high-dimensional model
-                            and the reductor.
-
-  --error-norm=NORM         Name of norm in which to compute the errors.
-
-  --ndim=NDIM               Number of reduced basis dimensions for which to estimate
-                            the error.
-"""
+REDUCED_DATA = Argument(default=0, help='File containing the pickled reduced model.')
+SAMPLES = Argument(default=100, min=1,
+                   help='Number of parameter samples to test with. ')
+ERROR_NORM = Option(None, help='Name of norm in which to compute the errors.')
 
 
-def _bins(start, stop, steps=100):
-    ''' numpy has a quirk in unreleased master where logspace
-    might sometimes not return a 1d array
-    '''
-    bins = np.logspace(np.log10(start), np.log10(stop), steps)
-    if bins.shape == (steps, 1):
-        bins = bins[:, 0]
-    return bins
+@app.command()
+def histogram(
+    reduced_data: str = REDUCED_DATA,
+    samples: int = SAMPLES,
 
-
-def analyze_pickle_histogram(args):
-    args['SAMPLES'] = int(args['SAMPLES'])
-
+    detailed_data: str = Option(
+        None, help='File containing the high-dimensional model and the reductor.'),
+    error_norm: str = ERROR_NORM
+):
     print('Loading reduced model ...')
-    rom, parameter_space = load(open(args['REDUCED_DATA'], 'rb'))
+    rom, parameter_space = load(open(reduced_data, 'rb'))
 
-    mus = parameter_space.sample_randomly(args['SAMPLES'])
+    mus = parameter_space.sample_randomly(samples)
     us = []
     for mu in mus:
         print(f'Solving reduced for {mu} ... ', end='')
@@ -70,7 +51,7 @@ def analyze_pickle_histogram(args):
 
     print()
 
-    if hasattr(rom, 'estimate'):
+    if hasattr(rom, 'estimate_error'):
         ests = []
         for mu in mus:
             print(f'Estimating error for {mu} ... ', end='')
@@ -78,18 +59,17 @@ def analyze_pickle_histogram(args):
             ests.append(rom.estimate_error(mu))
             print('done')
 
-    if args['--detailed']:
+    if detailed_data:
         print('Loading high-dimensional data ...')
-        fom, reductor = load(open(args['--detailed'], 'rb'))
+        fom, reductor = load(open(detailed_data, 'rb'))
 
         errs = []
         for u, mu in zip(us, mus):
             print(f'Calculating error for {mu} ... ')
             sys.stdout.flush()
             err = fom.solve(mu) - reductor.reconstruct(u)
-            if args['--error-norm']:
-                errs.append(
-                    np.max(getattr(fom, args['--error-norm'] + '_norm')(err)))
+            if error_norm:
+                errs.append(np.max(getattr(fom, error_norm + '_norm')(err)))
             else:
                 errs.append(np.max(err.norm()))
             print('done')
@@ -101,7 +81,7 @@ def analyze_pickle_histogram(args):
     except AttributeError:
         pass  # plt.style is only available in newer matplotlib versions
 
-    if hasattr(rom, 'estimate') and args['--detailed']:
+    if hasattr(rom, 'estimate_error') and detailed_data:
 
         # setup axes
         left, width = 0.1, 0.65
@@ -147,7 +127,7 @@ def analyze_pickle_histogram(args):
 
         plt.show()
 
-    elif hasattr(rom, 'estimate'):
+    elif hasattr(rom, 'estimate_error'):
 
         total_min = np.min(ests) * 0.9
         total_max = np.max(ests) * 1.1
@@ -161,7 +141,7 @@ def analyze_pickle_histogram(args):
 
         plt.show()
 
-    elif args['--detailed']:
+    elif detailed_data:
 
         total_min = np.min(ests) * 0.9
         total_max = np.max(ests) * 1.1
@@ -179,25 +159,31 @@ def analyze_pickle_histogram(args):
         raise ValueError('Nothing to plot!')
 
 
-def analyze_pickle_convergence(args):
-    args['SAMPLES'] = int(args['SAMPLES'])
+@app.command()
+def convergence(
+    reduced_data: str = REDUCED_DATA,
+    detailed_data: str = Argument(
+        ..., help='File containing the high-dimensional model and the reductor.'),
+    samples: int = SAMPLES,
 
+    error_norm: str = ERROR_NORM,
+    ndim: int = Option(
+        None, help='Number of reduced basis dimensions for which to estimate the error.')
+):
     print('Loading reduced model ...')
-    rom, parameter_space = load(open(args['REDUCED_DATA'], 'rb'))
+    rom, parameter_space = load(open(reduced_data, 'rb'))
 
-    if not args['--detailed']:
-        raise ValueError('High-dimensional data file must be specified.')
     print('Loading high-dimensional data ...')
-    fom, reductor = load(open(args['--detailed'], 'rb'))
+    fom, reductor = load(open(detailed_data, 'rb'))
     fom.enable_caching('disk')
 
     dim = rom.solution_space.dim
-    if args['--ndim']:
-        dims = np.linspace(0, dim, args['--ndim'], dtype=np.int)
+    if ndim:
+        dims = np.linspace(0, dim, ndim, dtype=int)
     else:
         dims = np.arange(dim + 1)
 
-    mus = parameter_space.sample_randomly(args['SAMPLES'])
+    mus = parameter_space.sample_randomly(samples)
 
     ESTS = []
     ERRS = []
@@ -209,31 +195,30 @@ def analyze_pickle_convergence(args):
         us = []
         print('solve ', end='')
         sys.stdout.flush()
-        start = time.time()
+        start = time.perf_counter()
         for mu in mus:
             us.append(rom.solve(mu))
-        T_SOLVES.append((time.time() - start) * 1000. / len(mus))
+        T_SOLVES.append((time.perf_counter() - start) * 1000. / len(mus))
 
         print('estimate ', end='')
         sys.stdout.flush()
         if hasattr(rom, 'estimate'):
             ests = []
-            start = time.time()
+            start = time.perf_counter()
             for mu in mus:
                 # print('e', end='')
                 # sys.stdout.flush()
                 ests.append(rom.estimate_error(mu))
             ESTS.append(max(ests))
-            T_ESTS.append((time.time() - start) * 1000. / len(mus))
+            T_ESTS.append((time.perf_counter() - start) * 1000. / len(mus))
 
         print('errors', end='')
         sys.stdout.flush()
         errs = []
         for u, mu in zip(us, mus):
             err = fom.solve(mu) - reductor.reconstruct(u)
-            if args['--error-norm']:
-                errs.append(
-                    np.max(getattr(fom, args['--error-norm'] + '_norm')(err)))
+            if error_norm:
+                errs.append(np.max(getattr(fom, error_norm + '_norm')(err)))
             else:
                 errs.append(np.max(err.norm()))
         ERRS.append(max(errs))
@@ -265,15 +250,16 @@ def analyze_pickle_convergence(args):
     plt.show()
 
 
-def analyze_pickle_demo(args):
-    if args['histogram']:
-        analyze_pickle_histogram(args)
-    else:
-        analyze_pickle_convergence(args)
+def _bins(start, stop, steps=100):
+    """Compute bins.
+
+    NumPy has a quirk in unreleased master where logspace might sometimes not return a 1d array.
+    """
+    bins = np.logspace(np.log10(start), np.log10(stop), steps)
+    if bins.shape == (steps, 1):
+        bins = bins[:, 0]
+    return bins
 
 
 if __name__ == '__main__':
-    # parse arguments
-    args = docopt(__doc__)
-    # run demo
-    analyze_pickle_demo(args)
+    app()

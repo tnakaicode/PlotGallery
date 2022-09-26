@@ -1,6 +1,6 @@
-# This file is part of the pyMOR project (http://www.pymor.org).
-# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# This file is part of the pyMOR project (https://www.pymor.org).
+# Copyright pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
 
 import numpy as np
 
@@ -29,7 +29,7 @@ def discretize(n, nt, blocks):
     # note that we cannot use the data property of ListVectorArray,
     # since ListVectorArray will always return a copy
     rhs_vec = operator.range.zeros()
-    rhs_data = rhs_vec._list[0].to_numpy()
+    rhs_data = rhs_vec.vectors[0].to_numpy()
     rhs_data[:] = np.ones(len(rhs_data))
     rhs_data[0] = 0
     rhs_data[len(rhs_data) - 1] = 0

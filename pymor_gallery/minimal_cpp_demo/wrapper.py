@@ -1,6 +1,6 @@
-# This file is part of the pyMOR project (http://www.pymor.org).
-# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# This file is part of the pyMOR project (https://www.pymor.org).
+# Copyright pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
 
 from pymor.operators.interface import Operator
 from pymor.vectorarrays.list import CopyOnWriteVector, ListVectorSpace
@@ -21,7 +21,7 @@ class WrappedVector(CopyOnWriteVector):
         return cls(instance._impl)
 
     def to_numpy(self, ensure_copy=False):
-        result = np.frombuffer(self._impl, dtype=np.float)
+        result = np.frombuffer(self._impl, dtype=np.float64)
         if ensure_copy:
             result = result.copy()
         return result
@@ -89,4 +89,4 @@ class WrappedDiffusionOperator(Operator):
             self.op.apply(u._impl, v)
             return v
 
-        return self.range.make_array([apply_one_vector(u) for u in U._list])
+        return self.range.make_array([apply_one_vector(u) for u in U.vectors])

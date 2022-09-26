@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# This file is part of the pyMOR project (http://www.pymor.org).
-# Copyright 2013-2020 pyMOR developers and contributors. All rights reserved.
-# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# This file is part of the pyMOR project (https://www.pymor.org).
+# Copyright pyMOR developers and contributors. All rights reserved.
+# License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
 
 """Simplified version of the thermalblock demo.
 
@@ -9,22 +9,13 @@ Usage:
   thermalblock_simple.py MODEL ALG SNAPSHOTS RBSIZE TEST
 
 Arguments:
-  MODEL      High-dimensional model (pymor, fenics, ngsolve, pymor-text).
-  ALG        The model reduction algorithm to use (naive, greedy, adaptive_greedy, pod).
-
-  SNAPSHOTS  naive:           ignored
-
-             greedy/pod:      Number of training_set parameters per block
-                              (in total SNAPSHOTS^(XBLOCKS * YBLOCKS)
-                              parameters).
-
-             adaptive_greedy: size of validation set.
-
-  RBSIZE     Size of the reduced basis.
-  TEST       Number of parameters for stochastic error estimation.
 """
 
-from pymor.basic import *        # most common pyMOR functions and classes
+from typer import Argument, run
+
+from pymor.basic import *
+from pymor.tools.typer import Choices
+from pymor.core.config import config
 
 
 # parameters for high-dimensional models
@@ -34,6 +25,82 @@ GRID_INTERVALS = 100    # pyMOR/FEniCS
 FENICS_ORDER = 2
 NGS_ORDER = 4
 TEXT = 'pyMOR'
+
+
+####################################################################################################
+# Main script                                                                                      #
+####################################################################################################
+
+def main(
+    model: Choices('pymor fenics ngsolve pymor_text') = Argument(..., help='High-dimensional model.'),
+    alg: Choices('naive greedy adaptive_greedy pod') = Argument(..., help='The model reduction algorithm to use.'),
+    snapshots: int = Argument(
+        ...,
+        help='naive: ignored.\n\n'
+             'greedy/pod: Number of training_set parameters per block'
+             '(in total SNAPSHOTS^(XBLOCKS * YBLOCKS) parameters).\n\n'
+             'adaptive_greedy: size of validation set.'
+    ),
+    rbsize: int = Argument(..., help='Size of the reduced basis.'),
+    test: int = Argument(..., help='Number of parameters for stochastic error estimation.'),
+):
+    # discretize
+    ############
+    if model == 'pymor':
+        fom, parameter_space = discretize_pymor()
+    elif model == 'fenics':
+        fom, parameter_space = discretize_fenics()
+    elif model == 'ngsolve':
+        config.require("NGSOLVE")
+        fom, parameter_space = discretize_ngsolve()
+    elif model == 'pymor_text':
+        fom, parameter_space = discretize_pymor_text()
+    else:
+        raise NotImplementedError
+
+    # select reduction algorithm with error estimator
+    #################################################
+    coercivity_estimator = ExpressionParameterFunctional('min(diffusion)', fom.parameters)
+    reductor = CoerciveRBReductor(fom, product=fom.h1_0_semi_product, coercivity_estimator=coercivity_estimator,
+                                  check_orthonormality=False)
+
+    # generate reduced model
+    ########################
+    if alg == 'naive':
+        rom = reduce_naive(fom, reductor, parameter_space, rbsize)
+    elif alg == 'greedy':
+        rom = reduce_greedy(fom, reductor, parameter_space, snapshots, rbsize)
+    elif alg == 'adaptive_greedy':
+        rom = reduce_adaptive_greedy(fom, reductor, parameter_space, snapshots, rbsize)
+    elif alg == 'pod':
+        rom = reduce_pod(fom, reductor, parameter_space, snapshots, rbsize)
+    else:
+        raise NotImplementedError
+
+    # evaluate the reduction error
+    ##############################
+    results = reduction_error_analysis(rom, fom=fom, reductor=reductor, error_estimator=True,
+                                       error_norms=[fom.h1_0_semi_norm], condition=True,
+                                       test_mus=parameter_space.sample_randomly(test))
+
+    # show results
+    ##############
+    print(results['summary'])
+    plot_reduction_error_analysis(results)
+
+    # write results to disk
+    #######################
+    from pymor.core.pickle import dump
+    dump((rom, parameter_space), open('reduced_model.out', 'wb'))
+    dump(results, open('results.out', 'wb'))
+
+    # visualize reduction error for worst-approximated mu
+    #####################################################
+    mumax = results['max_error_mus'][0, -1]
+    U = fom.solve(mumax)
+    U_RB = reductor.reconstruct(rom.solve(mumax))
+    fom.visualize((U, U_RB, U - U_RB), legend=('Detailed Solution', 'Reduced Solution', 'Error'),
+                  separate_colorbars=True, block=True)
 
 
 ####################################################################################################
@@ -57,7 +124,7 @@ def discretize_fenics():
 
     if mpi.parallel:
         from pymor.models.mpi import mpi_wrap_model
-        fom =  mpi_wrap_model(_discretize_fenics, use_with=True, pickle_local_spaces=False)
+        fom = mpi_wrap_model(_discretize_fenics, use_with=True, pickle_local_spaces=False)
     else:
         fom = _discretize_fenics()
     return fom, fom.parameters.space((0.1, 1))
@@ -197,7 +264,7 @@ def discretize_ngsolve():
     h1_0_op = op.assemble(Mu(diffusion=[1] * len(coeffs))).with_(name='h1_0_semi')
 
     F = space.zeros()
-    F._list[0].real_part.impl.vec.data = f.vec
+    F.vectors[0].real_part.impl.vec.data = f.vec
     F = VectorOperator(F)
 
     fom = StationaryModel(op, F, visualizer=NGSolveVisualizer(mesh, V),
@@ -276,80 +343,5 @@ def reduce_pod(fom, reductor, parameter_space, snapshots, basis_size):
     return rom
 
 
-####################################################################################################
-# Main script                                                                                      #
-####################################################################################################
-
-def main():
-    # command line argument parsing
-    ###############################
-    import sys
-    if len(sys.argv) != 6:
-        print(__doc__)
-        sys.exit(1)
-    MODEL, ALG, SNAPSHOTS, RBSIZE, TEST = sys.argv[1:]
-    MODEL, ALG, SNAPSHOTS, RBSIZE, TEST = MODEL.lower(), ALG.lower(), int(SNAPSHOTS), int(RBSIZE), int(TEST)
-
-    # discretize
-    ############
-    if MODEL == 'pymor':
-        fom, parameter_space = discretize_pymor()
-    elif MODEL == 'fenics':
-        fom, parameter_space = discretize_fenics()
-    elif MODEL == 'ngsolve':
-        fom, parameter_space = discretize_ngsolve()
-    elif MODEL == 'pymor-text':
-        fom, parameter_space = discretize_pymor_text()
-    else:
-        raise NotImplementedError
-
-    # select reduction algorithm with error estimator
-    #################################################
-    coercivity_estimator = ExpressionParameterFunctional('min(diffusion)', fom.parameters)
-    reductor = CoerciveRBReductor(fom, product=fom.h1_0_semi_product, coercivity_estimator=coercivity_estimator,
-                                  check_orthonormality=False)
-
-    # generate reduced model
-    ########################
-    if ALG == 'naive':
-        rom = reduce_naive(fom, reductor, parameter_space, RBSIZE)
-    elif ALG == 'greedy':
-        rom = reduce_greedy(fom, reductor, parameter_space, SNAPSHOTS, RBSIZE)
-    elif ALG == 'adaptive_greedy':
-        rom = reduce_adaptive_greedy(fom, reductor, parameter_space, SNAPSHOTS, RBSIZE)
-    elif ALG == 'pod':
-        rom = reduce_pod(fom, reductor, parameter_space, SNAPSHOTS, RBSIZE)
-    else:
-        raise NotImplementedError
-
-    # evaluate the reduction error
-    ##############################
-    results = reduction_error_analysis(rom, fom=fom, reductor=reductor, error_estimator=True,
-                                       error_norms=[fom.h1_0_semi_norm], condition=True,
-                                       test_mus=parameter_space.sample_randomly(TEST),
-                                       plot=True)
-
-    # show results
-    ##############
-    print(results['summary'])
-    import matplotlib.pyplot
-    matplotlib.pyplot.show(results['figure'])
-
-    # write results to disk
-    #######################
-    from pymor.core.pickle import dump
-    dump((rom, parameter_space), open('reduced_model.out', 'wb'))
-    results.pop('figure')  # matplotlib figures cannot be serialized
-    dump(results, open('results.out', 'wb'))
-
-    # visualize reduction error for worst-approximated mu
-    #####################################################
-    mumax = results['max_error_mus'][0, -1]
-    U = fom.solve(mumax)
-    U_RB = reductor.reconstruct(rom.solve(mumax))
-    fom.visualize((U, U_RB, U - U_RB), legend=('Detailed Solution', 'Reduced Solution', 'Error'),
-                  separate_colorbars=True, block=True)
-
-
 if __name__ == '__main__':
-    main()
+    run(main)
