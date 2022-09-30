@@ -22,7 +22,7 @@ import os.path
 
 from OCC.Core.SMESH import SMESH_Gen, SMESH_MeshVSLink
 from OCC.Core.MeshVS import (MeshVS_Mesh, MeshVS_BP_Mesh, MeshVS_MeshPrsBuilder,
-                             MeshVS_DMF_WireFrame)
+                             MeshVS_DMF_WireFrame, MeshVS_ET_Link)
 from OCC.Display.SimpleGui import init_display
 
 # Create the Mesh

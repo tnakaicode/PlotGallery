@@ -7,7 +7,9 @@ Example provided by Simon Klein (simon.klein@outlook.com) with snippets from oth
 import numpy as np
 from scipy.spatial import Delaunay
 from OCC.Core.MeshDS import MeshDS_DataSource
-from OCC.Core.MeshVS import *
+from OCC.Core.MeshVS import MeshVS_Mesh, MeshVS_MeshPrsBuilder
+from OCC.Core.MeshVS import MeshVS_DA_ShowEdges, MeshVS_DA_DisplayNodes, MeshVS_DA_FrontMaterial
+from OCC.Core.MeshVS import MeshVS_DMF_Shading
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.Quantity import (
     Quantity_NOC_GREEN,
