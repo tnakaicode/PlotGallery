@@ -1,12 +1,15 @@
-from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeTorus, BRepPrimAPI_MakeCone
 from OCC.Core.Tesselator import ShapeTesselator
+from OCCUtils.Construct import make_face, make_polygon
 
 import numpy as np
 
 # use the tesselator to tesselate the shape
+a_sphere = BRepPrimAPI_MakeCone(10, 20, 30).Shape()
 a_sphere = BRepPrimAPI_MakeBox(10, 20, 30).Shape()
+a_sphere = BRepPrimAPI_MakeTorus(100, 10).Shape()
 sphere_tess = ShapeTesselator(a_sphere)
-sphere_tess.Compute()
+sphere_tess.Compute(True, 0.5)
 
 sphere_triangle_set_string = sphere_tess.ExportShapeToX3DTriangleSet()
 print("Triangle Set representation:")
@@ -30,3 +33,20 @@ print("Unique vertices:\n", unique_vertices)
 indices = [np.where(np.all(unique_vertices == ar, axis=1))[0][0]
            for ar in vertices]
 print("Vertices indices:\n", indices)
+
+from OCC.Core.gp import gp_Pnt
+
+from OCC.Display.SimpleGui import init_display
+display, start_display, add_menu, add_function_to_menu = init_display()
+
+# for xyz in vertices:
+#    display.DisplayShape(gp_Pnt(*xyz))
+for i in range(sphere_tess.ObjGetTriangleCount() - 1):
+    idx = sphere_tess.GetTriangleIndex(i)
+    #print(sphere_tess.ObjGetTriangleCount(),i,  idx)
+    p0 = gp_Pnt(*sphere_tess.GetVertex(idx[0]))
+    p1 = gp_Pnt(*sphere_tess.GetVertex(idx[1]))
+    p2 = gp_Pnt(*sphere_tess.GetVertex(idx[2]))
+    display.DisplayShape(make_face(make_polygon([p0, p1, p2], True)))
+display.FitAll()
+start_display()
