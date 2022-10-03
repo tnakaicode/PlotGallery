@@ -1,3 +1,4 @@
+from multiprocessing import pool
 import numpy as np
 
 from OCC.Display.SimpleGui import init_display
@@ -17,7 +18,7 @@ from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.GeomAbs import GeomAbs_G1, GeomAbs_G2
 from OCC.Extend.DataExchange import write_step_file
 from OCC.Extend.TopologyUtils import TopologyExplorer
-from OCCUtils.Construct import make_face, make_polygon, make_plane
+from OCCUtils.Construct import make_face, make_polygon, make_plane, make_wire
 
 
 def spl_face(px, py, pz):
@@ -75,11 +76,12 @@ def get_polygon_from_face(face):
             rim_tmp = e_curve.Value(u0)
             p = e_curve.Value(u1)
         pts.append(p)
-        for u in u_range[1:-1]:
-            p = e_curve.Value(u)
-            pts.append(p)
+        #for u in u_range[1:-1]:
+        #    p = e_curve.Value(u)
+        #    pts.append(p)
     # return make_polygon(pts, True)
-    return pts
+    poly = make_wire([e for e in TopologyExplorer(face).edges()])
+    return poly
 
 
 display, start_display, add_menu, add_function_to_menu = init_display()
@@ -108,12 +110,12 @@ mesh = np.meshgrid(px, py)
 surf = mesh[0]**2 / 1000 + mesh[1]**2 / 2000 + 10.0
 face = spl_face(*mesh, surf)
 face_pnts = get_polygon_from_face(face)
-face_poly = make_polygon(face_pnts, False)
+face_poly = get_polygon_from_face(face)
 display.DisplayShape(face, transparency=0.9)
 display.DisplayShape(face_poly, color="GREEN")
-for i, p in enumerate(get_polygon_from_face(plan)):
-    display.DisplayShape(p, color="YELLOW")
-    display.DisplayMessage(p, f"{i:2d}")
+#for i, p in enumerate(get_polygon_from_face(plan)):
+#    display.DisplayShape(p, color="YELLOW")
+#    display.DisplayMessage(p, f"{i:2d}")
 
 # projection polygon to curved surface
 # the current TopoDS_Wire is not connectted each other beacause the size of curved surface is larger than polygon on XY-Plane.
