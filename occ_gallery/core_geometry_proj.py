@@ -8,12 +8,15 @@ from OCC.Core.gp import gp_Lin, gp_Elips, gp_Pln
 from OCC.Core.gp import gp_Mat, gp_GTrsf, gp_Trsf
 from OCC.Core.gp import gp_Cylinder
 from OCC.Core.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
+from OCC.Core.BRep import BRep_Tool
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
 from OCC.Core.BRepProj import BRepProj_Projection
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
+from OCC.Core.ProjLib import ProjLib_ProjectOnSurface
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.GeomAbs import GeomAbs_G1, GeomAbs_G2
 from OCC.Extend.DataExchange import write_step_file
+from OCC.Extend.TopologyUtils import TopologyExplorer
 from OCCUtils.Construct import make_face, make_polygon, make_plane
 
 
@@ -52,6 +55,33 @@ def make_trimmedface(poly, face, axs=gp_Ax3()):
     return api_face.Current()
 
 
+def get_polygon_from_face(face):
+    n = 10
+    pts = []
+    rim_tmp = gp_Pnt()
+    for i, e in enumerate(TopologyExplorer(face).edges()):
+        e_curve, u0, u1 = BRep_Tool.Curve(e)
+        print(i, e, u0, u1, rim_tmp, e_curve.Value(u0), e_curve.Value(u1))
+        if i != 0 and rim_tmp == e_curve.Value(u0):
+            u_range = np.linspace(u0, u1, n)
+            rim_tmp = e_curve.Value(u1)
+            p = e_curve.Value(u0)
+        elif i != 0 and rim_tmp == e_curve.Value(u1):
+            u_range = np.linspace(u1, u0, n)
+            rim_tmp = e_curve.Value(u0)
+            p = e_curve.Value(u1)
+        else:
+            u_range = np.linspace(u1, u0, n)
+            rim_tmp = e_curve.Value(u0)
+            p = e_curve.Value(u1)
+        pts.append(p)
+        for u in u_range[1:-1]:
+            p = e_curve.Value(u)
+            pts.append(p)
+    # return make_polygon(pts, True)
+    return pts
+
+
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 # make polygon on XY-plane
@@ -77,7 +107,13 @@ py = np.linspace(-40, 50, 200)
 mesh = np.meshgrid(px, py)
 surf = mesh[0]**2 / 1000 + mesh[1]**2 / 2000 + 10.0
 face = spl_face(*mesh, surf)
+face_pnts = get_polygon_from_face(face)
+face_poly = make_polygon(face_pnts, False)
 display.DisplayShape(face, transparency=0.9)
+display.DisplayShape(face_poly, color="GREEN")
+for i, p in enumerate(get_polygon_from_face(plan)):
+    display.DisplayShape(p, color="YELLOW")
+    display.DisplayMessage(p, f"{i:2d}")
 
 # projection polygon to curved surface
 # the current TopoDS_Wire is not connectted each other beacause the size of curved surface is larger than polygon on XY-Plane.
