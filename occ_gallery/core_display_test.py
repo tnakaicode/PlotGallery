@@ -17,10 +17,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
+from lib2to3.pygram import python_grammar_no_print_statement
 import logging
 import os
 import sys
 from typing import Any, Callable, List, Optional, Tuple
+from unittest import installHandler
 
 from OCC import VERSION
 from OCC.Display.backend import load_backend, get_qt_modules
@@ -275,3 +277,59 @@ for i in range(50):
 # self._display.Create(window_handle=int(self.winId()), parent=self)
 # ->
 # self._display.Create(window_handle=None, parent=self)
+
+# init_displayのInitDriverが落ちてしまう
+# 
+# init_displayを少し書き換えて、win=MainWindowを返すようにして使っています。(https://github.com/tnakaicode/PlotGallery/blob/master/occ_gallery/core_display_test.py)
+# start_displayをしなければ、全体の処理を止めずにいられるからです。
+# 
+# win.close()とinit_displayを1つの処理内で、複数回起動していると以下のようなエラーが出て停止することがあります。
+# 
+# ```bash
+# Exception has occurred: OverflowError
+# in method 'Display3d_Init', argument 2 of type 'long'
+# ```
+# 
+# 原因を調べると、init_display中の、win.canva.InitDriver()を実行する際に、self._display.Create(window_handle=int(self.winId()))でエラーが出てるようです。
+# エラーの原因は、引数のwindow_handle=int(self.winId())の部分で、引数の型が"""long int"""であるのに対して、Pythonのintは""""unsigned long int"""であるため、何度もMainWindow(QtWidgets.QMainWindow)を起動するうちに、winId()が"""long int"""の範囲を超えてしまうためだと考えられます。
+# 
+# 取り敢えずの対処で、OCC > Display > qtDisplay.py > qtViewer3d > InitDriverの最初の行を以下のように書き換えて、処理が停止しないようにしています。
+# 
+# ```bash
+# self._display.Create(window_handle=None, parent=self)
+# ```
+# 
+# 実行に問題はありませんが、他所で問題が発生しないかどうかの検証が出来ていません。
+# 上記のエラーの解決策でより良い方法はないでしょうか？
+# 
+# InitDriver in init_display is down.
+# 
+# I am using a slightly rewritten init_display to return win(=MainWindow). (https://github.com/tnakaicode/PlotGallery/blob/master/occ_gallery/core_display_test.py)
+# I often use not to do start_display because then I can keep the whole process uninterrupted.
+# 
+# If I invoke """win.close()""" and """init_display""" multiple times within one process, I may get the following error and stop.
+# 
+# ```bash
+# Exception has occurred: OverflowError
+# in method 'Display3d_Init', argument 2 of type 'long
+# ```
+# 
+# When I checked the cause of the error, it seems that the error occurs in """self._display.Create(window_handle=int(self.winId()))""" when executing """win.canva.InitDriver()""" in """init_display""".
+# 
+# ```bash
+#     def InitDriver(self):
+#         self._display.Create(window_handle=int(self.winId()), parent=self)
+#         ...
+# ```
+# 
+# The error is caused by the argument """window_handle=int(self.winId())""", where the type of the argument is required """long int""", while Python's int is """"unsigned long int""", so it repeatedly calls MainWindow( QMainWindow) in multipul times, """winId()""" exceeds the range of """long int""".
+# 
+# To deal with this for now, rewrite the first line of OCC > Display > qtDisplay.py > qtViewer3d > InitDriver as follows to prevent the process from stopping.
+# 
+# ```bash
+# self._display.Create(window_handle=None, parent=self)
+# ```
+# 
+# There is no problem with execution, but I have not been able to verify that the problem does not occur elsewhere.
+# Is there a better solution to the above error?
+# 
