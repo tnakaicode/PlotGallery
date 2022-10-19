@@ -84,4 +84,4 @@ def plot(filename, points, triangles):
     plt.axis("off")
 
     # plt.show()
-    plt.savefig(filename, transparent=True)
+    plt.savefig(filename, transparent=False)
