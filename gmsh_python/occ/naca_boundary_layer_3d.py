@@ -168,6 +168,7 @@ if order2:
     gmsh.model.mesh.optimize('HighOrder')
 
 gmsh.write('naca_boundary_layer_3d.msh')
+gmsh.write('naca_boundary_layer_3d.stl')
 
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()
