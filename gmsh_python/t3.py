@@ -17,7 +17,7 @@ def createGeometryAndMesh():
     gmsh.clear()
     gmsh.model.add("t3")
 
-    # Copied from t1.py...
+    # Copied from `t1.py'...
     lc = 1e-2
     gmsh.model.geo.addPoint(0, 0, 0, lc, 1)
     gmsh.model.geo.addPoint(.1, 0, 0, lc, 2)
@@ -31,8 +31,7 @@ def createGeometryAndMesh():
     gmsh.model.geo.addPlaneSurface([1], 1)
     gmsh.model.geo.synchronize()
     gmsh.model.addPhysicalGroup(1, [1, 2, 4], 5)
-    ps = gmsh.model.addPhysicalGroup(2, [1])
-    gmsh.model.setPhysicalName(2, ps, "My surface")
+    gmsh.model.addPhysicalGroup(2, [1], name="My surface")
 
     # As in `t2.py', we plan to perform an extrusion along the z axis.  But
     # here, instead of only extruding the geometry, we also want to extrude the
@@ -83,12 +82,11 @@ def createGeometryAndMesh():
 # through the API, we can for example make point tags visible or redefine some
 # colors:
 gmsh.option.setNumber("Geometry.PointNumbers", 1)
-gmsh.option.setColor("Geometry.Points", 255, 165, 0)
-gmsh.option.setColor("General.Text", 255, 255, 255)
-gmsh.option.setColor("Mesh.Points", 255, 0, 0)
+gmsh.option.setColor("Geometry.Color.Points", 255, 165, 0)
+gmsh.option.setColor("General.Color.Text", 255, 255, 255)
+gmsh.option.setColor("Mesh.Color.Points", 255, 0, 0)
 
-# Note that color options are special: setting a color option of "X.Y"
-# actually sets the option "X.Color.Y".
+# Note that for conciseness "Color." can be ommitted in color options:
 r, g, b, a = gmsh.option.getColor("Geometry.Points")
 gmsh.option.setColor("Geometry.Surfaces", r, g, b, a)
 

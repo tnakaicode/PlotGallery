@@ -103,8 +103,9 @@ gmsh.model.mesh.field.setAsBackgroundMesh(7)
 
 # The API also allows to set a global mesh size callback, which is called each
 # time the mesh size is queried
-def meshSizeCallback(dim, tag, x, y, z):
-    return 0.02 * x + 0.01
+def meshSizeCallback(dim, tag, x, y, z, lc):
+    return min(lc, 0.02 * x + 0.01)
+
 gmsh.model.mesh.setSizeCallback(meshSizeCallback)
 
 # To determine the size of mesh elements, Gmsh locally computes the minimum of
@@ -116,13 +117,12 @@ gmsh.model.mesh.setSizeCallback(meshSizeCallback)
 #    curvature (the value specifying the number of elements per 2 * pi rad);
 # 4) the background mesh field;
 # 5) any per-entity mesh size constraint;
-# 6) the mesh size returned by the mesh size callback, if any.
 #
-# This value is then constrained in the interval [`Mesh.MeshSizeMin',
+# The value can then be further modified by the mesh size callback, if any,
+# before being constrained in the interval [`Mesh.MeshSizeMin',
 # `Mesh.MeshSizeMax'] and multiplied by `Mesh.MeshSizeFactor'.  In addition,
-# boundary mesh sizes (on curves or surfaces) are interpolated inside the
-# enclosed entity (surface or volume, respectively) if the option
-# `Mesh.MeshSizeExtendFromBoundary' is set (which is the case by default).
+# boundary mesh sizes are interpolated inside surfaces and/or volumes depending
+# on the value of `Mesh.MeshSizeExtendFromBoundary' (which is set by default).
 #
 # When the element size is fully specified by a background mesh (as it is in
 # this example), it is thus often desirable to set

@@ -113,8 +113,7 @@ gmsh.model.geo.synchronize()
 # in a single group (with prescribed tag 5); and a physical surface with name
 # "My surface" (with an automatic tag) containing the geometrical surface 1:
 gmsh.model.addPhysicalGroup(1, [1, 2, 4], 5)
-ps = gmsh.model.addPhysicalGroup(2, [1])
-gmsh.model.setPhysicalName(2, ps, "My surface")
+gmsh.model.addPhysicalGroup(2, [1], name = "My surface")
 
 # We can then generate a 2D mesh...
 gmsh.model.mesh.generate(2)
@@ -168,7 +167,7 @@ if '-nopopup' not in sys.argv:
 # gmsh.model.getBoundary().
 #
 # See e.g. `t16.py', `t18.py', `t19.py' or `t20.py' for complete examples based
-# on OpenCASCADE, and `demos/api' for more.
+# on OpenCASCADE, and `examples/api' for more.
 
 # This should be called when you are done using the Gmsh Python API:
 gmsh.finalize()
