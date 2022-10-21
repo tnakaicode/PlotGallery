@@ -94,6 +94,9 @@ gmsh.model.mesh.embed(2, [s], 3, 1)
 gmsh.model.mesh.generate(3)
 
 gmsh.write("t15.msh")
+gmsh.model.setFileName("t15.geo")
+#gmsh.merge("t15.geo")
+print(gmsh.model.get_file_name())
 
 # Launch the GUI to see the results:
 if '-nopopup' not in sys.argv:
