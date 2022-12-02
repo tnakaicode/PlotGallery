@@ -44,4 +44,7 @@ fillet2d = f.Result(ed1, ed2)
 # Create and display a wire
 w = make_wire([ed1, fillet2d, ed2])
 display.DisplayShape(w)
+display.DisplayShape(ed1, color="BLUE1")
+display.DisplayShape(ed2, color="GREEN")
+display.FitAll()
 start_display()

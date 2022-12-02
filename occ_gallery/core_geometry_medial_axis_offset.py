@@ -84,7 +84,7 @@ face = make_face_to_contour_from()
 display.DisplayShape(face)
 
 for contour in create_offsets(face, 50, 0.12):
-    display.DisplayShape(contour)
+    display.DisplayShape(contour, update=True)
 
 display.FitAll()
 start_display()

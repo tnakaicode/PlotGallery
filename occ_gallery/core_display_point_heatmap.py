@@ -38,7 +38,7 @@ from OCC.Core.Aspect import (Aspect_TOM_POINT,
 from OCC.Core.AIS import AIS_Point
 from OCC.Core.Prs3d import Prs3d_PointAspect, Prs3d_Drawer
 from OCC.Core.AIS import AIS_ColorScale, AIS_PointCloud
-from OCC.Core.Graphic3d import Graphic3d_ZLayerId_TopOSD, Graphic3d_TMF_2d, Graphic3d_ArrayOfPoints
+from OCC.Core.Graphic3d import Graphic3d_ZLayerId_TopOSD, Graphic3d_TMF_2d, Graphic3d_ArrayOfPoints, Graphic3d_TransformPers, Graphic3d_TransModeFlags, Graphic3d_TMF_None
 from OCC.Core.gp import gp_XY, gp_Pnt
 
 from OCC.Display.SimpleGui import init_display
@@ -76,9 +76,12 @@ if __name__ == '__main__':
     colorscale.SetSize(300, 300)
     colorscale.SetRange(0.0, 10.0)
     colorscale.SetNumberOfIntervals(10)
+    
+    Graphic3d_TransformPers(Graphic3d_TMF_2d)
+    #Graphic3d_TransformPers(Graphic3d_TMF_2d, gp_Pnt(-1,-1,0))
 
     colorscale.SetZLayer(Graphic3d_ZLayerId_TopOSD)
-    colorscale.SetTransformPersistence(Graphic3d_TMF_2d, gp_Pnt(-1, -1, 0))
+    colorscale.SetTransformPersistence(Graphic3d_TransformPers(Graphic3d_TMF_2d))
     colorscale.SetToUpdate()
 
     # create a point

@@ -18,7 +18,10 @@ R2 = 2
 #   @param angle2 [in] second angle to create a torus ring segment
 #   @param angle [in] angle to create a torus pipe segment.
 
-my_torus = BRepPrimAPI_MakeTorus(
+my_torus1 = BRepPrimAPI_MakeTorus(
     R1, R2, angle1 / 180 * pi, angle2 / 180 * pi, angle / 180 * pi).Shell()
-display.DisplayShape(my_torus, update=True)
+my_torus2 = BRepPrimAPI_MakeTorus(R1, R2).Shell()
+display.DisplayShape(my_torus1, )
+display.DisplayShape(my_torus2, transparency=0.9)
+display.FitAll()
 start_display()
