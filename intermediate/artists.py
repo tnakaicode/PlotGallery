@@ -79,13 +79,11 @@ Continuing with our example::
     line, = ax.plot(t, s, color='blue', lw=2)
 
 In this example, ``ax`` is the ``Axes`` instance created by the
-``fig.add_subplot`` call above (remember ``Subplot`` is just a
-subclass of ``Axes``) and when you call ``ax.plot``, it creates a
-``Line2D`` instance and adds it to the :attr:`Axes.lines
-<matplotlib.axes.Axes.lines>` list.  In the interactive `IPython
-<https://ipython.org/>`_ session below, you can see that the
-``Axes.lines`` list is length one and contains the same line that was
-returned by the ``line, = ax.plot...`` call:
+``fig.add_subplot`` call above (remember ``Subplot`` is just a subclass of
+``Axes``) and when you call ``ax.plot``, it creates a ``Line2D`` instance and
+adds it to the ``Axes``.  In the interactive `IPython <https://ipython.org/>`_
+session below, you can see that the ``Axes.lines`` list is length one and
+contains the same line that was returned by the ``line, = ax.plot...`` call:
 
 .. sourcecode:: ipython
 
@@ -97,11 +95,10 @@ returned by the ``line, = ax.plot...`` call:
 
 If you make subsequent calls to ``ax.plot`` (and the hold state is "on"
 which is the default) then additional lines will be added to the list.
-You can remove lines later simply by calling the list methods; either
-of these will work::
+You can remove a line later by calling its ``remove`` method::
 
-    del ax.lines[0]
-    ax.lines.remove(line)  # one or the other, not both!
+    line = ax.lines[0]
+    line.remove()
 
 The Axes also has helper methods to configure and decorate the x-axis
 and y-axis tick, tick labels and axis labels::
@@ -118,6 +115,7 @@ drawing of the ticks, tick labels and axis labels.
 
 Try creating the figure below.
 """
+# sphinx_gallery_capture_repr = ('__repr__',)
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -125,8 +123,8 @@ import matplotlib.pyplot as plt
 fig = plt.figure()
 fig.subplots_adjust(top=0.8)
 ax1 = fig.add_subplot(211)
-ax1.set_ylabel('volts')
-ax1.set_title('a sine wave')
+ax1.set_ylabel('Voltage [V]')
+ax1.set_title('A sine wave')
 
 t = np.arange(0.0, 1.0, 0.01)
 s = np.sin(2*np.pi*t)
@@ -138,7 +136,7 @@ np.random.seed(19680801)
 ax2 = fig.add_axes([0.15, 0.1, 0.7, 0.3])
 n, bins, patches = ax2.hist(np.random.randn(1000), 50,
                             facecolor='yellow', edgecolor='yellow')
-ax2.set_xlabel('time (s)')
+ax2.set_xlabel('Time [s]')
 
 plt.show()
 
@@ -313,7 +311,7 @@ plt.show()
 # directly from the Axes list, but rather use the
 # :meth:`~matplotlib.figure.Figure.add_subplot` and
 # :meth:`~matplotlib.figure.Figure.add_axes` methods to insert, and the
-# :meth:`~matplotlib.figure.Figure.delaxes` method to delete.  You are
+# `Axes.remove <matplotlib.artist.Artist.remove>` method to delete.  You are
 # free however, to iterate over the list of Axes or index into it to get
 # access to ``Axes`` instances you want to customize.  Here is an
 # example which turns all the Axes grids on::
@@ -356,7 +354,7 @@ plt.show()
 # images           A list of `.FigureImage` patches -
 #                  useful for raw pixel display
 # legends          A list of Figure `.Legend` instances
-#                  (different from ``Axes.legends``)
+#                  (different from ``Axes.get_legend()``)
 # lines            A list of Figure `.Line2D` instances
 #                  (rarely used, see ``Axes.lines``)
 # patches          A list of Figure `.Patch`\s
@@ -386,11 +384,10 @@ plt.show()
 #     rect.set_facecolor('green')
 #
 # When you call a plotting method, e.g., the canonical
-# :meth:`~matplotlib.axes.Axes.plot` and pass in arrays or lists of
-# values, the method will create a :meth:`matplotlib.lines.Line2D`
-# instance, update the line with all the ``Line2D`` properties passed as
-# keyword arguments, add the line to the :attr:`Axes.lines
-# <matplotlib.axes.Axes.lines>` container, and returns it to you:
+# `~matplotlib.axes.Axes.plot` and pass in arrays or lists of values, the
+# method will create a `matplotlib.lines.Line2D` instance, update the line with
+# all the ``Line2D`` properties passed as keyword arguments, add the line to
+# the ``Axes``, and return it to you:
 #
 # .. sourcecode:: ipython
 #
@@ -423,19 +420,20 @@ plt.show()
 #     In [235]: print(len(ax.patches))
 #     Out[235]: 50
 #
-# You should not add objects directly to the ``Axes.lines`` or
-# ``Axes.patches`` lists unless you know exactly what you are doing,
-# because the ``Axes`` needs to do a few things when it creates and adds
-# an object.  It sets the figure and axes property of the ``Artist``, as
-# well as the default ``Axes`` transformation (unless a transformation
-# is set).  It also inspects the data contained in the ``Artist`` to
-# update the data structures controlling auto-scaling, so that the view
-# limits can be adjusted to contain the plotted data.  You can,
-# nonetheless, create objects yourself and add them directly to the
-# ``Axes`` using helper methods like
-# :meth:`~matplotlib.axes.Axes.add_line` and
-# :meth:`~matplotlib.axes.Axes.add_patch`.  Here is an annotated
-# interactive session illustrating what is going on:
+# You should not add objects directly to the ``Axes.lines`` or ``Axes.patches``
+# lists, because the ``Axes`` needs to do a few things when it creates and adds
+# an object:
+#
+# - It sets the ``figure`` and ``axes`` property of the ``Artist``;
+# - It sets the default ``Axes`` transformation (unless one is already set);
+# - It inspects the data contained in the ``Artist`` to update the data
+#   structures controlling auto-scaling, so that the view limits can be
+#   adjusted to contain the plotted data.
+#
+# You can, nonetheless, create objects yourself and add them directly to the
+# ``Axes`` using helper methods like `~matplotlib.axes.Axes.add_line` and
+# `~matplotlib.axes.Axes.add_patch`.  Here is an annotated interactive session
+# illustrating what is going on:
 #
 # .. sourcecode:: ipython
 #
@@ -546,7 +544,7 @@ plt.show()
 # `~.axes.Axes.fill` - shared area           `.Polygon`         ax.patches
 # `~.axes.Axes.hist` - histograms            `.Rectangle`       ax.patches
 # `~.axes.Axes.imshow` - image data          `.AxesImage`       ax.images
-# `~.axes.Axes.legend` - Axes legends        `.Legend`          ax.legends
+# `~.axes.Axes.legend` - Axes legend         `.Legend`          ax.get_legend()
 # `~.axes.Axes.plot` - xy plots              `.Line2D`          ax.lines
 # `~.axes.Axes.scatter` - scatter charts     `.PolyCollection`  ax.collections
 # `~.axes.Axes.text` - text                  `.Text`            ax.texts
@@ -566,25 +564,25 @@ plt.show()
 # the font color of the ``XAxis`` ticklabels using the ``Axes`` helper
 # method::
 #
-#     for label in ax.get_xticklabels():
-#         label.set_color('orange')
+#     ax.tick_params(axis='x', labelcolor='orange')
 #
-# Below is a summary of the Artists that the Axes contains
+# Below is a summary of the Artists that the `~.axes.Axes` contains
 #
 # ==============    =========================================
 # Axes attribute    Description
 # ==============    =========================================
-# artists           A list of `.Artist` instances
+# artists           An `.ArtistList` of `.Artist` instances
 # patch             `.Rectangle` instance for Axes background
-# collections       A list of `.Collection` instances
-# images            A list of `.AxesImage`
-# legends           A list of `.Legend` instances
-# lines             A list of `.Line2D` instances
-# patches           A list of `.Patch` instances
-# texts             A list of `.Text` instances
+# collections       An `.ArtistList` of `.Collection` instances
+# images            An `.ArtistList` of `.AxesImage`
+# lines             An `.ArtistList` of `.Line2D` instances
+# patches           An `.ArtistList` of `.Patch` instances
+# texts             An `.ArtistList` of `.Text` instances
 # xaxis             A `matplotlib.axis.XAxis` instance
 # yaxis             A `matplotlib.axis.YAxis` instance
 # ==============    =========================================
+#
+# The legend can be accessed by `~.axes.Axes.get_legend`,
 #
 # .. _axis-container:
 #
@@ -721,6 +719,6 @@ plt.show()
 # dollar signs and colors them green on the right side of the yaxis.
 #
 #
-# .. include:: ../../gallery/pyplots/dollar_ticks.rst
+# .. include:: ../../gallery/ticks/dollar_ticks.rst
 #    :start-after: y axis labels.
 #    :end-before: .. admonition:: References
