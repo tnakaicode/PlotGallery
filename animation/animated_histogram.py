@@ -52,4 +52,5 @@ ax.set_ylim(top=55)  # set safe limit to ensure that all data is visible.
 
 ani = animation.FuncAnimation(fig, prepare_animation(bar_container), 50,
                               repeat=False, blit=True)
+ani.save("./animated_histogram.gif", writer="imagemagick")
 plt.show()

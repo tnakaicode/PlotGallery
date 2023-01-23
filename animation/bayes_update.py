@@ -59,5 +59,6 @@ np.random.seed(19680801)
 
 fig, ax = plt.subplots()
 ud = UpdateDist(ax, prob=0.7)
-anim = FuncAnimation(fig, ud, frames=100, interval=100, blit=True)
+anim = FuncAnimation(fig, ud, frames=100, interval=100, blit=True, repeat=False)
+anim.save("./bayes_update.gif", writer="imagemagick")
 plt.show()
