@@ -23,7 +23,9 @@ from OCC.Core.BRepBuilderAPI import (
     BRepBuilderAPI_MakeWire,
     BRepBuilderAPI_MakeFace,
     BRepBuilderAPI_Sewing,
+    BRepBuilderAPI_MakeSolid
 )
+from OCC.Extend.DataExchange import write_step_file
 from OCC.Display.SimpleGui import init_display
 
 # create vertices
@@ -60,6 +62,13 @@ sew.Add(f2)
 sew.Add(f3)
 sew.Perform()
 tetrahedron_shell = sew.SewedShape()
+print(tetrahedron_shell)
+tetrahedron_solid = BRepBuilderAPI_MakeSolid(tetrahedron_shell)
+print(tetrahedron_solid.Solid())
+
+write_step_file(tetrahedron_shell, "./core_topology_tetrahedron_shell.step")
+write_step_file(tetrahedron_solid.Solid(),
+                "./core_topology_tetrahedron_solid.step")
 
 # display the result
 display, start_display, add_menu, add_function_to_menu = init_display()

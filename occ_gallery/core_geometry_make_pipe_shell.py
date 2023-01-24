@@ -18,9 +18,11 @@
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipeShell
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire
 from OCC.Core.Geom import Geom_BezierCurve
-from OCC.Core.Law import Law_Linear
+from OCC.Core.Law import Law_Linear, Law_Function
 from OCC.Core.TColgp import TColgp_Array1OfPnt
 from OCC.Core.gp import gp_Circ, gp_Pnt, gp_ZOX
+from OCC.Core.TopTools import TopTools_ListOfShape
+from OCC.Extend.ShapeFactory import make_face
 
 from OCC.Display.SimpleGui import init_display
 
@@ -53,9 +55,18 @@ def thicken_spline(event=None):
     law_f = Law_Linear()
     law_f.Set(0, 0.5, 1, 1)
     brep1.SetLaw(circle_wire, law_f, False, True)
-    return brep1.Shape()
-
+    
+    edges = TopTools_ListOfShape()
+    print(brep1.Profiles(edges))
+    print(edges.First())
+    print(edges.Last())
+    print(edges.Size())
+    display.DisplayShape(brep1.Shape())
+    display.DisplayShape(edges.First(), color="YELLOW")
+    display.DisplayShape(edges.Last(), color="BLUE1")
+    
 
 if __name__ == "__main__":
-    display.DisplayShape(thicken_spline(), update=True)
+    thicken_spline()
+    display.FitAll()
     start_display()
