@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.geodesic as cgeo
 import cartopy.feature as cfeature
+import geopandas as gpd
 # conda install -c conda-forge cartopy
 # pip install geopandas
 
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from matplotlib import font_manager as mfonts
-import matplotlib.ticker as mticker
+import matplotlib.ticker as ticker
 import matplotlib.patches as patches
 
 import pandas as pd
@@ -124,7 +125,7 @@ def _point_along_line(ax, start, distance, angle=0, tol=0.01):
 
         # Geodesic().inverse returns a NumPy MemoryView like [[distance,
         # start azimuth, end azimuth]].
-        return geodesic.inverse(a_phys, b_phys).base[0, 0]
+        return geodesic.inverse(a_phys, b_phys)[0, 0]
 
     end = _upper_bound(start, direction, distance, dist_func)
 
@@ -272,13 +273,12 @@ def scale_bar(ax, length=None, location=(0.5, 0.05), linewidth=3):
             horizontalalignment='center', verticalalignment='bottom')
 
 
-ax = plt.axes(projection=ccrs.Mercator())
-plt.title('Cyprus')
-ax.set_extent([31, 35.5, 34, 36], ccrs.Geodetic())
-ax.coastlines(resolution='10m')
-
-scale_bar(ax, 100)
-
+# ax = plt.axes(projection=ccrs.Mercator())
+# plt.title('Cyprus')
+# ax.set_extent([31, 35.5, 34, 36], ccrs.Geodetic())
+# ax.coastlines(resolution='10m')
+#
+# scale_bar(ax, 100)
 
 
 def utm_from_lon(lon):
@@ -338,17 +338,17 @@ def scale_bar(ax, proj, length, location=(0.5, 0.05), linewidth=3,
             linewidth=linewidth, zorder=3)
 
 
-ax = plt.axes(projection=ccrs.Mercator())
-plt.title('Cyprus')
-ax.set_extent([31, 35.5, 34, 36], ccrs.Geodetic())
-ax.stock_img()
-ax.coastlines(resolution='10m')
-scale_bar(ax, ccrs.Mercator(), 100)  # 100 km scale bar
+# ax = plt.axes(projection=ccrs.Mercator())
+# plt.title('Cyprus')
+# ax.set_extent([31, 35.5, 34, 36], ccrs.Geodetic())
+# ax.stock_img()
+# ax.coastlines(resolution='10m')
+# scale_bar(ax, ccrs.Mercator(), 100)  # 100 km scale bar
 # or to use m instead of km
 # scale_bar(ax, ccrs.Mercator(), 100000, m_per_unit=1, units='m')
 # or to use miles instead of km
 # scale_bar(ax, ccrs.Mercator(), 60, m_per_unit=1609.34, units='miles')
-plt.show()
+# plt.show()
 
 
 def add_osgb_scalebar(ax, at_x=(0.1, 0.4), at_y=(0.05, 0.075), max_stripes=5):
@@ -373,7 +373,7 @@ def add_osgb_scalebar(ax, at_x=(0.1, 0.4), at_y=(0.05, 0.075), max_stripes=5):
     ay0, ay1 = at_y
     # choose exact X points as sensible grid ticks with Axis 'ticker' helper
     x_targets = [x0 + ax * (x1 - x0) for ax in (ax0, ax1)]
-    ll = mpl.ticker.MaxNLocator(nbins=max_stripes, steps=[1, 2, 4, 5, 10])
+    ll = ticker.MaxNLocator(nbins=max_stripes, steps=[1, 2, 4, 5, 10])
     x_vals = ll.tick_values(*x_targets)
     # grab min+max for limits
     xl0, xl1 = x_vals[0], x_vals[-1]
@@ -422,8 +422,9 @@ def get_standard_gdf():
     """ basic function for getting some geographical data in geopandas GeoDataFrame python's instance:
         An example data can be downloaded from Brazilian IBGE:
         ref: ftp://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2017/Brasil/BR/br_municipios.zip    
+        https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2017/Brasil/BR/
     """
-    gdf_path = r'C:\path_to_shp\shapefile.shp'
+    gdf_path = "./br_municipios/BRMUE250GC_SIR.shp"
 
     return gpd.read_file(gdf_path)
 
@@ -559,7 +560,7 @@ def add_scalebar(ax, metric_distance=100,
     x_targets = [x + (axfrac_ini * (lon_1 - lon_0)) for x in x_targets]
 
     # Checking x_ticks in axes projection coordinates
-    #print('x_targets', x_targets)
+    # print('x_targets', x_targets)
 
     # Setting transform for plotting
 
@@ -677,8 +678,8 @@ def add_grider(ax, nticks=5):
         Grider.xlabels_top = False
         Grider.ylabels_right = False
 
-        Grider.xlocator = mticker.MaxNLocator(nticks)
-        Grider.ylocator = mticker.MaxNLocator(nticks)
+        Grider.xlocator = ticker.MaxNLocator(nticks)
+        Grider.ylocator = ticker.MaxNLocator(nticks)
 
     else:
         xmin, xmax, ymin, ymax = ax.get_extent()
@@ -761,5 +762,5 @@ for ax in axes:
                               'edgecolor': 'k',
                               'alpha': 0.7})
 
-fig.show()
+plt.show()
 # https://github.com/raphaelquast/EOmaps
