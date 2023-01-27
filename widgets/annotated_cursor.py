@@ -10,9 +10,9 @@ The new cursor inherits from `~matplotlib.widgets.Cursor` and demonstrates the
 creation of new widgets and their event callbacks.
 
 See also the :doc:`cross hair cursor
-</gallery/misc/cursor_demo>`, which implements a cursor tracking the plotted
-data, but without using inheritance and without displaying the currently
-tracked coordinates.
+</gallery/event_handling/cursor_demo>`, which implements a cursor tracking the
+plotted data, but without using inheritance and without displaying the
+currently tracked coordinates.
 
 .. note::
     The figure related to this example does not show the cursor, because that
@@ -76,7 +76,9 @@ class AnnotatedCursor(Cursor):
     """
 
     def __init__(self, line, numberformat="{0:.4g};{1:.4g}", offset=(5, 5),
-                 dataaxis='x', textprops={}, **cursorargs):
+                 dataaxis='x', textprops=None, **cursorargs):
+        if textprops is None:
+            textprops = {}
         # The line object, for which the coordinates are displayed
         self.line = line
         # The format string, on which .format() is called for creating the text

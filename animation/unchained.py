@@ -9,15 +9,10 @@ Comparative path demonstration of frequency from a fake signal of a pulsar
 Author: Nicolas P. Rougier
 """
 
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-def sys_flush(n):
-    sys.stdout.write("\r " + " / ".join(map(str, n)))
-    sys.stdout.flush()
-    
 # Fixing random state for reproducibility
 np.random.seed(19680801)
 
@@ -29,7 +24,7 @@ fig = plt.figure(figsize=(8, 8), facecolor='black')
 ax = plt.subplot(frameon=False)
 
 # Generate random data
-data = np.random.uniform(0, 1, (604, 705))
+data = np.random.uniform(0, 1, (64, 75))
 X = np.linspace(-1, 1, data.shape[-1])
 G = 1.5 * np.exp(-4 * X ** 2)
 
@@ -68,13 +63,11 @@ def update(*args):
 
     # Update data
     for i in range(len(data)):
-        sys_flush(f"{i}")
         lines[i].set_ydata(i + G * data[i])
 
     # Return modified artists
     return lines
 
 # Construct the animation, using the update function as the animation director.
-anim = animation.FuncAnimation(fig, update, interval=10, repeat=False)
-anim.save("./unchained.gif", writer="imagemagick")
+anim = animation.FuncAnimation(fig, update, interval=10)
 plt.show()

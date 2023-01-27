@@ -47,7 +47,7 @@ class UpdateDist:
             return self.line,
 
         # Choose success based on exceed a threshold with a uniform pick
-        if np.random.rand(1,) < self.prob:
+        if np.random.rand() < self.prob:
             self.success += 1
         y = beta_pdf(self.x, self.success + 1, (i - self.success) + 1)
         self.line.set_data(self.x, y)
@@ -59,6 +59,5 @@ np.random.seed(19680801)
 
 fig, ax = plt.subplots()
 ud = UpdateDist(ax, prob=0.7)
-anim = FuncAnimation(fig, ud, frames=100, interval=100, blit=True, repeat=False)
-anim.save("./bayes_update.gif", writer="imagemagick")
+anim = FuncAnimation(fig, ud, frames=100, interval=100, blit=True)
 plt.show()

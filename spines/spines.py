@@ -5,9 +5,15 @@ Spines
 
 This demo compares:
 
-- normal axes, with spines on all four sides;
-- an axes with spines only on the left and bottom;
-- an axes using custom bounds to limit the extent of the spine.
+- normal Axes, with spines on all four sides;
+- an Axes with spines only on the left and bottom;
+- an Axes using custom bounds to limit the extent of the spine.
+
+Each `.axes.Axes` has a list of `.Spine` objects, accessible
+via the container ``ax.spines``.
+
+.. redirect-from:: /gallery/spines/spines_bounds
+
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -28,19 +34,23 @@ ax1.set_title('bottom-left spines')
 # Hide the right and top spines
 ax1.spines.right.set_visible(False)
 ax1.spines.top.set_visible(False)
-# Only show ticks on the left and bottom spines
-ax1.yaxis.set_ticks_position('left')
-ax1.xaxis.set_ticks_position('bottom')
 
 ax2.plot(x, y)
+ax2.set_title('spines with bounds limited to data range')
 
-# Only draw spine between the y-ticks
-ax2.spines.left.set_bounds(-1, 1)
+# Only draw spines for the data range, not in the margins
+ax2.spines.bottom.set_bounds(x.min(), x.max())
+ax2.spines.left.set_bounds(y.min(), y.max())
 # Hide the right and top spines
 ax2.spines.right.set_visible(False)
 ax2.spines.top.set_visible(False)
-# Only show ticks on the left and bottom spines
-ax2.yaxis.set_ticks_position('left')
-ax2.xaxis.set_ticks_position('bottom')
 
 plt.show()
+
+# .. admonition:: References
+#
+#    The use of the following functions, methods, classes and modules is shown
+#    in this example:
+#
+#    - `matplotlib.spines.Spine.set_visible`
+#    - `matplotlib.spines.Spine.set_bounds`

@@ -39,6 +39,7 @@ universal function.
 
 import numpy as np
 import matplotlib
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 # sphinx_gallery_thumbnail_number = 2
 
@@ -97,7 +98,7 @@ plt.show()
 
 
 def heatmap(data, row_labels, col_labels, ax=None,
-            cbar_kw={}, cbarlabel="", **kwargs):
+            cbar_kw=None, cbarlabel="", **kwargs):
     """
     Create a heatmap from a numpy array and two lists of labels.
 
@@ -120,8 +121,11 @@ def heatmap(data, row_labels, col_labels, ax=None,
         All other arguments are forwarded to `imshow`.
     """
 
-    if not ax:
+    if ax is None:
         ax = plt.gca()
+
+    if cbar_kw is None:
+        cbar_kw = {}
 
     # Plot the heatmap
     im = ax.imshow(data, **kwargs)
@@ -269,7 +273,7 @@ norm = matplotlib.colors.BoundaryNorm(np.linspace(-3.5, 3.5, 8), 7)
 fmt = matplotlib.ticker.FuncFormatter(lambda x, pos: qrates[::-1][norm(x)])
 
 im, _ = heatmap(data, y, x, ax=ax3,
-                cmap=plt.get_cmap("PiYG", 7), norm=norm,
+                cmap=mpl.colormaps["PiYG"].resampled(7), norm=norm,
                 cbar_kw=dict(ticks=np.arange(-3, 4), format=fmt),
                 cbarlabel="Quality Rating")
 

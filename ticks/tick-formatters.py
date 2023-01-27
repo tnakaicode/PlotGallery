@@ -7,6 +7,7 @@ Tick formatters define how the numeric value associated with a tick on an axis
 is formatted as a string.
 
 This example illustrates the usage and effect of the most common formatters.
+
 """
 
 import matplotlib.pyplot as plt
@@ -17,9 +18,7 @@ def setup(ax, title):
     """Set up common parameters for the Axes in the example."""
     # only show the bottom spine
     ax.yaxis.set_major_locator(ticker.NullLocator())
-    ax.spines.right.set_color('none')
-    ax.spines.left.set_color('none')
-    ax.spines.top.set_color('none')
+    ax.spines[['left', 'right', 'top']].set_visible(False)
 
     # define tick positions
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1.00))

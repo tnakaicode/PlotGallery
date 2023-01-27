@@ -55,8 +55,6 @@ def radar_factory(num_vars, frame='circle'):
     class RadarAxes(PolarAxes):
 
         name = 'radar'
-        # use 1 line segment to connect specified points
-        RESOLUTION = 1
         PolarTransform = RadarTransform
 
         def __init__(self, *args, **kwargs):
@@ -133,7 +131,7 @@ def example_data():
     #     Organic Carbon fraction 1 (OC)
     #     Organic Carbon fraction 2 (OC2)
     #     Organic Carbon fraction 3 (OC3)
-    #     Pyrolized Organic Carbon (OP)
+    #     Pyrolyzed Organic Carbon (OP)
     #  2)Inclusion of gas-phase specie carbon monoxide (CO)
     #  3)Inclusion of gas-phase specie ozone (O3).
     #  4)Inclusion of both gas-phase species is present...

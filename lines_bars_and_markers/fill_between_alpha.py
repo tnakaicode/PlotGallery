@@ -7,9 +7,9 @@ region between a min and max boundary that is useful for illustrating ranges.
 It has a very handy ``where`` argument to combine filling with logical ranges,
 e.g., to just fill in a curve over some threshold value.
 
-At its most basic level, ``fill_between`` can be use to enhance a graphs visual
-appearance. Let's compare two graphs of a financial times with a simple line
-plot on the left and a filled line on the right.
+At its most basic level, ``fill_between`` can be used to enhance a graph's
+visual appearance. Let's compare two graphs of financial data with a simple
+line plot on the left and a filled line on the right.
 """
 
 import matplotlib.pyplot as plt
@@ -30,10 +30,9 @@ ax2.fill_between(r.date, pricemin, r.close, alpha=0.7)
 
 for ax in ax1, ax2:
     ax.grid(True)
+    ax.label_outer()
 
 ax1.set_ylabel('price')
-for label in ax2.get_yticklabels():
-    label.set_visible(False)
 
 fig.suptitle('Google (GOOG) daily closing price')
 fig.autofmt_xdate()
@@ -133,7 +132,7 @@ ax.grid()
 
 ###############################################################################
 # Another handy use of filled regions is to highlight horizontal or vertical
-# spans of an axes -- for that Matplotlib has the helper functions
+# spans of an Axes -- for that Matplotlib has the helper functions
 # `~matplotlib.axes.Axes.axhspan` and `~matplotlib.axes.Axes.axvspan`.  See
 # :doc:`/gallery/subplots_axes_and_figures/axhspan_demo`.
 
