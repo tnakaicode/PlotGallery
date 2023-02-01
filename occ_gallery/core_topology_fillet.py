@@ -22,7 +22,8 @@ from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeCylinder
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.TColgp import TColgp_Array1OfPnt2d
-from OCC.Core.gp import gp_Ax2, gp_Pnt, gp_Dir, gp_Pnt2d
+from OCC.Core.gp import gp_Ax2, gp_Pnt, gp_Dir, gp_Pnt2d, gp_Circ
+from OCC.Extend.ShapeFactory import make_edge
 from OCC.Extend.TopologyUtils import TopologyExplorer
 
 display, start_display, add_menu, add_function_to_menu = init_display()
@@ -82,7 +83,7 @@ def fillet_cylinder(event=None):
         gp_Ax2(gp_Pnt(-300, 0, 0), gp_Dir(0, 0, 1)), 100, 200
     ).Shape()
     fillet = BRepFilletAPI_MakeFillet(cylinder)
-    display.DisplayShape(cylinder, update=True)
+    display.DisplayShape(cylinder, update=True, transparency=0.9)
     tab_point_2 = TColgp_Array1OfPnt2d(0, 20)
     for i in range(0, 20):
         point_2d = gp_Pnt2d(i * 2 * pi / 19, 60 *
@@ -90,8 +91,12 @@ def fillet_cylinder(event=None):
         tab_point_2.SetValue(i, point_2d)
         display.DisplayShape(point_2d)
 
-    expl2 = TopologyExplorer(cylinder).edges()
-    fillet.Add(tab_point_2, next(expl2))
+    expl2 = [e for e in TopologyExplorer(cylinder).edges()]
+    edge = make_edge(gp_Circ(gp_Ax2(gp_Pnt(-300, 0, 200),
+                                    gp_Dir(0, 0, 1)), 100))
+    edge = expl2[0]
+    fillet.Add(10, edge)
+    display.DisplayShape(edge)
     fillet.Build()
     if fillet.IsDone():
         law_evolved_cylinder = fillet.Shape()
