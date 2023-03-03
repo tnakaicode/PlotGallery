@@ -1,3 +1,4 @@
+import sys
 import gmsh
 
 gmsh.initialize()
@@ -11,5 +12,8 @@ ent = gmsh.model.getEntities()
 gmsh.model.occ.healShapes()
 
 gmsh.model.occ.synchronize()
+
+if '-nopopup' not in sys.argv:
+    gmsh.fltk.run()
 
 gmsh.finalize()

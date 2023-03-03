@@ -6,14 +6,16 @@ import sys
 import os
 import numpy as np
 
-if len(sys.argv) < 2:
-    print('usage: {} file.stl'.format(sys.argv[0]))
-    exit(0)
+#if len(sys.argv) < 2:
+#    print('usage: {} file.stl'.format(sys.argv[0]))
+#    exit(0)
+
+stlfile = "aneurysm_data.stl"
 
 gmsh.initialize()
 
 # load the STL mesh and retrieve the element, node and edge data
-gmsh.open(sys.argv[1])
+gmsh.open(stlfile)
 typ = 2 # 3-node triangles
 elementTags, elementNodes = gmsh.model.mesh.getElementsByType(typ)
 nodeTags, nodeCoord, _ = gmsh.model.mesh.getNodesByElementType(typ)
@@ -58,7 +60,7 @@ if len(allsurfaces) > 0:
 
 print("... done!")
 
-gmsh.write(os.path.splitext(sys.argv[1])[0] + ".brep")
+gmsh.write("./aneurysm_data.brep")
 
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()
