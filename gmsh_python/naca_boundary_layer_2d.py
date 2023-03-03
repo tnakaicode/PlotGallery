@@ -140,6 +140,7 @@ if order2:
     gmsh.model.mesh.optimize('HighOrderFastCurving')
     gmsh.model.mesh.optimize('HighOrder')
 
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
 gmsh.write('naca_boundary_layer_2d.msh')
 
 if '-nopopup' not in sys.argv:

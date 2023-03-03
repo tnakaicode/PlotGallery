@@ -33,6 +33,7 @@ gmsh.model.mesh.generate(3)
 #gmsh.model.mesh.setOrder(2)
 #gmsh.model.mesh.partition(4)
 
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
 gmsh.write("boolean.msh")
 
 gmsh.finalize()
