@@ -108,6 +108,7 @@ gmsh.model.mesh.setSize(ov, lcar2)
 
 gmsh.model.mesh.generate(3)
 
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
 gmsh.write("t16.msh")
 
 # Additional examples created with the OpenCASCADE geometry kernel are available

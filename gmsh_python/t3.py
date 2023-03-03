@@ -129,6 +129,7 @@ if "-nopopup" not in sys.argv:
 # Workspace' menu to see the current values of all options. To save the options
 # in a file, use `File->Export->Gmsh Options', or through the api:
 
-# gmsh.write("t3.opt");
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+gmsh.write("t3.msh")
 
 gmsh.finalize()

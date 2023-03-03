@@ -4553,6 +4553,11 @@ gmsh.model.mesh.field.setNumber(2, "DistMax", 0.2)
 gmsh.model.mesh.field.setAsBackgroundMesh(2)
 
 gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+
+gmsh.model.mesh.generate(2)
+gmsh.write("ocean.msh")
+#gmsh.write("ocean.unv")
 
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()
