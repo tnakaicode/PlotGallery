@@ -30,7 +30,8 @@ from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.gp import gp_Pnt
 
 # GLTF export
-from OCC.Core.RWPly import RWPly_CafWriter
+from OCC.Core.RWPly import RWPly_CafWriter, RWPly_Provider
+from OCC.Core.RWMesh import RWMesh_CafReader
 
 # create the shapeto export
 shp = BRepPrimAPI_MakeSphere(gp_Pnt(0,0,0), 60.0).Shape()
