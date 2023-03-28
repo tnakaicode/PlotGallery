@@ -20,7 +20,7 @@ import random
 
 from OCC.Core.MeshDS import MeshDS_DataSource
 from OCC.Core.RWStl import rwstl_ReadFile
-from OCC.Core.MeshVS import *
+from OCC.Core.MeshVS import MeshVS_Mesh, MeshVS_MeshPrsBuilder, MeshVS_NodalColorPrsBuilder, MeshVS_DMF_OCCMask, MeshVS_DMF_NodalColorDataPrs
 from OCC.Core.Aspect import Aspect_SequenceOfColor
 from OCC.Core.Quantity import (
     Quantity_Color,
