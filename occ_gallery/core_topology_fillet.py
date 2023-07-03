@@ -1,19 +1,19 @@
-# Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
+##Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 from math import cos, pi
 
@@ -22,8 +22,7 @@ from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeCylinder
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.TColgp import TColgp_Array1OfPnt2d
-from OCC.Core.gp import gp_Ax2, gp_Pnt, gp_Dir, gp_Pnt2d, gp_Circ
-from OCC.Extend.ShapeFactory import make_edge
+from OCC.Core.gp import gp_Ax2, gp_Pnt, gp_Dir, gp_Pnt2d
 from OCC.Extend.TopologyUtils import TopologyExplorer
 
 display, start_display, add_menu, add_function_to_menu = init_display()
@@ -83,20 +82,15 @@ def fillet_cylinder(event=None):
         gp_Ax2(gp_Pnt(-300, 0, 0), gp_Dir(0, 0, 1)), 100, 200
     ).Shape()
     fillet = BRepFilletAPI_MakeFillet(cylinder)
-    display.DisplayShape(cylinder, update=True, transparency=0.9)
+    display.DisplayShape(cylinder, update=True)
     tab_point_2 = TColgp_Array1OfPnt2d(0, 20)
     for i in range(0, 20):
-        point_2d = gp_Pnt2d(i * 2 * pi / 19, 60 *
-                            cos(i * pi / 19 - pi / 2) + 10)
+        point_2d = gp_Pnt2d(i * 2 * pi / 19, 60 * cos(i * pi / 19 - pi / 2) + 10)
         tab_point_2.SetValue(i, point_2d)
         display.DisplayShape(point_2d)
 
-    expl2 = [e for e in TopologyExplorer(cylinder).edges()]
-    edge = make_edge(gp_Circ(gp_Ax2(gp_Pnt(-300, 0, 200),
-                                    gp_Dir(0, 0, 1)), 100))
-    edge = expl2[0]
-    fillet.Add(10, edge)
-    display.DisplayShape(edge)
+    expl2 = TopologyExplorer(cylinder).edges()
+    fillet.Add(tab_point_2, next(expl2))
     fillet.Build()
     if fillet.IsDone():
         law_evolved_cylinder = fillet.Shape()

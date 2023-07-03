@@ -26,31 +26,26 @@ from OCC.Core.TColStd import TColStd_IndexedDataMapOfStringString
 from OCC.Core.Message import Message_ProgressRange
 from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
 from OCC.Core.BRepTools import breptools_Clean
-from OCC.Core.TopLoc import TopLoc_Location
-from OCC.Core.gp import gp_Pnt
 
 # GLTF export
-from OCC.Core.RWPly import RWPly_CafWriter, RWPly_Provider
-from OCC.Core.RWMesh import RWMesh_CafReader
+from OCC.Core.RWPly import RWPly_CafWriter
 
 # create the shapeto export
-shp = BRepPrimAPI_MakeSphere(gp_Pnt(0,0,0), 60.0).Shape()
+shp = BRepPrimAPI_MakeSphere(60.0).Shape()
 
 # create a document
-doc = TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
+doc = TDocStd_Document("pythonocc-doc")
 shape_tool = XCAFDoc_DocumentTool_ShapeTool(doc.Main())
 layer_tool = XCAFDoc_DocumentTool_LayerTool(doc.Main())
 
 # mesh shape
-#breptools_Clean(shp)
+breptools_Clean(shp)
 
 # Triangulate
 msh_algo = BRepMesh_IncrementalMesh(shp, True)
 msh_algo.Perform()
 
 sub_shape_label = shape_tool.AddShape(shp)
-sub_shape_label = shape_tool.AddShape(BRepPrimAPI_MakeSphere(gp_Pnt(0,0,100), 60.0).Shape())
-print(sub_shape_label, shape_tool)
 
 # metadata
 a_file_info = TColStd_IndexedDataMapOfStringString()
@@ -58,7 +53,6 @@ a_file_info.Add(
     TCollection_AsciiString("Authors"), TCollection_AsciiString("pythonocc")
 )
 
-rwply_writer = RWPly_CafWriter(TCollection_AsciiString("sphere.ply"))
+rwply_writer = RWPly_CafWriter("sphere.ply")
 pr = Message_ProgressRange()
-print(rwply_writer.GetRefCount())
 rwply_writer.Perform(doc, a_file_info, pr)
