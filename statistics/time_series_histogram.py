@@ -31,7 +31,7 @@ import numpy.matlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
-fig, axes = plt.subplots(nrows=3, figsize=(6, 8), constrained_layout=True)
+fig, axes = plt.subplots(nrows=3, figsize=(6, 8), layout='constrained')
 
 # Make some data; a 1D random walk + small fraction of sine waves
 num_series = 1000
@@ -41,7 +41,7 @@ x = np.linspace(0, 4 * np.pi, num_points)
 # Generate unbiased Gaussian random walks
 Y = np.cumsum(np.random.randn(num_series, num_points), axis=-1)
 # Generate sinusoidal signals
-num_signal = int(round(SNR * num_series))
+num_signal = round(SNR * num_series)
 phi = (np.pi / 8) * np.random.randn(num_signal, 1)  # small random offset
 Y[-num_signal:] = (
     np.sqrt(np.arange(num_points))[None, :]  # random walk RMS scaling factor

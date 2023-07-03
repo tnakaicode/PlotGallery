@@ -144,16 +144,16 @@ class TaggedValue(metaclass=TaggedValueMeta):
         return object.__getattribute__(self, name)
 
     def __array__(self, dtype=object):
-        return np.asarray(self.value).astype(dtype)
+        return np.asarray(self.value, dtype)
 
     def __array_wrap__(self, array, context):
         return TaggedValue(array, self.unit)
 
     def __repr__(self):
-        return 'TaggedValue({!r}, {!r})'.format(self.value, self.unit)
+        return f'TaggedValue({self.value!r}, {self.unit!r})'
 
     def __str__(self):
-        return str(self.value) + ' in ' + str(self.unit)
+        return f"{self.value} in {self.unit}"
 
     def __len__(self):
         return len(self.value)

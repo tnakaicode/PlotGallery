@@ -52,16 +52,15 @@ def create_figure():
 # The following is the content of the web page.  You would normally
 # generate this using some sort of template facility in your web
 # framework, but here we just use Python string formatting.
-html_content = """
-<html>
+html_content = """<!DOCTYPE html>
+<html lang="en">
   <head>
     <!-- TODO: There should be a way to include all of the required javascript
                and CSS so matplotlib can add to the set in the future if it
                needs to. -->
     <link rel="stylesheet" href="_static/css/page.css" type="text/css">
-    <link rel="stylesheet" href="_static/css/boilerplate.css"
-          type="text/css" />
-    <link rel="stylesheet" href="_static/css/fbm.css" type="text/css" />
+    <link rel="stylesheet" href="_static/css/boilerplate.css" type="text/css">
+    <link rel="stylesheet" href="_static/css/fbm.css" type="text/css">
     <link rel="stylesheet" href="_static/css/mpl.css" type="text/css">
     <script src="mpl.js"></script>
 
@@ -123,7 +122,7 @@ class MyApplication(tornado.web.Application):
 
         def get(self):
             manager = self.application.manager
-            ws_uri = "ws://{req.host}/".format(req=self.request)
+            ws_uri = f"ws://{self.request.host}/"
             content = html_content % {
                 "ws_uri": ws_uri, "fig_id": manager.num}
             self.write(content)
@@ -207,8 +206,8 @@ class MyApplication(tornado.web.Application):
             if self.supports_binary:
                 self.write_message(blob, binary=True)
             else:
-                data_uri = "data:image/png;base64,{0}".format(
-                    blob.encode('base64').replace('\n', ''))
+                data_uri = ("data:image/png;base64," +
+                            blob.encode('base64').replace('\n', ''))
                 self.write_message(data_uri)
 
     def __init__(self, figure):

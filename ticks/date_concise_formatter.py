@@ -12,7 +12,7 @@ the strings used in those tick labels as much as possible.
 
     This formatter is a candidate to become the default date tick formatter
     in future versions of Matplotlib.  Please report any issues or
-    suggestions for improvement to the github repository or mailing list.
+    suggestions for improvement to the GitHub repository or mailing list.
 
 """
 import datetime
@@ -29,7 +29,7 @@ N = len(dates)
 np.random.seed(19680801)
 y = np.cumsum(np.random.randn(N))
 
-fig, axs = plt.subplots(3, 1, constrained_layout=True, figsize=(6, 6))
+fig, axs = plt.subplots(3, 1, layout='constrained', figsize=(6, 6))
 lims = [(np.datetime64('2005-02'), np.datetime64('2005-04')),
         (np.datetime64('2005-02-03'), np.datetime64('2005-02-15')),
         (np.datetime64('2005-02-03 11:00'), np.datetime64('2005-02-04 13:20'))]
@@ -49,7 +49,7 @@ plt.show()
 # for this example the labels do not need to be rotated as they do for the
 # default formatter because the labels are as small as possible.
 
-fig, axs = plt.subplots(3, 1, constrained_layout=True, figsize=(6, 6))
+fig, axs = plt.subplots(3, 1, layout='constrained', figsize=(6, 6))
 for nn, ax in enumerate(axs):
     locator = mdates.AutoDateLocator(minticks=3, maxticks=7)
     formatter = mdates.ConciseDateFormatter(locator)
@@ -73,7 +73,7 @@ munits.registry[np.datetime64] = converter
 munits.registry[datetime.date] = converter
 munits.registry[datetime.datetime] = converter
 
-fig, axs = plt.subplots(3, 1, figsize=(6, 6), constrained_layout=True)
+fig, axs = plt.subplots(3, 1, figsize=(6, 6), layout='constrained')
 for nn, ax in enumerate(axs):
     ax.plot(dates, y)
     ax.set_xlim(lims[nn])
@@ -106,7 +106,7 @@ plt.show()
 # Here we modify the labels to be "day month year", instead of the ISO
 # "year month day":
 
-fig, axs = plt.subplots(3, 1, constrained_layout=True, figsize=(6, 6))
+fig, axs = plt.subplots(3, 1, layout='constrained', figsize=(6, 6))
 
 for nn, ax in enumerate(axs):
     locator = mdates.AutoDateLocator()
@@ -156,7 +156,7 @@ formats = ['%y',          # ticks are mostly years
            '%S.%f', ]  # secs
 # these can be the same, except offset by one level....
 zero_formats = [''] + formats[:-1]
-# ...except for ticks that are mostly hours, then its nice to have month-day
+# ...except for ticks that are mostly hours, then it's nice to have month-day
 zero_formats[3] = '%d-%b'
 offset_formats = ['',
                   '%Y',
@@ -172,7 +172,7 @@ munits.registry[np.datetime64] = converter
 munits.registry[datetime.date] = converter
 munits.registry[datetime.datetime] = converter
 
-fig, axs = plt.subplots(3, 1, constrained_layout=True, figsize=(6, 6))
+fig, axs = plt.subplots(3, 1, layout='constrained', figsize=(6, 6))
 for nn, ax in enumerate(axs):
     ax.plot(dates, y)
     ax.set_xlim(lims[nn])

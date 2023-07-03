@@ -1,6 +1,6 @@
 """
 ===========
-Path Editor
+Path editor
 ===========
 
 Sharing events across GUIs.
@@ -47,7 +47,7 @@ ax.add_patch(patch)
 
 class PathInteractor:
     """
-    An path editor.
+    A path editor.
 
     Press 't' to toggle vertex markers on and off.  When vertex markers are on,
     they can be dragged with the mouse.
@@ -82,17 +82,12 @@ class PathInteractor:
         Return the index of the point closest to the event position or *None*
         if no point is within ``self.epsilon`` to the event position.
         """
-        # display coords
-        xy = np.asarray(self.pathpatch.get_path().vertices)
-        xyt = self.pathpatch.get_transform().transform(xy)
+        xy = self.pathpatch.get_path().vertices
+        xyt = self.pathpatch.get_transform().transform(xy)  # to display coords
         xt, yt = xyt[:, 0], xyt[:, 1]
         d = np.sqrt((xt - event.x)**2 + (yt - event.y)**2)
         ind = d.argmin()
-
-        if d[ind] >= self.epsilon:
-            ind = None
-
-        return ind
+        return ind if d[ind] < self.epsilon else None
 
     def on_draw(self, event):
         """Callback for draws."""

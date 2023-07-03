@@ -1,6 +1,6 @@
 """
 ================
-Annotated Cursor
+Annotated cursor
 ================
 
 Display a data cursor including a text box, which shows the plot point close
@@ -23,6 +23,8 @@ currently tracked coordinates.
 from matplotlib.widgets import Cursor
 import numpy as np
 import matplotlib.pyplot as plt
+
+from matplotlib.backend_bases import MouseEvent
 
 
 class AnnotatedCursor(Cursor):
@@ -50,7 +52,7 @@ class AnnotatedCursor(Cursor):
 
     offset : (float, float) default: (5, 5)
         The offset in display (pixel) coordinates of the text position
-        relative to the cross hair.
+        relative to the cross-hair.
 
     dataaxis : {"x", "y"}, optional, default: "x"
         If "x" is specified, the vertical cursor line sticks to the mouse
@@ -312,6 +314,12 @@ cursor = AnnotatedCursor(
     color='red',
     linewidth=2)
 
+# Simulate a mouse move to (-2, 10), needed for online docs
+t = ax.transData
+MouseEvent(
+    "motion_notify_event", ax.figure.canvas, *t.transform((-2, 10))
+)._process()
+
 plt.show()
 
 ###############################################################################
@@ -338,5 +346,11 @@ cursor = AnnotatedCursor(
     ax=ax,
     useblit=True,
     color='red', linewidth=2)
+
+# Simulate a mouse move to (-2, 10), needed for online docs
+t = ax.transData
+MouseEvent(
+    "motion_notify_event", ax.figure.canvas, *t.transform((-2, 10))
+)._process()
 
 plt.show()

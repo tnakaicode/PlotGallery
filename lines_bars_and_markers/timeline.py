@@ -23,7 +23,7 @@ try:
 
     url = 'https://api.github.com/repos/matplotlib/matplotlib/releases'
     url += '?per_page=100'
-    data = json.loads(urllib.request.urlopen(url, timeout=.4).read().decode())
+    data = json.loads(urllib.request.urlopen(url, timeout=1).read().decode())
 
     dates = []
     names = []
@@ -55,7 +55,7 @@ except Exception:
 ##############################################################################
 # Next, we'll create a stem plot with some variation in levels as to
 # distinguish even close-by events. We add markers on the baseline for visual
-# emphasis on the one-dimensional nature of the time line.
+# emphasis on the one-dimensional nature of the timeline.
 #
 # For each event, we add a text label via `~.Axes.annotate`, which is offset
 # in units of points from the tip of the event line.
@@ -68,7 +68,7 @@ levels = np.tile([-5, 5, -3, 3, -1, 1],
                  int(np.ceil(len(dates)/6)))[:len(dates)]
 
 # Create figure and plot a stem plot with the date
-fig, ax = plt.subplots(figsize=(8.8, 4), constrained_layout=True)
+fig, ax = plt.subplots(figsize=(8.8, 4), layout="constrained")
 ax.set(title="Matplotlib release dates")
 
 ax.vlines(dates, 0, levels, color="tab:red")  # The vertical stems.
@@ -82,12 +82,12 @@ for d, l, r in zip(dates, levels, names):
                 horizontalalignment="right",
                 verticalalignment="bottom" if l > 0 else "top")
 
-# format xaxis with 4 month intervals
+# format x-axis with 4-month intervals
 ax.xaxis.set_major_locator(mdates.MonthLocator(interval=4))
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
 plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
 
-# remove y axis and spines
+# remove y-axis and spines
 ax.yaxis.set_visible(False)
 ax.spines[["left", "top", "right"]].set_visible(False)
 

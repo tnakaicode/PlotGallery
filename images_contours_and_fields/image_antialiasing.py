@@ -12,7 +12,7 @@ the change of resolution (if any).
 When subsampling data, aliasing is reduced by smoothing first and then
 subsampling the smoothed data.  In Matplotlib, we can do that
 smoothing before mapping the data to colors, or we can do the smoothing
-on the RGB(A) data in the final image.  The difference between these is
+on the RGB(A) data in the final image.  The differences between these are
 shown below, and controlled with the *interpolation_stage* keyword argument.
 
 The default image interpolation in Matplotlib is 'antialiased', and
@@ -49,9 +49,9 @@ a = aa
 ###############################################################################
 # The following images are subsampled from 450 data pixels to either
 # 125 pixels or 250 pixels (depending on your display).
-# The Moire patterns in the 'nearest' interpolation are caused by the
+# The Moiré patterns in the 'nearest' interpolation are caused by the
 # high-frequency data being subsampled.  The 'antialiased' imaged
-# still has some Moire patterns as well, but they are greatly reduced.
+# still has some Moiré patterns as well, but they are greatly reduced.
 #
 # There are substantial differences between the 'data' interpolation and
 # the 'rgba' interpolation.  The alternating bands of red and blue on the
@@ -66,7 +66,7 @@ a = aa
 # original colormap, so it is no longer possible to invert individual
 # pixels back to their data value.
 
-fig, axs = plt.subplots(2, 2, figsize=(5, 6), constrained_layout=True)
+fig, axs = plt.subplots(2, 2, figsize=(5, 6), layout='constrained')
 axs[0, 0].imshow(a, interpolation='nearest', cmap='RdBu_r')
 axs[0, 0].set_xlim(100, 200)
 axs[0, 0].set_ylim(275, 175)
@@ -81,7 +81,7 @@ for ax, interp, space in zip(axs.flat[1:],
 plt.show()
 
 ###############################################################################
-# Even up-sampling an image with 'nearest' interpolation will lead to Moire
+# Even up-sampling an image with 'nearest' interpolation will lead to Moiré
 # patterns when the upsampling factor is not integer. The following image
 # upsamples 500 data pixels to 530 rendered pixels. You may note a grid of
 # 30 line-like artifacts which stem from the 524 - 500 = 24 extra pixels that
@@ -104,7 +104,7 @@ plt.show()
 # Apart from the default 'hanning' antialiasing, `~.Axes.imshow` supports a
 # number of different interpolation algorithms, which may work better or
 # worse depending on the pattern.
-fig, axs = plt.subplots(1, 2, figsize=(7, 4), constrained_layout=True)
+fig, axs = plt.subplots(1, 2, figsize=(7, 4), layout='constrained')
 for ax, interp in zip(axs, ['hanning', 'lanczos']):
     ax.imshow(a, interpolation=interp, cmap='gray')
     ax.set_title(f"interpolation='{interp}'")

@@ -1,10 +1,10 @@
 """
 ================
-GTK4 Spreadsheet
+GTK4 spreadsheet
 ================
 
 Example of embedding Matplotlib in an application and interacting with a
-treeview to store data.  Double click on an entry to update plot data.
+treeview to store data.  Double-click on an entry to update plot data.
 """
 
 import gi
@@ -49,7 +49,7 @@ class DataManager(Gtk.ApplicationWindow):
         sw.set_child(self.treeview)
 
         # Matplotlib stuff
-        fig = Figure(figsize=(6, 4), constrained_layout=True)
+        fig = Figure(figsize=(6, 4), layout='constrained')
 
         self.canvas = FigureCanvas(fig)  # a Gtk.DrawingArea
         self.canvas.set_hexpand(True)
