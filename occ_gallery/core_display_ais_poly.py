@@ -50,15 +50,17 @@ m = np.array(((f > neg) & (f < pos)) * 1.0)
 
 from skimage import measure
 verts, faces, norm, val = measure.marching_cubes(m, level=None)
-pts = TColgp_Array1OfPnt(1, verts.shape[0])
-tri = Poly_Array1OfTriangle(1, faces.shape[0])
+#pts = TColgp_Array1OfPnt(1, verts.shape[0])
+#tri = Poly_Array1OfTriangle(1, faces.shape[0])
 
+print(verts.shape[0], faces.shape[0])
+poly = Poly_Triangulation(verts.shape[0], faces.shape[0], False)
 for i, xyz in enumerate(verts):
-    pts.SetValue(i + 1, gp_Pnt(float(xyz[0]), float(xyz[1]), float(xyz[2])))
+    poly.SetNode(i + 1, gp_Pnt(float(xyz[0]), float(xyz[1]), float(xyz[2])))
 for i, ixyz in enumerate(faces):
-    tri.SetValue(
-        i + 1, Poly_Triangle(int(ixyz[0]), int(ixyz[1]), int(ixyz[2])))
-poly = Poly_Triangulation(pts, tri)
+    poly.SetTriangle(i + 1, Poly_Triangle(int(ixyz[0]), int(ixyz[1]), int(ixyz[2])))
+print(poly.NbNodes(), poly.NbTriangles())
+print(poly.UnloadDeferredData())
 ais_poly = AIS_Triangulation(poly)
 
 display.Context.Display(ais_poly, True)
