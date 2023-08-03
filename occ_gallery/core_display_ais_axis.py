@@ -28,7 +28,7 @@ display, start_display, add_menu, add_function_to_menu = init_display()
 myBox = BRepPrimAPI_MakeBox(60, 60, 50).Shape()
 
 line = Geom_Line(gp_Ax1(gp_Pnt(-100, 0, 0), gp_Dir()))
-axis = AIS_Axis(line)
+axis = AIS_Axis(gp_Ax1())
 
 display.Context.Display(axis, True)
 display.DisplayShape(myBox, update=True)
