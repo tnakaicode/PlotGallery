@@ -143,6 +143,7 @@ def run(dx, Tf, generator="cython", sorder=None, with_plot=True):
     }
 
     sol = pylbm.Simulation(dico)
+    print(sol.scheme)
 
     if with_plot:
         # create the viewer to plot the solution
