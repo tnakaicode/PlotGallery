@@ -95,7 +95,7 @@ def execute(points):
     return brep1.Shape()
 
 
-def generate_3(points):
+def generate_2(points):
     # https://github.com/tpaviot/pythonocc-core/issues/1245
     # ref: https://github.com/tpaviot/pythonocc-demos/blob/master/examples/core_geometry_make_pipe_shell.py
     # convert points into a TColgp_Array1OfPnt into a bezier curve into a pipe
@@ -135,7 +135,111 @@ def generate_3(points):
     pipeBuilder.SetLaw(profile, law_f, False, True)
     return pipeBuilder.Shape()
 
+def generate_4(points):
+    # ref: https://stackoverflow.com/questions/47163841/pythonocc-opencascade-create-pipe-along-straight-lines-through-points-profile
+    # using the cylinders for the tube and spheres for the connections
+    from OCC.Core.gp import gp_Pnt, gp_Circ, gp_Ax2, gp_Dir
+    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeFace
+    from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeSphere
+    from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe
+    from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
+    
+    # convert [x, y, z] to gp_Pnt(x, y, z)
+    array = []
+    for point in points:
+        array.append(gp_Pnt(point[0], point[1], point[2]))
+    array.append(gp_Pnt(points[-1][0], points[-1][1], -1.0))    
 
+    # generate cylinders
+    radius = 1.60
+    pipes = []
+    for i in range(len(array) - 1):
+        edge = BRepBuilderAPI_MakeEdge(array[i], array[i + 1]).Edge()
+        makeWire = BRepBuilderAPI_MakeWire(edge)
+        makeWire.Build()
+        wire = makeWire.Wire()
+        
+        direction = gp_Dir(
+            array[i + 1].X() - array[i].X(),
+            array[i + 1].Y() - array[i].Y(),
+            array[i + 1].Z() - array[i].Z()
+        )
+        circle = gp_Circ(gp_Ax2(array[i], direction), radius)
+        profile_edge = BRepBuilderAPI_MakeEdge(circle).Edge()
+        profile_wire = BRepBuilderAPI_MakeWire(profile_edge).Wire()
+        profile_face = BRepBuilderAPI_MakeFace(profile_wire).Face()
+        pipes.append(BRepOffsetAPI_MakePipe(wire, profile_face).Shape())
+    
+    # fuse pipes with a sphere at each joining point
+    pipe = pipes[0]
+    for i in range(len(array) - 1):
+        sphere = BRepPrimAPI_MakeSphere(array[i], radius).Shape()
+        pipe = BRepAlgoAPI_Fuse(pipe, sphere).Shape()
+        pipe = BRepAlgoAPI_Fuse(pipe, pipes[i]).Shape()
+    
+    return pipe
+
+def generate_3(points):
+    # ref: https://stackoverflow.com/questions/47163841/pythonocc-opencascade-create-pipe-along-straight-lines-through-points-profile
+    # generate the pipe as sections and fillet the joins
+    # fails because the gp_Pln is invalid on thef illet side
+    from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Circ, gp_Pln, gp_Ax2
+    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeFace
+    from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe
+    from OCC.Core.TColgp import TColgp_Array1OfPnt
+    
+    # the points
+    length = len(points)
+    poles = TColgp_Array1OfPnt(0, length)
+    for i in range(length):
+        point = gp_Pnt(points[i][0], points[i][1], points[i][2])
+        poles.SetValue(i, point)
+    print(poles.Length(), len(poles))
+
+    # the edges
+    edges = []
+    for i in range(len(poles) - 1):
+        edge = BRepBuilderAPI_MakeEdge(poles[i], poles[i + 1]).Edge()
+        edges.append(edge)
+
+    # inbetween
+    fillet_radius = 0.3
+    fillets = []
+    for i in range(len(poles) - 2):
+        # if we send the referenced edges, they'll be nulled as the fillet algo continues
+        p1 = poles[i]
+        p2 = poles[i + 1]
+        p3 = poles[i + 2]
+        e1 = BRepBuilderAPI_MakeEdge(p1, p2).Edge()
+        e2 = BRepBuilderAPI_MakeEdge(p2, p3).Edge()
+        fillet = filletEdges(e1, e2, fillet_radius, None)
+        fillets.append(fillet)
+
+    # the wire
+    makeWire = BRepBuilderAPI_MakeWire()
+    for i in range(len(edges)):
+        makeWire.Add(edges[i])
+        makeWire.Add(fillets[i])
+
+    makeWire.Build()
+    wire = makeWire.Wire()
+    # the pipe
+    radius = 1.60
+    dir = gp_Dir(0,1,0)
+    circle = gp_Circ(gp_Ax2(points[0],dir), radius)
+    profile_edge = BRepBuilderAPI_MakeEdge(circle).Edge()
+    profile_wire = BRepBuilderAPI_MakeWire(profile_edge).Wire()
+    profile_face = BRepBuilderAPI_MakeFace(profile_wire).Face()
+    return BRepOffsetAPI_MakePipe(wire, profile_face).Shape()
+
+def filletEdges(ed1, ed2, radius, plane):
+    from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo
+    from OCC.Core.gp import gp_Pln
+    f = ChFi2d_AnaFilletAlgo()
+    f.Init(ed1, ed2, gp_Pln())
+    f.Perform(radius)
+    result = f.Result(ed1, ed2)
+    return result
 if __name__ == "__main__":
     # pipe()
 
@@ -151,8 +255,8 @@ if __name__ == "__main__":
         [15.796230945784302, -16.1617972505003, 184.774969597526],
         [16.178925887076, -17.68017111283, 180.026487166674],
     ]
-    shp = generate_3(points)
-    # display.DisplayShape(shp)
+    shp = generate_4(points)
+    display.DisplayShape(shp)
 
     display.FitAll()
     start_display()
