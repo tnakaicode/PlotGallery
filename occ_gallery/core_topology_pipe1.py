@@ -156,3 +156,6 @@ if __name__ == "__main__":
 
     display.FitAll()
     start_display()
+
+    # 私も同じ結果になった。bz_curve_wireは正しい形状になっていますか？
+    # I got the same result. bz_curve_wire is in the right shape?
