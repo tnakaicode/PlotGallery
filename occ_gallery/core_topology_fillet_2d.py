@@ -19,30 +19,29 @@
 
 from __future__ import print_function
 
-from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax2, gp_Circ, gp_ZOX, gp_Pln, gp_Trsf
+from OCC.Core.gp import gp_Pnt, gp_Pln, gp_Trsf
 from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo
-from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
-from OCC.Core.TColgp import TColgp_Array1OfPnt
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire
-from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCC.Extend.ShapeFactory import make_wire
 from OCC.Core.TopLoc import TopLoc_Location
 
 from OCC.Display.SimpleGui import init_display
 
 
-
-
-
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
     dats = [
-        # p1(x,y,z), p2(x,y,z), p3(x,y,z), radii
+        # p1(x,y,z), p2(x,y,z), p3(x,y,z), radii, z
         [[0, 0], [5, 5], [-5, 5], 0.3, 0],
-        [[0, 0], [5, 5], [-5, 5], 0.3, 1],
+        [[0, 0], [5, 5], [-5, 5], 1.0, 1],
+        [[0, 0], [5.1, 5], [-5, 5], 2.0, 2],
+        [[0, 0], [5.0, 4.9], [-5, 5], 1.5, 3.5],
+        [[0, 0], [5.1, 4.9], [-5.1, 5.1], 1.1, 4],
     ]
-    
+
+    api = BRepOffsetAPI_ThruSections()
     for data in dats:
         radius, z = data[3], data[4]
         # Defining the points
@@ -59,21 +58,23 @@ if __name__ == "__main__":
         f.Init(ed1, ed2, gp_Pln())
         f.Perform(radius)
         fillet2d = f.Result(ed1, ed2)
-        print(fillet2d)
-        
+
         trf = gp_Trsf()
-        trf.SetTranslation(gp_Pnt(0,0,0), gp_Pnt(0,0,z))
+        trf.SetTranslation(gp_Pnt(0, 0, 0), gp_Pnt(0, 0, z))
 
         # Create and display a wire
         w = make_wire([ed1, fillet2d, ed2])
         w.Location(TopLoc_Location(trf))
         display.DisplayShape(w)
-        #display.DisplayMessage(p1, "p1")
-        #display.DisplayMessage(p2, "p2")
-        #display.DisplayMessage(p3, "p3")
-        #display.DisplayShape(ed1)
-        #display.DisplayShape(ed2)
+        # display.DisplayMessage(p1, "p1")
+        # display.DisplayMessage(p2, "p2")
+        # display.DisplayMessage(p3, "p3")
+        # display.DisplayShape(ed1)
+        # display.DisplayShape(ed2)
+
+        api.AddWire(w)
+    api.Build()
+    display.DisplayShape(api.Shape())
 
     display.FitAll()
     start_display()
-
