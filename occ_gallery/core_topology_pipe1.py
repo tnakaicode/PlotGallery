@@ -19,11 +19,12 @@
 
 from __future__ import print_function
 
-from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax2, gp_Circ, gp_ZOX
+from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax2, gp_Circ, gp_ZOX, gp_Vec
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.TColgp import TColgp_Array1OfPnt
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe
+
 
 from OCC.Display.SimpleGui import init_display
 
@@ -67,6 +68,7 @@ def execute(points):
     from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeShell
     from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipeShell
     from OCC.Core.Law import Law_Linear
+    from OCC.Extend.Construct import vec_to_dir
     length = len(points)
     array = TColgp_Array1OfPnt(0, length)
     for index in range(length):
@@ -81,18 +83,25 @@ def execute(points):
 
     # Creation of profile to sweep along the spine
     radius = 1.60
-    circle = gp_Circ(gp_ZOX(), radius)
+    axis = gp_Ax2(array.Value(0), vec_to_dir(gp_Vec(array.Value(0),
+                                                    array.Value(1))))
+    circle = gp_Circ(axis, radius)
     circle_edge = BRepBuilderAPI_MakeEdge(circle).Edge()
     circle_wire = BRepBuilderAPI_MakeWire(circle_edge).Wire()
 
+    # pipe
+    pipe = BRepOffsetAPI_MakePipe(bz_curv_wire, circle_edge).Shape()
+    display.DisplayShape(pipe)
+    display.DisplayShape(circle_edge)
+
     # Creation of the law to dictate the evolution of the profile
-    brep1 = BRepOffsetAPI_MakePipeShell(bz_curv_wire)
-    law_f = Law_Linear()
-    law_f.Set(0, 1, 1, 1)
-    brep1.SetLaw(circle_wire, law_f, True, True)
-    brep1.Build()
-    brep1.MakeSolid()
-    return brep1.Shape()
+    # brep1 = BRepOffsetAPI_MakePipeShell(bz_curv_wire)
+    # law_f = Law_Linear()
+    # law_f.Set(0, 1, 1, 1)
+    # brep1.SetLaw(circle_wire, law_f, True, True)
+    # brep1.Build()
+    # brep1.MakeSolid()
+    # return brep1.Shape()
 
 
 def generate_2(points):
@@ -263,7 +272,8 @@ if __name__ == "__main__":
         [15.796230945784302, -16.1617972505003, 184.774969597526],
         [16.178925887076, -17.68017111283, 180.026487166674],
     ]
-    shp = generate_3(points)
+    execute(points)
+    # shp = generate_3(points)
     # display.DisplayShape(shp)
 
     display.FitAll()
@@ -279,3 +289,5 @@ if __name__ == "__main__":
     # The filletEdge in your generate_3 is returning null.
     # ChFi2d_AnaFilletAlgo requires Edges like the green and blue in the attached image, but in your code there is no angle between the Edges.
     # Maybe this sample would be helpful?　https://github.com/tpaviot/pythonocc-demos/blob/master/examples/core_2d_fillet.py
+
+    # データが原因だから仕方ないのではないか？
