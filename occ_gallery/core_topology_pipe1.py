@@ -73,7 +73,7 @@ def execute(points):
     array = TColgp_Array1OfPnt(0, length)
     for index in range(length):
         point = points[index]
-        print(point)
+        display.DisplayShape(gp_Pnt(point[0], point[1], point[2]))
         array.SetValue(index, gp_Pnt(point[0], point[1], point[2]))
 
     # Creation of a Bezier Curve as the spine
@@ -95,12 +95,13 @@ def execute(points):
     display.DisplayShape(circle_edge)
 
     # Creation of the law to dictate the evolution of the profile
-    # brep1 = BRepOffsetAPI_MakePipeShell(bz_curv_wire)
-    # law_f = Law_Linear()
-    # law_f.Set(0, 1, 1, 1)
-    # brep1.SetLaw(circle_wire, law_f, True, True)
-    # brep1.Build()
-    # brep1.MakeSolid()
+    brep1 = BRepOffsetAPI_MakePipeShell(bz_curv_wire)
+    law_f = Law_Linear()
+    law_f.Set(0, 1, 1, 2)
+    brep1.SetLaw(circle_wire, law_f, True, True)
+    brep1.Build()
+    brep1.MakeSolid()
+    display.DisplayShape(brep1.Shape())
     # return brep1.Shape()
 
 
