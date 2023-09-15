@@ -254,6 +254,67 @@ def generate_3(points):
     # return BRepOffsetAPI_MakePipe(wire, profile_face).Shape()
 
 
+def generate_5(points):
+    # ref: https://github.com/tpaviot/pythonocc-demos/blob/master/examples/core_topology_pipe.py
+    # ref: https://github.com/tpaviot/pythonocc-demos/blob/master/examples/core_topology_edge.py
+    from OCC.Core.gp import gp_Pnt, gp_Pln, gp_Dir, gp_Circ, gp_Ax2
+    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire
+    from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe, BRepOffsetAPI_ThruSections
+    from OCC.Core.Geom import Geom_BezierCurve, Geom_Circle
+    from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo
+    from OCC.Core.GeomFill import GeomFill_Pipe
+    from OCC.Core.TColgp import TColgp_Array1OfPnt
+
+    # converting points array into gp_Pnt array
+    p1 = gp_Pnt(points[0][0], points[0][1], points[0][2])
+    # end of first straight path, start of curve
+    p2 = gp_Pnt(points[-2][0], points[-2][1], points[-2][2])
+    # middle of curve
+    p3 = gp_Pnt(points[-1][0], points[-1][1], points[-1][2])
+    # end of curve, start of second straight path
+    p4 = gp_Pnt(points[-1][0], points[-1][1], points[-1][2] - 3.0)
+    # end of second straight path directly downwards
+    p5 = gp_Pnt(points[-1][0], points[-1][1], -1.0)
+
+    # the path will be broken down into three edges:
+    # first is a straight path from the start of the points to close to the end
+    # second is a bezier curve joining the two staight paths
+    # third is a straight path down
+
+    edge1 = BRepBuilderAPI_MakeEdge(p1, p2).Edge()
+
+    # curve joining two straight paths
+    array = TColgp_Array1OfPnt(1, 3)
+    array.SetValue(1, p2)
+    array.SetValue(2, p3)
+    array.SetValue(3, p4)
+    bz_curve = Geom_BezierCurve(array)
+    edge2 = BRepBuilderAPI_MakeEdge(bz_curve).Edge()
+
+    # straight path directly downwards
+    edge3 = BRepBuilderAPI_MakeEdge(p4, p5).Edge()
+
+    # assembling the path
+    wire = BRepBuilderAPI_MakeWire()
+    wire.Add(edge1)
+    wire.Add(edge2)
+    wire.Add(edge3)
+    wire.Build()
+
+    # circle profile
+    direction = gp_Dir(0, 0, 1)
+    vector = gp_Ax2(p3, direction)
+    radius = 1.60
+    circle = Geom_Circle(vector, radius)
+    circle_edge = BRepBuilderAPI_MakeEdge(circle).Edge()
+    profile = BRepBuilderAPI_MakeWire(circle_edge).Wire()
+
+    pipe = BRepOffsetAPI_MakePipe(wire.Wire(), profile)
+    pipe.Build()
+    # pipe.MakeSolid()
+    return pipe.Shape()
+
+
 def filletEdges(ed1, ed2, radius, plane):
     from OCC.Core.ChFi2d import ChFi2d_AnaFilletAlgo
     from OCC.Core.gp import gp_Pln
@@ -279,9 +340,23 @@ if __name__ == "__main__":
         [15.796230945784302, -16.1617972505003, 184.774969597526],
         [16.178925887076, -17.68017111283, 180.026487166674],
     ]
-    execute(points)
-    # shp = generate_3(points)
-    # display.DisplayShape(shp)
+    points = [
+        [-33.708023525841, -2.496432489532598, 206.2113114751896],
+        [-33.325328584549, -4.014806351862397, 201.4628290443381],
+        [-32.9426336432576, -5.5331802141921, 196.71434661348653],
+        [-32.559938701965905, -7.051554076521899, 191.965864182635],
+        [-32.1772437606742, -8.569927938851599, 187.2173817517835],
+        [-31.7945488193825, -10.088301801181299, 182.46889932093188],
+        [-31.411853878090803, -11.606675663511098, 177.72041689008],
+        [-31.0291589367991, -13.125049525840797, 172.971934459229],
+        [-30.6464639955074, -14.6434233881706, 168.22345202837698],
+        [-30.2637690542157, -16.1617972505003, 163.47496959752598],
+        [-29.881074112924, -17.68017111283, 158.726487166674]
+    ]
+
+    # execute(points)
+    shp = generate_5(points)
+    display.DisplayShape(shp)
 
     display.FitAll()
     start_display()
