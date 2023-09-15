@@ -102,11 +102,11 @@ def execute(points):
     brep1.Build()
     brep1.MakeSolid()
     display.DisplayShape(brep1.Shape(), transparency=0.5, color="RED")
-    
+
     brep1 = BRepOffsetAPI_MakePipeShell(bz_curv_wire)
     law_f = Law_Linear()
-    law_f.Set(0, 5.0, 0.5, 1)
-    brep1.SetLaw(circle_wire, law_f, False, True)
+    law_f.Set(0, 0.5, 0.5, 1)
+    brep1.SetLaw(circle_wire, law_f, True, True)
     display.DisplayShape(brep1.Shape(), transparency=0.5, color="BLUE1")
     # return brep1.Shape()
 
