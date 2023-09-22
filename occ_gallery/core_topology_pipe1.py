@@ -275,6 +275,8 @@ def generate_5(points):
     p4 = gp_Pnt(points[-1][0], points[-1][1], points[-1][2] - 3.0)
     # end of second straight path directly downwards
     p5 = gp_Pnt(points[-1][0], points[-1][1], -1.0)
+    print(*points[0])
+    print(p1.X(), p1.Y(), p1.Z())
 
     # the path will be broken down into three edges:
     # first is a straight path from the start of the points to close to the end
@@ -293,6 +295,10 @@ def generate_5(points):
 
     # straight path directly downwards
     edge3 = BRepBuilderAPI_MakeEdge(p4, p5).Edge()
+
+    display.DisplayShape(edge1, color="RED")
+    display.DisplayShape(edge2, color="BLUE1")
+    display.DisplayShape(edge3, color="GREEN")
 
     # assembling the path
     wire = BRepBuilderAPI_MakeWire()
@@ -356,7 +362,7 @@ if __name__ == "__main__":
 
     # execute(points)
     shp = generate_5(points)
-    display.DisplayShape(shp)
+    display.DisplayShape(shp, transparency=0.9)
 
     display.FitAll()
     start_display()
