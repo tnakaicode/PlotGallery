@@ -139,7 +139,9 @@ def cut(event=None):
     # Create Sphere
     Sphere = BRepPrimAPI_MakeSphere(gp_Pnt(100, 20, 20), 80).Shape()
     # Cut: the shere is cut 'by' the box
-    Cut = BRepAlgoAPI_Cut(Sphere, Box).Shape()
+    Cut = BRepAlgoAPI_Cut(Sphere, Box)
+    Cut.SetParallel(True)
+    Cut_Shape = Cut.Shape()
     display.EraseAll()
     ais_box = display.DisplayShape(Box)[0]
     display.Context.SetTransparency(ais_box, 0.8, True)
