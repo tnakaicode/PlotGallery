@@ -14,7 +14,9 @@
 ##
 # You should have received a copy of the GNU Lesser General Public License
 # along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+import numpy as np
 import sys
+import random
 from math import pi
 
 from OCC.Core.BRep import BRep_Tool_Surface
@@ -62,6 +64,32 @@ from OCC.Core.gp import (
 from OCC.Extend.TopologyUtils import TopologyExplorer
 
 display, start_display, add_menu, add_function_to_menu = init_display()
+
+
+def face_from_vert(event=None):
+    # https://docs.python.org/ja/3/library/secrets.html
+    pts = []
+    dat = np.random.rand(3, 10)
+    for xyz in dat:
+        pts.append(gp_Pnt(*xyz))
+
+    S = BRepPrimAPI_MakeBox(150, 200, 110).Shape()
+
+    topo = TopologyExplorer(S)
+    vert = next(topo.vertices())
+
+    shapes = TopTools_ListOfShape()
+    for f in topo.faces_from_vertex(vert):
+        shapes.Append(f)
+
+    ts = BRepOffsetAPI_MakeThickSolid()
+    ts.MakeThickSolidByJoin(S, shapes, 15, 0.01)
+    ts.Build()
+    _thick_solid = ts.Shape()
+
+    display.EraseAll()
+    display.DisplayShape(_thick_solid)
+    display.FitAll()
 
 
 def thick_solid(event=None):
