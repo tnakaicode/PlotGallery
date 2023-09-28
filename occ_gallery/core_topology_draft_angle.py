@@ -45,6 +45,7 @@ def draft_angle(event=None):
             adraft.Add(face, ddd, math.radians(15), gp_Pln(gp_Ax3(gp_XOY())))
         topExp.Next()
     adraft.Build()
+    display.DisplayShape(S, transparency=0.9)
     display.DisplayShape(adraft.Shape(), update=True)
 
 
