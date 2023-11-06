@@ -51,7 +51,7 @@ def main(
     U = m.solution_space.empty()
     for mu in parameter_space.sample_uniformly(10):
         U.append(m.solve(mu))
-    m.visualize(U, title='Solution for diffusionl in [0.1, 1]')
+    v = m.visualize(U, title='Solution for diffusionl in [0.1, 1]', block=True)
 
 
 if __name__ == '__main__':
