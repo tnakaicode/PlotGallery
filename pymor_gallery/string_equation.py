@@ -13,8 +13,14 @@ from pymor.models.iosys import SecondOrderModel
 from pymor.reductors.bt import BTReductor
 from pymor.reductors.h2 import IRKAReductor
 from pymor.reductors.mt import MTReductor
-from pymor.reductors.sobt import (SOBTpReductor, SOBTvReductor, SOBTpvReductor, SOBTvpReductor,
-                                  SOBTfvReductor, SOBTReductor)
+from pymor.reductors.sobt import (
+    SOBTfvReductor,
+    SOBTpReductor,
+    SOBTpvReductor,
+    SOBTReductor,
+    SOBTvpReductor,
+    SOBTvReductor,
+)
 from pymor.reductors.sor_irka import SORIRKAReductor
 from pymordemos.heat import fom_properties, run_mor_method
 
@@ -24,7 +30,13 @@ def main(
         r: int = Argument(5, help='Order of the ROMs.'),
 ):
     """String equation example."""
-    set_log_levels({'pymor.algorithms.gram_schmidt.gram_schmidt': 'ERROR'})
+    set_log_levels({
+        'pymor.algorithms.gram_schmidt.gram_schmidt': 'WARNING',
+        'pymor.algorithms.lradi.solve_lyap_lrcf': 'WARNING',
+        'pymor.reductors.basic.LTIPGReductor': 'WARNING',
+        'pymor.reductors.basic.SOLTIPGReductor': 'WARNING',
+    })
+    plt.rcParams['axes.grid'] = True
 
     # Assemble matrices
     assert n % 2 == 1, 'The order has to be an odd integer.'
@@ -50,24 +62,8 @@ def main(
     so_sys = SecondOrderModel.from_matrices(M, E, K, B, Cp)
 
     # System properties
-    w = np.logspace(-4, 2, 200)
+    w = (1e-4, 1e2)
     fom_properties(so_sys, w)
-
-    # Singular values
-    psv = so_sys.psv()
-    vsv = so_sys.vsv()
-    pvsv = so_sys.pvsv()
-    vpsv = so_sys.vpsv()
-    fig, ax = plt.subplots(2, 2, figsize=(12, 8), sharey=True)
-    ax[0, 0].semilogy(range(1, len(psv) + 1), psv, '.-')
-    ax[0, 0].set_title('Position singular values')
-    ax[0, 1].semilogy(range(1, len(vsv) + 1), vsv, '.-')
-    ax[0, 1].set_title('Velocity singular values')
-    ax[1, 0].semilogy(range(1, len(pvsv) + 1), pvsv, '.-')
-    ax[1, 0].set_title('Position-velocity singular values')
-    ax[1, 1].semilogy(range(1, len(vpsv) + 1), vpsv, '.-')
-    ax[1, 1].set_title('Velocity-position singular values')
-    plt.show()
 
     # Model order reduction
     run_mor_method(so_sys, w, SOBTpReductor(so_sys), 'SOBTp', r)

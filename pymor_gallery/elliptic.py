@@ -8,8 +8,8 @@ from typer import Argument, Option, run
 
 from pymor.analyticalproblems.domaindescriptions import RectDomain
 from pymor.analyticalproblems.elliptic import StationaryProblem
-from pymor.analyticalproblems.functions import ExpressionFunction, ConstantFunction
-from pymor.discretizers.builtin import discretize_stationary_cg, discretize_stationary_fv, RectGrid, TriaGrid
+from pymor.analyticalproblems.functions import ConstantFunction, ExpressionFunction
+from pymor.discretizers.builtin import RectGrid, TriaGrid, discretize_stationary_cg, discretize_stationary_fv
 
 
 def main(
@@ -29,7 +29,7 @@ def main(
     fv: bool = Option(False, help='Use finite volume discretization instead of finite elements.'),
     rect: bool = Option(False, help='Use RectGrid instead of TriaGrid.'),
 ):
-    """Solves the Poisson equation in 2D using pyMOR's builtin discreization toolkit."""
+    """Solves the Poisson equation in 2D using pyMOR's builtin discretization toolkit."""
     rhss = [ExpressionFunction('10', 2),
             ExpressionFunction('(x[0] - 0.5) ** 2 * 1000', 2)]
     dirichlets = [ExpressionFunction('0', 2),
@@ -37,8 +37,8 @@ def main(
                   ExpressionFunction('x[0]', 2)]
     neumanns = [None,
                 ConstantFunction(3., dim_domain=2),
-                ExpressionFunction('50*(0.1 <= x[1]) * (x[1] <= 0.2)'
-                                   '+50*(0.8 <= x[1]) * (x[1] <= 0.9)', 2)]
+                ExpressionFunction('50*(0.1 <= x[1] <= 0.2)'
+                                   '+50*(0.8 <= x[1] <= 0.9)', 2)]
     domains = [RectDomain(),
                RectDomain(right='neumann'),
                RectDomain(right='neumann', top='neumann'),

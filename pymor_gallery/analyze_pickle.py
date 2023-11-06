@@ -6,13 +6,13 @@
 import sys
 import time
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from typer import Argument, Option, Typer
 
 from pymor.core.pickle import load
 
-app = Typer(help='''
+app = Typer(help="""
 This demo loads a pickled reduced model, solves for random
 parameters, estimates the reduction errors and then visualizes these
 estimates. If the detailed model and the reductor are
@@ -21,11 +21,10 @@ the real reduction error.
 
 The needed data files are created by the thermal block demo, by
 setting the '--pickle' option.
-'''[1:])
+"""[1:])
 
 REDUCED_DATA = Argument(default=0, help='File containing the pickled reduced model.')
-SAMPLES = Argument(default=100, min=1,
-                   help='Number of parameter samples to test with. ')
+SAMPLES = Argument(default=100, min=1, help='Number of parameter samples to test with. ')
 ERROR_NORM = Option(None, help='Name of norm in which to compute the errors.')
 
 
@@ -34,8 +33,7 @@ def histogram(
     reduced_data: str = REDUCED_DATA,
     samples: int = SAMPLES,
 
-    detailed_data: str = Option(
-        None, help='File containing the high-dimensional model and the reductor.'),
+    detailed_data: str = Option(None, help='File containing the high-dimensional model and the reductor.'),
     error_norm: str = ERROR_NORM
 ):
     print('Loading reduced model ...')
@@ -86,7 +84,7 @@ def histogram(
         # setup axes
         left, width = 0.1, 0.65
         bottom, height = 0.1, 0.65
-        bottom_h = left_h = left + width + 0.02
+        bottom_h = left_h = left+width+0.02
         rect_scatter = [left, bottom, width, height]
         rect_histx = [left, bottom_h, width, 0.2]
         rect_histy = [left_h, bottom, 0.2, height]
@@ -108,14 +106,10 @@ def histogram(
         axScatter.scatter(errs, ests)
 
         # plot histograms
-        x_hist, x_bin_edges = np.histogram(
-            errs, bins=_bins(total_min, total_max))
-        axHistx.bar(
-            x_bin_edges[1:], x_hist, width=x_bin_edges[:-1] - x_bin_edges[1:], color='blue')
-        y_hist, y_bin_edges = np.histogram(
-            ests, bins=_bins(total_min, total_max))
-        axHisty.barh(
-            y_bin_edges[1:], y_hist, height=y_bin_edges[:-1] - y_bin_edges[1:], color='blue')
+        x_hist, x_bin_edges = np.histogram(errs, bins=_bins(total_min, total_max))
+        axHistx.bar(x_bin_edges[1:], x_hist, width=x_bin_edges[:-1] - x_bin_edges[1:], color='blue')
+        y_hist, y_bin_edges = np.histogram(ests, bins=_bins(total_min, total_max))
+        axHisty.barh(y_bin_edges[1:], y_hist, height=y_bin_edges[:-1] - y_bin_edges[1:], color='blue')
         axHistx.set_xscale('log')
         axHisty.set_yscale('log')
         axHistx.set_xticklabels([])
@@ -133,8 +127,7 @@ def histogram(
         total_max = np.max(ests) * 1.1
 
         hist, bin_edges = np.histogram(ests, bins=_bins(total_min, total_max))
-        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] -
-                bin_edges[1:], color='blue')
+        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] - bin_edges[1:], color='blue')
         plt.xlim([total_min, total_max])
         plt.xscale('log')
         plt.xlabel('estimated error')
@@ -147,8 +140,7 @@ def histogram(
         total_max = np.max(ests) * 1.1
 
         hist, bin_edges = np.histogram(errs, bins=_bins(total_min, total_max))
-        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] -
-                bin_edges[1:], color='blue')
+        plt.bar(bin_edges[1:], hist, width=bin_edges[:-1] - bin_edges[1:], color='blue')
         plt.xlim([total_min, total_max])
         plt.xscale('log')
         plt.xlabel('error')
@@ -162,13 +154,11 @@ def histogram(
 @app.command()
 def convergence(
     reduced_data: str = REDUCED_DATA,
-    detailed_data: str = Argument(
-        ..., help='File containing the high-dimensional model and the reductor.'),
+    detailed_data: str = Argument(..., help='File containing the high-dimensional model and the reductor.'),
     samples: int = SAMPLES,
 
     error_norm: str = ERROR_NORM,
-    ndim: int = Option(
-        None, help='Number of reduced basis dimensions for which to estimate the error.')
+    ndim: int = Option(None, help='Number of reduced basis dimensions for which to estimate the error.')
 ):
     print('Loading reduced model ...')
     rom, parameter_space = load(open(reduced_data, 'rb'))

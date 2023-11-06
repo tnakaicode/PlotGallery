@@ -6,10 +6,9 @@
 import numpy as np
 from typer import Argument, run
 
-from pymor.basic import *
 from pymor.algorithms.timestepping import ImplicitEulerTimeStepper
+from pymor.basic import *
 from pymor.tools.typer import Choices
-
 
 # parameters for high-dimensional models
 GRID_INTERVALS = 50
@@ -66,7 +65,7 @@ def main(
         rom, fom=fom, reductor=reductor, error_estimator=True,
         error_norms=[lambda U: DT * np.sqrt(np.sum(fom.h1_0_semi_norm(U)[1:]**2))],
         error_norm_names=['l^2-h^1'],
-        condition=False, test_mus=parameter_space.sample_randomly(test, seed=999)
+        condition=False, test_mus=parameter_space.sample_randomly(test)
     )
 
     # show results
@@ -109,10 +108,10 @@ def discretize_pymor():
 
             diffusion=LincombFunction(
                 [ConstantFunction(1., dim_domain=2),
-                 ExpressionFunction('(x[0] > 0.45) * (x[0] < 0.55) * (x[1] < 0.7) * 1.',
+                 ExpressionFunction('(0.45 < x[0] < 0.55) * (x[1] < 0.7) * 1.',
                                     dim_domain=2),
-                 ExpressionFunction('(x[0] > 0.35) * (x[0] < 0.40) * (x[1] > 0.3) * 1. + '
-                                    '(x[0] > 0.60) * (x[0] < 0.65) * (x[1] > 0.3) * 1.',
+                 ExpressionFunction('(0.35 < x[0] < 0.40) * (x[1] > 0.3) * 1. + '
+                                    '(0.60 < x[0] < 0.65) * (x[1] > 0.3) * 1.',
                                     dim_domain=2)],
                 [1.,
                  100. - 1.,
@@ -123,12 +122,12 @@ def discretize_pymor():
 
             dirichlet_data=ConstantFunction(value=0., dim_domain=2),
 
-            neumann_data=ExpressionFunction('(x[0] > 0.45) * (x[0] < 0.55) * -1000.', dim_domain=2),
+            neumann_data=ExpressionFunction('(0.45 < x[0] < 0.55) * -1000.', dim_domain=2),
         ),
 
         T=1.,
 
-        initial_data=ExpressionFunction('(x[0] > 0.45) * (x[0] < 0.55) * (x[1] < 0.7) * 10.', dim_domain=2)
+        initial_data=ExpressionFunction('(0.45 < x[0] < 0.55) * (x[1] < 0.7) * 10.', dim_domain=2)
     )
 
     # discretize using continuous finite elements
@@ -200,7 +199,7 @@ def _discretize_fenics():
     # wrap everything as a pyMOR model
     ##################################
 
-    from pymor.bindings.fenics import FenicsVectorSpace, FenicsMatrixOperator, FenicsVisualizer
+    from pymor.bindings.fenics import FenicsMatrixOperator, FenicsVectorSpace, FenicsVisualizer
 
     fom = InstationaryModel(
         T=1.,

@@ -7,20 +7,20 @@ from typer import Argument, Option, run
 
 from pymor.analyticalproblems.domaindescriptions import LineDomain
 from pymor.analyticalproblems.elliptic import StationaryProblem
-from pymor.analyticalproblems.functions import ExpressionFunction, ConstantFunction, LincombFunction
+from pymor.analyticalproblems.functions import ConstantFunction, ExpressionFunction, LincombFunction
 from pymor.discretizers.builtin import discretize_stationary_cg, discretize_stationary_fv
 from pymor.parameters.functionals import ProjectionParameterFunctional
 
 
 def main(
-    problem_number: int = Argument(default=0, min=0, max=1,
-                                   help='Selects the problem to solve [0 or 1].'),
+    problem_number: int = Argument(
+        default=0, min=0, max=1, help='Selects the problem to solve [0 or 1].'),
     n: int = Argument(default=100, help='Grid interval count.'),
 
     fv: bool = Option(
         False, help='Use finite volume discretization instead of finite elements.'),
 ):
-    """Solves the Poisson equation in 1D using pyMOR's builtin discreization toolkit."""
+    """Solves the Poisson equation in 1D using pyMOR's builtin discretization toolkit."""
     rhss = [ExpressionFunction('10', 1),
             ExpressionFunction('(x[0] - 0.5)**2 * 1000', 1)]
     rhs = rhss[problem_number]

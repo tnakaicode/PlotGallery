@@ -4,10 +4,11 @@
 # License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
 
 import numpy as np
+from scipy.sparse import diags
 from typer import Argument, run
 
 from pymor.algorithms.pod import pod
-from pymor.algorithms.symplectic import psd_complex_svd, psd_cotengent_lift, psd_svd_like_decomp
+from pymor.algorithms.symplectic import psd_complex_svd, psd_cotangent_lift, psd_svd_like_decomp
 from pymor.models.symplectic import QuadraticHamiltonianModel
 from pymor.operators.block import BlockDiagonalOperator
 from pymor.operators.constructions import IdentityOperator, LincombOperator
@@ -16,7 +17,6 @@ from pymor.reductors.basic import InstationaryRBReductor
 from pymor.reductors.symplectic import QuadraticHamiltonianRBReductor
 from pymor.vectorarrays.interface import VectorArray
 from pymor.vectorarrays.numpy import NumpyVectorSpace
-from scipy.sparse import diags
 
 SYMPLECTIC_METHODS = ['cotangent_lift', 'complex_svd', 'svd_like']
 METHODS = ['pod'] + SYMPLECTIC_METHODS
@@ -140,7 +140,7 @@ def run_mor(fom, U_fom, method, red_dims):
     max_red_dim = red_dims.max()
     if method in SYMPLECTIC_METHODS:
         if method == 'cotangent_lift':
-            MAX_RB = psd_cotengent_lift(U_fom, max_red_dim)
+            MAX_RB = psd_cotangent_lift(U_fom, max_red_dim)
         elif method == 'complex_svd':
             MAX_RB = psd_complex_svd(U_fom, max_red_dim)
         elif method == 'svd_like':

@@ -5,14 +5,14 @@
 
 """Burgers demo."""
 
-import sys
 import math
+import sys
 import time
 
 from typer import Argument, Option, run
 
 from pymor.analyticalproblems.burgers import burgers_problem_2d
-from pymor.discretizers.builtin import discretize_instationary_fv, RectGrid, TriaGrid
+from pymor.discretizers.builtin import RectGrid, TriaGrid, discretize_instationary_fv
 from pymor.tools.typer import Choices
 
 
@@ -20,14 +20,10 @@ def main(
     exp: float = Argument(..., help='Exponent'),
 
     grid: int = Option(60, help='Use grid with (2*NI)*NI elements.'),
-    grid_type: Choices('rect tria') = Option(
-        'rect', help='Type of grid to use.'),
-    initial_data: Choices('sin bump') = Option(
-        'sin', help='Select the initial data.'),
-    lxf_lambda: float = Option(
-        1., help='Parameter lambda in Lax-Friedrichs flux.'),
-    periodic: bool = Option(
-        True, help='If not, solve with dirichlet boundary conditions on left and bottom boundary.'),
+    grid_type: Choices('rect tria') = Option('rect', help='Type of grid to use.'),
+    initial_data: Choices('sin bump') = Option('sin', help='Select the initial data.'),
+    lxf_lambda: float = Option(1., help='Parameter lambda in Lax-Friedrichs flux.'),
+    periodic: bool = Option(True, help='If not, solve with dirichlet boundary conditions on left and bottom boundary.'),
     nt: int = Option(100, help='Number of time steps.'),
     num_flux: Choices('lax_friedrichs engquist_osher simplified_engquist_osher') = Option(
         'engquist_osher',

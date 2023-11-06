@@ -3,6 +3,7 @@
 # Copyright pyMOR developers and contributors. All rights reserved.
 # License: BSD 2-Clause License (https://opensource.org/licenses/BSD-2-Clause)
 
+import matplotlib.pyplot as plt
 import numpy as np
 from typer import Argument, run
 
@@ -19,6 +20,8 @@ def main(
 
     Cascade of delay and integrator
     """
+    plt.rcParams['axes.grid'] = True
+
     # Transfer function
     def H(s):
         return np.array([[np.exp(-s) / (tau * s + 1)]])
@@ -27,7 +30,9 @@ def main(
         return np.array([[-(tau * s + tau + 1) * np.exp(-s) / (tau * s + 1) ** 2]])
 
     tf = TransferFunction(1, 1, H, dH)
-    w = np.logspace(-1, 3, 500)
+
+    # Bode plot
+    w = (1e-1, 1e3)
     fom_properties(tf, w)
 
     # Transfer function IRKA (TF-IRKA)
