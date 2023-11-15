@@ -109,12 +109,15 @@ def geom_plate(event=None):
     p2 = gp_Pnt(0, 10, 0)
     p3 = gp_Pnt(0, 10, 10)
     p4 = gp_Pnt(0, 0, 10)
-    p5 = gp_Pnt(5, 5, 5)
+    p5 = gp_Pnt(1, 1, 5)
+    p6 = gp_Pnt(5, 5, 3)
+    p7 = gp_Pnt(9, 9, 1)
     poly = make_closed_polygon([p1, p2, p3, p4])
     edges = [i for i in TopologyExplorer(poly).edges()]
-    face = make_n_sided(edges, [p5])
+    face = make_n_sided(edges, [p5, p6, p7])
     display.DisplayShape(edges)
-    display.DisplayShape(make_vertex(p5))
+    display.DisplayShape(p5)
+    display.DisplayShape(p6)
     display.DisplayShape(face, update=True)
 
 
