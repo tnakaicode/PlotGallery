@@ -6,20 +6,35 @@ from OCC.Display.SimpleGui import init_display
 import numpy as np
 from math import pi
 
-from OCC.Core.gp import gp_Pnt2d, gp_XOY, gp_Lin2d, gp_Ax3, gp_Dir2d
+from OCC.Core.gp import gp_Pnt2d, gp_Pnt, gp_Lin2d, gp_Ax3, gp_Dir2d, gp_Dir
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCC.Core.Geom import Geom_CylindricalSurface, Geom_ToroidalSurface, Geom_Curve, Geom_ConicalSurface
 from OCC.Core.GCE2d import GCE2d_MakeSegment
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakePolygon
 from OCCUtils.Common import vertex2pnt
 from OCCUtils.Construct import make_face, make_edge, make_wire
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 
-aCone = Geom_ConicalSurface(gp_Ax3(), np.deg2rad(30), 3)
-aTorus = Geom_ToroidalSurface(gp_Ax3(), 10, 3)
+def make_helix_eire(segment, surface, t0=0, t1=1):
+    print(segment, surface)
+    helix_api = BRepBuilderAPI_MakeEdge(aSegment, surface, t0, t1)
+    helix_edge = helix_api.Edge()
+    helix_vert = [vertex2pnt(helix_api.Vertex1()),
+                  vertex2pnt(helix_api.Vertex2())]
+    print(helix_vert)
+    if helix_vert[0].IsEqual(helix_vert[1], 0.1):
+        helix_wire = make_wire(helix_edge)
+    else:
+        helix_wire = make_wire([helix_edge, make_edge(*helix_vert)])
+    return helix_wire
+
+
 aCylinder = Geom_CylindricalSurface(gp_Ax3(), 3.0)
+aCone = Geom_ConicalSurface(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)),
+                            np.deg2rad(30), 3)
+aTorus = Geom_ToroidalSurface(gp_Ax3(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)),
+                              10, 3)
 
 # Build an helix
 u0, v0 = pi, 1.0
@@ -29,24 +44,31 @@ uv = np.sqrt(ut**2 + vt**2)
 aLine2d = gp_Lin2d(gp_Pnt2d(u0, v0), gp_Dir2d(ut, vt))
 aSegment = GCE2d_MakeSegment(aLine2d, 0, 1).Value()
 
-print(aSegment)
-helix_api = BRepBuilderAPI_MakeEdge(aSegment, aCylinder, 0.0, uv * 2 * pi * ur)
-helix_edge = helix_api.Edge()
-helix_vert = [vertex2pnt(helix_api.Vertex1()), vertex2pnt(helix_api.Vertex2())]
-print(helix_vert)
-if helix_vert[0].IsEqual(helix_vert[1], 0.1):
-    helix_wire = make_wire(helix_edge)
-else:
-    helix_wire = make_wire([helix_edge, make_edge(*helix_vert)])
-
+# Cylinder
+t0, t1 = 0.0, uv * 2 * pi * ur
+helix_wire = make_helix_eire(aSegment, aCylinder, t0, t1)
 face = make_face(aCylinder.Cylinder(), helix_wire)
+display.DisplayShape(make_face(aCylinder.Cylinder(), 0, 2 * pi, 0, 10))
+display.DisplayShape(helix_wire)
+# display.DisplayShape(face)
+
+# Cone
+t0, t1 = 0.0, uv * 2 * pi * ur
+helix_wire = make_helix_eire(aSegment, aCone, t0, t1)
+face = make_face(aCone.Cone(), helix_wire)
+display.DisplayShape(make_face(aCone.Cone(), 0, 2 * pi, 0, 10))
+display.DisplayShape(helix_wire)
+# display.DisplayShape(face)
+
+# Torus
+t0, t1 = 0.0, 1.5 * uv * 2 * pi * ur
+helix_wire = make_helix_eire(aSegment, aTorus, t0, t1)
+face = make_face(aTorus.Torus(), helix_wire)
+display.DisplayShape(make_face(aTorus.Torus(), 0, 2 * pi, 0, 2 * pi))
+display.DisplayShape(helix_wire)
+# display.DisplayShape(face)
 
 display.DisplayShape(aSegment)
-display.DisplayShape(make_face(aCylinder.Cylinder(), 0, 2 * pi, 0, 10))
-# display.DisplayShape(make_face(aTorus.Torus(), 0, 2*pi, 0, 2*pi))
-# display.DisplayShape(make_face(aCone.Cone(), 0, 2 * pi, 0, 10))
-# display.DisplayShape(face)
-display.DisplayShape(helix_wire, update=True)
 display.FitAll()
 start_display()
 
