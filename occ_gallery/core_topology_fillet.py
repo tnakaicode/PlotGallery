@@ -1,19 +1,19 @@
-##Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
+# Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
 ##
-##This file is part of pythonOCC.
+# This file is part of pythonOCC.
 ##
-##pythonOCC is free software: you can redistribute it and/or modify
-##it under the terms of the GNU Lesser General Public License as published by
-##the Free Software Foundation, either version 3 of the License, or
-##(at your option) any later version.
+# pythonOCC is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 ##
-##pythonOCC is distributed in the hope that it will be useful,
-##but WITHOUT ANY WARRANTY; without even the implied warranty of
-##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##GNU Lesser General Public License for more details.
+# pythonOCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 ##
-##You should have received a copy of the GNU Lesser General Public License
-##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 from math import cos, pi
 
@@ -76,21 +76,23 @@ def rake(event=None):
 
 
 def fillet_cylinder(event=None):
+    import numpy as np
     display.EraseAll()
     # Create Cylinder
     cylinder = BRepPrimAPI_MakeCylinder(
         gp_Ax2(gp_Pnt(-300, 0, 0), gp_Dir(0, 0, 1)), 100, 200
     ).Shape()
     fillet = BRepFilletAPI_MakeFillet(cylinder)
-    display.DisplayShape(cylinder, update=True)
+    # display.DisplayShape(cylinder, update=True)
     tab_point_2 = TColgp_Array1OfPnt2d(0, 20)
-    for i in range(0, 20):
-        point_2d = gp_Pnt2d(i * 2 * pi / 19, 60 * cos(i * pi / 19 - pi / 2) + 10)
+    for i, pt in enumerate(np.linspace(0, 2 * np.pi, 21)):
+        point_2d = gp_Pnt2d(pt, 5 * cos(2 * pt) + 10)
         tab_point_2.SetValue(i, point_2d)
-        display.DisplayShape(point_2d)
+        # display.DisplayShape(point_2d)
 
-    expl2 = TopologyExplorer(cylinder).edges()
-    fillet.Add(tab_point_2, next(expl2))
+    expl2 = list(TopologyExplorer(cylinder).edges())
+    fillet.Add(1, expl2[2])
+    fillet.Add(tab_point_2, expl2[0])
     fillet.Build()
     if fillet.IsDone():
         law_evolved_cylinder = fillet.Shape()
