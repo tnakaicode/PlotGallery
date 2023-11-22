@@ -11,7 +11,7 @@ from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.gp import gp_Trsf, gp_Vec
 
 display, start_display, add_menu, add_function_to_menu = init_display(
-    "qt-pyqt5")
+    "pyqt5")
 QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
 
 from OCC.Display.qtDisplay import qtViewer3d

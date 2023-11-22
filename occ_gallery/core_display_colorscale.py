@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 from OCC.Core.AIS import AIS_ColorScale
 from OCC.Core.Aspect import Aspect_TOTP_LEFT_LOWER
 from OCC.Core.Graphic3d import (
-    Graphic3d_ZLayerId_TopOSD,
     Graphic3d_TMF_2d,
     Graphic3d_TransformPers,
 )
@@ -47,7 +46,7 @@ colorscale.SetSize(300, 300)
 colorscale.SetRange(0.0, 10.0)
 colorscale.SetNumberOfIntervals(10)
 
-colorscale.SetZLayer(Graphic3d_ZLayerId_TopOSD)
+colorscale.SetZLayer(-5)
 colorscale.SetTransformPersistence(
     Graphic3d_TransformPers(Graphic3d_TMF_2d, Aspect_TOTP_LEFT_LOWER)
 )
