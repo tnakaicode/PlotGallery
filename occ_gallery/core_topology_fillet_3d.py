@@ -56,12 +56,14 @@ else:
 display.DisplayShape(box1_shell, transparency=0.7)
 
 box2 = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
-box2_faces = list(TopologyExplorer(box2).faces())
 
-# Rotate 0 degree
+# Rotate 45 degree
 box2_trsf = gp_Trsf()
-box2_trsf.SetRotation(gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)), np.deg2rad(0))
-box2_faces[0].Move(TopLoc_Location(box2_trsf))
+box2_trsf.SetRotation(
+    gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)), np.deg2rad(45))
+
+box2.Move(TopLoc_Location(box2_trsf))
+box2_faces = list(TopologyExplorer(box2).faces())
 
 # Make Shell by only two faces
 box2_shell = TopoDS_Shell()
@@ -78,7 +80,7 @@ fillet_edge = find_edge.EdgeTo()
 # Create Fillet of R5 on shared Edge.
 fillet = BRepFilletAPI_MakeFillet(box2_shell, 0)
 fillet.Add(5, fillet_edge)
-# fillet.Build() 
+fillet.Build()
 # RuntimeError: Standard_Failure There are no suitable edges for chamfer or fillet raised from method Build of class BRepBuilderAPI_MakeShape
 if fillet.IsDone():
     display.DisplayShape(fillet.Shape())
@@ -91,11 +93,11 @@ display.FitAll()
 start_display()
 
 # MakeFillet between 2 faces is Failure
-# 
+#
 # 共有辺を持つ2面の間にFilletを作ろうとしたところ、fillet.Build()の段階で失敗した。
 # 以下のコードでは、MakeBoxで作ったboxから辺を共有する2面を取り出してFilletを作っている。
 # box1では成功するが、面の位置を変えす(0度回転)明らかに共有する辺があるのにbox2では失敗する。
 # When I tried to create a Fillet between two faces with shared edges, it failed at the fillet.Build() stage.
 # In my code below, Fillet is created by taking 2 faces that share an edge from a box created by MakeBox.
 # It succeeds in box1, but fails in box2 when the faces are repositioned (rotated 0 degrees) and there are clearly shared edges.
-# 
+#
