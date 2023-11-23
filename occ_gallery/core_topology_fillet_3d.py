@@ -55,15 +55,12 @@ else:
     print("fillet is not done")
 display.DisplayShape(box1_shell, transparency=0.7)
 
-box2 = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
+box2_ = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
 
 # Rotate 45 degree
 box2_trsf = gp_Trsf()
-box2_trsf.SetRotation(
-    gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)), np.deg2rad(45))
-
-box2.Move(TopLoc_Location(box2_trsf))
-box2_faces = list(TopologyExplorer(box2).faces())
+box2_trsf.SetRotation(gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)), np.deg2rad(45))
+box2_faces = list(TopologyExplorer(box2_).faces())
 
 # Make Shell by only two faces
 box2_shell = TopoDS_Shell()
@@ -72,16 +69,18 @@ bild.MakeShell(box2_shell)
 for shp in [box2_faces[0], box2_faces[2]]:
     bild.Add(box2_shell, shp)
 
+box2_shell.Move(TopLoc_Location(box2_trsf))
+box2_shell_faces = list(TopologyExplorer(box2_shell).faces())
+
 # Find Edge that the two faces share
-find_edge = LocOpe_FindEdges(box2_faces[0], box2_faces[2])
+find_edge = LocOpe_FindEdges(box2_shell_faces[0], box2_shell_faces[1])
 find_edge.InitIterator()
 fillet_edge = find_edge.EdgeTo()
 
 # Create Fillet of R5 on shared Edge.
 fillet = BRepFilletAPI_MakeFillet(box2_shell, 0)
 fillet.Add(5, fillet_edge)
-fillet.Build()
-# RuntimeError: Standard_Failure There are no suitable edges for chamfer or fillet raised from method Build of class BRepBuilderAPI_MakeShape
+fillet.Build() 
 if fillet.IsDone():
     display.DisplayShape(fillet.Shape())
 else:
