@@ -71,8 +71,10 @@ bild.MakeShell(box2_shell)
 for shp in [box2_faces[0], box2_faces[2]]:
     bild.Add(box2_shell, shp)
 
+box2_shell_faces = list(TopologyExplorer(box2_shell).faces())
+
 # Find Edge that the two faces share
-find_edge = LocOpe_FindEdges(box2_faces[0], box2_faces[2])
+find_edge = LocOpe_FindEdges(box2_shell_faces[0], box2_shell_faces[1])
 find_edge.InitIterator()
 fillet_edge = find_edge.EdgeTo()
 
