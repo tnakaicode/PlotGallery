@@ -27,6 +27,7 @@ from OCC.Core.gp import gp_Ax2, gp_Pnt, gp_Dir, gp_Pnt2d, gp_Ax1, gp_Trsf
 from OCC.Core.LocOpe import LocOpe_FindEdges
 from OCC.Extend.TopologyUtils import TopologyExplorer
 from OCCUtils.Construct import make_box
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -55,40 +56,46 @@ else:
     print("fillet is not done")
 display.DisplayShape(box1_shell, transparency=0.7)
 
-box2 = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
-box2_faces = list(TopologyExplorer(box2).faces())
+box2_ = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
 
-# Rotate 0 degree
+# Rotate 30 degree
 box2_trsf = gp_Trsf()
 box2_trsf.SetRotation(gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)),
                       np.deg2rad(30))
+box2_faces = list(TopologyExplorer(box2_).faces())
 box2_faces[0].Move(TopLoc_Location(box2_trsf))
 
-# Make Shell by only two faces
-box2_shell = TopoDS_Shell()
-bild = BRep_Builder()
-bild.MakeShell(box2_shell)
-for shp in [box2_faces[0], box2_faces[2]]:
-    bild.Add(box2_shell, shp)
+# Make Shell by only two faces that are sewed
+sew = BRepBuilderAPI_Sewing()
+for face in [box2_faces[0], box2_faces[2]]:
+    sew.Add(face)
+sew.Perform()
+sewed = sew.SewedShape()
 
-box2_shell_faces = list(TopologyExplorer(box2_shell).faces())
+sewed_faces = list(TopologyExplorer(sewed).faces())
 
 # Find Edge that the two faces share
-find_edge = LocOpe_FindEdges(box2_shell_faces[0], box2_shell_faces[1])
+find_edge = LocOpe_FindEdges(sewed_faces[0], sewed_faces[1])
+find_edge.InitIterator()
+common_edge = find_edge.EdgeTo()
+
+# Find Edge of sewed shape that is shared with common_edge
+find_edge = LocOpe_FindEdges(common_edge, sewed)
 find_edge.InitIterator()
 fillet_edge = find_edge.EdgeTo()
 
+display.DisplayShape(fillet_edge)
+
 # Create Fillet of R5 on shared Edge.
-fillet = BRepFilletAPI_MakeFillet(box2_shell, 0)
+fillet = BRepFilletAPI_MakeFillet(sewed, 0)
 fillet.Add(5, fillet_edge)
-# fillet.Build()
-# RuntimeError: Standard_Failure There are no suitable edges for chamfer or fillet raised from method Build of class BRepBuilderAPI_MakeShape
+fillet.Build()
 if fillet.IsDone():
     display.DisplayShape(fillet.Shape())
 else:
     print("fillet is not done")
 
-display.DisplayShape(box2_shell, transparency=0.7)
+display.DisplayShape(sewed, transparency=0.7)
 
 display.FitAll()
 start_display()
