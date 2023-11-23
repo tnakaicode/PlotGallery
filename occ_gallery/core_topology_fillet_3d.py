@@ -55,12 +55,14 @@ else:
     print("fillet is not done")
 display.DisplayShape(box1_shell, transparency=0.7)
 
-box2_ = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
+box2 = make_box(gp_Pnt(40, 0, 0), 20, 20, 20)
+box2_faces = list(TopologyExplorer(box2).faces())
 
-# Rotate 45 degree
+# Rotate 0 degree
 box2_trsf = gp_Trsf()
-box2_trsf.SetRotation(gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)), np.deg2rad(45))
-box2_faces = list(TopologyExplorer(box2_).faces())
+box2_trsf.SetRotation(gp_Ax1(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)),
+                      np.deg2rad(30))
+box2_faces[0].Move(TopLoc_Location(box2_trsf))
 
 # Make Shell by only two faces
 box2_shell = TopoDS_Shell()
@@ -69,18 +71,16 @@ bild.MakeShell(box2_shell)
 for shp in [box2_faces[0], box2_faces[2]]:
     bild.Add(box2_shell, shp)
 
-box2_shell.Move(TopLoc_Location(box2_trsf))
-box2_shell_faces = list(TopologyExplorer(box2_shell).faces())
-
 # Find Edge that the two faces share
-find_edge = LocOpe_FindEdges(box2_shell_faces[0], box2_shell_faces[1])
+find_edge = LocOpe_FindEdges(box2_faces[0], box2_faces[2])
 find_edge.InitIterator()
 fillet_edge = find_edge.EdgeTo()
 
 # Create Fillet of R5 on shared Edge.
 fillet = BRepFilletAPI_MakeFillet(box2_shell, 0)
 fillet.Add(5, fillet_edge)
-fillet.Build() 
+# fillet.Build()
+# RuntimeError: Standard_Failure There are no suitable edges for chamfer or fillet raised from method Build of class BRepBuilderAPI_MakeShape
 if fillet.IsDone():
     display.DisplayShape(fillet.Shape())
 else:
@@ -100,3 +100,10 @@ start_display()
 # In my code below, Fillet is created by taking 2 faces that share an edge from a box created by MakeBox.
 # It succeeds in box1, but fails in box2 when the faces are repositioned (rotated 0 degrees) and there are clearly shared edges.
 #
+
+# 私は辺を共有するどんな2面でもFilletが作れないかと検討しています。
+# あなたの解決策は、2面をつくるためのBox全体を回転させているため、Box1とおなじ状態と言えます。
+# 例えば、最初のコードの回転を30度に変えた場合の2面のFilletを作る方法はないでしょうか？
+# I am considering the possibility of creating a Fillet with any 2 sides that share an edge.
+# Your solution is the same situation as Box1 because you are rotating the entire Box to create the 2 sides.
+# Is there any way to create a Fillet with 2 sides if, for example, I change the rotation of the first code to 30 degrees?
