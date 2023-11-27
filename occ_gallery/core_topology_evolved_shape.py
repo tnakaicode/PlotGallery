@@ -36,9 +36,11 @@ def evolved_shape():
         gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(-60.0, -60.0, -200.0)
     )
     S = BRepOffsetAPI_MakeEvolved(
-        P.Wire(), wprof.Wire(), GeomAbs_Arc, True, False, True, 0.0001
+        P.Wire(), wprof.Wire(), 0, True, True, True, 0.0001
     )
     S.Build()
+    display.DisplayShape(P.Wire())
+    display.DisplayShape(wprof.Wire())
     display.DisplayShape(S.Shape(), update=True)
 
 
