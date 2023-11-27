@@ -25,6 +25,7 @@ from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import read_step_file
 from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax3, gp_Ax2
 from OCC.Core.TopoDS import TopoDS_Shell, TopoDS_Compound
+from OCC.Core.BOPAlgo import BOPAlgo_Builder
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
@@ -123,6 +124,7 @@ if __name__ == "__main__":
     box2 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(-1, -1, -1))
     box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 1))
     box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
+    box5 = make_box(gp_Pnt(0.5, 0, 0), gp_Pnt(1.5, -1, -1))
 
     boxs = [box1, box3]
 
@@ -143,15 +145,12 @@ if __name__ == "__main__":
     property_of_box(boxs_sewed)  # Line: NG, Surface: NG
 
     # Make Shape by only two faces that are fused
-    fuse = BRepAlgoAPI_Fuse()
-    fuse_list = TopTools_ListOfShape()
-    for i, shp in enumerate(boxs):
-        fuse_list.Append(shp)
-    fuse.SetArguments(fuse_list)
-    fuse.Build()
-    print(fuse.IsDone())
-    boxs_fuse = BRepAlgoAPI_Fuse(boxs[0], boxs[1]).Shape()
-    property_of_box(boxs_fuse)  # Line: OK, Surface: OK
+    fuse = BOPAlgo_Builder()
+    for shp in boxs:
+        fuse.AddArgument(shp)
+    fuse.Perform()
+    boxs_fuse = fuse.Shape()
+    property_of_box(boxs_fuse)  # Line: OK, Surface: OK, Volume: OK
 
     # <class 'TopoDS_Compound'>
     # Skip Shared:  True
@@ -190,5 +189,6 @@ if __name__ == "__main__":
     display_box(box=box2, name="box2")
     display_box(box=box3, name="box3")
     display_box(box=box4, name="box4")
+    display_box(box=box5, name="box5")
     display.FitAll()
     start_display()
