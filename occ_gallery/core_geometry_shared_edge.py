@@ -20,7 +20,9 @@
 # https://github.com/tpaviot/pythonocc-core/issues/1268
 
 from OCC.Core.GProp import GProp_GProps
-from OCC.Core.BRepGProp import brepgprop_LinearProperties, brepgprop_SurfaceProperties
+from OCC.Core.BRepGProp import brepgprop
+from OCC.Display.SimpleGui import init_display
+from OCC.Extend.DataExchange import read_step_file
 
 
 def occ_core_edge_length_skipshared(shape):  # , Properties) -> float:
@@ -36,7 +38,7 @@ def occ_core_edge_length_skipshared(shape):  # , Properties) -> float:
         Calculated edge length
     """
     Properties = GProp_GProps()
-    brepgprop_LinearProperties(shape, Properties, True)
+    brepgprop.LinearProperties(shape, Properties, True)
 
     Length_skipshared = Properties.Mass()
 
@@ -57,7 +59,7 @@ def occ_core_surface_area_skipshared(shape):  # , Properties) -> float:
         Calculated surface area
     """
     Properties = GProp_GProps()
-    brepgprop_SurfaceProperties(shape, Properties, True)
+    brepgprop.SurfaceProperties(shape, Properties, True)
 
     Area_skipshared = Properties.Mass()
 
@@ -75,13 +77,45 @@ def _Tcol_dim_1(li, _type):
 
 
 if __name__ == "__main__":
-    from OCC.Display.SimpleGui import init_display
-    from OCC.Extend.DataExchange import read_step_file
     display, start_display, add_menu, add_function_to_menu = init_display()
 
     shp = read_step_file("./assets/models/array3_2mm3_area_edge.step")
     print(occ_core_edge_length_skipshared(shp))
     print(occ_core_surface_area_skipshared(shp))
-    display.DisplayShape(shp)
+    # display.DisplayShape(shp)
+
+    from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax3, gp_Ax2
+    from OCC.Core.TopoDS import TopoDS_Shell, TopoDS_Compound
+    from OCC.Core.BRep import BRep_Builder
+    from OCC.Core.LocOpe import LocOpe_FindEdges, LocOpe_FindEdgesInFace
+    from OCCUtils.Construct import make_box
+    box1 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 1))
+    box2 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(-1, -1, -1))
+    box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 1))
+    box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
+
+    # Make Compound by few boxs
+    boxs = [box1, box3]
+    boxs_comp = TopoDS_Compound()
+    bild = BRep_Builder()
+    bild.MakeCompound(boxs_comp)
+    for shp in boxs:
+        bild.Add(boxs_comp, shp)
+        
+    boxs_prop_line = GProp_GProps()
+    brepgprop.LinearProperties(boxs_comp, boxs_prop_line, True, False)
+    print(boxs_prop_line.Mass())
+
+    # Find Edge that the two boxes share
+    find_edge = LocOpe_FindEdges(boxs[0], boxs[1])
+    find_edge.InitIterator()
+    while find_edge.More():
+        display.DisplayShape(find_edge.EdgeFrom(), color="BLUE1")
+        find_edge.Next()
+
+    display.DisplayShape(box1)
+    display.DisplayShape(box2)
+    display.DisplayShape(box3)
+    display.DisplayShape(box4)
     display.FitAll()
     start_display()
