@@ -124,11 +124,11 @@ if __name__ == "__main__":
     box2 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(-1, -1, -1))
     box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 1))
     box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
-    box5 = make_box(gp_Pnt(0.5, 0, 0), gp_Pnt(1.5, -1, -1))
+    box5 = make_box(gp_Pnt(0.5, -0.5, 0), gp_Pnt(1.5, -1.5, -1))
 
     boxs = [box1, box3]
 
-    # Make Compound by few boxs
+    # Make Compound by two boxes
     boxs_comp = TopoDS_Compound()
     bild = BRep_Builder()
     bild.MakeCompound(boxs_comp)
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         bild.Add(boxs_comp, shp)
     property_of_box(boxs_comp)  # Line: NG, Surface: NG
 
-    # Make Shell by only two faces that are sewed
+    # Make Shell by sewing two boxes
     sew = BRepBuilderAPI_Sewing()
     for shp in boxs:
         sew.Add(shp)
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     boxs_sewed = sew.SewedShape()
     property_of_box(boxs_sewed)  # Line: NG, Surface: NG
 
-    # Make Shape by only two faces that are fused
+    # Make Shape by fuse two boxes
     fuse = BOPAlgo_Builder()
     for shp in boxs:
         fuse.AddArgument(shp)
@@ -192,3 +192,11 @@ if __name__ == "__main__":
     display_box(box=box5, name="box5")
     display.FitAll()
     start_display()
+
+    # 2つのBoxをどのようにつなげるかによって結果が変わります。
+    # 私がトライした3つの方法(MakeCompound/Sewing/Fuse)では、Fuseだけが妥当な結果を出した。
+    # Edgeの一部、Faceの一部、Volumeの一部を共有していた場合の検証や、3つ以上のBoxを繋げた場合の検証は行っていない。
+
+    # The results depend on how you connect the two boxes.
+    # I tried of the three methods (MakeCompound/Sewing/Fuse), and gave reasonable results only by Fuse.
+    # I did not verify if part of the Edge, part of the Face, or part of the Volume was shared, or if more than 3 Boxes were connected.
