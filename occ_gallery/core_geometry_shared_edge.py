@@ -87,7 +87,9 @@ if __name__ == "__main__":
     from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax3, gp_Ax2
     from OCC.Core.TopoDS import TopoDS_Shell, TopoDS_Compound
     from OCC.Core.BRep import BRep_Builder
+    from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
     from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
+    from OCC.Core.TopTools import TopTools_ListOfShape
     from OCC.Core.LocOpe import LocOpe_FindEdges, LocOpe_FindEdgesInFace
     from OCCUtils.Construct import make_box
     box1 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 1))
@@ -96,24 +98,31 @@ if __name__ == "__main__":
     box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
 
     boxs = [box1, box3]
-    skip_shared = False
-    use_triangle = False
-    only_closed = True
-    
-    def property_of_box(box=make_box(1,1,1)):
+
+    def property_of_box(box=make_box(1, 1, 1)):
+        skip_shared = True
+        use_triangle = False
+        only_closed = True
+
         print(box)
         print("Skip Shared: ", skip_shared)
         boxs_prop_line = GProp_GProps()
-        brepgprop.LinearProperties(box, boxs_prop_line, skip_shared, use_triangle)
+        brepgprop.LinearProperties(box,
+                                   boxs_prop_line,
+                                   skip_shared, use_triangle)
         print("Mass of Lines", boxs_prop_line.Mass())
 
         boxs_prop_surf = GProp_GProps()
-        brepgprop.SurfaceProperties(box, boxs_prop_surf, skip_shared, use_triangle)
+        brepgprop.SurfaceProperties(box,
+                                    boxs_prop_surf,
+                                    skip_shared, use_triangle)
         print("Mass of Surfaces", boxs_prop_surf.Mass())
 
         boxs_prop_volm = GProp_GProps()
-        brepgprop.VolumeProperties(box, boxs_prop_volm, only_closed, skip_shared, use_triangle)
-        print("Mass of Surfaces", boxs_prop_volm.Mass())
+        brepgprop.VolumeProperties(box,
+                                   boxs_prop_volm,
+                                   only_closed, skip_shared, use_triangle)
+        print("Mass of Volume", boxs_prop_volm.Mass())
 
     # Make Compound by few boxs
     boxs_comp = TopoDS_Compound()
@@ -121,15 +130,26 @@ if __name__ == "__main__":
     bild.MakeCompound(boxs_comp)
     for shp in boxs:
         bild.Add(boxs_comp, shp)
-    property_of_box(boxs_comp)
-    
+    property_of_box(boxs_comp)  # Line: NG, Surface: NG
+
     # Make Shell by only two faces that are sewed
     sew = BRepBuilderAPI_Sewing()
     for shp in boxs:
         sew.Add(shp)
     sew.Perform()
     boxs_sewed = sew.SewedShape()
-    property_of_box(boxs_sewed)
+    property_of_box(boxs_sewed)  # Line: NG, Surface: NG
+
+    # Make Shape by only two faces that are fused
+    fuse = BRepAlgoAPI_Fuse()
+    fuse_list = TopTools_ListOfShape()
+    for i, shp in enumerate(boxs):
+        fuse_list.Append(shp)
+    fuse.SetArguments(fuse_list)
+    fuse.Build()
+    print(fuse.IsDone())
+    boxs_fuse = BRepAlgoAPI_Fuse(boxs[0], boxs[1]).Shape()
+    property_of_box(boxs_fuse)  # Line: OK, Surface: OK
 
     # <class 'TopoDS_Compound'>
     # Skip Shared:  True
@@ -150,14 +170,14 @@ if __name__ == "__main__":
         display.DisplayShape(find_edge.EdgeTo(), color="BLUE1")
         display.DisplayShape(find_edge.EdgeFrom(), color="RED")
         find_edge.Next()
-    
-    def display_box(box=make_box(1,1,1), name="box"):
+
+    def display_box(box=make_box(1, 1, 1), name="box"):
         display.DisplayShape(box, transparency=0.9)
         prop = GProp_GProps()
         brepgprop.SurfaceProperties(box, prop, True, False)
         pnt = prop.CentreOfMass()
         display.DisplayMessage(pnt, name)
-    
+
     display_box(box=box1, name="box1")
     display_box(box=box2, name="box2")
     display_box(box=box3, name="box3")
