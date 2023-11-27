@@ -92,12 +92,28 @@ if __name__ == "__main__":
     from OCCUtils.Construct import make_box
     box1 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 1))
     box2 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(-1, -1, -1))
-    box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 2))
+    box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 1))
     box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
 
     boxs = [box1, box3]
-    skip_shared = True
+    skip_shared = False
     use_triangle = False
+    only_closed = True
+    
+    def property_of_box(box=make_box(1,1,1)):
+        print(box)
+        print("Skip Shared: ", skip_shared)
+        boxs_prop_line = GProp_GProps()
+        brepgprop.LinearProperties(box, boxs_prop_line, skip_shared, use_triangle)
+        print("Mass of Lines", boxs_prop_line.Mass())
+
+        boxs_prop_surf = GProp_GProps()
+        brepgprop.SurfaceProperties(box, boxs_prop_surf, skip_shared, use_triangle)
+        print("Mass of Surfaces", boxs_prop_surf.Mass())
+
+        boxs_prop_volm = GProp_GProps()
+        brepgprop.VolumeProperties(box, boxs_prop_volm, only_closed, skip_shared, use_triangle)
+        print("Mass of Surfaces", boxs_prop_volm.Mass())
 
     # Make Compound by few boxs
     boxs_comp = TopoDS_Compound()
@@ -105,31 +121,34 @@ if __name__ == "__main__":
     bild.MakeCompound(boxs_comp)
     for shp in boxs:
         bild.Add(boxs_comp, shp)
-        
-    boxs_prop_line = GProp_GProps()
-    brepgprop.LinearProperties(boxs_comp, boxs_prop_line, skip_shared, use_triangle)
-    print(boxs_comp, boxs_prop_line.Mass())
-    # skip = True , Mass = 28
-    # skip = False, Mass = 56
-
+    property_of_box(boxs_comp)
+    
     # Make Shell by only two faces that are sewed
     sew = BRepBuilderAPI_Sewing()
     for shp in boxs:
         sew.Add(shp)
     sew.Perform()
     boxs_sewed = sew.SewedShape()
-        
-    boxs_prop_line = GProp_GProps()
-    brepgprop.LinearProperties(boxs_sewed, boxs_prop_line, skip_shared, use_triangle)
-    print(boxs_sewed, boxs_prop_line.Mass())
-    # skip = True , Mass = 28
-    # skip = False, Mass = 56
+    property_of_box(boxs_sewed)
+
+    # <class 'TopoDS_Compound'>
+    # Skip Shared:  True
+    # Mass of Lines 24.0
+    # Mass of Surfaces 12.0
+    # Mass of Surfaces 1.9999999999999991
+
+    # <class 'TopoDS_Compound'>
+    # Skip Shared:  False
+    # Mass of Lines 48.0
+    # Mass of Surfaces 12.0
+    # Mass of Surfaces 1.9999999999999991
 
     # Find Edge that the two boxes share
     find_edge = LocOpe_FindEdges(boxs[0], boxs[1])
     find_edge.InitIterator()
     while find_edge.More():
         display.DisplayShape(find_edge.EdgeTo(), color="BLUE1")
+        display.DisplayShape(find_edge.EdgeFrom(), color="RED")
         find_edge.Next()
     
     def display_box(box=make_box(1,1,1), name="box"):
