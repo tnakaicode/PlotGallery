@@ -23,6 +23,14 @@ from OCC.Core.GProp import GProp_GProps
 from OCC.Core.BRepGProp import brepgprop
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import read_step_file
+from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax3, gp_Ax2
+from OCC.Core.TopoDS import TopoDS_Shell, TopoDS_Compound
+from OCC.Core.BRep import BRep_Builder
+from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
+from OCC.Core.TopTools import TopTools_ListOfShape
+from OCC.Core.LocOpe import LocOpe_FindEdges, LocOpe_FindEdgesInFace
+from OCCUtils.Construct import make_box
 
 
 def occ_core_edge_length_skipshared(shape):  # , Properties) -> float:
@@ -76,6 +84,33 @@ def _Tcol_dim_1(li, _type):
     return pts
 
 
+def property_of_box(box=make_box(1, 1, 1)):
+    skip_shared = True
+    use_triangle = False
+    only_closed = True
+
+    print(box)
+    print("Skip Shared: ", skip_shared)
+
+    boxs_prop_line = GProp_GProps()
+    brepgprop.LinearProperties(box,
+                               boxs_prop_line,
+                               skip_shared, use_triangle)
+    print("Mass of Lines", boxs_prop_line.Mass())
+
+    boxs_prop_surf = GProp_GProps()
+    brepgprop.SurfaceProperties(box,
+                                boxs_prop_surf,
+                                skip_shared, use_triangle)
+    print("Mass of Surfaces", boxs_prop_surf.Mass())
+
+    boxs_prop_volm = GProp_GProps()
+    brepgprop.VolumeProperties(box,
+                               boxs_prop_volm,
+                               only_closed, skip_shared, use_triangle)
+    print("Mass of Volume", boxs_prop_volm.Mass())
+
+
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -84,45 +119,12 @@ if __name__ == "__main__":
     print(occ_core_surface_area_skipshared(shp))
     # display.DisplayShape(shp)
 
-    from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax3, gp_Ax2
-    from OCC.Core.TopoDS import TopoDS_Shell, TopoDS_Compound
-    from OCC.Core.BRep import BRep_Builder
-    from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
-    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
-    from OCC.Core.TopTools import TopTools_ListOfShape
-    from OCC.Core.LocOpe import LocOpe_FindEdges, LocOpe_FindEdgesInFace
-    from OCCUtils.Construct import make_box
     box1 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 1))
     box2 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(-1, -1, -1))
     box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 1))
     box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
 
     boxs = [box1, box3]
-
-    def property_of_box(box=make_box(1, 1, 1)):
-        skip_shared = True
-        use_triangle = False
-        only_closed = True
-
-        print(box)
-        print("Skip Shared: ", skip_shared)
-        boxs_prop_line = GProp_GProps()
-        brepgprop.LinearProperties(box,
-                                   boxs_prop_line,
-                                   skip_shared, use_triangle)
-        print("Mass of Lines", boxs_prop_line.Mass())
-
-        boxs_prop_surf = GProp_GProps()
-        brepgprop.SurfaceProperties(box,
-                                    boxs_prop_surf,
-                                    skip_shared, use_triangle)
-        print("Mass of Surfaces", boxs_prop_surf.Mass())
-
-        boxs_prop_volm = GProp_GProps()
-        brepgprop.VolumeProperties(box,
-                                   boxs_prop_volm,
-                                   only_closed, skip_shared, use_triangle)
-        print("Mass of Volume", boxs_prop_volm.Mass())
 
     # Make Compound by few boxs
     boxs_comp = TopoDS_Compound()
@@ -155,13 +157,19 @@ if __name__ == "__main__":
     # Skip Shared:  True
     # Mass of Lines 24.0
     # Mass of Surfaces 12.0
-    # Mass of Surfaces 1.9999999999999991
-
+    # Mass of Volume 1.9999999999999991
+    #
     # <class 'TopoDS_Compound'>
-    # Skip Shared:  False
-    # Mass of Lines 48.0
+    # Skip Shared:  True
+    # Mass of Lines 24.0
     # Mass of Surfaces 12.0
-    # Mass of Surfaces 1.9999999999999991
+    # Mass of Volume 1.9999999999999991
+    #
+    # <class 'TopoDS_Compound'>
+    # Skip Shared:  True
+    # Mass of Lines 20.0
+    # Mass of Surfaces 10.0
+    # Mass of Volume 1.9999999999999993
 
     # Find Edge that the two boxes share
     find_edge = LocOpe_FindEdges(boxs[0], boxs[1])
