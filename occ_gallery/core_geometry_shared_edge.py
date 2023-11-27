@@ -87,15 +87,19 @@ if __name__ == "__main__":
     from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax3, gp_Ax2
     from OCC.Core.TopoDS import TopoDS_Shell, TopoDS_Compound
     from OCC.Core.BRep import BRep_Builder
+    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
     from OCC.Core.LocOpe import LocOpe_FindEdges, LocOpe_FindEdgesInFace
     from OCCUtils.Construct import make_box
     box1 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, 1, 1))
     box2 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(-1, -1, -1))
-    box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 1))
+    box3 = make_box(gp_Pnt(1, 0, 0), gp_Pnt(2, 1, 2))
     box4 = make_box(gp_Pnt(0, 0, 0), gp_Pnt(1, -1, -1))
 
-    # Make Compound by few boxs
     boxs = [box1, box3]
+    skip_shared = True
+    use_triangle = False
+
+    # Make Compound by few boxs
     boxs_comp = TopoDS_Compound()
     bild = BRep_Builder()
     bild.MakeCompound(boxs_comp)
@@ -103,19 +107,41 @@ if __name__ == "__main__":
         bild.Add(boxs_comp, shp)
         
     boxs_prop_line = GProp_GProps()
-    brepgprop.LinearProperties(boxs_comp, boxs_prop_line, True, False)
-    print(boxs_prop_line.Mass())
+    brepgprop.LinearProperties(boxs_comp, boxs_prop_line, skip_shared, use_triangle)
+    print(boxs_comp, boxs_prop_line.Mass())
+    # skip = True , Mass = 28
+    # skip = False, Mass = 56
+
+    # Make Shell by only two faces that are sewed
+    sew = BRepBuilderAPI_Sewing()
+    for shp in boxs:
+        sew.Add(shp)
+    sew.Perform()
+    boxs_sewed = sew.SewedShape()
+        
+    boxs_prop_line = GProp_GProps()
+    brepgprop.LinearProperties(boxs_sewed, boxs_prop_line, skip_shared, use_triangle)
+    print(boxs_sewed, boxs_prop_line.Mass())
+    # skip = True , Mass = 28
+    # skip = False, Mass = 56
 
     # Find Edge that the two boxes share
     find_edge = LocOpe_FindEdges(boxs[0], boxs[1])
     find_edge.InitIterator()
     while find_edge.More():
-        display.DisplayShape(find_edge.EdgeFrom(), color="BLUE1")
+        display.DisplayShape(find_edge.EdgeTo(), color="BLUE1")
         find_edge.Next()
-
-    display.DisplayShape(box1)
-    display.DisplayShape(box2)
-    display.DisplayShape(box3)
-    display.DisplayShape(box4)
+    
+    def display_box(box=make_box(1,1,1), name="box"):
+        display.DisplayShape(box, transparency=0.9)
+        prop = GProp_GProps()
+        brepgprop.SurfaceProperties(box, prop, True, False)
+        pnt = prop.CentreOfMass()
+        display.DisplayMessage(pnt, name)
+    
+    display_box(box=box1, name="box1")
+    display_box(box=box2, name="box2")
+    display_box(box=box3, name="box3")
+    display_box(box=box4, name="box4")
     display.FitAll()
     start_display()
