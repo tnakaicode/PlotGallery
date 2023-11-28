@@ -20,7 +20,7 @@
 from OCC.Core.gp import gp_OX2d
 from OCC.Core.GCE2d import GCE2d_MakeEllipse
 from OCC.Core.Geom2d import Geom2d_TrimmedCurve
-from OCC.Core.Geom2dConvert import geom2dconvert_CurveToBSplineCurve
+from OCC.Core.Geom2dConvert import geom2dconvert
 from OCC.Core.Convert import Convert_TgtThetaOver2
 
 from OCC.Display.SimpleGui import init_display
@@ -33,7 +33,7 @@ def curves2d_from_curves():
     axis = gp_OX2d()
     ellipse = GCE2d_MakeEllipse(axis, major, minor).Value()
     trimmed_curve = Geom2d_TrimmedCurve(ellipse, -1, 2, True)
-    bspline = geom2dconvert_CurveToBSplineCurve(
+    bspline = geom2dconvert.CurveToBSplineCurve(
         trimmed_curve, Convert_TgtThetaOver2)
     display.DisplayShape(bspline, update=True)
 

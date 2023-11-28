@@ -24,7 +24,7 @@ import sys
 
 from OCC.Core.gp import gp_Pnt2d, gp_Pln
 from OCC.Core.Geom import Geom_Plane
-from OCC.Core.FairCurve import FairCurve_MinimalVariation, FairCurve_DistributionOfEnergy, FairCurve_DistributionOfJerk
+from OCC.Core.FairCurve import FairCurve_MinimalVariation, FairCurve_EnergyOfBatten, FairCurve_EnergyOfMVC
 from OCC.Core.FEmTool import FEmTool_ElementsOfRefMatrix, FEmTool_LinearJerk, FEmTool_LinearFlexion
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCC.Display.SimpleGui import init_display
@@ -64,8 +64,8 @@ def faircurve(event=None):
         # TODO: the parameter slope needs to be visualized
         slope = i / 100.
         bc = batten_curve(pt1, pt2, height, slope,
-                          math.radians(i), math.radians(-i))
-        display.EraseAll()
+                          math.radians(i / 2), math.radians(-i))
+        # display.EraseAll()
         edge = BRepBuilderAPI_MakeEdge(bc, pl).Edge()
         display.DisplayShape(edge, update=True)
         time.sleep(0.21)
@@ -80,3 +80,10 @@ if __name__ == "__main__":
     add_function_to_menu('fair curve', faircurve)
     add_function_to_menu('fair curve', exit)
     start_display()
+
+    # FairCurve_MinimalVariation.Curve()
+    # FairCurve_EnergyOfBatten.Value()
+    # FairCurve_EnergyOfMVC.Value()
+    # FEmTool_ElementsOfRefMatrix.Value()
+    # FEmTool_LinearFlexion.Value()
+    # FEmTool_LinearJerk.Hessian()
