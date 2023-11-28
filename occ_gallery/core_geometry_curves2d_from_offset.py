@@ -50,13 +50,13 @@ def curves2d_from_offset(event=None):
     spline_2_api = Geom2dAPI_Interpolate(pnt2d_array_h, True, 0.1E-3)
     spline_2_api.Perform()
     spline_2 = spline_2_api.Curve()
-    print(spline_2.Continuity())
+    print(spline_2.Continuity(), spline_2.EndPoint())
 
     dist = 1
     offset_curve1 = Geom2d_OffsetCurve(spline_1, dist, True)
     result = offset_curve1.IsCN(2)
     print("Offset curve yellow is C2: %r" % result, offset_curve1.Continuity())
-    dist2 = -1.0
+    dist2 = 0.1
     offset_curve2 = Geom2d_OffsetCurve(spline_2, dist2, True)
     result2 = offset_curve2.IsCN(2)
     print("Offset curve blue is C2: %r" % result2, offset_curve2.Continuity())
