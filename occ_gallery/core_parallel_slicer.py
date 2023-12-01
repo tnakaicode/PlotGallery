@@ -60,7 +60,7 @@ def vectorized_slicer(li):
         plane = gp_Pln(gp_Pnt(0.0, 0.0, z), gp_Dir(0.0, 0.0, 1.0))
         face = BRepBuilderAPI_MakeFace(plane).Shape()
         # Computes Shape/Plane intersection
-        section = BRepAlgoAPI_Section(shape, face)
+        section = BRepAlgoAPI_Section(shape, plane)
         section.Build()
         if section.IsDone():
             _slices.append(section.Shape())
