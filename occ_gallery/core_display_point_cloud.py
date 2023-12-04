@@ -56,6 +56,7 @@ def pcd_get_number_of_vertices(pcd_filename):
 
 
 def random_points(event=None):
+    display.EraseAll()
     n_points = 500000
     # first, create a set of 1000 points
     points_3d = Graphic3d_ArrayOfPoints(n_points)
@@ -77,6 +78,7 @@ def random_points(event=None):
 
 
 def bunny(event=None):
+    display.EraseAll()
     pcd_file_name = os.path.join("..", "assets", "models", "bunny.pcd")
     # compute number of lines
     nbr_of_vertices = pcd_get_number_of_vertices(pcd_file_name)
@@ -101,6 +103,7 @@ def bunny(event=None):
 
 
 def tabletop(event=None):
+    display.EraseAll()
     pcd_file = open(
         os.path.join("..", "assets", "models", "tabletop.pcd"), "r"
     ).readlines()[11:]

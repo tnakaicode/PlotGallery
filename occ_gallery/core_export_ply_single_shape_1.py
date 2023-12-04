@@ -17,29 +17,37 @@
 
 from OCC.Core.TDocStd import TDocStd_Document
 from OCC.Core.TCollection import TCollection_ExtendedString, TCollection_AsciiString
-from OCC.Core.XCAFDoc import (
-    XCAFDoc_DocumentTool_ShapeTool,
-    XCAFDoc_DocumentTool_LayerTool,
-)
+from OCC.Core.XCAFDoc import XCAFDoc_DocumentTool
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeSphere
 from OCC.Core.TColStd import TColStd_IndexedDataMapOfStringString
 from OCC.Core.Message import Message_ProgressRange
 from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
-from OCC.Core.BRepTools import breptools_Clean
+from OCC.Core.BRepTools import breptools
+from OCC.Core.gp import gp_Pnt, gp_XYZ, gp_Mat, gp_GTrsf
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_GTransform
 
-# GLTF export
+# Ply export
 from OCC.Core.RWPly import RWPly_CafWriter
 
 # create the shapeto export
-shp = BRepPrimAPI_MakeSphere(60.0).Shape()
+sphere = BRepPrimAPI_MakeSphere(60.0).Shape()
+
+a1 = 1
+a2 = 1
+a3 = 1
+gTrsf = gp_GTrsf(gp_Mat(a1, 0, 0,
+                        0, a2, 0,
+                        0, 0, a3),
+                 gp_XYZ(0.0, 0.0, 0.0))
+shp = BRepBuilderAPI_GTransform(sphere, gTrsf).Shape()
 
 # create a document
 doc = TDocStd_Document("pythonocc-doc")
-shape_tool = XCAFDoc_DocumentTool_ShapeTool(doc.Main())
-layer_tool = XCAFDoc_DocumentTool_LayerTool(doc.Main())
+shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+layer_tool = XCAFDoc_DocumentTool.LayerTool(doc.Main())
 
 # mesh shape
-breptools_Clean(shp)
+breptools.Clean(shp)
 
 # Triangulate
 msh_algo = BRepMesh_IncrementalMesh(shp, True)
