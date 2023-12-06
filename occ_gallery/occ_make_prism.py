@@ -14,8 +14,10 @@ from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.TColgp import TColgp_Array1OfPnt
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakePrism
+from OCC.Core.BRepSweep import BRepSweep_Prism
 
 from OCC.Display.SimpleGui import init_display
+
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 # the bspline profile
@@ -33,8 +35,8 @@ profile = BRepBuilderAPI_MakeEdge(bspline).Edge()
 
 
 # the linear path
-starting_point = gp_Pnt(0., 0., 0.)
-end_point = gp_Pnt(0., 0., 6.)
+starting_point = gp_Pnt(0.0, 0.0, 0.0)
+end_point = gp_Pnt(0.0, 0.0, 6.0)
 vec = gp_Vec(starting_point, end_point)
 path = BRepBuilderAPI_MakeEdge(starting_point, end_point).Edge()
 
@@ -42,10 +44,11 @@ path = BRepBuilderAPI_MakeEdge(starting_point, end_point).Edge()
 # Build the prism model resulting from the bspline extrusion allong the linear path
 
 
-# extrusion
 prism = BRepPrimAPI_MakePrism(profile, vec).Shape()
+display.DisplayShape(prism, color="BLUE1")
 
-display.DisplayShape(prism)
+sweep = BRepSweep_Prism(prism, gp_Vec(1, 1, 0)).Shape()
+display.DisplayShape(sweep)
 
 display.FitAll()
 start_display()
