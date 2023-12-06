@@ -8,7 +8,7 @@ import tempfile
 
 # OCC imports
 from OCC.Display.SimpleGui import init_display
-from OCC.Core.BRepTools import breptools_Write
+from OCC.Core.BRepTools import breptools
 from OCC.Core.gp import gp_Vec
 from OCC.Extend.ShapeFactory import translate_shp
 from OCC.Extend.DataExchange import read_step_file, read_stl_file
@@ -29,7 +29,7 @@ ventilator_shp = read_step_file(os.path.join(
 # dump the geometry to a brep file, check it worked
 BREP_BASENAME = "ventilator.brep"
 BREP_FILENAME = os.path.join(TMP_DIR, BREP_BASENAME)
-breptools_Write(ventilator_shp, BREP_FILENAME)
+breptools.Write(ventilator_shp, BREP_FILENAME)
 assert os.path.isfile(BREP_FILENAME)
 
 # create the gmesh file
