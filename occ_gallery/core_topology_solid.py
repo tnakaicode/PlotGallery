@@ -23,7 +23,7 @@ from OCC.Core.BRepAlgoAPI import (
     BRepAlgoAPI_Section,
     BRepAlgoAPI_Cut,
 )
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace, BRepBuilderAPI_Transform
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace, BRepBuilderAPI_Transform, BRepBuilderAPI_Sewing
 from OCC.Core.BRepPrimAPI import (
     BRepPrimAPI_MakeBox,
     BRepPrimAPI_MakeWedge,
@@ -33,8 +33,14 @@ from OCC.Core.BRepPrimAPI import (
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import write_step_file
 from OCC.Core.gp import gp_Vec, gp_Ax2, gp_Pnt, gp_Dir, gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.TopoDS import topods
+from OCC.Core.Geom import Geom_Line
+from OCC.Core.GeomAdaptor import GeomAdaptor_Curve
+from OCC.Core.BRepTools import breptools
+from OCC.Core.BRepAdaptor import BRepAdaptor_Curve
 from OCC.Core.BRepIntCurveSurface import BRepIntCurveSurface_Inter
-from OCCUtils.Construct import make_edge
+from OCCUtils.Construct import make_edge, make_polygon, make_face
+from OCCUtils.Common import midpoint, point_in_solid
 
 
 def translate_topods_from_vector(brep_or_iterable, vec, copy=False):
@@ -60,12 +66,32 @@ if __name__ == "__main__":
     fuse_box = BRepAlgoAPI_Fuse(box1, box2).Shape()
     fuse_box = BRepAlgoAPI_Fuse(fuse_box, box3).Shape()
 
+    pts = [gp_Pnt(1, 2, 0),
+           gp_Pnt(2, 2, 0),
+           gp_Pnt(2, 4, 1.5)]
+    face = make_face(make_polygon(pts, closed=True))
+    # fuse_box = BRepAlgoAPI_Fuse(fuse_box, face).Shape()
+    # sew = BRepBuilderAPI_Sewing()
+    # sew.Add(fuse_box)
+    # sew.Add(face)
+    # sew.Perform()
+    # fuse_box = sew.SewedShape()
+
+    from OCC.Core.TopoDS import TopoDS_Compound
+    from OCC.Core.BRep import BRep_Builder
+    # Make Compound by two boxes
+    boxs_comp = TopoDS_Compound()
+    bild = BRep_Builder()
+    bild.MakeCompound(boxs_comp)
+    bild.Add(boxs_comp, fuse_box)
+    bild.Add(boxs_comp, face)
+
     Sphere = BRepPrimAPI_MakeSphere(gp_Pnt(1.5, 0.8, 1.0), 0.5).Shape()
-    Cut = BRepAlgoAPI_Cut(fuse_box, Sphere).Shape()
+    Cut = BRepAlgoAPI_Cut(boxs_comp, Sphere).Shape()
 
     display.DisplayShape(Cut)
     print(Cut)
-    # write_step_file(Cut, "./core_topology_solid.stp")
+    write_step_file(Cut, "./core_topology_solid.stp")
 
     from OCC.Core.IntCurveSurface import IntCurveSurface_IntersectionPoint, IntCurveSurface_TransitionOnCurve
 
@@ -75,12 +101,25 @@ if __name__ == "__main__":
     dat = []
     while api.More():
         display.DisplayShape(api.Pnt())
-        point = api.Point()
-        point.Dump()
-        p = point.Pnt()
+        p = api.Point()
+        p.Dump()
+        data = [p.W(), p.U(), p.V(), p.Pnt(), api.Face(), p.Transition()]
+        dat.append(data)
         # print(point.Values(gp_Pnt(p.X()+0.1, p.Y(), p.Z())))
         api.Next()
-    display.DisplayShape(make_edge(lin, -3, 3))
+
+    lin_edge = make_edge(lin, -3, 3)
+    lin_curv = Geom_Line(lin)
+    t1, t2 = dat[0][0], dat[1][0]
+    pnt = lin_curv.Value((t1 + t2) / 2)
+    print(point_in_solid(Cut, pnt))
+
+    t1, t2 = dat[3][0], dat[4][0]
+    pnt = lin_curv.Value((t1 + t2) / 2)
+    print(point_in_solid(Cut, pnt))
+
+    display.DisplayShape(lin_edge)
+    # display.DisplayShape(fuse_box)
 
     display.FitAll()
     start_display()
