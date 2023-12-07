@@ -32,7 +32,9 @@ from OCC.Core.BRepPrimAPI import (
 )
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import write_step_file
-from OCC.Core.gp import gp_Vec, gp_Ax2, gp_Pnt, gp_Dir, gp_Pln, gp_Trsf
+from OCC.Core.gp import gp_Vec, gp_Ax2, gp_Pnt, gp_Dir, gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.BRepIntCurveSurface import BRepIntCurveSurface_Inter
+from OCCUtils.Construct import make_edge
 
 
 def translate_topods_from_vector(brep_or_iterable, vec, copy=False):
@@ -52,11 +54,9 @@ def translate_topods_from_vector(brep_or_iterable, vec, copy=False):
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
-    box1 = BRepPrimAPI_MakeBox(2, 1, 1).Shape()
-    box2 = BRepPrimAPI_MakeBox(2, 1, 1).Shape()
-    box3 = BRepPrimAPI_MakeBox(1, 1, 1).Shape()
-    box1 = translate_topods_from_vector(box1, gp_Vec(0.5, 0.5, 0))
-    box3 = translate_topods_from_vector(box3, gp_Vec(-0.5, -2.0, 0.5))
+    box1 = BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 2, 1, 1).Shape()
+    box2 = BRepPrimAPI_MakeBox(gp_Pnt(0.5, 0.5, 0), 2, 1, 1).Shape()
+    box3 = BRepPrimAPI_MakeBox(gp_Pnt(-0.5, -2.0, 0.5), 1, 1, 1).Shape()
     fuse_box = BRepAlgoAPI_Fuse(box1, box2).Shape()
     fuse_box = BRepAlgoAPI_Fuse(fuse_box, box3).Shape()
 
@@ -65,6 +65,22 @@ if __name__ == "__main__":
 
     display.DisplayShape(Cut)
     print(Cut)
-    write_step_file(Cut, "./core_topology_solid.stp")
+    # write_step_file(Cut, "./core_topology_solid.stp")
+
+    from OCC.Core.IntCurveSurface import IntCurveSurface_IntersectionPoint, IntCurveSurface_TransitionOnCurve
+
+    lin = gp_Lin(gp_Pnt(1, 0, 0.8), gp_Dir(0.2, 0.6, -0.1))
+    api = BRepIntCurveSurface_Inter()
+    api.Init(Cut, lin, 1.0E-9)
+    dat = []
+    while api.More():
+        display.DisplayShape(api.Pnt())
+        point = api.Point()
+        point.Dump()
+        p = point.Pnt()
+        # print(point.Values(gp_Pnt(p.X()+0.1, p.Y(), p.Z())))
+        api.Next()
+    display.DisplayShape(make_edge(lin, -3, 3))
+
     display.FitAll()
     start_display()
