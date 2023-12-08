@@ -33,12 +33,14 @@ from OCC.Core.BRepPrimAPI import (
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import write_step_file
 from OCC.Core.gp import gp_Vec, gp_Ax2, gp_Pnt, gp_Dir, gp_Pln, gp_Trsf, gp_Lin
-from OCC.Core.TopoDS import topods
+from OCC.Core.TopoDS import topods, TopoDS_Compound, TopoDS_CompSolid
 from OCC.Core.Geom import Geom_Line
 from OCC.Core.GeomAdaptor import GeomAdaptor_Curve
+from OCC.Core.BRep import BRep_Builder
 from OCC.Core.BRepTools import breptools
 from OCC.Core.BRepAdaptor import BRepAdaptor_Curve
 from OCC.Core.BRepIntCurveSurface import BRepIntCurveSurface_Inter
+from OCC.Core.IntCurveSurface import IntCurveSurface_IntersectionPoint, IntCurveSurface_TransitionOnCurve
 from OCCUtils.Construct import make_edge, make_polygon, make_face
 from OCCUtils.Common import midpoint, point_in_solid
 
@@ -77,23 +79,20 @@ if __name__ == "__main__":
     # sew.Perform()
     # fuse_box = sew.SewedShape()
 
-    from OCC.Core.TopoDS import TopoDS_Compound
-    from OCC.Core.BRep import BRep_Builder
     # Make Compound by two boxes
-    boxs_comp = TopoDS_Compound()
     bild = BRep_Builder()
+    boxs_comp = TopoDS_Compound()
     bild.MakeCompound(boxs_comp)
     bild.Add(boxs_comp, fuse_box)
     bild.Add(boxs_comp, face)
 
     Sphere = BRepPrimAPI_MakeSphere(gp_Pnt(1.5, 0.8, 1.0), 0.5).Shape()
+    #Cut = BRepAlgoAPI_Cut(fuse_box, Sphere).Shape()
     Cut = BRepAlgoAPI_Cut(boxs_comp, Sphere).Shape()
 
     display.DisplayShape(Cut)
     print(Cut)
-    write_step_file(Cut, "./core_topology_solid.stp")
-
-    from OCC.Core.IntCurveSurface import IntCurveSurface_IntersectionPoint, IntCurveSurface_TransitionOnCurve
+    # write_step_file(Cut, "core_topology_solid.stp")
 
     lin = gp_Lin(gp_Pnt(1, 0, 0.8), gp_Dir(0.2, 0.6, -0.1))
     api = BRepIntCurveSurface_Inter()
@@ -113,10 +112,12 @@ if __name__ == "__main__":
     t1, t2 = dat[0][0], dat[1][0]
     pnt = lin_curv.Value((t1 + t2) / 2)
     print(point_in_solid(Cut, pnt))
+    display.DisplayShape(pnt)
 
-    t1, t2 = dat[3][0], dat[4][0]
+    t1, t2 = dat[2][0], dat[3][0]
     pnt = lin_curv.Value((t1 + t2) / 2)
     print(point_in_solid(Cut, pnt))
+    display.DisplayShape(pnt)
 
     display.DisplayShape(lin_edge)
     # display.DisplayShape(fuse_box)
