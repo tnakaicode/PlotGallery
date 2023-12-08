@@ -26,6 +26,7 @@ from OCC.Core.gp import (
     gp_Ax2,
     gp_Pnt2d,
     gp_Dir2d,
+    gp_Vec2d
 )
 from OCC.Core.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge,
@@ -36,8 +37,9 @@ from OCC.Core.TColgp import TColgp_Array2OfPnt
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.GeomAbs import GeomAbs_C2
 from OCC.Core.Geom2d import Geom2d_Line
-from OCC.Core.BRepLib import breplib_BuildCurves3d
+from OCC.Core.BRepLib import breplib
 from OCC.Core.Quantity import Quantity_Color, Quantity_NOC_PINK
+from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
 
 from OCC.Display.SimpleGui import init_display
 
@@ -110,9 +112,9 @@ def face():
     P22d = gp_Pnt2d(0.2, 0.7)
     P32d = gp_Pnt2d(0.02, 0.1)
     ##
-    line1 = Geom2d_Line(P12d, gp_Dir2d((0.2 - 0.9), (0.7 - 0.1)))
-    line2 = Geom2d_Line(P22d, gp_Dir2d((0.02 - 0.2), (0.1 - 0.7)))
-    line3 = Geom2d_Line(P32d, gp_Dir2d((0.9 - 0.02), (0.1 - 0.1)))
+    line1 = Geom2d_Line(P12d, gp_Dir2d(gp_Vec2d(P12d, P22d)))
+    line2 = Geom2d_Line(P22d, gp_Dir2d(gp_Vec2d(P22d, P32d)))
+    line3 = Geom2d_Line(P32d, gp_Dir2d(gp_Vec2d(P32d, P12d)))
     ##
     # //Edges are on the BSpline surface
     Edge1 = BRepBuilderAPI_MakeEdge(
@@ -128,7 +130,17 @@ def face():
     Wire1 = BRepBuilderAPI_MakeWire(Edge1, Edge2, Edge3).Wire()
     Wire1.Reverse()
     pink_face = BRepBuilderAPI_MakeFace(aFace, Wire1).Face()
-    breplib_BuildCurves3d(pink_face)
+    breplib.BuildCurves3d(pink_face)
+    
+    bFace = BRepAlgo_FaceRestrictor()
+    bFace.Init(aFace, True, True)
+    bFace.Add(Wire1)
+    bFace.Perform()
+    print(bFace.IsDone())
+    while bFace.More():
+        print()
+        display.DisplayColoredShape(bFace.Current())
+        bFace.Next()
 
     display.DisplayColoredShape(green_face.Face(), "GREEN")
     display.DisplayColoredShape(red_face.Face(), "RED")

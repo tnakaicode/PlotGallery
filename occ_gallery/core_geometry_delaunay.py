@@ -1,4 +1,3 @@
-
 """
 This file is a collection of quad-edge primitives,
 and the functional core of the application.
@@ -36,62 +35,50 @@ def debug(m, data=True, next=False, edges=False):
 
 
 def rot(e):
-
     return e.parent[(e.index + 1) % 4]
 
 
 def invrot(e):
-
     return e.parent[(e.index + 3) % 4]
 
 
 def sym(e):
-
     return e.parent[(e.index + 2) % 4]
 
 
 def org(e):
-
     return e.data
 
 
 def dest(e):
-
     return e.parent[sym(e).index].data
 
 
 def onext(e):
-
     return e.next
 
 
 def lnext(e):
-
     return rot(onext(invrot(e)))
 
 
 def lprev(e):
-
     return sym(onext(e))
 
 
 def oprev(e):
-
     return rot(onext(rot(e)))
 
 
 def rprev(e):
-
     return onext(sym(e))
 
 
 def dprev(e):
-
     return invrot(onext(invrot(e)))
 
 
 def splice(a, b):
-
     alpha = rot(onext(a))
     beta = rot(onext(b))
 
@@ -108,7 +95,6 @@ def splice(a, b):
 
 
 def ccw(vA, vB, vC):
-
     """
     Returns true iff Vertices a,b and c form a ccw oriented triangle
 
@@ -152,9 +138,10 @@ def inCircle(vA, vB, vC, vD):
 
     return (alift * bcdet + blift * cadet + clift * abdet) > 0
 
-def valid(e, basel):
 
+def valid(e, basel):
     return ccw(dest(e), dest(basel), org(basel))
+
 
 class Mesh:
     """
@@ -164,7 +151,6 @@ class Mesh:
     """
 
     def __init__(self):
-
         self.quadEdges = []
         self.vertices = []
         self.nextEdge = 0
@@ -172,7 +158,6 @@ class Mesh:
         self.qid = 0
 
     def makeEdge(self, org, dest):
-
         """Construct Edges, adds QuadEdge to mesh. See Q&S"""
 
         qe = QuadEdge(org, dest, id=str(self.qid))
@@ -185,7 +170,6 @@ class Mesh:
         return qe[0]
 
     def connect(self, a, b):
-
         """Connect two edges by a third, while making shure
         they share the same left face. See Q&S"""
 
@@ -196,7 +180,6 @@ class Mesh:
         return c
 
     def deleteEdge(self, e):
-
         """Delete edge without changing the topology"""
 
         splice(e, oprev(e))
@@ -207,19 +190,18 @@ class Mesh:
         return
 
     def loadVertices(self, vertList):
-
         """Sort vertices on the x-axis"""
 
         self.vertices = sorted(vertList, key=lambda vert: vert.x)
 
         return
 
+
 class QuadEdge:
 
     """Container for Edges, which can be accessed by get/setitem"""
 
     def __init__(self, org, dest, id="0"):
-
         self.id = id
         self.edges = [
             Edge(parent=self, data=org),
@@ -231,19 +213,15 @@ class QuadEdge:
         self.dest = dest
 
     def __str__(self):
-
-        return f'{self.id}'
+        return f"{self.id}"
 
     def __repr__(self):
-
-        return f'QuadEdge-{self.id}'
+        return f"QuadEdge-{self.id}"
 
     def __getitem__(self, idx):
-
         return self.edges[idx]
 
     def __setitem__(self, idx, val):
-
         self.edges[idx] = val
 
 
@@ -252,7 +230,6 @@ class Edge:
     """Actual edge, the main object we will do work with"""
 
     def __init__(self, parent, index=0, data=None):
-
         self.next = self
         self.data = data
         self.index = index
@@ -260,16 +237,34 @@ class Edge:
         self.id = parent.id + f".{self.index}"
 
     def __repr__(self):
-
-        return 'Edge-{self.id}'
+        return "Edge-{self.id}"
 
     def __str__(self):
+        return f"{self.id}"
 
-        return f'{self.id}'
+
+class Vertex:
+    def __init__(self, x=None, y=None):
+        self.pos = [x, y]
+        self.x = x
+        self.y = y
+        self.data = None
+
+    def __str__(self):
+        return f"{self.pos}"
+
+    def __repr__(self):
+        return f"{self.pos}"
+
+    def __hash__(self):
+        return hash("".join([str(x) for x in self.pos]))
+
+    @property
+    def id(self):
+        return self.__hash__()
 
 
 def delaunay(m, start, end, leftEdge=None, rightEdge=None, rows=None):
-
     """
     This is an implentation of the divide-and-conquer alorithm proposed
     by guibas & stolfi.
@@ -280,14 +275,12 @@ def delaunay(m, start, end, leftEdge=None, rightEdge=None, rows=None):
 
     verts = m.vertices
     if start < (end - 2):  # four or more points
-
         # divide points in two halves
         split = (end - start) // 2 + start
 
         # recurse down the halves
         ldo, ldi = delaunay(m, start, split)
         rdi, rdo = delaunay(m, (split + 1), end)
-
 
         # 'Compute the lower common tangent of L and R'
         while True:
@@ -307,7 +300,6 @@ def delaunay(m, start, end, leftEdge=None, rightEdge=None, rows=None):
 
         # merge the obtained halves
         # merge(m, ldo, ldi, rdi, rdo)
-
 
         while True:
             """
@@ -357,16 +349,12 @@ def delaunay(m, start, end, leftEdge=None, rightEdge=None, rows=None):
                 or rvalid
                 and inCircle(dest(lcand), org(lcand), org(rcand), dest(rcand))
             ):
-
                 # 'Add cross edge basel from rcand.Dest to basel.Dest'
                 basel = m.connect(rcand, sym(basel))
 
-
             else:
-
                 # 'Add cross edge basel from basel.Org to lcand.Dest'
                 basel = m.connect(sym(basel), sym(lcand))
-
 
         xMin = verts[start]
         xMax = verts[end]
@@ -420,48 +408,23 @@ def delaunay(m, start, end, leftEdge=None, rightEdge=None, rows=None):
             m.deleteEdge(c)
             return [a, sym(b)]
 
-class Vertex:
-    def __init__(self, x=None, y=None):
-
-        self.pos = [x, y]
-        self.x = x
-        self.y = y
-        self.data = None
-
-    def __str__(self):
-
-        return f"{self.pos}"
-
-    def __repr__(self):
-
-        return f"{self.pos}"
-
-    def __hash__(self):
-
-        return hash(''.join([str(x) for x in self.pos]))
-
-    @property
-    def id(self):
-
-        return self.__hash__()
 
 from random import seed, uniform
 
 if __name__ == "__main__":
-
     seed(123123123)
 
-    N = 44 # number of vertices
+    N = 44  # number of vertices
 
     vertices = [Vertex(uniform(0, 100), uniform(0, 100)) for v in range(N)]
 
-    m = Mesh() # this object holds the edges and vertices
+    m = Mesh()  # this object holds the edges and vertices
 
     m.loadVertices(vertices)
 
     end = N - 1
 
-    delaunay(m, 0, end) # computes the triangulation
+    delaunay(m, 0, end)  # computes the triangulation
 
     # populates a list of [org, dest], values for further manipulation
     lines = []
