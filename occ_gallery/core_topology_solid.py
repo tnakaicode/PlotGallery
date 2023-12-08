@@ -33,8 +33,10 @@ from OCC.Core.BRepPrimAPI import (
 from OCC.Display.SimpleGui import init_display
 from OCC.Extend.DataExchange import write_step_file
 from OCC.Core.gp import gp_Vec, gp_Ax2, gp_Pnt, gp_Dir, gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.TColgp import TColgp_Array1OfPnt
 from OCC.Core.TopoDS import topods, TopoDS_Compound, TopoDS_CompSolid
 from OCC.Core.Geom import Geom_Line
+from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.GeomAdaptor import GeomAdaptor_Curve
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.BRepTools import breptools
@@ -87,7 +89,7 @@ if __name__ == "__main__":
     bild.Add(boxs_comp, face)
 
     Sphere = BRepPrimAPI_MakeSphere(gp_Pnt(1.5, 0.8, 1.0), 0.5).Shape()
-    #Cut = BRepAlgoAPI_Cut(fuse_box, Sphere).Shape()
+    # Cut = BRepAlgoAPI_Cut(fuse_box, Sphere).Shape()
     Cut = BRepAlgoAPI_Cut(boxs_comp, Sphere).Shape()
 
     display.DisplayShape(Cut)
@@ -106,8 +108,13 @@ if __name__ == "__main__":
         dat.append(data)
         # print(point.Values(gp_Pnt(p.X()+0.1, p.Y(), p.Z())))
         api.Next()
-
     lin_edge = make_edge(lin, -3, 3)
+    display.DisplayShape(lin_edge)
+
+    print(dat[0])
+    dat.sort(key=lambda e: e[0])
+    print(dat[0])
+
     lin_curv = Geom_Line(lin)
     t1, t2 = dat[0][0], dat[1][0]
     pnt = lin_curv.Value((t1 + t2) / 2)
@@ -119,8 +126,36 @@ if __name__ == "__main__":
     print(point_in_solid(Cut, pnt))
     display.DisplayShape(pnt)
 
-    display.DisplayShape(lin_edge)
-    # display.DisplayShape(fuse_box)
+    pts = [
+        gp_Pnt(0.333333 - 0.1, -2 - 0.1, 1.13333 - 0.1),
+        gp_Pnt(0.5, -1.5, 1.05 + 0.2),
+        gp_Pnt(1, 0, 0.8 + 0.3),
+        gp_Pnt(1.36417 - 0.1, 1.09251, 0.617915 + 0.1),
+        gp_Pnt(1.5, 1.5, 0.55 - 0.1),
+        gp_Pnt(1.83636, 2.50909 + 0.2, 0.381818 + 0.1),
+    ]
+    spl_data = TColgp_Array1OfPnt(1, len(pts))
+    for i, p in enumerate(pts):
+        spl_data.SetValue(i + 1, p)
+    spl_curv = GeomAPI_PointsToBSpline(spl_data, 3, 8).Curve()
+    int_curv = GeomAdaptor_Curve(spl_curv)
+
+    api = BRepIntCurveSurface_Inter()
+    api.Init(Cut, int_curv, 1.0E-9)
+    dat = []
+    while api.More():
+        display.DisplayShape(api.Pnt())
+        p = api.Point()
+        p.Dump()
+        data = [p.W(), p.U(), p.V(), p.Pnt(), api.Face(), p.Transition()]
+        dat.append(data)
+        # print(point.Values(gp_Pnt(p.X()+0.1, p.Y(), p.Z())))
+        api.Next()
+    display.DisplayShape(spl_curv)
+
+    print(dat[0])
+    dat.sort(key=lambda e: e[0])
+    print(dat[0])
 
     display.FitAll()
     start_display()
