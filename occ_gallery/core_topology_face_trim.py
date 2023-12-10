@@ -25,9 +25,11 @@ from OCC.Core.gp import (
     gp_Dir,
     gp_Circ,
     gp_Ax2,
+    gp_Ax22d,
     gp_Pnt2d,
     gp_Dir2d,
-    gp_Vec2d
+    gp_Vec2d,
+    gp_Circ2d
 )
 from OCC.Core.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge,
@@ -37,10 +39,11 @@ from OCC.Core.BRepBuilderAPI import (
 from OCC.Core.TColgp import TColgp_Array2OfPnt
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.GeomAbs import GeomAbs_C2
-from OCC.Core.Geom2d import Geom2d_Line
+from OCC.Core.Geom2d import Geom2d_Line, Geom2d_Circle, Geom2d_Ellipse
 from OCC.Core.BRepLib import breplib
 from OCC.Core.Quantity import Quantity_Color, Quantity_NOC_PINK
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
+from OCCUtils.Construct import make_edge2d, make_face, make_wire
 
 from OCC.Display.SimpleGui import init_display
 
@@ -52,27 +55,34 @@ if __name__ == "__main__":
     px = np.linspace(-1, 1, nx) * 100 + 50
     py = np.linspace(-1, 1, ny) * 100 - 50
     mesh = np.meshgrid(px, py)
-    surf = mesh[0]**2 / 1000 + mesh[1]**2 / 2000
-    print(surf.shape)
-    
-    pts = TColgp_Array2OfPnt(1, ny, 1, nx)
-    for (ix, iy), _ in np.ndenumerate(surf):
-        pts.SetValue(ix+1, iy+1, gp_Pnt(mesh[0][ix,iy], mesh[1][ix,iy], surf[ix,iy]))
+    data = mesh[0]**2 / 1000 + mesh[1]**2 / 2000
+    print(data.shape)
 
-    face = GeomAPI_PointsToBSplineSurface(pts, 3, 8).Surface()
-    print(face.FirstUKnotIndex(), face.LastUKnotIndex())
-    print(face.FirstVKnotIndex(), face.LastVKnotIndex())
+    pts = TColgp_Array2OfPnt(1, ny, 1, nx)
+    for (ix, iy), _ in np.ndenumerate(data):
+        pts.SetValue(ix + 1, iy + 1,
+                     gp_Pnt(mesh[0][ix, iy], mesh[1][ix, iy], data[ix, iy]))
+
+    surf = GeomAPI_PointsToBSplineSurface(pts, 3, 8).Surface()
+    print(surf.FirstUKnotIndex(), surf.LastUKnotIndex())
+    print(surf.FirstVKnotIndex(), surf.LastVKnotIndex())
+
+    face = make_face(surf, 0.1e-6)
     display.DisplayShape(face)
 
-    #bFace = BRepAlgo_FaceRestrictor()
-    #bFace.Init(aFace, True, True)
-    #bFace.Add(Wire1)
-    #bFace.Perform()
-    #print(bFace.IsDone())
-    #while bFace.More():
-    #    print()
-    #    display.DisplayColoredShape(bFace.Current())
-    #    bFace.Next()
-    
+    axs = gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(0, 1))
+    c2d = gp_Circ2d(axs, 10.0)
+    circle1 = Geom2d_Circle(c2d)
+    c_wire = make_wire(make_edge2d(circle1))
+
+    api = BRepAlgo_FaceRestrictor()
+    api.Init(face, True, True)
+    api.Add(c_wire)
+    api.Perform()
+    print(api.IsDone())
+    while api.More():
+        display.DisplayColoredShape(api.Current())
+        api.Next()
+
     display.FitAll()
     start_display()
