@@ -41,8 +41,10 @@ from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.GeomAbs import GeomAbs_C2
 from OCC.Core.Geom2d import Geom2d_Line, Geom2d_Circle, Geom2d_Ellipse
 from OCC.Core.BRepLib import breplib
+from OCC.Core.BRepAdaptor import BRepAdaptor_Surface
 from OCC.Core.Quantity import Quantity_Color, Quantity_NOC_PINK
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
+from OCC.Extend.DataExchange import write_step_file
 from OCCUtils.Construct import make_edge2d, make_face, make_wire
 
 from OCC.Display.SimpleGui import init_display
@@ -70,10 +72,15 @@ if __name__ == "__main__":
     face = make_face(surf, 0.1e-6)
     display.DisplayShape(face)
 
-    axs = gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(0, 1))
-    c2d = gp_Circ2d(axs, 10.0)
-    circle1 = Geom2d_Circle(c2d)
-    c_wire = make_wire(make_edge2d(circle1))
+    a_face = BRepAdaptor_Surface(face)
+    print(a_face.FirstUParameter(), a_face.LastUParameter())
+    print(a_face.FirstVParameter(), a_face.LastVParameter())
+
+    axs = gp_Ax22d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1, 1))
+    c2d = Geom2d_Circle(axs, 0.2)
+    c2d = Geom2d_Ellipse(axs, 0.3, 0.1)
+    c_edge = BRepBuilderAPI_MakeEdge(c2d, surf).Edge()
+    c_wire = make_wire(c_edge)
 
     api = BRepAlgo_FaceRestrictor()
     api.Init(face, True, True)
@@ -81,8 +88,11 @@ if __name__ == "__main__":
     api.Perform()
     print(api.IsDone())
     while api.More():
+        face = api.Current()
         display.DisplayColoredShape(api.Current())
+        print(face)
         api.Next()
+    # write_step_file(face, "./core_topology_face_trim.stp")
 
     display.FitAll()
     start_display()
