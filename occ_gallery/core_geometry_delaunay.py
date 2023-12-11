@@ -274,6 +274,7 @@ class Mesh:
 
         verts = self.vertices
         if start < (end - 2):  # four or more points
+            print("over-4", start, end)
             # divide points in two halves
             split = (end - start) // 2 + start
 
@@ -284,10 +285,13 @@ class Mesh:
             # 'Compute the lower common tangent of L and R'
             while True:
                 if ccw(org(rdi), org(ldi), dest(ldi)):  # leftOf
+                    print("over-4", "left of")
                     ldi = lnext(ldi)
                 elif ccw(org(ldi), dest(rdi), org(rdi)):  # rightOf
+                    print("over-4", "right of")
                     rdi = rprev(rdi)
                 else:
+                    print("over-4", "not right/left of")
                     break
 
             # 'Create a first cross edge basel from rdi.Org to ldi.Org'
@@ -365,6 +369,8 @@ class Mesh:
             while org(rdo) != xMax:
                 rdo = lprev(rdo)
 
+            print(start, end, "over-4", [ldo, rdo])
+            print()
             return [ldo, rdo]
 
         elif start >= (end - 1):  # two or one points
@@ -379,6 +385,7 @@ class Mesh:
             if start == end:
                 exit()
 
+            print(start, end, "two/one", [a, sym(a)])
             return [a, sym(a)]
 
         else:  # Three points
@@ -399,14 +406,17 @@ class Mesh:
 
             if ccw(v1, v3, v2):
                 c = self.connect(b, a)
+                print(start, end, "three-1", [sym(c), c])
                 return [sym(c), c]
 
             elif ccw(v1, v2, v3):
                 c = self.connect(b, a)
+                print(start, end, "three-2", [a, sym(b)])
                 return [a, sym(b)]
 
             else:  # points are colinear
                 self.deleteEdge(c)
+                print(start, end, "three-3", [a, sym(b)])
                 return [a, sym(b)]
 
 
@@ -414,7 +424,7 @@ if __name__ == "__main__":
     from random import seed, uniform
     seed(123123123)
 
-    N = 44  # number of vertices
+    N = 20  # number of vertices
 
     vertices = [Vertex(uniform(0, 100), uniform(0, 100)) for v in range(N)]
 
