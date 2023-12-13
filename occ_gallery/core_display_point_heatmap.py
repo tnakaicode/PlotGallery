@@ -38,7 +38,7 @@ from OCC.Core.Aspect import (Aspect_TOM_POINT,
 from OCC.Core.AIS import AIS_Point
 from OCC.Core.Prs3d import Prs3d_PointAspect, Prs3d_Drawer
 from OCC.Core.AIS import AIS_ColorScale, AIS_PointCloud
-from OCC.Core.Graphic3d import Graphic3d_ZLayerId_TopOSD, Graphic3d_TMF_2d, Graphic3d_ArrayOfPoints, Graphic3d_TransformPers, Graphic3d_TransModeFlags, Graphic3d_TMF_None
+from OCC.Core.Graphic3d import Graphic3d_TMF_2d, Graphic3d_ArrayOfPoints, Graphic3d_TransformPers, Graphic3d_TransModeFlags, Graphic3d_TMF_None
 from OCC.Core.gp import gp_XY, gp_Pnt
 
 from OCC.Display.SimpleGui import init_display
@@ -76,12 +76,14 @@ if __name__ == '__main__':
     colorscale.SetSize(300, 300)
     colorscale.SetRange(0.0, 10.0)
     colorscale.SetNumberOfIntervals(10)
-    
-    Graphic3d_TransformPers(Graphic3d_TMF_2d)
-    #Graphic3d_TransformPers(Graphic3d_TMF_2d, gp_Pnt(-1,-1,0))
 
-    colorscale.SetZLayer(Graphic3d_ZLayerId_TopOSD)
-    colorscale.SetTransformPersistence(Graphic3d_TransformPers(Graphic3d_TMF_2d))
+    Graphic3d_TransformPers(Graphic3d_TMF_2d)
+    # Graphic3d_TransformPers(Graphic3d_TMF_2d, gp_Pnt(-1,-1,0))
+
+    # colorscale.SetZLayer(Graphic3d_ZLayerId_TopOSD)
+    colorscale.SetZLayer(0)
+    colorscale.SetTransformPersistence(
+        Graphic3d_TransformPers(Graphic3d_TMF_2d))
     colorscale.SetToUpdate()
 
     # create a point
@@ -114,10 +116,15 @@ if __name__ == '__main__':
     # create the point_cloud and set the points
     point_cloud = AIS_PointCloud()
     point_cloud.SetPoints(points_3d)
-    pntaspect = point_cloud.Attributes().PointAspect()
-    pntaspect.SetScale(2.0)
-    pntaspect.SetTypeOfMarker(Aspect_TOM_BALL)
-    point_cloud.Attributes().SetPointAspect(pntaspect)
+    pnt_attribute = point_cloud.Attributes()
+    # pnt_attribute.SetPointAspect()
+    # pntaspect = pnt_attribute.PointAspect()
+    # pntaspect = point_cloud.Attributes().PointAspect()
+    # pntaspect.SetScale(2.0)
+    # pntaspect.SetTypeOfMarker(Aspect_TOM_BALL)
+    # point_cloud.Attributes().SetPointAspect(pntaspect)
+    point_cloud.Attributes().SetPointAspect(
+        Prs3d_PointAspect(Aspect_TOM_O_STAR, color, 0.1))
     display.Context.Display(point_cloud, True)
 
     display.Context.Display(colorscale, True)

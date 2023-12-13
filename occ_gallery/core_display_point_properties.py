@@ -60,7 +60,35 @@ ALL_ASPECTS = [
     Aspect_TOM_BALL,
 ]
 
+# Aspect_TypeOfMarker TOM
+# Aspect_TOM_EMPTY = - 1
+# Aspect_TOM_POINT = 0
+# Aspect_TOM_PLUS = 1
+# Aspect_TOM_STAR = 2
+# Aspect_TOM_X = 3
+# Aspect_TOM_O = 4
+# Aspect_TOM_O_POINT = 5
+# Aspect_TOM_O_PLUS = 6
+# Aspect_TOM_O_STAR = 7
+# Aspect_TOM_O_X = 8
+# Aspect_TOM_RING1 = 9
+# Aspect_TOM_RING2 = 10
+# Aspect_TOM_RING3 = 11
+# Aspect_TOM_BALL = 12
+# Aspect_TOM_USERDEFINED = 13
 
+# Aspect_TypeOfResize TOR
+# Aspect_TOR_UNKNOWN = 0
+# Aspect_TOR_NO_BORDER = 1
+# Aspect_TOR_TOP_BORDER = 2
+# Aspect_TOR_RIGHT_BORDER = 3
+# Aspect_TOR_BOTTOM_BORDER = 4
+# Aspect_TOR_LEFT_BORDER = 5
+# Aspect_TOR_TOP_AND_RIGHT_BORDER = 6
+# Aspect_TOR_RIGHT_AND_BOTTOM_BORDER = 7
+# Aspect_TOR_BOTTOM_AND_LEFT_BORDER = 8
+# Aspect_TOR_LEFT_AND_TOP_BORDER = 9
+ 
 def pnt():
     # create a point
     for idx in range(10):
