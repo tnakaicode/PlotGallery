@@ -34,6 +34,73 @@ def debug(m, data=True, next=False, edges=False):
     return
 
 
+class Vertex:
+    def __init__(self, x=None, y=None):
+        self.pos = [x, y]
+        self.x = x
+        self.y = y
+        self.data = None
+
+    def __str__(self):
+        return f"{self.pos}"
+
+    def __repr__(self):
+        return f"{self.pos}"
+
+    def __hash__(self):
+        return hash("".join([str(x) for x in self.pos]))
+
+    @property
+    def id(self):
+        return self.__hash__()
+
+
+class Edge:
+
+    """Actual edge, the main object we will do work with"""
+
+    def __init__(self, parent, index=0, data=None):
+        self.next = self
+        self.data = data
+        self.index = index
+        self.parent = parent
+        self.id = parent.id + f".{self.index}"
+
+    def __repr__(self):
+        return "Edge-{self.id}"
+
+    def __str__(self):
+        return f"{self.id}"
+
+
+class QuadEdge:
+
+    """Container for Edges, which can be accessed by get/setitem"""
+
+    def __init__(self, org, dest, id="0"):
+        self.id = id
+        self.edges = [
+            Edge(parent=self, data=org),
+            Edge(parent=self, index=1),
+            Edge(parent=self, index=2, data=dest),
+            Edge(parent=self, index=3),
+        ]
+        self.org = org
+        self.dest = dest
+
+    def __str__(self):
+        return f"{self.id}"
+
+    def __repr__(self):
+        return f"QuadEdge-{self.id}"
+
+    def __getitem__(self, idx):
+        return self.edges[idx]
+
+    def __setitem__(self, idx, val):
+        self.edges[idx] = val
+
+
 def rot(e):
     return e.parent[(e.index + 1) % 4]
 
@@ -141,73 +208,6 @@ def inCircle(vA, vB, vC, vD):
 
 def valid(e, basel):
     return ccw(dest(e), dest(basel), org(basel))
-
-
-class QuadEdge:
-
-    """Container for Edges, which can be accessed by get/setitem"""
-
-    def __init__(self, org, dest, id="0"):
-        self.id = id
-        self.edges = [
-            Edge(parent=self, data=org),
-            Edge(parent=self, index=1),
-            Edge(parent=self, index=2, data=dest),
-            Edge(parent=self, index=3),
-        ]
-        self.org = org
-        self.dest = dest
-
-    def __str__(self):
-        return f"{self.id}"
-
-    def __repr__(self):
-        return f"QuadEdge-{self.id}"
-
-    def __getitem__(self, idx):
-        return self.edges[idx]
-
-    def __setitem__(self, idx, val):
-        self.edges[idx] = val
-
-
-class Edge:
-
-    """Actual edge, the main object we will do work with"""
-
-    def __init__(self, parent, index=0, data=None):
-        self.next = self
-        self.data = data
-        self.index = index
-        self.parent = parent
-        self.id = parent.id + f".{self.index}"
-
-    def __repr__(self):
-        return "Edge-{self.id}"
-
-    def __str__(self):
-        return f"{self.id}"
-
-
-class Vertex:
-    def __init__(self, x=None, y=None):
-        self.pos = [x, y]
-        self.x = x
-        self.y = y
-        self.data = None
-
-    def __str__(self):
-        return f"{self.pos}"
-
-    def __repr__(self):
-        return f"{self.pos}"
-
-    def __hash__(self):
-        return hash("".join([str(x) for x in self.pos]))
-
-    @property
-    def id(self):
-        return self.__hash__()
 
 
 class Mesh:
@@ -447,6 +447,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots()
+    plt.scatter([v.x for v in vertices], [v.y for v in vertices])
 
     for line in lines:
         start, end = line
