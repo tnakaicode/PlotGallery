@@ -27,10 +27,9 @@ from OCC.Core.TopoDS import TopoDS_Shape
 from OCC.Core.gp import gp_Pln, gp_Dir, gp_Pnt
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Section
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+from OCC.Extend.ShapeFactory import get_aligned_boundingbox
 
 from OCC.Display.SimpleGui import init_display
-
-from OCC.Extend.ShapeFactory import get_aligned_boundingbox
 
 
 def drange(start, stop, step):
