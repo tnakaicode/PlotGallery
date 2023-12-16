@@ -29,7 +29,7 @@ def spl_face(px, py, pz):
             i, j = row - 1, col - 1
             pnt = gp_Pnt(px[i, j], py[i, j], pz[i, j])
             pnt_2d.SetValue(row, col, pnt)
-            #print (i, j, px[i, j], py[i, j], pz[i, j])
+            # print (i, j, px[i, j], py[i, j], pz[i, j])
 
     api = GeomAPI_PointsToBSplineSurface(pnt_2d, 3, 8, GeomAbs_G2, 0.001)
     api.Interpolate(pnt_2d)
@@ -76,7 +76,7 @@ def get_polygon_from_face(face):
             rim_tmp = e_curve.Value(u0)
             p = e_curve.Value(u1)
         pts.append(p)
-        #for u in u_range[1:-1]:
+        # for u in u_range[1:-1]:
         #    p = e_curve.Value(u)
         #    pts.append(p)
     # return make_polygon(pts, True)
@@ -113,7 +113,7 @@ face_pnts = get_polygon_from_face(face)
 face_poly = get_polygon_from_face(face)
 display.DisplayShape(face, transparency=0.9)
 display.DisplayShape(face_poly, color="GREEN")
-#for i, p in enumerate(get_polygon_from_face(plan)):
+# for i, p in enumerate(get_polygon_from_face(plan)):
 #    display.DisplayShape(p, color="YELLOW")
 #    display.DisplayMessage(p, f"{i:2d}")
 
@@ -130,7 +130,7 @@ while proj.More() and proj_idx < idx:
 
 face_trim = make_trimmedface(poly_2d, face)
 print(face_trim)
-#display.DisplayShape(face_trim, color="RED")
+# display.DisplayShape(face_trim, color="RED")
 
 display.FitAll()
 start_display()
