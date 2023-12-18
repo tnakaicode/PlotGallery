@@ -1,4 +1,4 @@
-from skrf_qtapps.skrf_qtwidgets import NetworkPlotWidget, qt, widgets, calibration_widgets
+from skrf_qtwidgets import NetworkPlotWidget, qt, widgets, calibration_widgets
 from qtpy import QtWidgets, QtCore
 
 
