@@ -100,4 +100,10 @@ ntw.plot_s_db(m=1, n=0, lw=2, logx=True)
 
 print(ntw)
 print(cir.network.s[0])
+
+import networkx
+# plt.figure()
+# g = cir.graph()
+# networkx.draw(g)
+
 plt.show()
