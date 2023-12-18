@@ -89,6 +89,7 @@ cnx = [
 ]
 cir = rf.Circuit(cnx)
 ntw = cir.network
+ntw.write_touchstone("plot_circuit")
 
 cir.plot_graph(network_labels=True, network_fontsize=15,
                port_labels=True, port_fontsize=15,
