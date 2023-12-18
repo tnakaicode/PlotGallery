@@ -15,15 +15,18 @@ class DataGrabber(QtWidgets.QWidget):
         self.verticalLayout_main.addWidget(self.vna_controller)
 
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, self)
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        size_policy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         size_policy.setVerticalStretch(1)
         self.splitter.setSizePolicy(size_policy)
 
         self.measurements_widget = QtWidgets.QWidget(self.splitter)
-        self.measurements_widget_layout = QtWidgets.QVBoxLayout(self.measurements_widget)
+        self.measurements_widget_layout = QtWidgets.QVBoxLayout(
+            self.measurements_widget)
         self.measurements_widget_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.listWidget_measurements = NetworkListWidget(self.measurements_widget)
+        self.listWidget_measurements = NetworkListWidget(
+            self.measurements_widget)
         self.measurement_buttons = self.listWidget_measurements.get_input_buttons()
         self.measurements_widget_layout.addWidget(self.measurement_buttons)
         self.measurements_widget_layout.addWidget(self.listWidget_measurements)
@@ -35,14 +38,17 @@ class DataGrabber(QtWidgets.QWidget):
         self.ntwk_plot.corrected_data_enabled = False
 
         self.verticalLayout_main.addWidget(self.splitter)
-        self.splitter.setStretchFactor(1, 100)  # important that this goes at the end
+        # important that this goes at the end
+        self.splitter.setStretchFactor(1, 100)
         # --- END SETUP UI --- #
 
         self.listWidget_measurements.ntwk_plot = self.ntwk_plot
         self.listWidget_measurements.get_analyzer = self.vna_controller.get_analyzer
 
+
 def main():
     qt.single_widget_application(DataGrabber, appid="DataGrabber")
+
 
 if __name__ == "__main__":
     main()

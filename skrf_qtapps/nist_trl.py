@@ -18,7 +18,8 @@ class NISTTRLWidget(QtWidgets.QWidget):
         self.verticalLayout_main.addWidget(widgets.qt.QHLine())
 
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, self)
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        size_policy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         size_policy.setVerticalStretch(1)
         self.splitter.setSizePolicy(size_policy)
 
@@ -28,7 +29,8 @@ class NISTTRLWidget(QtWidgets.QWidget):
         self.tabWidget.addTab(self.tab_calStandards, "Cal Standards")
         self.tabWidget.addTab(self.tab_measurements, "Measurements")
 
-        self.ntwk_plot = skrf_qtwidgets.networkPlotWidget.NetworkPlotWidget(self.splitter)
+        self.ntwk_plot = skrf_qtwidgets.networkPlotWidget.NetworkPlotWidget(
+            self.splitter)
 
         self.verticalLayout_main.addWidget(self.splitter)
         self.splitter.setStretchFactor(1, 100)
@@ -40,8 +42,10 @@ class NISTTRLWidget(QtWidgets.QWidget):
         self.tab_measurements.connect_plot(self.ntwk_plot)
         self.tab_measurements.get_calibration = self.tab_calStandards.get_calibration
         self.tab_measurements.get_analyzer = self.vna_selector.get_analyzer
-        self.vna_selector.enableStateToggled.connect(self.process_vna_available)
-        self.tab_calStandards.calibration_updated.connect(self.tab_measurements.set_calibration)
+        self.vna_selector.enableStateToggled.connect(
+            self.process_vna_available)
+        self.tab_calStandards.calibration_updated.connect(
+            self.tab_measurements.set_calibration)
 
         self.process_vna_available(self.vna_selector.isEnabled())
 
@@ -64,6 +68,7 @@ class NISTTRLWidget(QtWidgets.QWidget):
             event.accept()
         else:
             event.ignore()
+
 
 if __name__ == "__main__":
     app = qt.single_widget_application(NISTTRLWidget, splash_screen=True)

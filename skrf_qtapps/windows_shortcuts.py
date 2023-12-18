@@ -1,7 +1,7 @@
 from win32com.client import Dispatch
 
 
-def createShortcut(path, target='', wDir='', args= '', icon=''):
+def createShortcut(path, target='', wDir='', args='', icon=''):
     shell = Dispatch('WScript.Shell')
     shortcut = shell.CreateShortCut(path)
     shortcut.TargetPath = target
@@ -15,6 +15,7 @@ def createShortcut(path, target='', wDir='', args= '', icon=''):
     else:
         shortcut.IconLocation = icon
     shortcut.save()
+
 
 path = r"C:\Users\A3R7LZZ\Desktop\Multiline TRL.lnk"
 target = r"C:\Miniconda3\pythonw.exe"

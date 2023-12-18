@@ -16,7 +16,8 @@ class TRLWidget(QtWidgets.QWidget):
         self.verticalLayout_main.addWidget(self.vna_controller)
 
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, self)
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        size_policy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         size_policy.setVerticalStretch(1)
         self.splitter.setSizePolicy(size_policy)
 
@@ -37,8 +38,10 @@ class TRLWidget(QtWidgets.QWidget):
         self.tab_measurements.connect_plot(self.ntwk_plot)
         self.tab_measurements.get_calibration = self.tab_calStandards.get_calibration
 
+
 def main():
     qt.single_widget_application(TRLWidget)
+
 
 if __name__ == "__main__":
     main()
