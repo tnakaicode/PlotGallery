@@ -27,12 +27,18 @@ from OCC.Core.GeomAbs import GeomAbs_BSplineSurface
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
-base_shape = BRepPrimAPI_MakeTorus(30, 10).Shape()
+from OCC.Core.BRepTools import breptools
+from OCC.Core.TopoDS import TopoDS_Shape
+from OCC.Core.BRep import BRep_Builder
+base_shape = TopoDS_Shape()
+builder = BRep_Builder()
+breptools.Read(base_shape, "../assets/models/cylinder_head.brep", builder)
+print(base_shape)
 # display.DisplayShape(base_shape)
 
 # conversion to a nurbs representation
 nurbs_converter = BRepBuilderAPI_NurbsConvert(base_shape, True)
-# nurbs_converter.Perform()
+nurbs_converter.Perform()
 converted_shape = nurbs_converter.Shape()
 
 # now, all edges should be BSpline curves and surfaces BSpline surfaces

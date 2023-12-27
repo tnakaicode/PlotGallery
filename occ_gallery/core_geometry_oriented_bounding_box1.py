@@ -19,9 +19,9 @@ import random
 
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 from OCC.Core.gp import gp_Pnt, gp_Ax2, gp_Dir, gp_XYZ
-from OCC.Core.BRepBndLib import brepbndlib_AddOBB
+from OCC.Core.BRepBndLib import brepbndlib
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeVertex
-from OCC.Core.Bnd import Bnd_OBB
+from OCC.Core.Bnd import Bnd_OBB, Bnd_Box
 
 from OCC.Display.SimpleGui import init_display
 
@@ -58,22 +58,27 @@ for _ in range(n):
     z = random.uniform(100, 500)
     p = BRepBuilderAPI_MakeVertex(gp_Pnt(x, y, z)).Shape()
     display.DisplayShape(p)
-    brepbndlib_AddOBB(p, obb1)
+    brepbndlib.AddOBB(p, obb1)
 obb_shape1 = ConvertBndToShape(obb1)
 display.DisplayShape(obb_shape1, transparency=0.5)
 
 # then loads a brep file and computes the optimal bounding box
-from OCC.Core.BRepTools import breptools_Read
+from OCC.Core.BRepTools import breptools
 from OCC.Core.TopoDS import TopoDS_Shape
 from OCC.Core.BRep import BRep_Builder
 
 cylinder_head = TopoDS_Shape()
 builder = BRep_Builder()
-breptools_Read(cylinder_head, "../assets/models/cylinder_head.brep", builder)
+breptools.Read(cylinder_head, "../assets/models/cylinder_head.brep", builder)
 obb2 = Bnd_OBB()
-brepbndlib_AddOBB(cylinder_head, obb2, True, True, True)
+bb2 = Bnd_Box()
+brepbndlib.AddOBB(cylinder_head, obb2, True, True, True)
+brepbndlib.AddOptimal(cylinder_head, bb2, True, True)
 obb_shape2 = ConvertBndToShape(obb2)
+bb_shape2 = BRepPrimAPI_MakeBox(gp_Pnt(*bb2.Get()[:3]),
+                                gp_Pnt(*bb2.Get()[3:])).Shape()
 display.DisplayShape(cylinder_head)
 display.DisplayShape(obb_shape2, transparency=0.5, update=True)
+display.DisplayShape(bb_shape2, transparency=0.5, update=True)
 
 start_display()
