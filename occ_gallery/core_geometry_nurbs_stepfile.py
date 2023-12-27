@@ -21,6 +21,7 @@ from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_NurbsConvert
 from OCC.Core.BRepAdaptor import BRepAdaptor_Surface
 
+from OCC.Extend.DataExchange import read_step_file
 from OCC.Extend.TopologyUtils import TopologyExplorer
 from OCC.Core.GeomAbs import GeomAbs_BSplineSurface
 
@@ -33,12 +34,13 @@ from OCC.Core.BRep import BRep_Builder
 base_shape = TopoDS_Shape()
 builder = BRep_Builder()
 breptools.Read(base_shape, "../assets/models/cylinder_head.brep", builder)
+base_shape = read_step_file("../assets/models/as1-oc-214.stp")
 print(base_shape)
 # display.DisplayShape(base_shape)
 
 # conversion to a nurbs representation
 nurbs_converter = BRepBuilderAPI_NurbsConvert(base_shape, True)
-nurbs_converter.Perform()
+#nurbs_converter.Perform()
 converted_shape = nurbs_converter.Shape()
 
 # now, all edges should be BSpline curves and surfaces BSpline surfaces

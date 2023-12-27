@@ -1,4 +1,4 @@
-#import pypcd
+# import pypcd
 from pypcd.pypcd import PointCloud
 # also can read from file handles.
 pc = PointCloud.from_path('./assets/models/bunny.pcd')
@@ -15,6 +15,7 @@ import open3d
 import numpy as np
 import copy
 
+
 def preprocess_point_cloud(pointcloud, voxel_size):
     # Keypoint を Voxel Down Sample で生成
     keypoints = open3d.voxel_down_sample(pointcloud, voxel_size)
@@ -24,16 +25,18 @@ def preprocess_point_cloud(pointcloud, voxel_size):
     view_point = np.array([0., 10., 10.], dtype="float64")
     open3d.estimate_normals(
         keypoints,
-        search_param = open3d.KDTreeSearchParamHybrid(radius = radius_normal, max_nn = 30))
-    open3d.orient_normals_towards_camera_location(keypoints, camera_location = view_point)
+        search_param=open3d.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
+    open3d.orient_normals_towards_camera_location(
+        keypoints, camera_location=view_point)
 
-    #　FPFH特徴量計算
+    # 　FPFH特徴量計算
     radius_feature = voxel_size * 5
     fpfh = open3d.compute_fpfh_feature(
         keypoints,
-        search_param = open3d.KDTreeSearchParamHybrid(radius = radius_feature, max_nn = 100))
+        search_param=open3d.KDTreeSearchParamHybrid(radius=radius_feature, max_nn=100))
 
     return keypoints, fpfh
+
 
 # 読み込み
 scene1 = open3d.read_point_cloud("scene1.ply")

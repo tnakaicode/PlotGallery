@@ -1,16 +1,16 @@
 import sys
 from typing import Any, NewType
 
-from OCC.Core.BRep import BRep_Tool, BRep_Tool_Curve
+from OCC.Core.BRep import BRep_Tool
 from OCC.Core.BRepBuilderAPI import (BRepBuilderAPI_NurbsConvert,
                                      BRepBuilderAPI_MakeEdge,
                                      BRepBuilderAPI_MakeFace,
                                      BRepBuilderAPI_MakeWire)
-from OCC.Core.BRepTools import breptools_OuterWire
-from OCC.Core.GeomConvert import GeomConvert_CompCurveToBSplineCurve, geomconvert_CurveToBSplineCurve, geomconvert_SurfaceToBSplineSurface
+from OCC.Core.BRepTools import breptools
+from OCC.Core.GeomConvert import GeomConvert_CompCurveToBSplineCurve, geomconvert_CurveToBSplineCurve, geomconvert
 from OCC.Core.IFSelect import IFSelect_RetDone, IFSelect_ItemsByEntity
 from OCC.Core.STEPControl import STEPControl_Reader
-from OCC.Core.TopoDS import topods_Face, TopoDS_Wire, topods_Edge, topods_Wire, TopoDS_Face
+from OCC.Core.TopoDS import TopoDS_Wire, topods, TopoDS_Face
 from OCC.Extend.TopologyUtils import TopologyExplorer, WireExplorer
 
 NURBSObject = NewType('NURBSObject', Any)
@@ -30,9 +30,9 @@ def _bspline_curve_from_wire(wire=NURBSObject):
         # convert to Nurbs edge
         nurbs_converter = BRepBuilderAPI_NurbsConvert(edge)
         nurbs_converter.Perform(edge)
-        nurbs_edge = topods_Edge(nurbs_converter.Shape())
-        nurbs_curve = BRep_Tool_Curve(nurbs_edge)[0]
-        bspline_curve = geomconvert_CurveToBSplineCurve(nurbs_curve)
+        nurbs_edge = topods.Edge(nurbs_converter.Shape())
+        nurbs_curve = BRep_Tool.Curve(nurbs_edge)[0]
+        bspline_curve = geomconvert.CurveToBSplineCurve(nurbs_curve)
         tolerance = 1e-4
         composite_curve_builder.Add(bspline_curve, tolerance)
 
@@ -44,13 +44,13 @@ def _bspline_surface_from_face(face=NURBSObject):
     if not isinstance(face, TopoDS_Face):
         raise TypeError("face must be a TopoDS_Face")
 
-    nurbs_face = topods_Face(BRepBuilderAPI_NurbsConvert(face).Shape())
+    nurbs_face = topods.Face(BRepBuilderAPI_NurbsConvert(face).Shape())
     surface = BRep_Tool.Surface(nurbs_face)
-    return geomconvert_SurfaceToBSplineSurface(surface)
+    return geomconvert.SurfaceToBSplineSurface(surface)
 
 
 def _new_wire_by_combining_edges(wire=NURBSObject):
-    wire = topods_Wire(wire)
+    wire = topods.Wire(wire)
     composite_curve = _bspline_curve_from_wire(wire)
     composite_edge = BRepBuilderAPI_MakeEdge(composite_curve).Edge()
     wire_builder = BRepBuilderAPI_MakeWire()
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         wires = list(face_explorer.wires())
         newwire = None
         for wire in wires:
-            if wire == breptools_OuterWire(face):
+            if wire == breptools.OuterWire(face):
                 newwire = _new_wire_by_combining_edges(wire)
                 break
 

@@ -19,9 +19,9 @@
 
 from __future__ import print_function
 
-from OCC.Core.gp import gp_Pln, gp_XOY, gp_Ax3, gp_YOZ, gp_Elips
+from OCC.Core.gp import gp_Pln, gp_Ax2, gp_Ax3, gp_Pnt, gp_Dir, gp_Elips
 from OCC.Core.IntAna import IntAna_IntConicQuad
-from OCC.Core.Precision import precision_Angular, precision_Confusion
+from OCC.Core.Precision import precision
 from OCC.Core.GC import GC_MakePlane, GC_MakeEllipse
 from OCC.Core.Geom import Geom_RectangularTrimmedSurface
 
@@ -34,11 +34,12 @@ def points_from_intersection():
     """
     @param display:
     """
-    plane = gp_Pln(gp_Ax3(gp_XOY()))
+    plane = gp_Pln(gp_Ax3())
     minor_radius, major_radius = 5.0, 8.0
-    ellips = gp_Elips(gp_YOZ(), major_radius, minor_radius)
+    ellips = gp_Elips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)),
+                      major_radius, minor_radius)
     intersection = IntAna_IntConicQuad(
-        ellips, plane, precision_Angular(), precision_Confusion()
+        ellips, plane, precision.Angular(), precision.Confusion()
     )
     a_plane = GC_MakePlane(plane).Value()
     a_surface = Geom_RectangularTrimmedSurface(
