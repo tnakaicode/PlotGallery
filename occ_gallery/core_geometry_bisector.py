@@ -29,17 +29,17 @@ display, start_display, add_menu, add_function_to_menu = init_display()
 
 def bisect_lineline(event=None):
     display.EraseAll()
-    li1 = gp_Lin2d(gp_Pnt2d(), gp_Dir2d(1, 0))
-    li2 = gp_Lin2d(gp_Pnt2d(), gp_Dir2d(0, 1))
+    li1 = gp_Lin2d(gp_Pnt2d(1.0, 1.0), gp_Dir2d(1.0, 0.5))
+    li2 = gp_Lin2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(0.5, 1.0))
 
     bi = GccAna_Lin2dBisec(li1, li2)
     bi_li1 = bi.ThisSolution(1)
     bi_li2 = bi.ThisSolution(2)
 
     for i in [li1, li2]:
-        display.DisplayShape(make_edge2d(i))
+        display.DisplayShape(make_edge2d(i, -10, 10))
     for i in [bi_li1, bi_li2]:
-        display.DisplayColoredShape(make_edge2d(i), "BLUE")
+        display.DisplayColoredShape(make_edge2d(i, -10, 10), "BLUE")
     display.FitAll()
 
 
