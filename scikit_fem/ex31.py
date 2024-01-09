@@ -40,6 +40,11 @@ basis = Basis(m, e)
 A = asm(laplace, basis)
 M = asm(mass, basis)
 
+from skfem.visuals.matplotlib import *
+ax = draw(m)
+#plot(basis, Nrefs=6, ax=ax)
+savefig(f'ex31_basis.png')
+    
 L, x = solve(*condense(A, M, D=basis.get_dofs()), solver=solver_eigen_scipy_sym(k=8))
 
 if __name__ == '__main__':
