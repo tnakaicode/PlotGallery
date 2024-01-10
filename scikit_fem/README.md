@@ -39,7 +39,7 @@ Poisson equation
  Example 22: Adaptive Poisson equation
  Example 37: Mixed Poisson equation
  Example 38: Point source
- Example 40: Hybridizable discontinuous Galerkin method
+*Example 40: Hybridizable discontinuous Galerkin method
  Example 41: Mixed meshes
 
 Solid mechanics
@@ -51,7 +51,7 @@ Solid mechanics
  Example 21: Structural vibration
  Example 34: Euler-Bernoulli beam
  Example 36: Nearly incompressible hyperelasticity
- Example 43: Hyperelasticity
+ Example 43: Hyperelasticity (need install vedo)
 
 Fluid mechanics
  Example 18: Stokes equations
@@ -59,7 +59,7 @@ Fluid mechanics
  Example 24: Stokes flow with inhomogeneous boundary conditions
  Example 29: Linear hydrodynamic stability
  Example 30: Krylov-Uzawa method for the Stokes equation
- Example 32: Block diagonally preconditioned Stokes solver
+ Example 32: Block diagonally preconditioned Stokes solver (need install pyamg/pyamgcl)
  Example 42: Periodic meshes
 
 Heat transfer
@@ -75,5 +75,9 @@ Miscellaneous
  Example 16: Legendre’s equation
  Example 31: Curved elements
  Example 33: H(curl) conforming model problem
- Example 35: Characteristic impedance and velocity factor
+*Example 35: Characteristic impedance and velocity factor (E/H Cal)
  Example 44: Wave equation
+*Example 46: Waveguide Cutoff Analysis
+ Example 47: Projection between two meshes using supermesh
+ Example 48: Solve :math:`\Delta^2 u = 1` using HHJ element.
+ Example 47: Projection between two meshes using supermesh (need install shapely)
