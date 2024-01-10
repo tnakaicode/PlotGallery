@@ -35,7 +35,7 @@ Poisson equation
  Example 13: Laplace with mixed boundary conditions
  Example 14: Laplace with inhomogeneous boundary conditions
  Example 15: One-dimensional Poisson equation
- Example 9: Three-dimensional Poisson equation
+ Example 9: Three-dimensional Poisson equation (need install pyamg/pyamgcl/vedo)
  Example 22: Adaptive Poisson equation
  Example 37: Mixed Poisson equation
  Example 38: Point source
