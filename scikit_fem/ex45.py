@@ -35,7 +35,10 @@ for itr in range(100):
         print(res)
 
 if __name__ == "__main__":
-    from skfem.visuals.matplotlib import plot3, show
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw, plot3
     plot3(m, x)
+    savefig(splitext(argv[0])[0] + '_solution.png')
     show()
 

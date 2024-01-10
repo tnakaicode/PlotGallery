@@ -9,8 +9,10 @@ e = ElementTriArgyris()
 ib = Basis(m, e, intorder=5)
 
 def visualize():
+    from os.path import splitext
+    from sys import argv
     import matplotlib.pyplot as plt
-    from skfem.visuals.matplotlib import plot, draw
+    from skfem.visuals.matplotlib import plot, draw, savefig
     f, axes = plt.subplots(3,3)
 
     ixs = [(0,0),(0,1),(0,2),(1,0),(1,2),(2,0)]
@@ -43,6 +45,7 @@ def visualize():
     X[np.array([58,61,63,65])] = 1.0
     plot(ib, X, Nrefs=5, shading='gouraud', ax=axi)
     axi.set_aspect('equal')
+    plt.savefig(splitext(argv[0])[0] + '_solution.png')
 
     return axi
 

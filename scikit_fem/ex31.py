@@ -53,7 +53,8 @@ if __name__ == '__main__':
     from sys import argv
     name = splitext(argv[0])[0]
 
-    from skfem.visuals.matplotlib import *
+    from skfem.visuals.matplotlib import plot, savefig, show
     ax = draw(m)
     plot(basis, x[:, 6], Nrefs=6, ax=ax)
     savefig(f'{name}_eigenmode.png')
+    show()

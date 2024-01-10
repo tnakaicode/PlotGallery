@@ -42,6 +42,9 @@ u /= u[basis.get_dofs().nodal["u"][-1], :]
 
 
 if __name__ == "__main__":
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
     from matplotlib.pyplot import subplots, show
     fig, ax = subplots()
     for n, (k, u) in enumerate(zip(ks, u.T)):
@@ -51,4 +54,5 @@ if __name__ == "__main__":
         print('{:2d}  {:5.2f}'.format(n * (n + 1), k))
 
     ax.legend()
+    savefig(splitext(argv[0])[0] + '_solution.png')
     show()

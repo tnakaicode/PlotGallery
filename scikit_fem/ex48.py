@@ -42,6 +42,10 @@ x = solve(*condense(K + (B1 - B2 + B3), f, D=D))
 (sig, sigbasis), (u, ubasis) = basis.split(x)
 
 if __name__ == "__main__":
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+
     basis0 = basis.with_element(ElementDG(ElementTriP1()))
 
     for itr in range(2):
@@ -49,4 +53,6 @@ if __name__ == "__main__":
             sig0 = basis0.project(sigbasis.interpolate(sig)[itr, jtr])
             basis0.plot(sig0, colorbar=True)
 
-    ubasis.plot(u, colorbar=True).show()
+    ubasis.plot(u, colorbar=True)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()    

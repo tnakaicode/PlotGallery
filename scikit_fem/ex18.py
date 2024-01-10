@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     from matplotlib.tri import Triangulation
 
-    from skfem.visuals.matplotlib import plot, draw, savefig
+    from skfem.visuals.matplotlib import plot, draw, savefig, show
 
     name = splitext(argv[0])[0]
 
@@ -111,3 +111,4 @@ if __name__ == '__main__':
     ax.tricontour(Triangulation(*mesh.p, mesh.t.T),
                   psi[basis['psi'].nodal_dofs.flatten()])
     savefig(f'{name}_stream-function.png')
+    show()

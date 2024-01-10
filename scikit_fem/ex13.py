@@ -71,4 +71,11 @@ if __name__ == '__main__':
     print('L2 error:', error_L2)
     print('conductance:', conductance)
     print('Current in through ports:', current)
-    visualize().show()
+
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    
+    plot(basis, u, shading='gouraud', colorbar=True)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

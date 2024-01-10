@@ -15,6 +15,10 @@ b = asm(unit_load, basis)
 x = solve(*condense(A, b, D=basis.get_dofs()))
 
 if __name__ == "__main__":
-    from skfem.visuals.matplotlib import plot, show
-    plot(m, x)
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    
+    plot(m, x, shading='gouraud', colorbar=True)
+    savefig(splitext(argv[0])[0] + '_solution.png')
     show()

@@ -94,8 +94,9 @@ if __name__ == '__main__':
 
     from os.path import splitext
     from sys import argv
-    from skfem.visuals.matplotlib import draw, plot, savefig
+    from skfem.visuals.matplotlib import draw, plot, savefig, show
 
     ax = draw(mesh)
     plot(basis, temperature, ax=ax, colorbar=True)
     savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

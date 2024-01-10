@@ -57,4 +57,14 @@ def visualize():
                 shading='gouraud')
 
 if __name__ == '__main__':
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+
+    plot(ibasis2,
+                u2,
+                Nrefs=4,
+                colorbar=True,
+                shading='gouraud')
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

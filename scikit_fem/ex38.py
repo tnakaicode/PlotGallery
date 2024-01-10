@@ -62,4 +62,15 @@ def visualize():
 
 if __name__ == "__main__":
     print("L2 error:", l2error)
-    visualize().show()
+
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    
+    plot(basis,
+                x,
+                shading='gouraud',
+                nrefs=2,
+                colorbar=True)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

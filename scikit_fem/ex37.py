@@ -35,3 +35,11 @@ M, X = ubasis.refinterp(u, Nrefs=0)
 
 if __name__ == "__main__":
     M.save('ex37.vtk', {'sol': X})
+
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    
+    #ubasis.plot(X, shading='gouraud', colorbar=True)
+    #savefig(splitext(argv[0])[0] + '_solution.png')
+    #show()

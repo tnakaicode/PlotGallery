@@ -40,8 +40,16 @@ l2 = (bases[0].interpolator(y1)(xs)
       - bases[1].interpolator(y2)(xs)).sum()
 
 if __name__ == "__main__":
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+
     print('L2 error: {}'.format(l2))
     ax = bases[0].plot(y1, colorbar=True, shading='gouraud')
     m1.draw(ax=ax, color='ko')
+    savefig(splitext(argv[0])[0] + '_y1.png')
+
     ax = bases[1].plot(y2, colorbar=True, shading='gouraud')
-    m2.draw(ax=ax, color='ro').show()
+    m2.draw(ax=ax, color='ro')
+    savefig(splitext(argv[0])[0] + '_y2.png')
+    show()

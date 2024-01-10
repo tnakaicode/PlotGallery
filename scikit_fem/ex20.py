@@ -60,7 +60,7 @@ velocity = asm(
 if __name__ == "__main__":
     from os.path import splitext
     from sys import argv
-    from skfem.visuals.matplotlib import draw
+    from skfem.visuals.matplotlib import draw, savefig, show
     from matplotlib.tri import Triangulation
 
     print("psi0 = {} (cf. exact = 1/64 = {})".format(psi0, 1 / 64))
@@ -75,3 +75,4 @@ if __name__ == "__main__":
     ax = draw(mesh)
     ax.quiver(*mesh.p, *velocity.reshape((-1, 2)).T, mesh.p[0])
     ax.get_figure().savefig(f"{name}_velocity-vectors.png")
+    show()

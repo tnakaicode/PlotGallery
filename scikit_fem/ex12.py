@@ -46,4 +46,11 @@ if __name__ == '__main__':
     print('area = {:.4f} (exact = {:.4f})'.format(area, np.pi))
     print('k = {:.5f} (exact = 1/8/pi = {:.5f})'.format(k, 1/np.pi/8))
     print("k' = {:.5f} (exact = 1/4/pi = {:.5f})".format(k1, 1/np.pi/4))
-    visualize().show()
+
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    
+    plot(basis, x, shading='gouraud', colorbar=True)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

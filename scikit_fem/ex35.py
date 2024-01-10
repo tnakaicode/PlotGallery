@@ -345,7 +345,7 @@ print(f'v={v} c')
 if __name__ == '__main__':
     from os.path import splitext
     from sys import argv
-    from skfem.visuals.matplotlib import plot, savefig
+    from skfem.visuals.matplotlib import plot, savefig, show
     import matplotlib.pyplot as plt
 
     Ai = global_basis.interpolate(A)
@@ -371,3 +371,4 @@ if __name__ == '__main__':
     ax2.set_yticks([])
 
     savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

@@ -40,4 +40,10 @@ def visualize():
     return plot(M, X, shading="gouraud", ax=ax, colorbar=True)
 
 if __name__ == "__main__":
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    ax = draw(M, boundaries_only=True)
+    plot(M, X, ax=ax, colorbar=True, shading='gouraud')
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

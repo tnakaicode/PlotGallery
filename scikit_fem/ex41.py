@@ -46,4 +46,12 @@ def visualize():
     return ax
 
 if __name__ == '__main__':
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, draw, savefig, show
+    ax = plot(basis[0], y, Nrefs=4, colorbar=True)
+    draw(basis[0], ax=ax)
+    plot(basis[1], y, ax=ax, Nrefs=4)
+    draw(basis[1], ax=ax)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

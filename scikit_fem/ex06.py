@@ -47,7 +47,8 @@ M, X = ib.refinterp(x, 3)
 if __name__ == "__main__":
     from os.path import splitext
     from sys import argv
-    from skfem.visuals.matplotlib import *
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
     ax = draw(m)
-    plot(M, X, ax=ax, shading='gouraud')
+    plot(M, X, ax=ax, colorbar=True, shading='gouraud')
     savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

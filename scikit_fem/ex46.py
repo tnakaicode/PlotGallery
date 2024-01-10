@@ -70,6 +70,8 @@ for mesh, elem in mesh_elem:
 
 
 if __name__ == "__main__":
+    from os.path import splitext
+    from sys import argv
     import matplotlib.pyplot as plt
     fig, axs = plt.subplots(4, 1)
     for itr in range(4):
@@ -82,4 +84,5 @@ if __name__ == "__main__":
                        ax=axs[itr],
                        shading='gouraud',
                        nrefs=2)
+    plt.savefig(splitext(argv[0])[0] + '_solution.png')
     plt.show()

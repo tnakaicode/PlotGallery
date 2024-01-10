@@ -90,6 +90,9 @@ L, x = solve(
 )
 
 if __name__ == "__main__":
-    from skfem.visuals.matplotlib import draw, show
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
     sf = 10.0
     m.translated(sf * x[ib.nodal_dofs, 0]).draw().show()
+ 

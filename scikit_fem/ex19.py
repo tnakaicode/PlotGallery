@@ -131,4 +131,5 @@ if __name__ == '__main__':
     if args.gif:
         animation.save(Path(__file__).with_suffix('.gif'), 'imagemagick')
     else:
+        animation.save(Path(__file__).with_suffix('.gif'), 'imagemagick')
         plt.show()
