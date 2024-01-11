@@ -18,7 +18,7 @@
 import numpy as np
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 from OCC.Core.AIS import AIS_ColorScale, AIS_Axis, AIS_Triangulation
-from OCC.Core.Graphic3d import Graphic3d_ZLayerId_TopOSD, Graphic3d_TMF_2d
+#from OCC.Core.Graphic3d import Graphic3d_ZLayerId_TopOSD, Graphic3d_TMF_2d
 from OCC.Core.gp import gp_XY, gp_Pnt, gp_Dir, gp_Ax1
 from OCC.Core.Geom import Geom_Line
 from OCC.Core.Poly import Poly_ListOfTriangulation, Poly_Triangulation, Poly_Triangle, Poly_Array1OfTriangle
@@ -26,7 +26,7 @@ from OCC.Core.TColgp import TColgp_Array1OfPnt
 from OCC.Core.BRep import BRep_Tool, BRep_Builder
 from OCC.Core.gp import gp_Pnt
 from OCC.Core.TopoDS import TopoDS_Compound
-from OCC.Extend.Construct import make_polygon, make_face
+from OCCUtils.Construct import make_polygon, make_face
 
 from OCC.Display.SimpleGui import init_display
 
