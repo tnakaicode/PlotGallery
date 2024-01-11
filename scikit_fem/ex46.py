@@ -4,6 +4,9 @@ import numpy as np
 from skfem import *
 from skfem.helpers import *
 
+from os.path import splitext
+from sys import argv
+import matplotlib.pyplot as plt
 
 # three different mesh and element types
 mesh_elem = [
@@ -12,11 +15,11 @@ mesh_elem = [
                             np.linspace(0, .5, 20)),
         ElementTriN1() * ElementTriP1(),
     ),
-    (
-        MeshQuad.init_tensor(np.linspace(0, 1, 40) ** 0.9,
-                             np.linspace(0, .5, 20)),
-        ElementQuadN1() * ElementQuad1(),
-    ),
+    #(
+    #    MeshQuad.init_tensor(np.linspace(0, 1, 40) ** 0.9,
+    #                         np.linspace(0, .5, 20)),
+    #    ElementQuadN1() * ElementQuad1(),
+    #),
     (
         MeshTri.init_tensor(np.linspace(0, 1, 20),
                             np.linspace(0, .5, 10)),
@@ -25,7 +28,7 @@ mesh_elem = [
 ]
 
 
-for mesh, elem in mesh_elem:
+for i, (mesh, elem) in enumerate(mesh_elem):
     basis = Basis(mesh, elem)
 
     epsilon = lambda x: 1. + 0. * x[0]
@@ -63,16 +66,11 @@ for mesh, elem in mesh_elem:
     err3 = np.abs(lams[2] - 4. * np.pi ** 2)
 
 
-    if __name__ == "__main__":
-        print('TE10 error: {}'.format(err1))
-        print('TE01 error: {}'.format(err2))
-        print('TE20 error: {}'.format(err3))
+    print('TE10 error: {}'.format(err1))
+    print('TE01 error: {}'.format(err2))
+    print('TE20 error: {}'.format(err3))
+    print()
 
-
-if __name__ == "__main__":
-    from os.path import splitext
-    from sys import argv
-    import matplotlib.pyplot as plt
     fig, axs = plt.subplots(4, 1)
     for itr in range(4):
         (E, Ebasis), _ = basis.split(xs[:, itr])
@@ -84,5 +82,5 @@ if __name__ == "__main__":
                        ax=axs[itr],
                        shading='gouraud',
                        nrefs=2)
-    plt.savefig(splitext(argv[0])[0] + '_solution.png')
-    plt.show()
+    plt.savefig(splitext(argv[0])[0] + f'_basis_{i}.png')
+plt.show()
