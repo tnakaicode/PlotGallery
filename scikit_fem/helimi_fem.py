@@ -1,11 +1,12 @@
 import skfem
 import numpy as np
 from scipy.sparse import coo_matrix, bmat, identity, isspmatrix_coo, block_diag
-#from helmi import Helmholtz
+# from helmi import Helmholtz
 
 import skfem
 from skfem.helpers import dot
 import numpy as np
+
 
 def get_curvature(x: np.array, y: np.array, wrapped=True) -> np.array:
     # magnitude and phase
@@ -20,8 +21,10 @@ def get_curvature(x: np.array, y: np.array, wrapped=True) -> np.array:
 
     if wrapped:
         # extend edges by wrapping it around
-        r_ext = np.array([r_sorted[-2], r_sorted[-1], *r_sorted, r_sorted[0], r_sorted[1]])
-        phi_ext = np.array([-1 * phi_sorted[-2], -1 * phi_sorted[-1], *phi_sorted, -1 * phi_sorted[0], -1 * phi_sorted[1]])
+        r_ext = np.array([r_sorted[-2], r_sorted[-1], *
+                         r_sorted, r_sorted[0], r_sorted[1]])
+        phi_ext = np.array([-1 * phi_sorted[-2], -1 * phi_sorted[-1],
+                           *phi_sorted, -1 * phi_sorted[0], -1 * phi_sorted[1]])
     else:
         r_ext = r_sorted
         phi_ext = phi_sorted
@@ -35,8 +38,10 @@ def get_curvature(x: np.array, y: np.array, wrapped=True) -> np.array:
         d2r_dphi2 = d2r_dphi2[2:-2]
 
     # Bronstein p. 255, eq. (3.502)
-    k_sorted = (r_sorted ** 2 + 2 * dr_dphi ** 2 - r_sorted * d2r_dphi2) / ((r_sorted ** 2 + dr_dphi ** 2) ** 1.5)
+    k_sorted = (r_sorted ** 2 + 2 * dr_dphi ** 2 - r_sorted *
+                d2r_dphi2) / ((r_sorted ** 2 + dr_dphi ** 2) ** 1.5)
     return k_sorted[i_unsort]
+
 
 @skfem.BilinearForm
 def helmholtz_laplace(u, v, w):
@@ -50,6 +55,7 @@ def helmholtz_laplace(u, v, w):
     # elemental bilinear coefficients (Jin, p. 85, eq. 4.30):
     # K_ij(u, v) = alpha_x * du/dx * dv/dx + alpha_y * du/dy * dv/dy
     return w['alpha'] * dot(u.grad, v.grad)
+
 
 @skfem.BilinearForm
 def helmholtz_mass(u, v, w):
@@ -97,6 +103,7 @@ def helmholtz_near2far(w):
     phi = w['phi']
 
     return (dot(r_far_unit, n_bound) * phi + 1j / k * dot(n_bound, phi.grad)) * np.exp(1j * k * dot(r_far_unit, r_bound))
+
 
 class Helmholtz:
     def __init__(self, mesh: skfem.Mesh, element: skfem.Element) -> None:
@@ -204,42 +211,48 @@ class Helmholtz:
                     boundaries_rhs.append(boundary)
 
         if not np.allclose(gamma1_re, 0):
-            c = skfem.asm(helmholtz_mass, self.basis.boundary(boundaries_lhs), beta=gamma1_re)
+            c = skfem.asm(helmholtz_mass, self.basis.boundary(
+                boundaries_lhs), beta=gamma1_re)
             if self._A_mass_re is None:
                 self._A_mass_re = c
             else:
                 self._A_mass_re += c
 
         if not np.allclose(gamma1_im, 0):
-            c = skfem.asm(helmholtz_mass, self.basis.boundary(boundaries_lhs), beta=gamma1_im)
+            c = skfem.asm(helmholtz_mass, self.basis.boundary(
+                boundaries_lhs), beta=gamma1_im)
             if self._A_mass_im is None:
                 self._A_mass_im = c
             else:
                 self._A_mass_im += c
 
         if not np.allclose(gamma2_re, 0):
-            c = skfem.asm(helmholtz_abc2, self.basis.boundary(boundaries_lhs), gamma2=gamma2_re)
+            c = skfem.asm(helmholtz_abc2, self.basis.boundary(
+                boundaries_lhs), gamma2=gamma2_re)
             if self._A_laplace_re is None:
                 self._A_laplace_re = c
             else:
                 self._A_laplace_re += c
 
         if not np.allclose(gamma2_im, 0):
-            c = skfem.asm(helmholtz_abc2, self.basis.boundary(boundaries_lhs), gamma2=gamma2_im)
+            c = skfem.asm(helmholtz_abc2, self.basis.boundary(
+                boundaries_lhs), gamma2=gamma2_im)
             if self._A_laplace_im is None:
                 self._A_laplace_im = c
             else:
                 self._A_laplace_im += c
 
         if not np.allclose(q_re, 0):
-            c = skfem.asm(helmholtz_excitation, self.basis.boundary(boundaries_rhs), f=q_re)
+            c = skfem.asm(helmholtz_excitation,
+                          self.basis.boundary(boundaries_rhs), f=q_re)
             if self._b_re is None:
                 self._b_re = c
             else:
                 self._b_re += c
 
         if not np.allclose(q_im, 0):
-            c = skfem.asm(helmholtz_excitation, self.basis.boundary(boundaries_rhs), f=q_im)
+            c = skfem.asm(helmholtz_excitation,
+                          self.basis.boundary(boundaries_rhs), f=q_im)
             if self._b_im is None:
                 self._b_im = c
             else:
@@ -259,7 +272,8 @@ class Helmholtz:
         for boundary in self.mesh.boundaries.keys():
             if boundary in n_mode:
                 dofs = self.basis.get_dofs(boundary)
-                kt2, phi, ebasis = self.solve_eigenmodes_boundary(boundary, n_modes=n_mode[boundary])
+                kt2, phi, ebasis = self.solve_eigenmodes_boundary(
+                    boundary, n_modes=n_mode[boundary])
                 phi_n[boundary] = phi[:, n_mode[boundary] - 1]
                 k2_eigen = k0 ** 2 - kt2[n_mode[boundary] - 1]
                 if k2_eigen < 0:
@@ -283,25 +297,29 @@ class Helmholtz:
                 if boundary not in boundaries_rhs:
                     boundaries_rhs.append(boundary)
 
-        c = skfem.asm(helmholtz_mass, self.basis.boundary(boundaries_lhs), beta=gamma_re)
+        c = skfem.asm(helmholtz_mass, self.basis.boundary(
+            boundaries_lhs), beta=gamma_re)
         if self._A_mass_re is None:
             self._A_mass_re = c
         else:
             self._A_mass_re += c
 
-        c = skfem.asm(helmholtz_mass, self.basis.boundary(boundaries_lhs), beta=gamma_im)
+        c = skfem.asm(helmholtz_mass, self.basis.boundary(
+            boundaries_lhs), beta=gamma_im)
         if self._A_mass_im is None:
             self._A_mass_im = c
         else:
             self._A_mass_im += c
 
-        c = skfem.asm(helmholtz_excitation, self.basis.boundary(boundaries_rhs), f=q_re)
+        c = skfem.asm(helmholtz_excitation,
+                      self.basis.boundary(boundaries_rhs), f=q_re)
         if self._b_re is None:
             self._b_re = c
         else:
             self._b_re += c
 
-        c = skfem.asm(helmholtz_excitation, self.basis.boundary(boundaries_rhs), f=q_im)
+        c = skfem.asm(helmholtz_excitation,
+                      self.basis.boundary(boundaries_rhs), f=q_im)
         if self._b_im is None:
             self._b_im = c
         else:
@@ -371,8 +389,8 @@ class Helmholtz:
             solver = skfem.solver_direct_scipy()
         else:
             # Jacobi preconditioning
-            #M = skfem.build_pc_diag(A)
-            #solver = skfem.solver_iter_krylov(M=M, x0=M.dot(b))
+            # M = skfem.build_pc_diag(A)
+            # solver = skfem.solver_iter_krylov(M=M, x0=M.dot(b))
 
             # iLU preconditioning
             M = skfem.build_pc_ilu(A)
@@ -387,7 +405,8 @@ class Helmholtz:
                 phi = x.copy()
                 phi[I] = cupy.asnumpy(cu_spsolve(A_cu, b_cu))
             else:
-                phi = skfem.solve(*skfem.condense(A, b, x=x, D=D), solver=solver)
+                phi = skfem.solve(
+                    *skfem.condense(A, b, x=x, D=D), solver=solver)
         else:
             if cuda:
                 A_cu = cu_csr_matrix(A)
@@ -411,7 +430,8 @@ class Helmholtz:
             # to 1d coordinates (positions) of line elements
             return p[1]
 
-        mesh, facets = self.mesh.trace(facets=boundary, mtype=skfem.MeshLine, project=mapping)
+        mesh, facets = self.mesh.trace(
+            facets=boundary, mtype=skfem.MeshLine, project=mapping)
 
         if self.element.maxdeg == 1:
             element = skfem.ElementLineP1()
@@ -428,7 +448,8 @@ class Helmholtz:
         B = skfem.asm(helmholtz_mass, basis, beta=basis.ones())
 
         solver = skfem.solver_eigen_scipy_sym(k=n_modes, sigma=1)
-        kt2, phi = skfem.solve(*skfem.condense(A, B, D=basis.get_dofs()), solver=solver)
+        kt2, phi = skfem.solve(
+            *skfem.condense(A, B, D=basis.get_dofs()), solver=solver)
 
         return kt2, phi, basis
 
@@ -449,10 +470,14 @@ class Helmholtz:
         dof_c11 = np.intersect1d(dofs_xmax, dofs_ymax)[0]
 
         # boundary edge dofs without corners
-        dofs_xmin = dofs_xmin[np.logical_and(dofs_xmin != dof_c00, dofs_xmin != dof_c01)]
-        dofs_xmax = dofs_xmax[np.logical_and(dofs_xmax != dof_c10, dofs_xmax != dof_c11)]
-        dofs_ymin = dofs_ymin[np.logical_and(dofs_ymin != dof_c00, dofs_ymin != dof_c10)]
-        dofs_ymax = dofs_ymax[np.logical_and(dofs_ymax != dof_c01, dofs_ymax != dof_c11)]
+        dofs_xmin = dofs_xmin[np.logical_and(
+            dofs_xmin != dof_c00, dofs_xmin != dof_c01)]
+        dofs_xmax = dofs_xmax[np.logical_and(
+            dofs_xmax != dof_c10, dofs_xmax != dof_c11)]
+        dofs_ymin = dofs_ymin[np.logical_and(
+            dofs_ymin != dof_c00, dofs_ymin != dof_c10)]
+        dofs_ymax = dofs_ymax[np.logical_and(
+            dofs_ymax != dof_c01, dofs_ymax != dof_c11)]
 
         # strictly internal dofs
         dofs_int = self.basis.complement_dofs(self.basis.get_dofs()).flatten()
@@ -494,10 +519,12 @@ class Helmholtz:
         ones_ymin = identity(n_ymin, format='csr')
         ones_ymax = identity(n_ymax, format='csr')
 
-        p_rows = [*dofs_int, *dofs_xmin, *dofs_xmax, *dofs_ymin, *dofs_ymax, dof_c00, dof_c10, dof_c01, dof_c11]
-        p_cols = [*dofs_int, *dofs_xmin, *dofs_xmin, *dofs_ymin, *dofs_ymin, dof_c00, dof_c00, dof_c00, dof_c00]
-        #p_rows = range(self.basis.N)
-        #p_cols = [*dofs_int, *dofs_xmin, *dofs_xmin, *dofs_ymin, *dofs_ymin, dof_c00, dof_c00, dof_c00, dof_c00]
+        p_rows = [*dofs_int, *dofs_xmin, *dofs_xmax, *dofs_ymin,
+                  *dofs_ymax, dof_c00, dof_c10, dof_c01, dof_c11]
+        p_cols = [*dofs_int, *dofs_xmin, *dofs_xmin, *dofs_ymin,
+                  *dofs_ymin, dof_c00, dof_c00, dof_c00, dof_c00]
+        # p_rows = range(self.basis.N)
+        # p_cols = [*dofs_int, *dofs_xmin, *dofs_xmin, *dofs_ymin, *dofs_ymin, dof_c00, dof_c00, dof_c00, dof_c00]
         print(len(p_rows))
         print(len(p_cols))
         p_data_re = [*ones_int.data, *ones_xmin.data, *(ones_xmax.data * np.cos(psi_x)), *ones_ymin.data,
@@ -545,26 +572,28 @@ class Helmholtz:
 
         A_re = P_re.transpose() @ self._A_laplace_re @ P_re
         B_re = P_re.transpose() @ self._A_mass_re @ P_re
-        #A_im = P_im_conj.transpose() @ self._A_laplace_im @ P_im
-        #B_im = P_im_conj.transpose() @ self._A_mass_im @ P_im
+        # A_im = P_im_conj.transpose() @ self._A_laplace_im @ P_im
+        # B_im = P_im_conj.transpose() @ self._A_mass_im @ P_im
 
         # staggered system matrices
-        #A = self._stagger_re_im(A_re, A_im)
-        #B = self._stagger_re_im(B_re, B_im)
+        # A = self._stagger_re_im(A_re, A_im)
+        # B = self._stagger_re_im(B_re, B_im)
 
         # condense system matrices to include only independent dofs
-        #dofs_dep_re = 2 * np.array([*dofs_xmax, *dofs_ymax, dof_c01, dof_c10, dof_c11])
-        #dofs_dep_im = 1 + 2 * dofs_dep_re
+        # dofs_dep_re = 2 * np.array([*dofs_xmax, *dofs_ymax, dof_c01, dof_c10, dof_c11])
+        # dofs_dep_im = 1 + 2 * dofs_dep_re
 
-        dofs_dep_re = np.array([*dofs_xmax, *dofs_ymax, dof_c01, dof_c10, dof_c11])
+        dofs_dep_re = np.array(
+            [*dofs_xmax, *dofs_ymax, dof_c01, dof_c10, dof_c11])
         dofs_dep_im = 1 + 2 * dofs_dep_re
-        #AII, BII, _, _ = skfem.condense(A_re, B_re, D=dofs_dep_re)
-        #print(len(dofs_dep_re))
-        #print(AII.shape)
+        # AII, BII, _, _ = skfem.condense(A_re, B_re, D=dofs_dep_re)
+        # print(len(dofs_dep_re))
+        # print(AII.shape)
 
         solver = skfem.solver_eigen_scipy(k=n_modes, sigma=1)
-        #kt2, phi = skfem.solve(A_re, B_re, solver=solver)
-        kt2, phi = skfem.solve(*skfem.condense(A_re, B_re, D=dofs_dep_re), solver=solver)
+        # kt2, phi = skfem.solve(A_re, B_re, solver=solver)
+        kt2, phi = skfem.solve(
+            *skfem.condense(A_re, B_re, D=dofs_dep_re), solver=solver)
         print(kt2)
 
     def near2far(self, r: tuple, k: float, field: skfem.DiscreteField, boundaries: list):
@@ -586,16 +615,18 @@ class Helmholtz:
             os.mkdir('video')
 
         for i in range(n_frames):
-            plot(self.basis, np.real(field * np.exp(1j * i / n_frames * 2 * np.pi)), figsize=(6, 6))
+            plot(self.basis, np.real(
+                field * np.exp(1j * i / n_frames * 2 * np.pi)), figsize=(6, 6))
             mplt.tight_layout()
             mplt.savefig(f'./video/frame_{i:02d}.png', dpi=300)
             mplt.close()
 
         os.chdir('video')
-        #subprocess.call(['ffmpeg', '-framerate', '8', '-i', 'frame_%02d.png', '-r', '30', '-pix_fmt', 'yuv420p', 'video.mp4'])
+        # subprocess.call(['ffmpeg', '-framerate', '8', '-i', 'frame_%02d.png', '-r', '30', '-pix_fmt', 'yuv420p', 'video.mp4'])
 
         # convert from ImageMagick
         subprocess.call(['convert', '-loop', '0', 'frame_*.png', 'video.gif'])
+
 
 # create a rectangular mesh with skfem:
 x_pts = np.linspace(0, 100, 101)
