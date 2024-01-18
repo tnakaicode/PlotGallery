@@ -3,6 +3,101 @@ import numpy as np
 from scipy.sparse import coo_matrix, bmat, identity, isspmatrix_coo, block_diag
 #from helmi import Helmholtz
 
+import skfem
+from skfem.helpers import dot
+import numpy as np
+
+def get_curvature(x: np.array, y: np.array, wrapped=True) -> np.array:
+    # magnitude and phase
+    r = np.sqrt(x ** 2 + y ** 2)
+    phi = np.arctan2(y, x)
+
+    # sorts und unsorts phi from -pi to pi (flipped for positive rotation)
+    i_sort = np.flip(np.argsort(phi))
+    i_unsort = np.argsort(np.flip(i_sort))
+    r_sorted = r[i_sort]
+    phi_sorted = np.unwrap(phi[i_sort])
+
+    if wrapped:
+        # extend edges by wrapping it around
+        r_ext = np.array([r_sorted[-2], r_sorted[-1], *r_sorted, r_sorted[0], r_sorted[1]])
+        phi_ext = np.array([-1 * phi_sorted[-2], -1 * phi_sorted[-1], *phi_sorted, -1 * phi_sorted[0], -1 * phi_sorted[1]])
+    else:
+        r_ext = r_sorted
+        phi_ext = phi_sorted
+
+    # first and second derivative of r w.r.t. phi
+    dr_dphi = np.gradient(r_ext, phi_ext, edge_order=2)
+    d2r_dphi2 = np.gradient(dr_dphi, phi_ext, edge_order=1)
+
+    if wrapped:
+        dr_dphi = dr_dphi[2:-2]
+        d2r_dphi2 = d2r_dphi2[2:-2]
+
+    # Bronstein p. 255, eq. (3.502)
+    k_sorted = (r_sorted ** 2 + 2 * dr_dphi ** 2 - r_sorted * d2r_dphi2) / ((r_sorted ** 2 + dr_dphi ** 2) ** 1.5)
+    return k_sorted[i_unsort]
+
+@skfem.BilinearForm
+def helmholtz_laplace(u, v, w):
+    # Laplace part in LHS of scalar Helmholtz equation for z-component of a field `phi` (Jin, p. 77, eq. 4.1):
+    # (alpha_x * d²/dx² + alpha_y d²/dy² - beta) * phi_z = -f
+    # simplified with alpha_x = alpha_y = alpha to
+    # [alpha * (d²/dx² + d²/dy²) - beta] * phi_z = -f
+    #
+    # --> F = integrate [alpha * (d²/dx² + d²/dy²) * phi_z] dx dy
+    #
+    # elemental bilinear coefficients (Jin, p. 85, eq. 4.30):
+    # K_ij(u, v) = alpha_x * du/dx * dv/dx + alpha_y * du/dy * dv/dy
+    return w['alpha'] * dot(u.grad, v.grad)
+
+@skfem.BilinearForm
+def helmholtz_mass(u, v, w):
+    # Mass part in LHS of scalar Helmholtz equation for z-component of a field `phi` (Jin, p. 77, eq. 4.1):
+    # (alpha_x * d²/dx² + alpha_y d²/dy² - beta) * phi_z = -f
+    # simplified with alpha_x = alpha_y = alpha to
+    # [alpha * (d²/dx² + d²/dy²) - beta] * phi_z = -f
+    #
+    # --> F = integrate [beta * phi_z] dx dy
+    #
+    # elemental bilinear coefficients (Jin, p. 85, eq. 4.30):
+    # K_ij(u, v) = beta * u * v
+    return w['beta'] * u * v
+
+
+@skfem.LinearForm
+def helmholtz_excitation(v, w):
+    # RHS of scalar Helmholtz equation for z-component of a field `phi` (Jin, p. 85, eq. 4.31):
+    # (alpha_x * d²/dx² + alpha_y d²/dy² - beta) * phi_z = -f
+    # simplified with alpha_x = alpha_y = alpha to
+    # [alpha * (d²/dx² + d²/dy²) - beta] * phi_z = -f
+    #
+    # F = integrate [f * phi_z] dx dy
+    # elemental linear coefficients (Jin, p. 79, eq. 4.8):
+    # b_i(v) = f * v
+    return w['f'] * v
+
+
+@skfem.BilinearForm
+def helmholtz_abc2(u, v, w):
+    # get surface section 's' from normal vector 'n'
+    nx, ny = w['n']
+    s = [ny, -1 * nx]
+
+    return -1 * w['gamma2'] * dot(s, u.grad) * dot(s, v.grad)
+
+
+@skfem.Functional
+def helmholtz_near2far(w):
+    r_far = w['r']
+    r_far_unit = r_far / np.sqrt(r_far[0] ** 2 + r_far[1] ** 2)
+    r_bound = w['x']
+    n_bound = w['n']
+    k = w['k']
+    phi = w['phi']
+
+    return (dot(r_far_unit, n_bound) * phi + 1j / k * dot(n_bound, phi.grad)) * np.exp(1j * k * dot(r_far_unit, r_bound))
+
 class Helmholtz:
     def __init__(self, mesh: skfem.Mesh, element: skfem.Element) -> None:
         self.mesh = mesh
