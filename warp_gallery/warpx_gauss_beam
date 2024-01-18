@@ -1,0 +1,77 @@
+# algo
+algo.current_deposition = direct
+algo.particle_shape = 1
+
+# amr
+amr.max_grid_size = 16
+amr.max_level = 0
+amr.n_cell = 32 32 32
+
+# boundary
+boundary.field_hi = periodic periodic pml
+boundary.field_lo = periodic periodic pml
+boundary.particle_hi = periodic periodic absorbing
+boundary.particle_lo = periodic periodic absorbing
+
+# diag1
+diag1.diag_type = Full
+diag1.electrons.variables = ux uy uz w
+diag1.fields_to_plot = Bx By Bz Ex Ey Ez jx jy jz part_per_cell
+diag1.file_prefix = .\\temp_warpx_gauss_
+diag1.format = plotfile
+diag1.intervals = 10
+diag1.protons.variables = ux uy uz w
+diag1.species = electrons protons
+
+# diagnostics
+diagnostics.diags_names = diag1
+
+# electrons
+electrons.charge = -q_e
+electrons.initialize_self_fields = 0
+electrons.injection_style = gaussian_beam
+electrons.mass = m_e
+electrons.momentum_distribution_type = radial_expansion
+electrons.npart = 32768
+electrons.q_tot = -8.010883097437485e-07
+electrons.u_over_r = -0.04
+electrons.x_m = 0.0
+electrons.x_rms = 0.25
+electrons.y_m = 0.0
+electrons.y_rms = 0.25
+electrons.z_m = 0.0
+electrons.z_rms = 0.25
+
+# geometry
+geometry.dims = 3
+geometry.prob_hi = 2.0 2.0 2.0
+geometry.prob_lo = -2.0 -2.0 -2.0
+
+# max_step
+max_step = 10
+
+# particles
+particles.species_names = electrons protons
+
+# protons
+protons.charge = q_e
+protons.initialize_self_fields = 0
+protons.injection_style = gaussian_beam
+protons.mass = m_p
+protons.momentum_distribution_type = constant
+protons.npart = 32768
+protons.q_tot = 8.010883097437485e-07
+protons.ux = 0.0
+protons.uy = 0.0
+protons.uz = 0.0
+protons.x_m = 0.0
+protons.x_rms = 0.25
+protons.y_m = 0.0
+protons.y_rms = 0.25
+protons.z_m = 0.0
+protons.z_rms = 0.25
+
+# warpx
+warpx.cfl = 1.0
+warpx.use_filter = 0
+warpx.verbose = 1
