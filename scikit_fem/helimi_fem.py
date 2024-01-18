@@ -397,24 +397,26 @@ class Helmholtz:
             solver = skfem.solver_iter_krylov(M=M, x0=M.matvec(b))
 
         if D is not None:
-            if cuda:
-                AII, bI, xI, I = skfem.condense(A, b, x=x, D=D)
-
-                A_cu = cu_csr_matrix(AII)
-                b_cu = cupy.array(bI)
-                phi = x.copy()
-                phi[I] = cupy.asnumpy(cu_spsolve(A_cu, b_cu))
-            else:
-                phi = skfem.solve(
-                    *skfem.condense(A, b, x=x, D=D), solver=solver)
+            # if cuda:
+            #    AII, bI, xI, I = skfem.condense(A, b, x=x, D=D)
+            #
+            #    A_cu = cu_csr_matrix(AII)
+            #    b_cu = cupy.array(bI)
+            #    phi = x.copy()
+            #    phi[I] = cupy.asnumpy(cu_spsolve(A_cu, b_cu))
+            # else:
+            #    phi = skfem.solve(
+            #        *skfem.condense(A, b, x=x, D=D), solver=solver)
+            phi = skfem.solve(*skfem.condense(A, b, x=x, D=D), solver=solver)
         else:
-            if cuda:
-                A_cu = cu_csr_matrix(A)
-                b_cu = cupy.array(b)
-                phi_cu = cu_spsolve(A_cu, b_cu)
-                phi = cupy.asnumpy(phi_cu)
-            else:
-                phi = skfem.solve(A, b, solver=solver)
+            # if cuda:
+            #    A_cu = cu_csr_matrix(A)
+            #    b_cu = cupy.array(b)
+            #    phi_cu = cu_spsolve(A_cu, b_cu)
+            #    phi = cupy.asnumpy(phi_cu)
+            # else:
+            #    phi = skfem.solve(A, b, solver=solver)
+            phi = skfem.solve(A, b, solver=solver)
 
         self.phi_re = phi[0::2]
         self.phi_im = phi[1::2]
@@ -438,6 +440,7 @@ class Helmholtz:
         elif self.element.maxdeg == 2:
             element = skfem.ElementLineP2()
         else:
+            import warnings
             warnings.warn('Using higher order Legendre elements; results might be wrong due to incompatible basis '
                           'functions.', stacklevel=2)
             element = skfem.ElementLinePp(self.element.maxdeg)
