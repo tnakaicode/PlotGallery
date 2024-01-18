@@ -1,12 +1,3 @@
-import numpy as np
-import skfem
-from helmi import Helmholtz
-from helmi.helper import get_curvature
-from skfem.visuals.matplotlib import draw, show, plot
-import matplotlib.pyplot as mplt
-from timeit import default_timer as timer
-import slit_mesh
-
 import gmsh
 import sys
 
@@ -102,12 +93,19 @@ def mesh(n_slits, w_slit, pitch):
     gmsh.write('./slit.msh')
     gmsh.finalize()
 
-
 n_slits = 3
 w_slit = 10
 pitch = 20
 mesh(n_slits, w_slit, pitch)
     
+import numpy as np
+import skfem
+from helmi import Helmholtz
+from helmi.helper import get_curvature
+from skfem.visuals.matplotlib import draw, show, plot
+import matplotlib.pyplot as mplt
+from timeit import default_timer as timer
+
 # wavelength (in layout units) and normalized wave number
 wavelength = 2
 k0 = 2 * np.pi / wavelength
