@@ -81,6 +81,7 @@ mesh(plane)
 
 import numpy as np
 import skfem
+from skfem_helimi import Helmholtz
 from helmi import Helmholtz
 from skfem.visuals.matplotlib import plot
 from scipy.constants import epsilon_0, mu_0
