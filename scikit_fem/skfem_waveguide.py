@@ -26,6 +26,10 @@ def make_mesh(plane: str = 'h'):
 
     gmsh.model.geo.addPhysicalGroup(2, [tag_surf], name='air')
     gmsh.model.geo.addPhysicalGroup(1, [tag_line0, tag_line2], name='plastic')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line2], name='bound_ymax')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line0], name='bound_ymin')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line3], name='bound_xmax')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line1], name='bound_xmin')
 
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
