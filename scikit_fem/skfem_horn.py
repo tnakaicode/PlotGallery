@@ -166,11 +166,14 @@ else:
     alpha = 1 / mu_r
     beta = -1 * k0 ** 2 * eps_r
     coeff_complementary = 1 / z0 / k0 * alpha
-    fem.assemble_boundaries_dirichlet(value={'bound_ymin': 0, 'bound_ymax': 0})
+    fem.assemble_boundaries_dirichlet(value={'bound_ymin': 0, 
+                                             'bound_ymax': 0})
 
 fem.assemble_subdomains(alpha={'air': alpha}, beta={'air': beta})
-fem.assemble_boundaries_3rd(gamma={'bound_feed': alpha * 1j * k0, 'bound_freespace': alpha * 1j * k0},
-                            q={'bound_feed': alpha * 2j * k0, 'bound_freespace': 0})
+fem.assemble_boundaries_3rd(gamma={'bound_feed': alpha * 1j * k0, 
+                                   'bound_freespace': alpha * 1j * k0},
+                            q={'bound_feed': alpha * 2j * k0, 
+                               'bound_freespace': 0})
 t2 = timer()
 print(f'Assembly took {t2 - t1:.3f} s')
 
