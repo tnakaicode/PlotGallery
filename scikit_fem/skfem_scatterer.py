@@ -224,6 +224,10 @@ fem.solve(direct=True, cuda=False)
 t2 = timer()
 print(f'Solving took {t2 - t1:.3f} s\n')
 
+ax = draw(fem.mesh, boundaries_only=True)
+plot(fem.basis, np.abs(fem.phi), ax=ax, colorbar=True)
+mplt.savefig('skfem_scatterer_solution.png')
+
 print('near2far()')
 t1 = timer()
 x_farfield = 10000

@@ -190,6 +190,12 @@ fem.solve(direct=True, cuda=False)
 t2 = timer()
 print(f'Solving took {t2 - t1:.3f} s\n')
 
+from skfem.visuals.matplotlib import plot, savefig, show, draw
+#M, X = fem.basis.refinterp(np.abs(fem.phi), 4)
+ax = draw(fem.mesh, boundaries_only=True)
+plot(fem.basis, np.abs(fem.phi), ax=ax, colorbar=True)
+savefig('skfem_slit_solution.png')
+
 print('near2far()')
 t1 = timer()
 x_farfield = 1000
@@ -212,7 +218,7 @@ phi_farfield_ideal = np.amax(np.abs(phi_farfield)) * np.sinc(k0 / 2 / np.pi *
 
 fig, ax = mplt.subplots(1, 2, figsize=(
     13, 7), gridspec_kw={'width_ratios': [3, 1]})
-plot(fem.basis, fem.phi.real, shading='gouraud', colorbar=True, ax=ax[0])
+#plot(fem.basis, fem.phi.real, shading='gouraud', colorbar=True, ax=ax[0])
 ax[0].set_aspect(1)
 ax[1].plot(np.abs(phi_farfield), y_farfield, label='FEM')
 ax[1].plot(np.abs(phi_farfield_ideal), y_farfield, label='Theory')
