@@ -11,25 +11,29 @@ def make_mesh(plane: str = 'h'):
     gmsh.model.add('Waveguide')
 
     tag_pt0 = gmsh.model.geo.addPoint(0, -5, 0, meshSize=meshsize)
-    tag_pt1 = gmsh.model.geo.addPoint(100, -5, 0, meshSize=meshsize)
-    tag_pt2 = gmsh.model.geo.addPoint(100, 5, 0, meshSize=meshsize)
-    tag_pt3 = gmsh.model.geo.addPoint(0, 5, 0, meshSize=meshsize)
+    tag_pt1 = gmsh.model.geo.addPoint(50, -5, 0, meshSize=meshsize)
+    tag_pt2 = gmsh.model.geo.addPoint(50, -25, 0, meshSize=meshsize)
+    tag_pt3 = gmsh.model.geo.addPoint(60, -25, 0, meshSize=meshsize)
+    tag_pt4 = gmsh.model.geo.addPoint(60, 5, 0, meshSize=meshsize)
+    tag_pt5 = gmsh.model.geo.addPoint(0, 5, 0, meshSize=meshsize)
 
     tag_line0 = gmsh.model.geo.addLine(tag_pt0, tag_pt1)
     tag_line1 = gmsh.model.geo.addLine(tag_pt1, tag_pt2)
     tag_line2 = gmsh.model.geo.addLine(tag_pt2, tag_pt3)
-    tag_line3 = gmsh.model.geo.addLine(tag_pt3, tag_pt0)
+    tag_line3 = gmsh.model.geo.addLine(tag_pt3, tag_pt4)
+    tag_line4 = gmsh.model.geo.addLine(tag_pt4, tag_pt5)
+    tag_line5 = gmsh.model.geo.addLine(tag_pt5, tag_pt0)
 
-    tag_loop = gmsh.model.geo.addCurveLoop(
-        [tag_line0, tag_line1, tag_line2, tag_line3])
+    tag_loop = gmsh.model.geo.addCurveLoop([tag_line0, tag_line1, tag_line2, 
+                                            tag_line3, tag_line4, tag_line5])
     tag_surf = gmsh.model.geo.addPlaneSurface([tag_loop])
 
     gmsh.model.geo.addPhysicalGroup(2, [tag_surf], name='air')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line0, tag_line2], name='plastic')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line2], name='bound_ymax')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line0], name='bound_ymin')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line0, tag_line1, tag_line3, tag_line4], name='plastic')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_ymax')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line2], name='bound_ymin')
     gmsh.model.geo.addPhysicalGroup(1, [tag_line3], name='bound_xmax')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line1], name='bound_xmin')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_xmin')
 
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
