@@ -65,7 +65,7 @@ def mesh(plane: str = 'h'):
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
     #gmsh.fltk.run()
-    gmsh.write(f'./horn_{plane}-plane.msh')
+    gmsh.write(f'skfem_horn_{plane}-plane.msh')
     gmsh.finalize()
 
 
@@ -76,23 +76,19 @@ def mesh(plane: str = 'h'):
 #        plane = 'e'
 #    mesh(plane)
 
-plane = 'e'
-mesh(plane)
-
 import numpy as np
 import skfem
 from skfem_helimi import Helmholtz
-from helmi import Helmholtz
 from skfem.visuals.matplotlib import plot
 from scipy.constants import epsilon_0, mu_0
 import matplotlib.pyplot as mplt
 from timeit import default_timer as timer
-import horn_mesh
 import os
 
 # parameters
 unit = 1e-3
 plane = 'h'
+plane = 'e'
 f = 140e9
 n = 1
 eps_r = 1.0
@@ -106,8 +102,8 @@ if not os.path.exists(plotpath):
 
 print('Meshing...')
 t1 = timer()
-horn_mesh.mesh(plane)
-mesh = skfem.Mesh.load(f'./horn_{plane}-plane.msh')
+mesh(plane)
+mesh = skfem.Mesh.load(f'skfem_horn_{plane}-plane.msh')
 t2 = timer()
 print(f'Meshing took {t2 - t1:.3f} s\n')
 
@@ -190,19 +186,19 @@ plot(fem.basis, phi_comp_x_re + phi_comp_y_re, colorbar=True, ax=ax[1])
 ax[1].set_aspect('equal')
 ax[1].set_title('Complementary field (Hx+Hy or Ex+Ey)')
 fig.tight_layout()
-mplt.savefig(f'./plots/horn_{plane}-plane_fields.png')
+mplt.savefig(f'skfem_horn_{plane}-plane_fields.png')
 mplt.close()
 
 mplt.figure()
 mplt.polar(theta_farfield, phi_db_farfield)
 mplt.title(f'Radiation pattern ({plane.upper()}-Plane, {f * 1e-9} GHz)')
 mplt.tight_layout()
-mplt.savefig(f'./plots/horn_{plane}-plane_pattern_polar.png')
+mplt.savefig(f'skfem_horn_{plane}-plane_pattern_polar.png')
 mplt.close()
 
 mplt.figure()
 mplt.plot(np.rad2deg(theta_farfield), phi_db_farfield)
 mplt.title(f'Radiation pattern ({plane.upper()}-Plane, {f * 1e-9} GHz)')
 mplt.tight_layout()
-mplt.savefig(f'./plots/horn_{plane}-plane_pattern_rect.png')
+mplt.savefig(f'skfem_horn_{plane}-plane_pattern_rect.png')
 mplt.close()
