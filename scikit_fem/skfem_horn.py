@@ -26,51 +26,93 @@ def mesh(plane: str = 'h'):
     gmsh.initialize()
     gmsh.model.add('Waveguide horn')
 
-    tag_pt_feed_ymin = gmsh.model.geo.addPoint(-1 * l_waveg - l_horn, -0.5 * h_waveg, 0, meshSize=meshsize)
-    tag_pt_feed_ymax = gmsh.model.geo.addPoint(-1 * l_waveg - l_horn, 0.5 * h_waveg, 0, meshSize=meshsize)
-    tag_pt_feed_y0 = gmsh.model.geo.addPoint(-1 * l_waveg - l_horn, 0, 0, meshSize=meshsize)
-    tag_pt_hornfeed_ymin = gmsh.model.geo.addPoint(-1 * l_horn, -0.5 * h_waveg, 0, meshSize=meshsize)
-    tag_pt_hornfeed_ymax = gmsh.model.geo.addPoint(-1 * l_horn, 0.5 * h_waveg, 0, meshSize=meshsize)
-    tag_pt_hornfeed_y0 = gmsh.model.geo.addPoint(-1 * l_horn, 0, 0, meshSize=meshsize)
-    tag_pt_horn_ymin = gmsh.model.geo.addPoint(0, -0.5 * h_horn, 0, meshSize=meshsize)
-    tag_pt_horn_ymax = gmsh.model.geo.addPoint(0, 0.5 * h_horn, 0, meshSize=meshsize)
+    tag_pt_feed_ymin = gmsh.model.geo.addPoint(-1.0 * l_waveg - l_horn,
+                                               -0.5 * h_waveg,
+                                               0, meshSize=meshsize)
+    tag_pt_feed_ymax = gmsh.model.geo.addPoint(-1.0 * l_waveg - l_horn,
+                                               0.5 * h_waveg,
+                                               0, meshSize=meshsize)
+    tag_pt_feed_y0 = gmsh.model.geo.addPoint(-1 * l_waveg - l_horn,
+                                             0,
+                                             0, meshSize=meshsize)
+    tag_pt_hornfeed_ymin = gmsh.model.geo.addPoint(-1.0 * l_horn,
+                                                   -0.5 * h_waveg,
+                                                   0, meshSize=meshsize)
+    tag_pt_hornfeed_ymax = gmsh.model.geo.addPoint(-1.0 * l_horn,
+                                                   0.5 * h_waveg,
+                                                   0, meshSize=meshsize)
+    tag_pt_hornfeed_y0 = gmsh.model.geo.addPoint(-1 * l_horn,
+                                                 0,
+                                                 0, meshSize=meshsize)
+    tag_pt_horn_ymin = gmsh.model.geo.addPoint(0,
+                                               -0.5 * h_horn,
+                                               0, meshSize=meshsize)
+    tag_pt_horn_ymax = gmsh.model.geo.addPoint(0, 0.5 * h_horn,
+                                               0,
+                                               meshSize=meshsize)
     tag_pt_horn_y0 = gmsh.model.geo.addPoint(0, 0, 0, meshSize=meshsize)
-    tag_pt_arc_ymin = gmsh.model.geo.addPoint(0, -1 * r_freespace, 0, meshSize=meshsize)
-    tag_pt_arc_ymax = gmsh.model.geo.addPoint(0, r_freespace, 0, meshSize=meshsize)
-    tag_pt_arc_y0 = gmsh.model.geo.addPoint(r_freespace, 0, 0, meshSize=meshsize)
+    tag_pt_arc_ymin = gmsh.model.geo.addPoint(0,
+                                              -1 * r_freespace,
+                                              0, meshSize=meshsize)
+    tag_pt_arc_ymax = gmsh.model.geo.addPoint(0,
+                                              r_freespace,
+                                              0, meshSize=meshsize)
+    tag_pt_arc_y0 = gmsh.model.geo.addPoint(r_freespace,
+                                            0,
+                                            0, meshSize=meshsize)
 
     tag_line_feed = gmsh.model.geo.addLine(tag_pt_feed_ymin, tag_pt_feed_ymax)
-    tag_line_waveg_ymax = gmsh.model.geo.addLine(tag_pt_feed_ymax, tag_pt_hornfeed_ymax)
-    tag_line_horn_ymax = gmsh.model.geo.addLine(tag_pt_hornfeed_ymax, tag_pt_horn_ymax)
-    tag_line_freespace_ymax = gmsh.model.geo.addLine(tag_pt_horn_ymax, tag_pt_arc_ymax)
-    tag_arc_freespace_ymax = gmsh.model.geo.addCircleArc(tag_pt_arc_ymax, tag_pt_horn_y0, tag_pt_arc_y0)
-    tag_arc_freespace_ymin = gmsh.model.geo.addCircleArc(tag_pt_arc_y0, tag_pt_horn_y0, tag_pt_arc_ymin)
-    tag_line_freespace_ymin = gmsh.model.geo.addLine(tag_pt_arc_ymin, tag_pt_horn_ymin)
-    tag_line_horn_ymin = gmsh.model.geo.addLine(tag_pt_horn_ymin, tag_pt_hornfeed_ymin)
-    tag_line_waveg_ymin = gmsh.model.geo.addLine(tag_pt_hornfeed_ymin, tag_pt_feed_ymin)
+    tag_line_waveg_ymax = gmsh.model.geo.addLine(tag_pt_feed_ymax,
+                                                 tag_pt_hornfeed_ymax)
+    tag_line_horn_ymax = gmsh.model.geo.addLine(tag_pt_hornfeed_ymax,
+                                                tag_pt_horn_ymax)
+    tag_line_freespace_ymax = gmsh.model.geo.addLine(tag_pt_horn_ymax,
+                                                     tag_pt_arc_ymax)
+    tag_arc_freespace_ymax = gmsh.model.geo.addCircleArc(tag_pt_arc_ymax,
+                                                         tag_pt_horn_y0,
+                                                         tag_pt_arc_y0)
+    tag_arc_freespace_ymin = gmsh.model.geo.addCircleArc(tag_pt_arc_y0,
+                                                         tag_pt_horn_y0,
+                                                         tag_pt_arc_ymin)
+    tag_line_freespace_ymin = gmsh.model.geo.addLine(tag_pt_arc_ymin,
+                                                     tag_pt_horn_ymin)
+    tag_line_horn_ymin = gmsh.model.geo.addLine(tag_pt_horn_ymin,
+                                                tag_pt_hornfeed_ymin)
+    tag_line_waveg_ymin = gmsh.model.geo.addLine(tag_pt_hornfeed_ymin,
+                                                 tag_pt_feed_ymin)
 
-    tag_loop = gmsh.model.geo.addCurveLoop([tag_line_feed, tag_line_waveg_ymax, tag_line_horn_ymax,
-                                            tag_line_freespace_ymax, tag_arc_freespace_ymax, tag_arc_freespace_ymin,
-                                            tag_line_freespace_ymin, tag_line_horn_ymin, tag_line_waveg_ymin])
+    tag_loop = gmsh.model.geo.addCurveLoop([tag_line_feed,
+                                            tag_line_waveg_ymax,
+                                            tag_line_horn_ymax,
+                                            tag_line_freespace_ymax,
+                                            tag_arc_freespace_ymax,
+                                            tag_arc_freespace_ymin,
+                                            tag_line_freespace_ymin,
+                                            tag_line_horn_ymin,
+                                            tag_line_waveg_ymin])
 
     tag_surf = gmsh.model.geo.addPlaneSurface([tag_loop])
 
     gmsh.model.geo.addPhysicalGroup(2, [tag_surf], name='air')
     gmsh.model.geo.addPhysicalGroup(1, [tag_line_feed], name='bound_feed')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line_freespace_ymax, tag_arc_freespace_ymax,
-                                        tag_arc_freespace_ymin, tag_line_freespace_ymin], name='bound_freespace')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line_waveg_ymax, tag_line_horn_ymax], name='bound_ymax')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_line_waveg_ymin, tag_line_horn_ymin], name='bound_ymin')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line_freespace_ymax,
+                                        tag_arc_freespace_ymax,
+                                        tag_arc_freespace_ymin,
+                                        tag_line_freespace_ymin], name='bound_freespace')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line_waveg_ymax,
+                                        tag_line_horn_ymax], name='bound_ymax')
+    gmsh.model.geo.addPhysicalGroup(1, [tag_line_waveg_ymin,
+                                        tag_line_horn_ymin], name='bound_ymin')
 
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
-    #gmsh.fltk.run()
+    # gmsh.fltk.run()
     gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
     gmsh.write(f'skfem_horn_{plane}-plane.msh')
     gmsh.finalize()
 
 
-#if __name__ == '__main__':
+# if __name__ == '__main__':
 #    if len(sys.argv) > 1:
 #        plane = sys.argv[1]
 #    else:
@@ -146,7 +188,8 @@ phi_farfield = np.zeros_like(theta_farfield, dtype=complex)
 for i, theta_i in enumerate(theta_farfield):
     r_x = r_farfield * np.cos(theta_i)
     r_y = r_farfield * np.sin(theta_i)
-    phi_farfield[i] = fem.near2far(r=(r_x, r_y), k=k0, field=fem.phi, boundaries=['bound_freespace'])
+    phi_farfield[i] = fem.near2far(
+        r=(r_x, r_y), k=k0, field=fem.phi, boundaries=['bound_freespace'])
 t2 = timer()
 print(f'near2far() took {t2 - t1:.3f} s\n')
 
@@ -168,21 +211,23 @@ r = phi_feed / 1.0 - 1
 print(f'r = {np.abs(r) ** 2} = {20 * np.log10(np.abs(r)):.1f} dB')
 
 # complementary fields (in x-y plane);
-phi_comp_x_re = -1 * coeff_complementary * fem.basis.project(fem.basis.interpolate(fem.phi_im).grad[1])
-#phi_comp_x_im = coeff_complementary * fem.basis.project(fem.basis.interpolate(fem.phi_re).grad[1])
-#phi_comp_x = phi_comp_x_re + 1j * phi_comp_x_im
+phi_comp_x_re = -1 * coeff_complementary * \
+    fem.basis.project(fem.basis.interpolate(fem.phi_im).grad[1])
+# phi_comp_x_im = coeff_complementary * fem.basis.project(fem.basis.interpolate(fem.phi_re).grad[1])
+# phi_comp_x = phi_comp_x_re + 1j * phi_comp_x_im
 
-phi_comp_y_re = -1 * coeff_complementary * fem.basis.project(fem.basis.interpolate(fem.phi_im).grad[0])
-#phi_comp_y_im = coeff_complementary * fem.basis.project(fem.basis.interpolate(fem.phi_re).grad[0])
-#phi_comp_y = phi_comp_y_re + 1j * phi_comp_y_im
+phi_comp_y_re = -1 * coeff_complementary * \
+    fem.basis.project(fem.basis.interpolate(fem.phi_im).grad[0])
+# phi_comp_y_im = coeff_complementary * fem.basis.project(fem.basis.interpolate(fem.phi_re).grad[0])
+# phi_comp_y = phi_comp_y_re + 1j * phi_comp_y_im
 
 fig, ax = mplt.subplots(2, 1, figsize=(8, 6))
 fig.suptitle(f'Real parts of fields at f = {f * 1e-9} GHz')
-#draw(mesh, ax=ax[0])
+# draw(mesh, ax=ax[0])
 plot(fem.basis, fem.phi_re, colorbar=True, ax=ax[0])
 ax[0].set_aspect('equal')
 ax[0].set_title('Transverse field (Ez or Hz)')
-#draw(mesh, ax=ax[1])
+# draw(mesh, ax=ax[1])
 plot(fem.basis, phi_comp_x_re + phi_comp_y_re, colorbar=True, ax=ax[1])
 ax[1].set_aspect('equal')
 ax[1].set_title('Complementary field (Hx+Hy or Ex+Ey)')

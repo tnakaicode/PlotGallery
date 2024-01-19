@@ -15,57 +15,89 @@ def mesh():
     gmsh.model.add('Scatterer')
 
     tag_pt_box_center = gmsh.model.geo.addPoint(0, 0, 0, meshSize=mesh_fiber)
-    tag_pt_fiber_center = gmsh.model.geo.addPoint(x_fiber, y_fiber, 0, meshSize=mesh_fiber)
+    tag_pt_fiber_center = gmsh.model.geo.addPoint(
+        x_fiber, y_fiber, 0, meshSize=mesh_fiber)
 
-    tag_pt_core_x0 = gmsh.model.geo.addPoint(x_fiber - r_core, y_fiber, 0, meshSize=mesh_fiber)
-    tag_pt_core_x1 = gmsh.model.geo.addPoint(x_fiber + r_core, y_fiber, 0, meshSize=mesh_fiber)
-    tag_pt_core_y0 = gmsh.model.geo.addPoint(x_fiber, y_fiber - r_core, 0, meshSize=mesh_fiber)
-    tag_pt_core_y1 = gmsh.model.geo.addPoint(x_fiber, y_fiber + r_core, 0, meshSize=mesh_fiber)
+    tag_pt_core_x0 = gmsh.model.geo.addPoint(
+        x_fiber - r_core, y_fiber, 0, meshSize=mesh_fiber)
+    tag_pt_core_x1 = gmsh.model.geo.addPoint(
+        x_fiber + r_core, y_fiber, 0, meshSize=mesh_fiber)
+    tag_pt_core_y0 = gmsh.model.geo.addPoint(
+        x_fiber, y_fiber - r_core, 0, meshSize=mesh_fiber)
+    tag_pt_core_y1 = gmsh.model.geo.addPoint(
+        x_fiber, y_fiber + r_core, 0, meshSize=mesh_fiber)
 
-    tag_circle_cladding_x0 = gmsh.model.geo.addPoint(x_fiber - r_cladding, y_fiber, 0, meshSize=mesh_fiber)
-    tag_circle_cladding_x1 = gmsh.model.geo.addPoint(x_fiber + r_cladding, y_fiber, 0, meshSize=mesh_fiber)
-    tag_circle_cladding_y0 = gmsh.model.geo.addPoint(x_fiber, y_fiber - r_cladding, 0, meshSize=mesh_fiber)
-    tag_circle_cladding_y1 = gmsh.model.geo.addPoint(x_fiber, y_fiber + r_cladding, 0, meshSize=mesh_fiber)
+    tag_circle_cladding_x0 = gmsh.model.geo.addPoint(
+        x_fiber - r_cladding, y_fiber, 0, meshSize=mesh_fiber)
+    tag_circle_cladding_x1 = gmsh.model.geo.addPoint(
+        x_fiber + r_cladding, y_fiber, 0, meshSize=mesh_fiber)
+    tag_circle_cladding_y0 = gmsh.model.geo.addPoint(
+        x_fiber, y_fiber - r_cladding, 0, meshSize=mesh_fiber)
+    tag_circle_cladding_y1 = gmsh.model.geo.addPoint(
+        x_fiber, y_fiber + r_cladding, 0, meshSize=mesh_fiber)
 
-    tag_circle_box_x0 = gmsh.model.geo.addPoint(-1 * r_box, 0, 0, meshSize=mesh_box)
+    tag_circle_box_x0 = gmsh.model.geo.addPoint(
+        -1 * r_box, 0, 0, meshSize=mesh_box)
     tag_circle_box_x1 = gmsh.model.geo.addPoint(r_box, 0, 0, meshSize=mesh_box)
-    tag_circle_box_y0 = gmsh.model.geo.addPoint(0, -1 * r_box, 0, meshSize=mesh_box)
+    tag_circle_box_y0 = gmsh.model.geo.addPoint(
+        0, -1 * r_box, 0, meshSize=mesh_box)
     tag_circle_box_y1 = gmsh.model.geo.addPoint(0, r_box, 0, meshSize=mesh_box)
 
-    tag_arc_core0 = gmsh.model.geo.addCircleArc(tag_pt_core_x1, tag_pt_fiber_center, tag_pt_core_y1)
-    tag_arc_core1 = gmsh.model.geo.addCircleArc(tag_pt_core_y1, tag_pt_fiber_center, tag_pt_core_x0)
-    tag_arc_core2 = gmsh.model.geo.addCircleArc(tag_pt_core_x0, tag_pt_fiber_center, tag_pt_core_y0)
-    tag_arc_core3 = gmsh.model.geo.addCircleArc(tag_pt_core_y0, tag_pt_fiber_center, tag_pt_core_x1)
+    tag_arc_core0 = gmsh.model.geo.addCircleArc(
+        tag_pt_core_x1, tag_pt_fiber_center, tag_pt_core_y1)
+    tag_arc_core1 = gmsh.model.geo.addCircleArc(
+        tag_pt_core_y1, tag_pt_fiber_center, tag_pt_core_x0)
+    tag_arc_core2 = gmsh.model.geo.addCircleArc(
+        tag_pt_core_x0, tag_pt_fiber_center, tag_pt_core_y0)
+    tag_arc_core3 = gmsh.model.geo.addCircleArc(
+        tag_pt_core_y0, tag_pt_fiber_center, tag_pt_core_x1)
 
-    tag_arc_cladding0 = gmsh.model.geo.addCircleArc(tag_circle_cladding_x1, tag_pt_fiber_center, tag_circle_cladding_y1)
-    tag_arc_cladding1 = gmsh.model.geo.addCircleArc(tag_circle_cladding_y1, tag_pt_fiber_center, tag_circle_cladding_x0)
-    tag_arc_cladding2 = gmsh.model.geo.addCircleArc(tag_circle_cladding_x0, tag_pt_fiber_center, tag_circle_cladding_y0)
-    tag_arc_cladding3 = gmsh.model.geo.addCircleArc(tag_circle_cladding_y0, tag_pt_fiber_center, tag_circle_cladding_x1)
+    tag_arc_cladding0 = gmsh.model.geo.addCircleArc(
+        tag_circle_cladding_x1, tag_pt_fiber_center, tag_circle_cladding_y1)
+    tag_arc_cladding1 = gmsh.model.geo.addCircleArc(
+        tag_circle_cladding_y1, tag_pt_fiber_center, tag_circle_cladding_x0)
+    tag_arc_cladding2 = gmsh.model.geo.addCircleArc(
+        tag_circle_cladding_x0, tag_pt_fiber_center, tag_circle_cladding_y0)
+    tag_arc_cladding3 = gmsh.model.geo.addCircleArc(
+        tag_circle_cladding_y0, tag_pt_fiber_center, tag_circle_cladding_x1)
 
-    tag_arc_box0 = gmsh.model.geo.addCircleArc(tag_circle_box_x1, tag_pt_box_center, tag_circle_box_y1)
-    tag_arc_box1 = gmsh.model.geo.addCircleArc(tag_circle_box_y1, tag_pt_box_center, tag_circle_box_x0)
-    tag_arc_box2 = gmsh.model.geo.addCircleArc(tag_circle_box_x0, tag_pt_box_center, tag_circle_box_y0)
-    tag_arc_box3 = gmsh.model.geo.addCircleArc(tag_circle_box_y0, tag_pt_box_center, tag_circle_box_x1)
+    tag_arc_box0 = gmsh.model.geo.addCircleArc(
+        tag_circle_box_x1, tag_pt_box_center, tag_circle_box_y1)
+    tag_arc_box1 = gmsh.model.geo.addCircleArc(
+        tag_circle_box_y1, tag_pt_box_center, tag_circle_box_x0)
+    tag_arc_box2 = gmsh.model.geo.addCircleArc(
+        tag_circle_box_x0, tag_pt_box_center, tag_circle_box_y0)
+    tag_arc_box3 = gmsh.model.geo.addCircleArc(
+        tag_circle_box_y0, tag_pt_box_center, tag_circle_box_x1)
 
-    tag_loop_box = gmsh.model.geo.addCurveLoop([tag_arc_box0, tag_arc_box1, tag_arc_box2, tag_arc_box3])
-    tag_loop_core = gmsh.model.geo.addCurveLoop([tag_arc_core0, tag_arc_core1, tag_arc_core2, tag_arc_core3])
-    tag_loop_cladding = gmsh.model.geo.addCurveLoop([tag_arc_cladding0, tag_arc_cladding1, tag_arc_cladding2, tag_arc_cladding3])
+    tag_loop_box = gmsh.model.geo.addCurveLoop(
+        [tag_arc_box0, tag_arc_box1, tag_arc_box2, tag_arc_box3])
+    tag_loop_core = gmsh.model.geo.addCurveLoop(
+        [tag_arc_core0, tag_arc_core1, tag_arc_core2, tag_arc_core3])
+    tag_loop_cladding = gmsh.model.geo.addCurveLoop(
+        [tag_arc_cladding0, tag_arc_cladding1, tag_arc_cladding2, tag_arc_cladding3])
 
-    tag_surf_air = gmsh.model.geo.addPlaneSurface([tag_loop_box, tag_loop_core, tag_loop_cladding])
-    tag_surf_cladding = gmsh.model.geo.addPlaneSurface([tag_loop_cladding, tag_loop_core])
+    tag_surf_air = gmsh.model.geo.addPlaneSurface(
+        [tag_loop_box, tag_loop_core, tag_loop_cladding])
+    tag_surf_cladding = gmsh.model.geo.addPlaneSurface(
+        [tag_loop_cladding, tag_loop_core])
     tag_surf_core = gmsh.model.geo.addPlaneSurface([tag_loop_core])
 
     gmsh.model.geo.addPhysicalGroup(2, [tag_surf_air], name='air')
     gmsh.model.geo.addPhysicalGroup(2, [tag_surf_core], name='core')
     gmsh.model.geo.addPhysicalGroup(2, [tag_surf_cladding], name='cladding')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_arc_box0, tag_arc_box1, tag_arc_box2, tag_arc_box3], name='bound')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_arc_core0, tag_arc_core1, tag_arc_core2, tag_arc_core3], name='interface_core')
-    gmsh.model.geo.addPhysicalGroup(1, [tag_arc_cladding0, tag_arc_cladding1, tag_arc_cladding2, tag_arc_cladding3], name='interface_cladding')
+    gmsh.model.geo.addPhysicalGroup(
+        1, [tag_arc_box0, tag_arc_box1, tag_arc_box2, tag_arc_box3], name='bound')
+    gmsh.model.geo.addPhysicalGroup(
+        1, [tag_arc_core0, tag_arc_core1, tag_arc_core2, tag_arc_core3], name='interface_core')
+    gmsh.model.geo.addPhysicalGroup(
+        1, [tag_arc_cladding0, tag_arc_cladding1, tag_arc_cladding2, tag_arc_cladding3], name='interface_cladding')
 
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
-    gmsh.fltk.run()
-    gmsh.write('./scatterer.msh')
+    # gmsh.fltk.run()
+    gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+    gmsh.write('skfem_scatterer.msh')
     gmsh.finalize()
 
 
@@ -73,8 +105,7 @@ mesh()
 
 import numpy as np
 import skfem
-from helmi import Helmholtz
-from helmi.helper import get_curvature
+from skfem_helimi import Helmholtz, get_curvature
 from skfem.visuals.matplotlib import draw, show, plot
 import matplotlib.pyplot as mplt
 from timeit import default_timer as timer
@@ -98,7 +129,7 @@ if not os.path.exists(plotpath):
 
 print('Loading mesh')
 t1 = timer()
-mesh = skfem.Mesh.load('./scatterer.msh')
+mesh = skfem.Mesh.load('skfem_scatterer.msh')
 t2 = timer()
 print(f'Loading took {t2 - t1:.3f} s\n')
 
@@ -117,7 +148,7 @@ if empty:
     mu_core = 1
     eps_cladding = 1
     mu_cladding = 1
-    plotname = 'scatterer_empty'
+    plotname = 'skfem_scatterer_empty'
 else:
     eps_air = 1.0
     mu_air = 1.0
@@ -125,7 +156,7 @@ else:
     mu_core = 1.0
     eps_cladding = 1.444 ** 2
     mu_cladding = 1.0
-    plotname = 'scatterer_fiber'
+    plotname = 'skfem_scatterer_fiber'
 
 # simulation parameters
 if pol.lower() == 'tm':
@@ -169,7 +200,8 @@ kr = k0 * (x * np.cos(theta_laser) + y * np.sin(theta_laser))
 
 phi0 = 1.0 * np.exp(-1j * kr)
 dphi0_dn = -1j * kr / r * phi0
-d2phi0_ds2 = (-1j * k0 / r * (-y * np.cos(theta_laser) + x * np.sin(theta_laser))) ** 2 * phi0
+d2phi0_ds2 = (-1j * k0 / r * (-y * np.cos(theta_laser) +
+              x * np.sin(theta_laser))) ** 2 * phi0
 
 # first order absorbing boundary condition
 g1 = 1j * k0 + kappa / 2
@@ -198,11 +230,13 @@ x_farfield = 10000
 y_farfield = np.linspace(-30000, 30000, 3001)
 phi_farfield = np.zeros_like(y_farfield, dtype=complex)
 for i in range(len(y_farfield)):
-    phi_farfield[i] = fem.near2far(r=(x_farfield, y_farfield[i]), k=k0, field=fem.phi, boundaries=['bound'])
+    phi_farfield[i] = fem.near2far(
+        r=(x_farfield, y_farfield[i]), k=k0, field=fem.phi, boundaries=['bound'])
 t2 = timer()
 print(f'near2far() took {t2 - t1:.3f} s\n')
 
-fig, ax = mplt.subplots(1, 2, figsize=(13, 7), gridspec_kw={'width_ratios': [3, 1]})
+fig, ax = mplt.subplots(1, 2, figsize=(
+    13, 7), gridspec_kw={'width_ratios': [3, 1]})
 plot(fem.basis, fem.phi.real, shading='gouraud', colorbar=True, ax=ax[0])
 draw(mesh, boundaries_only=True, ax=ax[0])
 ax[0].set_aspect(1)
@@ -218,11 +252,13 @@ ax[1].set_ylabel('y farfield')
 ax[1].set_title(f'Farfield at $x={x_farfield}$')
 mplt.tight_layout()
 # mplt.show()
-mplt.savefig(plotpath + f'/{plotname}_{field}.png', dpi=300)
+mplt.savefig(f'{plotname}_{field}.png', dpi=300)
 mplt.close()
 
-fig, ax = mplt.subplots(1, 2, figsize=(13, 7), gridspec_kw={'width_ratios': [3, 1]})
-plot(fem.basis, np.abs(fem.phi) ** 2, shading='gouraud', colorbar=True, ax=ax[0])
+fig, ax = mplt.subplots(1, 2, figsize=(
+    13, 7), gridspec_kw={'width_ratios': [3, 1]})
+plot(fem.basis, np.abs(fem.phi) ** 2,
+     shading='gouraud', colorbar=True, ax=ax[0])
 draw(mesh, boundaries_only=True, ax=ax[0])
 ax[0].set_aspect(1)
 ax[0].set_title(f'Intensity |{field}|²')
@@ -234,5 +270,5 @@ ax[1].set_ylabel('y farfield')
 ax[1].set_title(f'Farfield intensity at $x={x_farfield}$')
 mplt.tight_layout()
 # mplt.show()
-mplt.savefig(plotpath + f'/{plotname}_{field}_intensity.png', dpi=300)
+mplt.savefig(f'{plotname}_{field}_intensity.png', dpi=300)
 mplt.close()
