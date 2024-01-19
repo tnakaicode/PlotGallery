@@ -630,6 +630,7 @@ class Helmholtz:
         # convert from ImageMagick
         subprocess.call(['convert', '-loop', '0', 'frame_*.png', 'video.gif'])
 
+
 if __name__ == '__main__':
     # create a rectangular mesh with skfem:
     x_pts = np.linspace(0, 100, 101)
@@ -641,13 +642,13 @@ if __name__ == '__main__':
                                  'bound_xmax': lambda x: np.isclose(x[0], x_pts[-1]),
                                  'bound_ymin': lambda x: np.isclose(x[1], y_pts[0]),
                                  'bound_ymax': lambda x: np.isclose(x[1], y_pts[-1])})
-    
+
     # alternatively, load a mesh from file:
     # mesh = skfem.Mesh.load('helmi_fem.gmsh')
-    
+
     element = skfem.ElementTriP2()
     fem = Helmholtz(mesh, element)
-    
+
     k0 = 0.5
     eps_air = 1
     mu_air = 1
@@ -666,12 +667,12 @@ if __name__ == '__main__':
                                 q={'bound_xmin': 1 / mu_plastic * 2j * k0,
                                    'bound_xmax': 0})
     fem.solve()
-    
+
     x_bound_xmin, y_bound_xmin = fem.basis.doflocs[:, fem.basis.get_dofs(
         'bound_xmin')]
     from skfem.visuals.matplotlib import plot
     import matplotlib.pyplot as mplt
-    
+
     fig, ax = mplt.subplots(2, 1)
     plot(fem.basis, fem.phi_re, ax=ax[0])
     plot(fem.basis, fem.phi_im, ax=ax[1])
@@ -679,4 +680,3 @@ if __name__ == '__main__':
     ax[1].set_aspect(1)
     mplt.tight_layout()
     mplt.show()
-    
