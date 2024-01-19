@@ -65,6 +65,7 @@ def mesh(plane: str = 'h'):
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
     #gmsh.fltk.run()
+    gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
     gmsh.write(f'skfem_horn_{plane}-plane.msh')
     gmsh.finalize()
 
