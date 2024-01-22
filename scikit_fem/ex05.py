@@ -16,11 +16,11 @@ on a part of the boundary of the domain :math:`\Gamma \subset \partial \Omega`
 
 """
 
-from skfem import *
+from skfem import MeshTri1, ElementTriP1, Basis, FacetBasis, asm, BilinearForm, LinearForm, solve, condense
 from skfem.helpers import dot, grad
 from skfem.models.poisson import laplace
 
-m = MeshTri().refined(5).with_boundaries({"plate": lambda x: x[1] == 0.0})
+m = MeshTri1().refined(5).with_boundaries({"plate": lambda x: x[1] == 0.0})
 
 e = ElementTriP1()
 
@@ -51,10 +51,10 @@ I = ib.complement_dofs(ib.get_dofs("plate"))
 
 import scipy.sparse
 b = scipy.sparse.csr_matrix(b)
-K = scipy.sparse.bmat([[A+B, b.T], [b, None]], 'csr')
+K = scipy.sparse.bmat([[A + B, b.T], [b, None]], 'csr')
 
 import numpy as np
-f = np.concatenate((ib.zeros(), -1.0*np.ones(1)))
+f = np.concatenate((ib.zeros(), -1.0 * np.ones(1)))
 
 I = np.append(I, K.shape[0] - 1)
 

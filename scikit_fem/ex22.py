@@ -12,26 +12,29 @@ for each element :math:`K`, and
 for each edge :math:`E`.
 
 """
-from skfem import *
+from skfem import MeshTri1, ElementTriP1, LinearForm, Basis, Functional, InteriorFacetBasis, solve, condense, adaptive_theta
 from skfem.models.poisson import laplace
 from skfem.helpers import grad
 import numpy as np
 
-m = MeshTri.init_lshaped().refined(2)
+m = MeshTri1.init_lshaped().refined(2)
 e = ElementTriP1()
+
 
 def load_func(x, y):
     return 1.
+
 
 @LinearForm
 def load(v, w):
     x, y = w.x
     return load_func(x, y) * v
 
-def eval_estimator(m, u):    
+
+def eval_estimator(m, u):
     # interior residual
     basis = Basis(m, e)
-    
+
     @Functional
     def interior_residual(w):
         h = w.h
@@ -39,11 +42,11 @@ def eval_estimator(m, u):
         return h ** 2 * load_func(x, y) ** 2
 
     eta_K = interior_residual.elemental(basis, w=basis.interpolate(u))
-    
+
     # facet jump
     fbasis = [InteriorFacetBasis(m, e, side=i) for i in [0, 1]]
     w = {'u' + str(i + 1): fbasis[i].interpolate(u) for i in [0, 1]}
-    
+
     @Functional
     def edge_jump(w):
         h = w.h
@@ -54,22 +57,23 @@ def eval_estimator(m, u):
                     (dw1[1] - dw2[1]) * n[1]) ** 2
 
     eta_E = edge_jump.elemental(fbasis[0], **w)
-    
+
     tmp = np.zeros(m.facets.shape[1])
     np.add.at(tmp, fbasis[0].find, eta_E)
     eta_E = np.sum(.5 * tmp[m.t2f], axis=0)
-    
+
     return eta_K + eta_E
 
-if __name__ == "__main__":
-    from skfem.visuals.matplotlib import draw
-    draw(m)
+# if __name__ == "__main__":
+#    from skfem.visuals.matplotlib import draw
+#    draw(m)
+
 
 for itr in reversed(range(6)):
     basis = Basis(m, e)
 
-    K = asm(laplace, basis)
-    f = asm(load, basis)
+    K = laplace.assemble(basis)
+    f = load.assemble(basis)
 
     I = m.interior_nodes()
     u = solve(*condense(K, f, I=I))
@@ -85,4 +89,10 @@ def visualize():
 
 
 if __name__ == "__main__":
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import draw, plot, savefig, show
+    ax = draw(m)
+    plot(m, u, ax=ax, shading='gouraud', colorbar=True)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

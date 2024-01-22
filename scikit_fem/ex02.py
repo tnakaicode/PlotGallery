@@ -65,12 +65,12 @@ The full source code of the example reads as follows:
 
 .. literalinclude:: examples/ex02.py
     :start-after: EOF"""
-from skfem import *
+from skfem import MeshTri1, ElementTriP1, Basis, FacetBasis, asm, BilinearForm, LinearForm, solve, condense, enforce, ElementTriMorley
 from skfem.models.poisson import unit_load
 import numpy as np
 
 m = (
-    MeshTri.init_symmetric()
+    MeshTri1.init_symmetric()
     .refined(3)
     .with_boundaries(
         {
@@ -105,6 +105,7 @@ D = np.hstack([ib.get_dofs("left"), ib.get_dofs({"right", "top"}).all("u")])
 
 x = solve(*condense(K, f, D=D))
 
+
 def visualize():
     from skfem.visuals.matplotlib import draw, plot
     ax = draw(m)
@@ -115,5 +116,17 @@ def visualize():
                 colorbar=True,
                 nrefs=2)
 
+
 if __name__ == "__main__":
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, savefig, show, draw
+    ax = draw(m)
+    plot(ib,
+         x,
+         ax=ax,
+         shading='gouraud',
+         colorbar=True,
+         nrefs=2)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()
