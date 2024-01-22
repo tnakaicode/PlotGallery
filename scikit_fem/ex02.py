@@ -67,6 +67,7 @@ The full source code of the example reads as follows:
     :start-after: EOF"""
 from skfem import MeshTri1, ElementTriP1, Basis, FacetBasis, asm, BilinearForm, LinearForm, solve, condense, enforce, ElementTriMorley
 from skfem.models.poisson import unit_load
+from skfem.helpers import dd, ddot, trace, eye
 import numpy as np
 
 m = (
@@ -87,7 +88,6 @@ ib = Basis(m, e)
 
 @BilinearForm
 def bilinf(u, v, w):
-    from skfem.helpers import dd, ddot, trace, eye
     d = 0.1
     E = 200e9
     nu = 0.3
@@ -98,10 +98,10 @@ def bilinf(u, v, w):
     return d**3 / 12.0 * ddot(C(dd(u)), dd(v))
 
 
-K = asm(bilinf, ib)
-f = 1e6 * asm(unit_load, ib)
-
-D = np.hstack([ib.get_dofs("left"), ib.get_dofs({"right", "top"}).all("u")])
+K = bilinf.assemble(ib)
+f = 1e6 * unit_load.assemble(ib)
+D = np.hstack([ib.get_dofs("left"),
+               ib.get_dofs({"right", "top"}).all("u")])
 
 x = solve(*condense(K, f, D=D))
 

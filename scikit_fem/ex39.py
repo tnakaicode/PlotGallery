@@ -119,7 +119,5 @@ if __name__ == "__main__":
         repeat=False,
         interval=50,
     )
-    if args.gif:
-        animation.save(Path(__file__).with_suffix(".gif"), "imagemagick")
-    else:
-        plt.show()
+    animation.save(Path(__file__).with_suffix(".gif"), "imagemagick")
+    plt.show()

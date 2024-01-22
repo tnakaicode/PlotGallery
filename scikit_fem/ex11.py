@@ -18,7 +18,7 @@ ib = Basis(m, e, MappingIsoparametric(m, e1), 3)
 K = asm(linear_elasticity(*lame_parameters(1e3, 0.3)), ib)
 
 dofs = {
-    'left' : ib.get_dofs(lambda x: x[0] == 0.0),
+    'left': ib.get_dofs(lambda x: x[0] == 0.0),
     'right': ib.get_dofs(lambda x: x[0] == 1.0),
 }
 
@@ -30,15 +30,15 @@ I = ib.complement_dofs(dofs)
 u = solve(*condense(K, x=u, I=I))
 
 sf = 1.0
-m = m.translated(sf * u[ib.nodal_dofs])
+m_vtk = m.translated(sf * u[ib.nodal_dofs])
 
 if __name__ == "__main__":
     from os.path import splitext
     from sys import argv
     from skfem.visuals.matplotlib import plot, savefig, show, draw
-    
-    #plot(u, shading='gouraud', colorbar=True)
-    #savefig(splitext(argv[0])[0] + '_solution.png')
-    #show()
-    
-    m.save(splitext(argv[0])[0] + '.vtk')
+
+    m_vtk.draw()
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()
+
+    m_vtk.save(splitext(argv[0])[0] + '.vtk')

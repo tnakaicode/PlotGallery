@@ -107,7 +107,7 @@ Miscellaneous
 |                  | Example 34: | ![pic](ex34_solution.png) | Euler-Bernoulli beam                                                       |
 |                  | Example 36: | ![pic](ex36_solution.png) | Nearly incompressible hyperelasticity                                      |
 |                  | Example 43: | ![pic](ex43_solution.png) | Hyperelasticity (need install vedo)                                        |
-| Fluid mechanics  | Example 18: | ![pic](ex18_solution.png) | Stokes equations                                                           |
+| Fluid mechanics  | Example 18: | ![pic](ex18_pressure.png) | Stokes equations                                                           |
 |                  | Example 20: | ![pic](ex20_solution.png) | Creeping flow via stream-function                                          |
 |                  | Example 24: | ![pic](ex24_solution.png) | Stokes flow with inhomogeneous boundary conditions                         |
 |                  | Example 29: | ![pic](ex29_solution.png) | Linear hydrodynamic stability                                              |
@@ -115,11 +115,11 @@ Miscellaneous
 |                  | Example 32: | ![pic](ex32_solution.png) | Block diagonally preconditioned Stokes solver (need install pyamg/pyamgcl) |
 |                  | Example 42: | ![pic](ex42_solution.png) | Periodic meshes                                                            |
 | Heat transfer    | Example 17: | ![pic](ex17_solution.png) | Insulated wire                                                             |
-|                  | Example 19: | ![pic](ex19_solution.png) | Heat equation                                                              |
+|                  | Example 19: | ![pic](ex19.gif)          | Heat equation                                                              |
 |                  | Example 25: | ![pic](ex25_solution.png) | Forced convection                                                          |
 |                  | Example 26: | ![pic](ex26_solution.png) | Restricting problem to a subdomain                                         |
-|                  | Example 28: | ![pic](ex28_solution.png) | Conjugate heat transfer                                                    |
-|                  | Example 39: | ![pic](ex39_solution.png) | One-dimensional heat equation                                              |
+|                  | Example 28: | ![pic](ex28.png)          | Conjugate heat transfer                                                    |
+|                  | Example 39: | ![pic](ex39.gif)          | One-dimensional heat equation                                              |
 | Miscellaneous    | Example 10: | ![pic](ex10_solution.png) | Nonlinear minimal surface problem                                          |
 |                  | Example 16: | ![pic](ex16_solution.png) | Legendre’s equation                                                        |
 |                  | Example 31: | ![pic](ex31_solution.png) | Curved elements                                                            |

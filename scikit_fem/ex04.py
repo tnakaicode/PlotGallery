@@ -155,4 +155,17 @@ def visualize():
 
 
 if __name__ == "__main__":
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, draw, savefig, show
+    pdg1 = Basis(mdefo1, dg1.elem)
+    pdg2 = Basis(mdefo2, dg2.elem)
+    ax = plot(pdg1,
+              vonmises1,
+              shading='gouraud',
+              colorbar=r"$\sigma_{\mathrm{mises}}$")
+    draw(mdefo1, ax=ax)
+    plot(pdg2, vonmises2, ax=ax, nrefs=3, shading='gouraud')
+    draw(mdefo2, ax=ax)
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

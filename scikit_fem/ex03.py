@@ -1,6 +1,6 @@
 """Linear elastic eigenvalue problem."""
 
-from skfem import *
+from skfem import MeshLine, ElementQuad1, MappingIsoparametric, ElementVector, Basis, BilinearForm, solve, condense, solver_eigen_scipy_sym, MeshQuad
 from skfem.helpers import dot, ddot, sym_grad
 from skfem.models.elasticity import linear_elasticity, linear_stress
 import numpy as np
@@ -23,13 +23,15 @@ gb = Basis(m, e, mapping, 2)
 
 lam = 1.
 mu = 1.
-K = asm(linear_elasticity(lam, mu), gb)
+K = linear_elasticity(lam, mu).assemble(gb)
+
 
 @BilinearForm
 def mass(u, v, w):
     return dot(u, v)
 
-M = asm(mass, gb)
+
+M = mass.assemble(gb)
 
 D = gb.get_dofs("left")
 y = gb.zeros()
@@ -47,6 +49,7 @@ C = linear_stress(lam, mu)
 yi = gb.interpolate(y)
 sigma = sgb.project(C(sym_grad(yi)))
 
+
 def visualize():
     from skfem.visuals.matplotlib import plot, draw
     M = MeshQuad(np.array(m.p + .5 * y[gb.nodal_dofs]), m.t)
@@ -57,5 +60,17 @@ def visualize():
                 colorbar='$\sigma_{xx}$',
                 shading='gouraud')
 
+
 if __name__ == "__main__":
-    visualize().show()
+    from os.path import splitext
+    from sys import argv
+    from skfem.visuals.matplotlib import plot, draw, savefig, show
+    M = MeshQuad(np.array(m.p + .5 * y[gb.nodal_dofs]), m.t)
+    ax = draw(M)
+    plot(M,
+         sigma[sgb.nodal_dofs[0]],
+         ax=ax,
+         colorbar='$\sigma_{xx}$',
+         shading='gouraud')
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()

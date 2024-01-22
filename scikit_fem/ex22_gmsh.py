@@ -21,6 +21,7 @@ import gmsh
 from os.path import splitext
 from sys import argv
 
+
 def make_mesh():
     meshsize = 0.1
 
@@ -41,27 +42,28 @@ def make_mesh():
     tag_line4 = gmsh.model.geo.addLine(tag_pt4, tag_pt5)
     tag_line5 = gmsh.model.geo.addLine(tag_pt5, tag_pt0)
 
-    tag_loop = gmsh.model.geo.addCurveLoop([tag_line0, tag_line1, tag_line2, 
+    tag_loop = gmsh.model.geo.addCurveLoop([tag_line0, tag_line1, tag_line2,
                                             tag_line3, tag_line4, tag_line5])
     tag_surf = gmsh.model.geo.addPlaneSurface([tag_loop])
 
-    #gmsh.model.geo.addPhysicalGroup(2, [tag_surf], name='air')
-    #gmsh.model.geo.addPhysicalGroup(1, [tag_line0, tag_line1, tag_line3, tag_line4], name='plastic')
-    #gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_ymax')
-    #gmsh.model.geo.addPhysicalGroup(1, [tag_line2], name='bound_ymin')
-    #gmsh.model.geo.addPhysicalGroup(1, [tag_line3], name='bound_xmax')
-    #gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_xmin')
+    # gmsh.model.geo.addPhysicalGroup(2, [tag_surf], name='air')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line0, tag_line1, tag_line3, tag_line4], name='plastic')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_ymax')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line2], name='bound_ymin')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line3], name='bound_xmax')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_xmin')
 
     gmsh.model.geo.synchronize()
     gmsh.model.mesh.generate(2)
-    #gmsh.fltk.run()
+    # gmsh.fltk.run()
     gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
     gmsh.write(splitext(argv[0])[0] + '.msh')
     gmsh.finalize()
 
+
 make_mesh()
 m = skfem.Mesh.load(splitext(argv[0])[0] + '.msh')
-#m = MeshTri1.init_lshaped().refined(2)
+# m = MeshTri1.init_lshaped().refined(2)
 e = ElementTriP1()
 
 
@@ -134,7 +136,7 @@ def visualize():
 
 if __name__ == "__main__":
     from skfem.visuals.matplotlib import draw, plot, savefig, show
-    #ax = draw(m)
+    # ax = draw(m)
     plot(m, u, shading='gouraud', colorbar=True)
     savefig(splitext(argv[0])[0] + '_solution.png')
     show()

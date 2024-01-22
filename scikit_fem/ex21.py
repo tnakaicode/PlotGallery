@@ -94,5 +94,6 @@ if __name__ == "__main__":
     from sys import argv
     from skfem.visuals.matplotlib import plot, savefig, show, draw
     sf = 10.0
-    m.translated(sf * x[ib.nodal_dofs, 0]).draw().show()
- 
+    m.translated(sf * x[ib.nodal_dofs, 0]).draw()
+    savefig(splitext(argv[0])[0] + '_solution.png')
+    show()
