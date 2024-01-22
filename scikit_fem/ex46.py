@@ -1,12 +1,53 @@
 """Waveguide cutoff analysis."""
 
 import numpy as np
+import skfem
 from skfem import *
 from skfem.helpers import *
 
 from os.path import splitext
 from sys import argv
 import matplotlib.pyplot as plt
+import gmsh
+
+
+def make_mesh():
+    meshsize = 1/20/2
+
+    gmsh.initialize()
+    gmsh.model.add('box')
+
+    tag_pt0 = gmsh.model.geo.addPoint(0, 0, 0, meshSize=meshsize)
+    tag_pt1 = gmsh.model.geo.addPoint(1, 0.1, 0, meshSize=meshsize)
+    tag_pt2 = gmsh.model.geo.addPoint(1, 0.4, 0, meshSize=meshsize)
+    tag_pt3 = gmsh.model.geo.addPoint(0, 0.5, 0, meshSize=meshsize)
+
+    tag_line0 = gmsh.model.geo.addLine(tag_pt0, tag_pt1)
+    tag_line1 = gmsh.model.geo.addLine(tag_pt1, tag_pt2)
+    tag_line2 = gmsh.model.geo.addLine(tag_pt2, tag_pt3)
+    tag_line3 = gmsh.model.geo.addLine(tag_pt3, tag_pt0)
+
+    tag_loop = gmsh.model.geo.addCurveLoop(
+        [tag_line0, tag_line1, tag_line2, tag_line3])
+    tag_surf = gmsh.model.geo.addPlaneSurface([tag_loop])
+
+    # gmsh.model.geo.addPhysicalGroup(2, [tag_surf], name='air')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line0, tag_line1, tag_line3, tag_line4], name='plastic')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_ymax')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line2], name='bound_ymin')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line3], name='bound_xmax')
+    # gmsh.model.geo.addPhysicalGroup(1, [tag_line5], name='bound_xmin')
+
+    gmsh.model.geo.synchronize()
+    gmsh.model.mesh.generate(2)
+    # gmsh.fltk.run()
+    gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+    gmsh.write(splitext(argv[0])[0] + '.msh')
+    gmsh.finalize()
+
+
+make_mesh()
+m = skfem.Mesh.load(splitext(argv[0])[0] + '.msh')
 
 # three different mesh and element types
 mesh_elem = [
@@ -26,6 +67,11 @@ mesh_elem = [
         MeshTri.init_tensor(np.linspace(0, 1, 20),
                             np.linspace(0, .5, 10)),
         ElementTriN2() * ElementTriP2(),
+        ElementTriP2(),
+    ),
+    (
+        m,
+        ElementTriN1() * ElementTriP1(),
         ElementTriP2(),
     ),
 ]
