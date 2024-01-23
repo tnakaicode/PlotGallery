@@ -12,13 +12,13 @@ from mpi4py import MPI as _MPI
 import numpy as np
 import numpy.typing as npt
 
-import basix
-import basix.ufl
-import ufl
-from dolfinx import cpp as _cpp
-from dolfinx import default_real_type
-from dolfinx.cpp.graph import AdjacencyList_int32
-from dolfinx.mesh import CellType, Mesh, create_mesh, meshtags, meshtags_from_entities
+# import basix
+# import basix.ufl
+# import ufl
+# from dolfinx import cpp as _cpp
+# from dolfinx import default_real_type
+# from dolfinx.cpp.graph import AdjacencyList_int32
+# from dolfinx.mesh import CellType, Mesh, create_mesh, meshtags, meshtags_from_entities
 
 __all__ = ["cell_perm_array", "ufl_mesh", "extract_topology_and_markers",
            "extract_geometry", "model_to_mesh", "read_from_msh"]
@@ -58,7 +58,8 @@ def ufl_mesh(gmsh_cell: int, gdim: int, dtype: npt.DTypeLike) -> ufl.Mesh:
         raise e
     cell = ufl.Cell(shape, geometric_dimension=gdim)
     element = basix.ufl.element(basix.ElementFamily.P, cell.cellname(), degree,
-                                basix.LagrangeVariant.equispaced, shape=(gdim,),
+                                basix.LagrangeVariant.equispaced, shape=(
+                                    gdim,),
                                 gdim=gdim, dtype=dtype)  # type: ignore[arg-type]
     return ufl.Mesh(element)
 
@@ -113,7 +114,8 @@ def extract_topology_and_markers(model, name: typing.Optional[str] = None):
             # of tagged cells NOTE: Assumes that each entity only have
             # one cell-type,
             # i.e. facets of prisms and pyramid meshes are not supported
-            (entity_types, entity_tags, entity_topologies) = model.mesh.getElements(dim, tag=entity)
+            (entity_types, entity_tags, entity_topologies) = model.mesh.getElements(
+                dim, tag=entity)
             assert len(entity_types) == 1
 
             # Determine number of local nodes per element to create the
@@ -135,9 +137,11 @@ def extract_topology_and_markers(model, name: typing.Optional[str] = None):
             if entity_type in topologies.keys():
                 topologies[entity_type]["topology"] = np.concatenate(
                     (topologies[entity_type]["topology"], topology), axis=0)
-                topologies[entity_type]["cell_data"] = np.hstack([topologies[entity_type]["cell_data"], marker])
+                topologies[entity_type]["cell_data"] = np.hstack(
+                    [topologies[entity_type]["cell_data"], marker])
             else:
-                topologies[entity_type] = {"topology": topology, "cell_data": marker}
+                topologies[entity_type] = {
+                    "topology": topology, "cell_data": marker}
 
     return topologies
 
@@ -177,10 +181,9 @@ def extract_geometry(model, name: typing.Optional[str] = None) -> npt.NDArray[np
 
 
 def model_to_mesh(model, comm: _MPI.Comm, rank: int, gdim: int = 3,
-                  partitioner: typing.Optional[typing.Callable[
-                      [_MPI.Comm, int, int, AdjacencyList_int32], AdjacencyList_int32]] = None,
-                  dtype=default_real_type) -> tuple[
-        Mesh, _cpp.mesh.MeshTags_int32, _cpp.mesh.MeshTags_int32]:
+                  partitioner: typing.Optional[typing.Callable[[
+                      _MPI.Comm, int, int, AdjacencyList_int32], AdjacencyList_int32]] = None,
+                  dtype=default_real_type) -> tuple[Mesh, _cpp.mesh.MeshTags_int32, _cpp.mesh.MeshTags_int32]:
     """Create a Mesh from a Gmsh model.
 
     Creates a :class:`dolfinx.mesh.Mesh` from the physical entities of
@@ -220,8 +223,11 @@ def model_to_mesh(model, comm: _MPI.Comm, rank: int, gdim: int = 3,
         cell_information = dict()
         cell_dimensions = np.zeros(num_cell_types, dtype=np.int32)
         for i, element in enumerate(topologies.keys()):
-            _, dim, _, num_nodes, _, _ = model.mesh.getElementProperties(element)
-            cell_information[i] = {"id": element, "dim": dim, "num_nodes": num_nodes}
+            _, dim, _, num_nodes, _, _ = model.mesh.getElementProperties(
+                element)
+            cell_information[i] = {"id": element,
+                                   "dim": dim,
+                                   "num_nodes": num_nodes}
             cell_dimensions[i] = dim
 
         # Sort elements by ascending dimension
@@ -240,16 +246,21 @@ def model_to_mesh(model, comm: _MPI.Comm, rank: int, gdim: int = 3,
 
         has_facet_data = comm.bcast(has_facet_data, root=rank)
         if has_facet_data:
-            num_facet_nodes = comm.bcast(cell_information[perm_sort[-2]]["num_nodes"], root=rank)
+            num_facet_nodes = comm.bcast(
+                cell_information[perm_sort[-2]]["num_nodes"], root=rank)
             gmsh_facet_id = cell_information[perm_sort[-2]]["id"]
-            marked_facets = np.asarray(topologies[gmsh_facet_id]["topology"], dtype=np.int64)
-            facet_values = np.asarray(topologies[gmsh_facet_id]["cell_data"], dtype=np.int32)
+            marked_facets = np.asarray(
+                topologies[gmsh_facet_id]["topology"], dtype=np.int64)
+            facet_values = np.asarray(
+                topologies[gmsh_facet_id]["cell_data"], dtype=np.int32)
 
         cells = np.asarray(topologies[cell_id]["topology"], dtype=np.int64)
-        cell_values = np.asarray(topologies[cell_id]["cell_data"], dtype=np.int32)
+        cell_values = np.asarray(
+            topologies[cell_id]["cell_data"], dtype=np.int32)
     else:
         cell_id, num_nodes = comm.bcast([None, None], root=rank)
-        cells, x = np.empty([0, num_nodes], dtype=np.int32), np.empty([0, gdim], dtype=dtype)
+        cells, x = np.empty([0, num_nodes], dtype=np.int32), np.empty(
+            [0, gdim], dtype=dtype)
         cell_values = np.empty((0,), dtype=np.int32)
         has_facet_data = comm.bcast(None, root=rank)
         if has_facet_data:
@@ -259,16 +270,19 @@ def model_to_mesh(model, comm: _MPI.Comm, rank: int, gdim: int = 3,
 
     # Create distributed mesh
     ufl_domain = ufl_mesh(cell_id, gdim, dtype=dtype)
-    gmsh_cell_perm = cell_perm_array(_cpp.mesh.to_type(str(ufl_domain.ufl_cell())), num_nodes)
+    gmsh_cell_perm = cell_perm_array(
+        _cpp.mesh.to_type(str(ufl_domain.ufl_cell())), num_nodes)
     cells = cells[:, gmsh_cell_perm].copy()
-    mesh = create_mesh(comm, cells, x[:, :gdim].astype(dtype, copy=False), ufl_domain, partitioner)
+    mesh = create_mesh(comm, cells, x[:, :gdim].astype(
+        dtype, copy=False), ufl_domain, partitioner)
 
     # Create MeshTags for cells
     local_entities, local_values = _cpp.io.distribute_entity_data(
         mesh._cpp_object, mesh.topology.dim, cells, cell_values)
     mesh.topology.create_connectivity(mesh.topology.dim, 0)
     adj = _cpp.graph.AdjacencyList_int32(local_entities)
-    ct = meshtags_from_entities(mesh, mesh.topology.dim, adj, local_values.astype(np.int32, copy=False))
+    ct = meshtags_from_entities(
+        mesh, mesh.topology.dim, adj, local_values.astype(np.int32, copy=False))
     ct.name = "Cell tags"
 
     # Create MeshTags for facets
@@ -280,7 +294,8 @@ def model_to_mesh(model, comm: _MPI.Comm, rank: int, gdim: int = 3,
         if topology.cell_type == CellType.prism or topology.cell_type == CellType.pyramid:
             raise RuntimeError(f"Unsupported cell type {topology.cell_type}")
 
-        facet_type = _cpp.mesh.cell_entity_type(_cpp.mesh.to_type(str(ufl_domain.ufl_cell())), tdim - 1, 0)
+        facet_type = _cpp.mesh.cell_entity_type(
+            _cpp.mesh.to_type(str(ufl_domain.ufl_cell())), tdim - 1, 0)
         gmsh_facet_perm = cell_perm_array(facet_type, num_facet_nodes)
         marked_facets = marked_facets[:, gmsh_facet_perm]
 
@@ -288,18 +303,18 @@ def model_to_mesh(model, comm: _MPI.Comm, rank: int, gdim: int = 3,
             mesh._cpp_object, tdim - 1, marked_facets, facet_values)
         mesh.topology.create_connectivity(topology.dim - 1, tdim)
         adj = _cpp.graph.AdjacencyList_int32(local_entities)
-        ft = meshtags_from_entities(mesh, tdim - 1, adj, local_values.astype(np.int32, copy=False))
+        ft = meshtags_from_entities(
+            mesh, tdim - 1, adj, local_values.astype(np.int32, copy=False))
         ft.name = "Facet tags"
     else:
-        ft = meshtags(mesh, tdim - 1, np.empty(0, dtype=np.int32), np.empty(0, dtype=np.int32))
+        ft = meshtags(mesh, tdim - 1, np.empty(0, dtype=np.int32),
+                      np.empty(0, dtype=np.int32))
 
     return (mesh, ct, ft)
 
 
 def read_from_msh(filename: str, comm: _MPI.Comm, rank: int = 0, gdim: int = 3,
-                  partitioner: typing.Optional[typing.Callable[
-                      [_MPI.Comm, int, int, AdjacencyList_int32], AdjacencyList_int32]] = None) -> tuple[
-        Mesh, _cpp.mesh.MeshTags_int32, _cpp.mesh.MeshTags_int32]:
+                  partitioner: typing.Optional[typing.Callable[[_MPI.Comm, int, int, AdjacencyList_int32], AdjacencyList_int32]] = None) -> tuple[Mesh, _cpp.mesh.MeshTags_int32, _cpp.mesh.MeshTags_int32]:
     """Read a Gmsh .msh file and return a distributed :class:`dolfinx.mesh.Mesh` and and cell facet markers.
 
     Note:
@@ -322,13 +337,15 @@ def read_from_msh(filename: str, comm: _MPI.Comm, rank: int = 0, gdim: int = 3,
     except ModuleNotFoundError:
         # Python 3.11+ adds the add_note method to exceptions
         # e.add_note("Gmsh must be installed to import dolfinx.io.gmshio")
-        raise ModuleNotFoundError("No module named 'gmsh': dolfinx.io.gmshio.read_from_msh requires Gmsh.", name="gmsh")
+        raise ModuleNotFoundError(
+            "No module named 'gmsh': dolfinx.io.gmshio.read_from_msh requires Gmsh.", name="gmsh")
 
     if comm.rank == rank:
         gmsh.initialize()
         gmsh.model.add("Mesh from file")
         gmsh.merge(filename)
-        msh = model_to_mesh(gmsh.model, comm, rank, gdim=gdim, partitioner=partitioner)
+        msh = model_to_mesh(gmsh.model, comm, rank,
+                            gdim=gdim, partitioner=partitioner)
         gmsh.finalize()
         return msh
     else:
