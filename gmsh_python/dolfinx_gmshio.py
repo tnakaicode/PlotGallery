@@ -26,13 +26,20 @@ __all__ = ["cell_perm_array", "ufl_mesh", "extract_topology_and_markers",
 
 # Map from Gmsh cell type identifier (integer) to DOLFINx cell type and
 # degree https://gmsh.info//doc/texinfo/gmsh.html#MSH-file-format
-_gmsh_to_cells = {1: ("interval", 1), 2: ("triangle", 1),
-                  3: ("quadrilateral", 1), 4: ("tetrahedron", 1),
-                  5: ("hexahedron", 1), 8: ("interval", 2),
-                  9: ("triangle", 2), 10: ("quadrilateral", 2),
-                  11: ("tetrahedron", 2), 12: ("hexahedron", 2),
-                  15: ("point", 0), 21: ("triangle", 3),
-                  26: ("interval", 3), 29: ("tetrahedron", 3),
+_gmsh_to_cells = {1: ("interval", 1), 
+                  2: ("triangle", 1),
+                  3: ("quadrilateral", 1), 
+                  4: ("tetrahedron", 1),
+                  5: ("hexahedron", 1), 
+                  8: ("interval", 2),
+                  9: ("triangle", 2), 
+                  10: ("quadrilateral", 2),
+                  11: ("tetrahedron", 2), 
+                  12: ("hexahedron", 2),
+                  15: ("point", 0), 
+                  21: ("triangle", 3),
+                  26: ("interval", 3), 
+                  29: ("tetrahedron", 3),
                   36: ("quadrilateral", 3),
                   92: ("hexahedron", 3)}
 
