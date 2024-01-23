@@ -44,6 +44,8 @@ gmsh.model.mesh.addElements(
     ]])  # triangle 2: nodes 1, 3, 4
 
 # export the mesh ; use explore.py to read and examine the mesh
-gmsh.write("test.msh")
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+gmsh.option.setNumber("Mesh.SaveAll", 1)
+gmsh.write("discrete.msh")
 
 gmsh.finalize()

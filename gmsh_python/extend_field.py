@@ -32,6 +32,9 @@ gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
 
 # new 3D algo:
 gmsh.option.setNumber("Mesh.Algorithm3D", 10)
+gmsh.option.setNumber("Mesh.MshFileVersion", 4.2)
+gmsh.option.setNumber("Mesh.SaveAll", 1)
+gmsh.write("extend_field.msh")
 
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()
