@@ -36,13 +36,15 @@ w2=gmsh.model.occ.addWire([c2])
 # with use3d=True, project the 3D curves on the patch; with use3d=False, use the
 # x,y coordinates of the curves as the parametric coordinates of the patch
 use3d = True
-use3d = False
+#use3d = False
 
 gmsh.model.occ.addBSplineSurface(range(1,21), 5, wireTags=[w,w2], wire3D=use3d)
 
 #gmsh.model.occ.addBezierSurface(range(1,21), 5, wireTags=[w], wire3D=use3d)
 
 gmsh.model.occ.synchronize()
+#gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+gmsh.write(f'./bspline_bezier_trimmed.msh')
 
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()

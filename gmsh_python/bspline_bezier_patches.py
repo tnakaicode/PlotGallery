@@ -75,6 +75,8 @@ elif method == 3:
     gmsh.model.occ.removeAllDuplicates()
 
 gmsh.model.occ.synchronize()
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+gmsh.write(f'./bspline_bezier_patches.msh')
 
 if '-nopopup' not in sys.argv:
     gmsh.fltk.run()

@@ -35,7 +35,7 @@ gmsh.plugin.run("Crack")
 # physical group):
 gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
 gmsh.option.setNumber("Mesh.SaveAll", 1)
-gmsh.write("crack.msh")
+gmsh.write("crack3d.msh")
 
 # show the result
 if '-nopopup' not in sys.argv:

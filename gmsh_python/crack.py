@@ -38,6 +38,7 @@ gmsh.plugin.run("Crack")
 # save all the elements in the mesh (even those that do not belong to any
 # physical group):
 gmsh.option.setNumber("Mesh.SaveAll", 1)
+gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
 gmsh.write("crack.msh")
 
 if '-nopopup' not in sys.argv:

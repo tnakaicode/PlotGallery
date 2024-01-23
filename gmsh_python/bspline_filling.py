@@ -39,8 +39,14 @@ W1 = gmsh.model.occ.addWire([C1, C3, C2, C4])
 gmsh.model.occ.addBSplineFilling(W1, type="Curved")
 # gmsh.model.occ.addBSplineFilling(W1, type="Coons") # fails...
 
+# generate conformal mesh
+gmsh.model.mesh.generate(3)
+
 # Synchronize the CAD model
 gmsh.model.occ.synchronize()
+#gmsh.option.setNumber("Mesh.MshFileVersion", 2.2)
+gmsh.write(f'./bspline_filling.msh')
+gmsh.write(f'./bspline_filling.stl')
 
 # Show the model
 if '-nopopup' not in sys.argv:
