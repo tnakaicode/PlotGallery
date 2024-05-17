@@ -26,16 +26,29 @@ from OCC.Core.Graphic3d import Graphic3d_ArrayOfPoints
 from OCC.Core.AIS import AIS_PointCloud
 from OCC.Core.Quantity import Quantity_Color, Quantity_TOC_RGB
 from OCC.Core.gp import gp_Pnt
+from OCC.Extend.ShapeFactory import make_face
+from OCCUtils.Construct import make_polygon
 
 from OCC.Display.SimpleGui import init_display
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
 
+from scipy.spatial import ConvexHull, Delaunay, voronoi_plot_2d
+
 pcd_file = "./models/bunny.pcd"
 dat = np.loadtxt(pcd_file, skiprows=10)
+
+cov = Delaunay(dat[:,0:2])
+print(cov.simplices)
+#print(cov.vertices)
+
 for xyz in dat:
     display.DisplayShape(gp_Pnt(*xyz))
+
+for ixyz in cov.simplices:
+    lxyz = dat[ixyz]
+    display.DisplayShape(make_polygon(gp_Pnt(*p) for p in lxyz))
 
 display.FitAll()
 start_display()
