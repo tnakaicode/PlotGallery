@@ -39,9 +39,9 @@ from scipy.spatial import ConvexHull, Delaunay, voronoi_plot_2d
 pcd_file = "./models/bunny.pcd"
 dat = np.loadtxt(pcd_file, skiprows=10)
 
-cov = Delaunay(dat[:,0:2])
+cov = Delaunay(dat[:, 0:2])
 print(cov.simplices)
-#print(cov.vertices)
+# print(cov.vertices)
 
 for xyz in dat:
     display.DisplayShape(gp_Pnt(*xyz))
@@ -52,6 +52,7 @@ for ixyz in cov.simplices:
 
 display.FitAll()
 start_display()
+
 
 def pcd_get_number_of_vertices(pcd_filename):
     """open the PCD file, read header and get number of vertices.
