@@ -14,6 +14,7 @@ from OCC.Core.MeshVS import (
     MeshVS_NodalColorPrsBuilder,
     MeshVS_DA_ShowEdges,
     MeshVS_DMF_NodalColorDataPrs,
+    MeshVS_MeshPrsBuilder,
 )
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.Aspect import Aspect_SequenceOfColor
@@ -35,20 +36,28 @@ def getMesh(X=100, Y=100):
     y = np.linspace(-5, 5, Y)
     xx, yy = np.meshgrid(x, y, sparse=False)
     z = np.sin(xx ** 2 + yy ** 2) / (xx ** 2 + yy ** 2)
+    dat = np.sin(3 * xx ** 2 + 4 * yy ** 2) / (3 * xx ** 2 + yy ** 2)
     xyz = np.column_stack((xx.flatten(), yy.flatten(), z.flatten()))
     tri = Delaunay(xyz[:, :2])
-    return xyz, tri.simplices
+    return xyz, tri.simplices, dat.flatten()
 
 
 # get some mesh data
-vertices, faces = getMesh()
+vertices, faces, data = getMesh()
 
-# Create the datasource. Data is taken directly from the numpy arrays. both have to be contiguous and Nx3 (double), Mx3 (int).
+# Create the datasource. Data is taken directly from the numpy arrays.
+# both have to be contiguous and Nx3 (double), Mx3 (int).
 mesh_ds = MeshDS_DataSource(vertices, faces)
 
 # Create the visualizer for the datasource
 mesh_vs = MeshVS_Mesh()
 mesh_vs.SetDataSource(mesh_ds)
+
+# Create a new presentation builder and add it to the visualizer
+prs_builder = MeshVS_MeshPrsBuilder(mesh_vs)
+
+# mesh_vs.SetDisplayMode(AIS_DisplayMode.AIS_Shaded)
+mesh_vs.AddBuilder(prs_builder, True)
 
 # create nodal builder and assign to the mesh
 node_builder = MeshVS_NodalColorPrsBuilder(
@@ -67,10 +76,10 @@ aColorMap.Append(Quantity_Color(Quantity_NOC_ORANGE))
 aScaleMap = TColStd_DataMapOfIntegerReal()
 
 # set normalized color intensity to node
-z_min = np.min(vertices[:, 2])
-z_ptp = np.ptp(vertices[:, 2])
+d_minin = np.min(data)
+dat_ptp = np.ptp(data)
 for nVert in range(vertices.shape[0]):
-    color = (vertices[nVert, 2] - z_min) / z_ptp
+    color = (data[nVert] - d_minin) / dat_ptp
     aScaleMap.Bind(nVert + 1, color)  # node indices are 1 based
 
 # pass color map and color scale values to the builder
@@ -83,6 +92,7 @@ mesh_vs.AddBuilder(node_builder, True)
 mesh_drawer = mesh_vs.GetDrawer()
 mesh_drawer.SetBoolean(MeshVS_DA_ShowEdges, False)
 mesh_vs.SetDrawer(mesh_drawer)
+mesh_vs.SetTransparency(0.6)
 
 # Create the display and add visualization
 display, start_display, add_menu, add_function_to_menu = init_display()

@@ -25,7 +25,8 @@ def getMesh(X=100, Y=100):
 # get some mesh data
 vertices, faces = getMesh()
 
-# Create the datasource. Data is taken directly from the numpy arrays. both have to be contiguous.
+# Create the datasource. Data is taken directly from the numpy arrays. 
+# both have to be contiguous.
 mesh_ds = MeshDS_DataSource(vertices, faces)
 
 # Create the visualizer for the datasource
