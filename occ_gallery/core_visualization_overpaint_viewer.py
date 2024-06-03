@@ -33,8 +33,6 @@ the example is extends Qt's :ref:`OpenGL overpainting example`
 
 """
 
-from __future__ import print_function
-
 import random
 import sys
 
@@ -149,7 +147,7 @@ class GLWidget(qtViewer3d):
         self._initialized = False
 
         # no effect?
-        self.doubleBuffer()
+        # self.doubleBuffer()
 
         # ---------------------------------------------------------------------
         # parameters for bubbles
@@ -347,7 +345,7 @@ class GLWidget(qtViewer3d):
         self.update()
 
     def wheelEvent(self, event):
-
+        print(event.angleDelta())
         if self._have_pyqt5:
             delta = event.angleDelta().y()
         else:
@@ -480,8 +478,7 @@ class GLWidget(qtViewer3d):
 
         except Exception:
             print(
-                "could not invoke camera command action {0}".format(
-                    self.current_action)
+                "could not invoke camera command action {0}".format(self.current_action)
             )
 
         finally:
@@ -515,20 +512,20 @@ class GLWidget(qtViewer3d):
                 # the viewport
                 self._display.View.Redraw()
 
-            if self.context().isValid():
-                # acquire the OpenGL context
-                self.makeCurrent()
-                painter = QtGui.QPainter(self)
-                painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
-                # swap the buffer before overpainting it
-                self.swapBuffers()
-                # perform overpainting
-                self._overpaint(event, painter)
-                painter.end()
-                # hand over the OpenGL context
-                self.doneCurrent()
-            else:
-                print("invalid OpenGL context: Qt cannot overpaint viewer")
+            # if self.context().isValid():
+            # acquire the OpenGL context
+            # self.makeCurrent()
+            painter = QtGui.QPainter(self)
+            painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+            # swap the buffer before overpainting it
+            # self.swapBuffers()
+            # perform overpainting
+            self._overpaint(event, painter)
+            painter.end()
+            # hand over the OpenGL context
+            # self.doneCurrent()
+            # else:
+            #   print("invalid OpenGL context: Qt cannot overpaint viewer")
 
     def _overpaint(self, event, painter):
         """overpaint the viewport
@@ -660,8 +657,7 @@ if __name__ == "__main__":
         class AppFrame(QtWidgets.QWidget):
             def __init__(self, parent=None):
                 QtWidgets.QWidget.__init__(self, parent)
-                self.setWindowTitle(
-                    self.tr("qtDisplay3d overpainting example"))
+                self.setWindowTitle(self.tr("qtDisplay3d overpainting example"))
                 self.resize(1280, 1024)
                 self.canva = GLWidget(self)
                 mainLayout = QtWidgets.QHBoxLayout()

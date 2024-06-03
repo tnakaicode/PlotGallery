@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-# Copyright 2009-2015 Jelle Feringa (jelleferinga@gmail.com)
+##Copyright 2009-2015 Jelle Feringa (jelleferinga@gmail.com)
 ##
-# This file is part of pythonOCC.
+##This file is part of pythonOCC.
 ##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+##pythonOCC is free software: you can redistribute it and/or modify
+##it under the terms of the GNU Lesser General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
 ##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+##pythonOCC is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU Lesser General Public License for more details.
 ##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+##You should have received a copy of the GNU Lesser General Public License
+##along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import math
@@ -50,7 +50,7 @@ def batten_curve(pt1, pt2, height, slope, angle1, angle2):
     fc.SetHeight(height)
     fc.SetSlope(slope)
     fc.SetFreeSliding(True)
-    print(fc.DumpToString())
+    print(fc.Dump())
     status = fc.Compute()
     print(error_code(status[0]), error_code(status[1]))
     return fc.Curve()
@@ -64,8 +64,7 @@ def faircurve(event=None):
     for i in range(0, 40):
         # TODO: the parameter slope needs to be visualized
         slope = i / 100.0
-        bc = batten_curve(pt1, pt2, height, slope,
-                          math.radians(i), math.radians(-i))
+        bc = batten_curve(pt1, pt2, height, slope, math.radians(i), math.radians(-i))
         display.EraseAll()
         edge = BRepBuilderAPI_MakeEdge(bc, pl).Edge()
         display.DisplayShape(edge, update=True)

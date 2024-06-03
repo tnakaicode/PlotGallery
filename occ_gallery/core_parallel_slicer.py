@@ -27,9 +27,10 @@ from OCC.Core.TopoDS import TopoDS_Shape
 from OCC.Core.gp import gp_Pln, gp_Dir, gp_Pnt
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Section
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.Extend.ShapeFactory import get_aligned_boundingbox
 
 from OCC.Display.SimpleGui import init_display
+
+from OCC.Extend.ShapeFactory import get_aligned_boundingbox
 
 
 def drange(start, stop, step):
@@ -59,7 +60,7 @@ def vectorized_slicer(li):
         plane = gp_Pln(gp_Pnt(0.0, 0.0, z), gp_Dir(0.0, 0.0, 1.0))
         face = BRepBuilderAPI_MakeFace(plane).Shape()
         # Computes Shape/Plane intersection
-        section = BRepAlgoAPI_Section(shape, plane)
+        section = BRepAlgoAPI_Section(shape, face)
         section.Build()
         if section.IsDone():
             _slices.append(section.Shape())

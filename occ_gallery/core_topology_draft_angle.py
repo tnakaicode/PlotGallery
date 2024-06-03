@@ -24,7 +24,7 @@ from OCC.Core.BRep import BRep_Tool_Surface, BRep_Tool
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_FACE
 from OCC.Core.Geom import Geom_Plane
-from OCC.Core.TopoDS import topods_Face, topods
+from OCC.Core.TopoDS import topods
 
 from OCC.Display.SimpleGui import init_display
 
