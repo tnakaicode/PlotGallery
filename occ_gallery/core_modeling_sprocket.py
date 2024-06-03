@@ -48,7 +48,7 @@ from OCC.Core.gp import (
 from OCC.Core.GCE2d import GCE2d_MakeArcOfCircle, GCE2d_MakeCircle, GCE2d_MakeLine
 from OCC.Core.Geom2dAPI import Geom2dAPI_InterCurveCurve
 from OCC.Core.Geom2d import Geom2d_TrimmedCurve
-from OCC.Core.GeomAPI import geomapi_To3d
+from OCC.Core.GeomAPI import geomapi
 from OCC.Core.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge,
     BRepBuilderAPI_MakeWire,
@@ -190,11 +190,11 @@ def build_tooth():
 
     # Convert the 2D arcs and two extra lines to 3D edges
     plane = gp_Pln(gp_Origin(), gp_DZ())
-    arc1 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_base, plane)).Edge()
-    arc2 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_profile, plane)).Edge()
-    arc3 = BRepBuilderAPI_MakeEdge(geomapi_To3d(outer_arc, plane)).Edge()
-    arc4 = BRepBuilderAPI_MakeEdge(geomapi_To3d(mirror_profile, plane)).Edge()
-    arc5 = BRepBuilderAPI_MakeEdge(geomapi_To3d(mirror_base, plane)).Edge()
+    arc1 = BRepBuilderAPI_MakeEdge(geomapi.To3d(trimmed_base, plane)).Edge()
+    arc2 = BRepBuilderAPI_MakeEdge(geomapi.To3d(trimmed_profile, plane)).Edge()
+    arc3 = BRepBuilderAPI_MakeEdge(geomapi.To3d(outer_arc, plane)).Edge()
+    arc4 = BRepBuilderAPI_MakeEdge(geomapi.To3d(mirror_profile, plane)).Edge()
+    arc5 = BRepBuilderAPI_MakeEdge(geomapi.To3d(mirror_base, plane)).Edge()
 
     p4 = mirror_base.EndPoint()
     p5 = inner_arc.StartPoint()
@@ -202,7 +202,7 @@ def build_tooth():
     lin1 = BRepBuilderAPI_MakeEdge(
         gp_Pnt(p4.X(), p4.Y(), 0), gp_Pnt(p5.X(), p5.Y(), 0)
     ).Edge()
-    arc6 = BRepBuilderAPI_MakeEdge(geomapi_To3d(inner_arc, plane)).Edge()
+    arc6 = BRepBuilderAPI_MakeEdge(geomapi.To3d(inner_arc, plane)).Edge()
 
     p6 = inner_arc.EndPoint()
     lin2 = BRepBuilderAPI_MakeEdge(
@@ -260,7 +260,7 @@ def round_tooth(wedge):
 
     # Convert the arc and four extra lines into 3D edges
     plane = gp_Pln(gp_Ax3(gp_Origin(), gp_DY().Reversed(), gp_DX()))
-    arc1 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_circle, plane)).Edge()
+    arc1 = BRepBuilderAPI_MakeEdge(geomapi.To3d(trimmed_circle, plane)).Edge()
     lin1 = BRepBuilderAPI_MakeEdge(p2, p3).Edge()
     lin2 = BRepBuilderAPI_MakeEdge(p3, p4).Edge()
     lin3 = BRepBuilderAPI_MakeEdge(p4, p5).Edge()
@@ -413,13 +413,13 @@ def cut_out(base):
 
     plane = gp_Pln(gp_Origin(), gp_DZ())
 
-    arc1 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_outer, plane)).Edge()
+    arc1 = BRepBuilderAPI_MakeEdge(geomapi.To3d(trimmed_outer, plane)).Edge()
 
     lin1 = BRepBuilderAPI_MakeEdge(
         gp_Pnt(p2.X(), p2.Y(), 0), gp_Pnt(p3.X(), p3.Y(), 0)
     ).Edge()
 
-    arc2 = BRepBuilderAPI_MakeEdge(geomapi_To3d(trimmed_inner, plane)).Edge()
+    arc2 = BRepBuilderAPI_MakeEdge(geomapi.To3d(trimmed_inner, plane)).Edge()
 
     lin2 = BRepBuilderAPI_MakeEdge(
         gp_Pnt(p4.X(), p4.Y(), 0), gp_Pnt(p1.X(), p1.Y(), 0)
