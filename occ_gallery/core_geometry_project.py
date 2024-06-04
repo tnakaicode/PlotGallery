@@ -9,6 +9,7 @@ import sys
 from OCC.Core.STEPControl import STEPControl_Reader, STEPControl_Writer, STEPControl_AsIs
 from OCC.Core.Interface import Interface_Static
 from OCC.Core.TopTools import TopTools_ListOfShape
+from OCC.Core.TopTools import TopTools_ListIteratorOfListOfShape
 from OCC.Core.TopoDS import TopoDS_Edge
 from OCC.Core.BRep import BRep_Tool
 from OCC.Core.AIS import AIS_Shape
@@ -35,19 +36,24 @@ from math import pi
 
 display, start_display, add_menu, add_function_to_menu = init_display()
 
-shp = read_step_file("./assets/models/face_recognition_sample_part.stp"
+shp = read_step_file("../assets/models/face_recognition_sample_part.stp"
                      # os.path.join("..", "assets", "models", "face_recognition_sample_part.stp")
                      )
 
 
 def section():
-    orign_profile = create_original(filename)
+    # orign_profile = create_original(filename)
     sections = []
-    for body in orign_profile:
-        section_shp = BRepAlgoAPI_Section(shp, body, False)
+    for body in range(3):
+        section_shp = BRepAlgoAPI_Section(shp, gp_Pln(
+            gp_Pnt(0, 0, body + 1), gp_Dir(0, 0, 1)), False)
         section_shp.ComputePCurveOn1(True)
         section_shp.Approximation(True)
         section_shp.Build()
+        section_edge = section_shp.SectionEdges()
+        print(section_edge.Size())
+        for i in section_edge:
+            print(i)
         sections.append(section_shp)
 
     display.EraseAll()
@@ -68,19 +74,21 @@ def sect_edges():
         intersect_edges = sectioning[i].SectionEdges()  # obtaining the edges
         wire_builder = BRepBuilderAPI_MakeWire()
         # Iterate over the edges and add them to the wire builder
+        print(intersect_edges.First(),
+              intersect_edges.Last(), intersect_edges.Size())
         for inter_edge in intersect_edges:
             topo_edge = TopoDS_Edge(inter_edge)
             wire_builder.Add(topo_edge)
-
+#
         # Check if the wire is valid
         if wire_builder.IsDone():
             wire = wire_builder.Wire()
             thewires.append(wire)
-
+#
             # Create an AIS_Shape for visualization
             anAisWire = AIS_Shape(wire)
             anAisWire.SetWidth(2.0)
-
+#
             # Display the wire
             display.Context.Display(anAisWire, True)
         else:
@@ -90,3 +98,4 @@ def sect_edges():
 
 edgex = sect_edges()
 print(edgex)
+start_display()
