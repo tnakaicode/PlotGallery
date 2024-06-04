@@ -19,14 +19,76 @@
 
 from __future__ import print_function
 
-from OCC.Core.BRepExtrema import BRepExtrema_DistShapeShape
+from OCC.Core.BRepExtrema import BRepExtrema_DistShapeShape, BRepExtrema_DistanceSS, BRepExtrema_ExtPF, BRepExtrema_ExtFF
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.Bnd import Bnd_Box
+from OCC.Core.BRepBndLib import brepbndlib
+from OCC.Core.Extrema import Extrema_ExtFlag_MAX, Extrema_ExtFlag_MIN
+from OCC.Core.Extrema import Extrema_ExtAlgo_Grad
+from OCC.Core.Precision import precision
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Ax2, gp_Circ
 
-from OCC.Extend.ShapeFactory import make_edge, make_vertex
+from OCC.Extend.ShapeFactory import make_edge, make_vertex, get_boundingbox, make_face
+from OCCUtils.Construct import make_polygon, make_vertex
 
 display, start_display, add_menu, add_function_to_menu = init_display()
+
+
+def compute_maximal_distance_between_planes():
+    """compute the minimal distance between 2 planes
+
+    """
+    def f1(x, y): return x, y, 1.0 * x + 2.0 * y
+    def f2(x, y): return x, y, 0.5 * x + 0.1 * y - 1.0
+    face1 = make_face(make_polygon([gp_Pnt(*f1(0.0, 0.0)),
+                                    gp_Pnt(*f1(0.1, 0.1)),
+                                    gp_Pnt(*f1(0.0, 0.2)),
+                                    gp_Pnt(*f1(-0.1, 0.1)),
+                                    ], closed=True))
+    bnd1 = Bnd_Box()
+    bnd1.SetGap(1.0e-6)
+    brepbndlib.Add(face1, bnd1, True)
+    face2 = make_face(make_polygon([gp_Pnt(*f2(0.0, 0.0)),
+                                    gp_Pnt(*f2(0.1, 0.1)),
+                                    gp_Pnt(*f2(0.0, 0.2)),
+                                    gp_Pnt(*f2(-0.1, 0.1)),
+                                    ], closed=True))
+    bnd2 = Bnd_Box()
+    bnd2.SetGap(1.0e-6)
+    brepbndlib.Add(face2, bnd2, True)
+
+    p1 = gp_Pnt(-0.1, -0.1, 0.0)
+    v1 = make_vertex(p1)
+    bndv = Bnd_Box()
+    bndv.SetGap(1.0e-6)
+    brepbndlib.Add(v1, bndv, True)
+
+    display.DisplayShape(face1)
+    display.DisplayShape(face2)
+
+    dss = BRepExtrema_DistShapeShape()
+    dss.LoadS1(v1)
+    dss.LoadS2(face2)
+    dss.Perform()
+
+    edg = make_edge(dss.PointOnShape1(1), dss.PointOnShape2(1))
+    dst = dss.Value()
+    print(dst)
+    display.DisplayShape(edg, color="RED")
+
+    dss = BRepExtrema_DistanceSS(v1, face2,
+                                 bndv, bnd2,
+                                 dst, precision.Confusion(),
+                                 Extrema_ExtFlag_MAX, 1)
+    # print(dss.Seq1Value())
+    print(dss.DistValue())
+
+    dss = BRepExtrema_ExtFF(face1, face2)
+    dss.Perform(face1, face2)
+    print(dss.IsDone())
+    print(dss.NbExt())
+    print(dss.SquareDistance(1))
 
 
 def compute_minimal_distance_between_cubes():
@@ -96,5 +158,6 @@ def compute_minimal_distance_between_circles():
 
 
 if __name__ == "__main__":
+    compute_maximal_distance_between_planes()
     display.FitAll()
     start_display()
