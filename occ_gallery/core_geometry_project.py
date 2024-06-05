@@ -32,6 +32,7 @@ from OCC.Core.STEPControl import STEPControl_Reader, STEPControl_Writer, STEPCon
 from OCC.Core.Interface import Interface_Static
 from OCC.Core.GeomAPI import GeomAPI_IntSS
 from OCC.Extend.DataExchange import read_step_file
+from OCCUtils.Construct import make_polygon
 from math import pi
 
 display, start_display, add_menu, add_function_to_menu = init_display()
@@ -45,15 +46,15 @@ def section():
     # orign_profile = create_original(filename)
     sections = []
     for body in range(3):
-        section_shp = BRepAlgoAPI_Section(shp, gp_Pln(
-            gp_Pnt(0, 0, body + 1), gp_Dir(0, 0, 1)), False)
+        section_shp = BRepAlgoAPI_Section(shp,
+                                          gp_Pln(gp_Pnt(0, 0, body + 1),
+                                                 gp_Dir(0, 0, 1)),
+                                          False)
         section_shp.ComputePCurveOn1(True)
         section_shp.Approximation(True)
         section_shp.Build()
         section_edge = section_shp.SectionEdges()
         print(section_edge.Size())
-        for i in section_edge:
-            print(i)
         sections.append(section_shp)
 
     display.EraseAll()
@@ -76,9 +77,14 @@ def sect_edges():
         # Iterate over the edges and add them to the wire builder
         print(intersect_edges.First(),
               intersect_edges.Last(), intersect_edges.Size())
-        for inter_edge in intersect_edges:
-            topo_edge = TopoDS_Edge(inter_edge)
-            wire_builder.Add(topo_edge)
+        list_edges = []
+        it = TopTools_ListIteratorOfListOfShape(intersect_edges)
+        while it.More():
+            list_edges.append(it.Value())
+            it.Next()
+        for inter_edge in list_edges:
+            # topo_edge = TopoDS_Edge(inter_edge)
+            wire_builder.Add(inter_edge)
 #
         # Check if the wire is valid
         if wire_builder.IsDone():
@@ -98,4 +104,12 @@ def sect_edges():
 
 edgex = sect_edges()
 print(edgex)
+
+pts = [
+    gp_Pnt(0,0,0),
+    gp_Pnt(1,1,0),
+    gp_Pnt(1,1,2)
+]
+wire = make_polygon(pts, closed=True)
+
 start_display()
