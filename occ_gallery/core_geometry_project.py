@@ -4,7 +4,7 @@ from __future__ import print_function
 import os
 import os.path
 import sys
-
+import numpy as np
 
 from OCC.Core.STEPControl import STEPControl_Reader, STEPControl_Writer, STEPControl_AsIs
 from OCC.Core.Interface import Interface_Static
@@ -20,8 +20,9 @@ from OCC.Core.GeomAbs import GeomAbs_Plane, GeomAbs_Cylinder
 from OCC.Core.BRepAdaptor import BRepAdaptor_Surface
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import (
-    gp_Pnt, gp_Vec, gp_Trsf, gp_Ax2, gp_Ax3, gp_Pnt2d, gp_Dir2d, gp_Ax2d, gp_Pln, gp_Circ, gp_Dir
+    gp_Pnt, gp_Vec, gp_Trsf, gp_Ax2, gp_Ax3, gp_Pnt2d, gp_Dir2d, gp_Ax2d, gp_Pln, gp_Circ, gp_Dir, gp_Lin
 )
+from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace, BRepBuilderAPI_MakeWire, BRepBuilderAPI_Transform
 )
@@ -32,7 +33,8 @@ from OCC.Core.STEPControl import STEPControl_Reader, STEPControl_Writer, STEPCon
 from OCC.Core.Interface import Interface_Static
 from OCC.Core.GeomAPI import GeomAPI_IntSS
 from OCC.Extend.DataExchange import read_step_file
-from OCCUtils.Construct import make_polygon
+from OCCUtils.Construct import make_polygon, make_wire, make_vertex
+from OCCUtils.Common import minimum_distance
 from math import pi
 
 display, start_display, add_menu, add_function_to_menu = init_display()
@@ -106,10 +108,57 @@ edgex = sect_edges()
 print(edgex)
 
 pts = [
-    gp_Pnt(0,0,0),
-    gp_Pnt(1,1,0),
-    gp_Pnt(1,1,2)
+    gp_Pnt(-1, -1, 0),
+    gp_Pnt(10, 10, 0),
+    gp_Pnt(10, 10, 20),
+    # gp_Pnt(30, 40, 1),
 ]
 wire = make_polygon(pts, closed=True)
+axis = gp_Ax3(gp_Pnt(200, -100, -200), gp_Dir(0, 1, 0))
+trsf = gp_Trsf()
+trsf.SetTransformation(gp_Ax3(), axis)
+axs = gp_Ax3()
+axs.Transform(trsf)
+wire.Move(TopLoc_Location(trsf))
+display.DisplayShape(wire)
+display.DisplayShape(axs.Location())
+print(axs.Location())
+
+
+from OCC.Core.BRepProj import BRepProj_Projection
+proj = BRepProj_Projection(wire, shp, gp_Dir(0, 1, 0))
+list_wire = []
+while proj.More():
+    poly = proj.Current()
+    list_wire.append(
+        [minimum_distance(make_vertex(axs.Location()), poly)[0], poly])
+    proj.Next()
+    display.DisplayShape(poly, color="BLUE1")
+list_wire.sort(key=lambda e: e[0])
+
+
+from OCC.Core.BRepIntCurveSurface import BRepIntCurveSurface_Inter
+lin = gp_Lin(axs.Location(), gp_Dir(0, 1, 0))
+api = BRepIntCurveSurface_Inter()
+api.Init(shp, lin, 1.0E-9)
+shp_int = []
+while api.More():
+    print(api.W())
+    shp_int.append([api.W(), api.U(), api.V(), api.Pnt(),
+                   api.Face(), api.Transition()])
+    api.Next()
+shp_int.sort(key=lambda e: e[0])
+
+for i, p in enumerate(shp_int):
+    print(p, list_wire[i])
+    display.DisplayShape(p[3])
+
+
+from OCC.Core.Geom import Geom_Line
+glin = Geom_Line(lin)
+for i, p1 in enumerate(shp_int[1:]):
+    p0 = shp_int[i]
+    p = glin.Value((p0[0] + p1[0]) / 2)
+
 
 start_display()
