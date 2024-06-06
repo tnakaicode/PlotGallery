@@ -14,7 +14,7 @@ from OCC.Core.BRep import BRep_Tool
 from OCC.Core.BRepAdaptor import BRepAdaptor_Surface
 from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Extend.TopologyUtils import TopologyExplorer
-from OCC.Extend.DataExchange import read_step_file
+from OCC.Extend.DataExchange import read_step_file, write_step_file
 
 from OCCUtils.Construct import make_polygon, make_wire, make_vertex, make_edge, dir_to_vec
 from OCCUtils.Common import minimum_distance
@@ -49,14 +49,14 @@ lin = gp_Lin(axis.Location(), gp_Dir(0, 1, 0))
 from OCC.Core.BRepIntCurveSurface import BRepIntCurveSurface_Inter
 from OCC.Core.BRepProj import BRepProj_Projection
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
-api = BRepIntCurveSurface_Inter()
-api.Init(shp, lin, 1.0E-9)
+api_int = BRepIntCurveSurface_Inter()
+api_int.Init(shp, lin, 1.0E-9)
 shp_int = []
-while api.More():
-    dst = api.Pnt().Distance(axis.Location())
-    print(api.W(), api.Pnt())
+while api_int.More():
+    dst = api_int.Pnt().Distance(axis.Location())
+    print(api_int.W(), api_int.Pnt())
 
-    proj = BRepProj_Projection(wire, api.Face(), lin.Direction())
+    proj = BRepProj_Projection(wire, api_int.Face(), lin.Direction())
     proj_list = []
     while proj.More():
         poly = proj.Current()
@@ -69,54 +69,57 @@ while api.More():
     poly = proj_list[0][1]
 
     face_trim = BRepAlgo_FaceRestrictor()
-    face_trim.Init(api.Face(), True, True)
+    face_trim.Init(api_int.Face(), True, True)
     face_trim.Add(poly)
     face_trim.Perform()
     while face_trim.More():
         face = face_trim.Current()
         face_trim.Next()
 
-    shp_int.append([api.W(),  # 0
-                    api.U(),  # 1
-                    api.V(),  # 2
-                    api.Pnt(),  # 3
-                    api.Face(),  # 4
+    shp_int.append([api_int.W(),  # 0
+                    api_int.U(),  # 1
+                    api_int.V(),  # 2
+                    api_int.Pnt(),  # 3
+                    api_int.Face(),  # 4
                     poly,  # 5
                     face,  # 6
-                    api.Transition(),  # 7
+                    api_int.Transition(),  # 7
                     ])
 
     display.DisplayShape(poly, color="BLUE1")
     display.DisplayShape(face, color="BLUE1")
 
-    api.Next()
+    api_int.Next()
 shp_int.sort(key=lambda e: e[0])
 
 
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
-api = BRepOffsetAPI_ThruSections()
-api.SetSmoothing(False)
-api.AddWire(shp_int[0][5])
-api.AddWire(shp_int[1][5])
-api.Build()
-display.DisplayShape(api.Shape())
+api_thru = BRepOffsetAPI_ThruSections()
+api_thru.SetSmoothing(False)
+api_thru.AddWire(shp_int[0][5])
+api_thru.AddWire(shp_int[1][5])
+api_thru.Build()
+# display.DisplayShape(api.Shape())
 
 
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeShell, BRepBuilderAPI_MakeSolid
-from OCC.Core.BRepAdaptor import BRepAdaptor_Surface
-# shell1 = BRepBuilderAPI_MakeShell(BRepAdaptor_Surface(shp_int[2][6], True).Surface()).Shell()
-# shell2 = BRepBuilderAPI_MakeShell(BRepAdaptor_Surface(shp_int[3][6], True)).Shell()
-# solid = BRepBuilderAPI_MakeSolid(shell1, shell2).Solid()
-# display.DisplayShape(solid)
-
-#
-#
-# from OCC.Core.Geom import Geom_Line
-# glin = Geom_Line(lin)
-# for i, p1 in enumerate(shp_int[1:]):
-#    p0 = shp_int[i]
-#    p = glin.Value((p0[0] + p1[0]) / 2)
-#
+from OCC.Core.BOPAlgo import BOPAlgo_Splitter
+from OCC.Core.TopExp import TopExp_Explorer
+from OCC.Core.TopAbs import TopAbs_SOLID
+splitter = BOPAlgo_Splitter()
+splitter.AddArgument(shp)
+splitter.AddTool(api_thru.Shape())
+splitter.AddTool(shp_int[0][5])
+splitter.AddTool(shp_int[1][5])
+splitter.Perform()
+print(splitter.Arguments())
+print(splitter.ShapesSD())
+exp = TopExp_Explorer(splitter.Shape(), TopAbs_SOLID)
+i = 0
+while exp.More():
+    display.DisplayShape(exp.Current(), transparency=0.6)
+    write_step_file(exp.Current(), f"split_{i:03d}.stp")
+    exp.Next()
+    i += 1
 
 display.FitAll()
 start_display()
