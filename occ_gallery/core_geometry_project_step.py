@@ -123,6 +123,7 @@ from OCC.Core.BRep import BRep_Builder
 from OCC.Core.TopoDS import TopoDS_Compound, topods
 from OCC.Core.TopAbs import TopAbs_FACE
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+from OCC.Core.AIS import AIS_ColorScale, AIS_Axis, AIS_Triangulation
 shape = exp_list[0]
 BRepMesh_IncrementalMesh(shape, 1.0)
 builder = BRep_Builder()
@@ -151,8 +152,12 @@ while ex.More():
             if me.IsDone():
                 builder.Add(comp, me.Edge())
 
+    ais_facing = AIS_Triangulation(facing)
+    display.Context.Display(ais_facing, True)
+
     ex.Next()
-display.DisplayShape(comp, color="BLUE1")
+write_step_file(comp, "mesh.stp")
+# display.DisplayShape(comp, color="BLUE1")
 
 display.FitAll()
 start_display()
