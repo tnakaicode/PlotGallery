@@ -8,8 +8,25 @@ import numpy as np
 
 from OCC.Core.STEPControl import STEPControl_Reader, STEPControl_Writer, STEPControl_AsIs
 from OCC.Core.Interface import Interface_Static
-from OCC.Core.TopTools import TopTools_ListOfShape
+from OCC.Core.TopTools import TopTools_ListOfShape, TopTools_ListOfListOfShape
 from OCC.Core.TopTools import TopTools_ListIteratorOfListOfShape
+# declared not to be defined
+# from OCC.Core.TopTools import (
+#    TopTools_Array2OfShape,
+#    TopTools_DataMapIteratorOfDataMapOfShapeBox,
+#    TopTools_IndexedDataMapOfShapeAddress,
+#    TopTools_IndexedDataMapOfShapeListOfShape,
+#    TopTools_IndexedDataMapOfShapeReal,
+#    TopTools_IndexedDataMapOfShapeShape,
+#    TopTools_IndexedMapOfOrientedShape,
+#    TopTools_IndexedMapOfShape,
+#    TopTools_ListIteratorOfListOfListOfShape,
+#    TopTools_LocationSetPtr,
+#    TopTools_MapIteratorOfMapOfOrientedShape,
+#    TopTools_MapIteratorOfMapOfShape,
+#    TopTools_MapOfOrientedShape,
+#    TopTools_MapOfSh,
+# )
 from OCC.Core.TopoDS import TopoDS_Edge
 from OCC.Core.BRep import BRep_Tool
 from OCC.Core.AIS import AIS_Shape
