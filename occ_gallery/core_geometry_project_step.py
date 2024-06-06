@@ -4,18 +4,21 @@ from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3, gp_Trsf
 from OCC.Core.gp import gp_Lin
 
-from OCC.Core.TopoDS import TopoDS_Face
-from OCC.Core.TopAbs import TopAbs_SOLID
+from OCC.Core.TopoDS import topods, TopoDS_Compound
+from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_FACE
 from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.TopExp import TopExp_Explorer
 
-from OCC.Core.BRep import BRep_Tool
+from OCC.Core.BRep import BRep_Tool, BRep_Builder
+from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
 from OCC.Core.BRepProj import BRepProj_Projection
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 from OCC.Core.BRepIntCurveSurface import BRepIntCurveSurface_Inter
 
 from OCC.Core.BOPAlgo import BOPAlgo_Splitter
+from OCC.Core.AIS import AIS_Triangulation
 from OCC.Extend.DataExchange import read_step_file, write_step_file
 from OCCUtils.Construct import make_polygon, make_wire, make_vertex, make_edge, dir_to_vec
 from OCCUtils.Common import minimum_distance
@@ -118,12 +121,6 @@ while exp.More():
     i += 1
 
 
-from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
-from OCC.Core.BRep import BRep_Builder
-from OCC.Core.TopoDS import TopoDS_Compound, topods
-from OCC.Core.TopAbs import TopAbs_FACE
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
-from OCC.Core.AIS import AIS_ColorScale, AIS_Axis, AIS_Triangulation
 shape = exp_list[0]
 BRepMesh_IncrementalMesh(shape, 1.0)
 builder = BRep_Builder()
