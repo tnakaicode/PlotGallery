@@ -41,7 +41,7 @@ def simple_mesh():
     #
     # Mesh the shape
     #
-    BRepMesh_IncrementalMesh(shape, 0.8)
+    BRepMesh_IncrementalMesh(shape, 10.0)
     builder = BRep_Builder()
     comp = TopoDS_Compound()
     builder.MakeCompound(comp)

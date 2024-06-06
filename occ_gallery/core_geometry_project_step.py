@@ -108,12 +108,51 @@ splitter.Perform()
 print(splitter.Arguments())
 print(splitter.ShapesSD())
 exp = TopExp_Explorer(splitter.Shape(), TopAbs_SOLID)
+exp_list = []
 i = 0
 while exp.More():
-    display.DisplayShape(exp.Current(), transparency=0.6)
-    write_step_file(exp.Current(), f"split_{i:03d}.stp")
+    # display.DisplayShape(exp.Current(), transparency=0.6)
+    exp_list.append(exp.Current())
+    # write_step_file(exp.Current(), f"split_{i:03d}.stp")
     exp.Next()
     i += 1
+
+
+from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
+from OCC.Core.BRep import BRep_Builder
+from OCC.Core.TopoDS import TopoDS_Compound, topods
+from OCC.Core.TopAbs import TopAbs_FACE
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+shape = exp_list[0]
+BRepMesh_IncrementalMesh(shape, 1.0)
+builder = BRep_Builder()
+comp = TopoDS_Compound()
+builder.MakeCompound(comp)
+
+bt = BRep_Tool()
+ex = TopExp_Explorer(shape, TopAbs_FACE)
+while ex.More():
+    face = topods.Face(ex.Current())
+    location = TopLoc_Location()
+    facing = bt.Triangulation(face, location)
+    tri = facing.Triangles()
+    for i in range(1, facing.NbTriangles() + 1):
+        trian = tri.Value(i)
+        index1, index2, index3 = trian.Get()
+        for j in range(1, 4):
+            if j == 1:
+                m = index1
+                n = index2
+            elif j == 2:
+                n = index3
+            elif j == 3:
+                m = index2
+            me = BRepBuilderAPI_MakeEdge(facing.Node(m), facing.Node(n))
+            if me.IsDone():
+                builder.Add(comp, me.Edge())
+
+    ex.Next()
+display.DisplayShape(comp, color="BLUE1")
 
 display.FitAll()
 start_display()
