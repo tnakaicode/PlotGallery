@@ -12,14 +12,14 @@ class My_AIS_Shape(AIS_Shape):
 
 
 display, start_display, add_menu, add_function_to_menu = init_display()
-context = display.GetContext()
+context = display.GetContext()  # AIS_InteractiveContext
 
 my_sphere = BRepPrimAPI_MakeSphere(100.).Shape()
 my_box = BRepPrimAPI_MakeBox(100, 100, 100).Shape()
 new_my_ais_shape1 = My_AIS_Shape(my_sphere, "My_ID1")
 new_my_ais_shape2 = My_AIS_Shape(my_box, "My_ID2")
 context.Display(new_my_ais_shape1, True)
-#context.Display(AIS_Shape(my_box), True)
+# context.Display(AIS_Shape(my_box), True)
 context.DisplaySelected(True)
 
 # There is no problem assigning an instance of this class to the AIS_Context and manipulating it via the AIS_Context.
@@ -34,17 +34,21 @@ context.MoveTo(int(size[0] / 2), int(size[1] / 2), display.View, True)
 # whose class is AIS_Shape and not My_AIS_Shape as hoped.
 ais_list = AIS_ListOfInteractive()
 
-if context.HasDetected():
-    detected_interactive = context.DetectedInteractive()
-    # detected_interactive = context.DetectedCurrentShape()
-    # <class 'AIS_InteractiveObject'>
-    print(detected_interactive)
-    print(context.DetectedShape())
-    # <class 'OCC.Core.AIS.AIS_InteractiveObject'>
-    print(type(detected_interactive))
-    print(detected_interactive.GetRefCount())
-    print(detected_interactive.IsInstance("AIS_Shape"))       # True
-    print(detected_interactive.IsInstance("My_AIS_Shape"))    # False
+
+def context_detected():
+    print(context.HasDetected())
+    if context.HasDetected():
+        detected_interactive = context.DetectedInteractive()
+        # detected_interactive = context.DetectedCurrentShape()
+        # <class 'AIS_InteractiveObject'>
+        print(detected_interactive)
+        print(context.DetectedShape())
+        # <class 'OCC.Core.AIS.AIS_InteractiveObject'>
+        print(type(detected_interactive))
+        print(detected_interactive.GetRefCount())
+        print(detected_interactive.IsInstance("AIS_Shape"))       # True
+        print(detected_interactive.IsInstance("My_AIS_Shape"))    # False
+
 
 print(context.DisplayedObjects(ais_list))
 print(ais_list.Size())
@@ -61,4 +65,6 @@ display.DisplayShape(context.DetectedShape(), color="BLUE1")
 #
 # How else could I easily assign a unique ID to an AIS_Shape?
 
+add_menu("context")
+add_function_to_menu("context", context_detected)
 start_display()
