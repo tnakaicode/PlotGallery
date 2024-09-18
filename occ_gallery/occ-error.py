@@ -1,8 +1,8 @@
 from OCC.Core.IFSelect import IFSelect_RetDone
 from OCC.Core.STEPControl import STEPControl_Reader
 
-from OCC.Core.BRep import BRep_Tool_Surface
-from OCC.Core.Geom import (Handle_Geom_SphericalSurface_DownCast, Handle_Geom_ToroidalSurface_DownCast, Handle_Geom_Plane_DownCast,
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.Geom import (Geom_SphericalSurface, Handle_Geom_ToroidalSurface_DownCast, Handle_Geom_Plane_DownCast,
                            Handle_Geom_CylindricalSurface_DownCast)
 from OCC.Core.TopoDS import TopoDS_Face, TopoDS_Shape
 
@@ -23,19 +23,22 @@ def get_shape_from_path(filepath: str) -> TopoDS_Shape:
     else:
         raise ValueError(filepath)
 
+
 def get_face_types(topo: TopologyExplorer) -> dict:
     face_types = {}
     for current_face in topo.faces():
         face_types[current_face] = get_face_type(current_face)
     return face_types
 
+
 def get_face_type(face: TopoDS_Face) -> str:
-    hs = BRep_Tool_Surface(face)
+    hs = BRep_Tool.Surface(face)
+    face.ShapeType()
     if Handle_Geom_Plane_DownCast(hs) is not None:
         return 'plane'
     elif Handle_Geom_CylindricalSurface_DownCast(hs) is not None:
         return 'cylinder'
-    elif  Handle_Geom_SphericalSurface_DownCast(hs) is not None:
+    elif Handle_Geom_SphericalSurface_DownCast(hs) is not None:
         return 'sphere'
     elif Handle_Geom_ToroidalSurface_DownCast(hs) is not None:
         return 'tore'
