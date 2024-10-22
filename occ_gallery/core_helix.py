@@ -5,7 +5,7 @@
 from math import pi
 
 from OCC.Core.gp import gp_Pnt2d, gp_XOY, gp_Lin2d, gp_Ax3, gp_Dir2d
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeFace
 from OCC.Core.Geom import Geom_CylindricalSurface
 from OCC.Core.GCE2d import GCE2d_MakeSegment
 
@@ -16,7 +16,7 @@ display, start_display, add_menu, add_function_to_menu = init_display()
 
 
 # Build an helix
-aCylinder = Geom_CylindricalSurface(gp_Ax3(gp_XOY()), 6.0)
+aCylinder = Geom_CylindricalSurface(gp_Ax3(), 6.0)
 aLine2d = gp_Lin2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0))
 aSegment = GCE2d_MakeSegment(aLine2d, 0.0, pi * 2.0)
 
@@ -25,5 +25,7 @@ helix_edge = BRepBuilderAPI_MakeEdge(
 
 
 display.DisplayShape(helix_edge, update=True)
+display.DisplayShape(BRepBuilderAPI_MakeFace(
+    aCylinder.Cylinder(), 0, 2 * pi, 0, 20).Face())
 display.FitAll()
 start_display()
