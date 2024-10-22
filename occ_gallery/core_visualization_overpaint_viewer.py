@@ -478,7 +478,8 @@ class GLWidget(qtViewer3d):
 
         except Exception:
             print(
-                "could not invoke camera command action {0}".format(self.current_action)
+                "could not invoke camera command action {0}".format(
+                    self.current_action)
             )
 
         finally:
@@ -642,7 +643,7 @@ class GLWidget(qtViewer3d):
         )
 
         painter.drawText(
-            (self.width() - rect.width()) / 2,
+            int((self.width() - rect.width()) / 2),
             border,
             rect.width(),
             rect.height(),
@@ -657,7 +658,8 @@ if __name__ == "__main__":
         class AppFrame(QtWidgets.QWidget):
             def __init__(self, parent=None):
                 QtWidgets.QWidget.__init__(self, parent)
-                self.setWindowTitle(self.tr("qtDisplay3d overpainting example"))
+                self.setWindowTitle(
+                    self.tr("qtDisplay3d overpainting example"))
                 self.resize(1280, 1024)
                 self.canva = GLWidget(self)
                 mainLayout = QtWidgets.QHBoxLayout()
