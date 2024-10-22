@@ -31,7 +31,8 @@ def animate_viewpoint():
     display.FitAll()
     display.Context.UpdateCurrentViewer()
 
-    cam = display.View.Camera()  # type: Graphic3d_Camera
+    cam = display.View.Camera()
+    # type: Graphic3d_Camera
 
     center = cam.Center()
     eye = cam.Eye()

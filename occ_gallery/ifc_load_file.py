@@ -21,6 +21,14 @@ import sys
 from OCC.Core.gp import gp_Vec
 from OCC.Core.Quantity import Quantity_Color, Quantity_TOC_RGB
 from OCC.Core.Graphic3d import Graphic3d_ClipPlane
+from OCC.Core.TDocStd import TDocStd_Document
+from OCC.Core.XCAFDoc import XCAFDoc_DocumentTool
+from OCC.Core.TCollection import TCollection_ExtendedString
+from OCC.Core.STEPCAFControl import STEPCAFControl_Reader
+from OCC.Core.IFSelect import IFSelect_RetDone
+from OCC.Core.TDF import TDF_Label, TDF_LabelSequence
+from OCC.Core.TopLoc import TopLoc_Location
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Transform
 
 from OCC.Display.SimpleGui import init_display
 
@@ -45,10 +53,10 @@ def read_step_file_with_names_colors(filename):
     doc = TDocStd_Document(TCollection_ExtendedString("pythonocc-doc"))
 
     # Get root assembly
-    shape_tool = XCAFDoc_DocumentTool_ShapeTool(doc.Main())
-    color_tool = XCAFDoc_DocumentTool_ColorTool(doc.Main())
-    #layer_tool = XCAFDoc_DocumentTool_LayerTool(doc.Main())
-    #mat_tool = XCAFDoc_DocumentTool_MaterialTool(doc.Main())
+    shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+    color_tool = XCAFDoc_DocumentTool.ColorTool(doc.Main())
+    # layer_tool = XCAFDoc_DocumentTool_LayerTool(doc.Main())
+    # mat_tool = XCAFDoc_DocumentTool_MaterialTool(doc.Main())
 
     step_reader = STEPCAFControl_Reader()
     step_reader.SetColorMode(True)
@@ -64,30 +72,30 @@ def read_step_file_with_names_colors(filename):
     locs = []
 
     def _get_sub_shapes(lab, loc):
-        #global cnt, lvl
-        #cnt += 1
-        #print("\n[%d] level %d, handling LABEL %s\n" % (cnt, lvl, _get_label_name(lab)))
+        # global cnt, lvl
+        # cnt += 1
+        # print("\n[%d] level %d, handling LABEL %s\n" % (cnt, lvl, _get_label_name(lab)))
         # print()
         # print(lab.DumpToString())
         # print()
-        #print("Is Assembly    :", shape_tool.IsAssembly(lab))
-        #print("Is Free        :", shape_tool.IsFree(lab))
-        #print("Is Shape       :", shape_tool.IsShape(lab))
-        #print("Is Compound    :", shape_tool.IsCompound(lab))
-        #print("Is Component   :", shape_tool.IsComponent(lab))
-        #print("Is SimpleShape :", shape_tool.IsSimpleShape(lab))
-        #print("Is Reference   :", shape_tool.IsReference(lab))
+        # print("Is Assembly    :", shape_tool.IsAssembly(lab))
+        # print("Is Free        :", shape_tool.IsFree(lab))
+        # print("Is Shape       :", shape_tool.IsShape(lab))
+        # print("Is Compound    :", shape_tool.IsCompound(lab))
+        # print("Is Component   :", shape_tool.IsComponent(lab))
+        # print("Is SimpleShape :", shape_tool.IsSimpleShape(lab))
+        # print("Is Reference   :", shape_tool.IsReference(lab))
 
-        #users = TDF_LabelSequence()
-        #users_cnt = shape_tool.GetUsers(lab, users)
-        #print("Nr Users       :", users_cnt)
+        # users = TDF_LabelSequence()
+        # users_cnt = shape_tool.GetUsers(lab, users)
+        # print("Nr Users       :", users_cnt)
 
         l_subss = TDF_LabelSequence()
         shape_tool.GetSubShapes(lab, l_subss)
-        #print("Nb subshapes   :", l_subss.Length())
+        # print("Nb subshapes   :", l_subss.Length())
         l_comps = TDF_LabelSequence()
         shape_tool.GetComponents(lab, l_comps)
-        #print("Nb components  :", l_comps.Length())
+        # print("Nb components  :", l_comps.Length())
         # print()
         name = lab.GetLabelName()
         print("Name :", name)
@@ -102,53 +110,53 @@ def read_step_file_with_names_colors(filename):
                     label_reference = TDF_Label()
                     shape_tool.GetReferredShape(label, label_reference)
                     loc = shape_tool.GetLocation(label)
-                    #print("    loc          :", loc)
-                    #trans = loc.Transformation()
-                    #print("    tran form    :", trans.Form())
-                    #rot = trans.GetRotation()
-                    #print("    rotation     :", rot)
-                    #print("    X            :", rot.X())
-                    #print("    Y            :", rot.Y())
-                    #print("    Z            :", rot.Z())
-                    #print("    W            :", rot.W())
-                    #tran = trans.TranslationPart()
-                    #print("    translation  :", tran)
-                    #print("    X            :", tran.X())
-                    #print("    Y            :", tran.Y())
-                    #print("    Z            :", tran.Z())
+                    # print("    loc          :", loc)
+                    # trans = loc.Transformation()
+                    # print("    tran form    :", trans.Form())
+                    # rot = trans.GetRotation()
+                    # print("    rotation     :", rot)
+                    # print("    X            :", rot.X())
+                    # print("    Y            :", rot.Y())
+                    # print("    Z            :", rot.Z())
+                    # print("    W            :", rot.W())
+                    # tran = trans.TranslationPart()
+                    # print("    translation  :", tran)
+                    # print("    X            :", tran.X())
+                    # print("    Y            :", tran.Y())
+                    # print("    Z            :", tran.Z())
 
                     locs.append(loc)
                     # print(">>>>")
-                    #lvl += 1
+                    # lvl += 1
                     _get_sub_shapes(label_reference, loc)
-                    #lvl -= 1
+                    # lvl -= 1
                     # print("<<<<")
                     locs.pop()
 
         elif shape_tool.IsSimpleShape(lab):
             # print("\n########  simpleshape label :", lab)
             shape = shape_tool.GetShape(lab)
-            #print("    all ass locs   :", locs)
+            # print("    all ass locs   :", locs)
 
             loc = TopLoc_Location()
             for l in locs:
-                #print("    take loc       :", l)
+                # print("    take loc       :", l)
                 loc = loc.Multiplied(l)
 
-            #trans = loc.Transformation()
-            #print("    FINAL loc    :")
-            #print("    tran form    :", trans.Form())
-            #rot = trans.GetRotation()
-            #print("    rotation     :", rot)
-            #print("    X            :", rot.X())
-            #print("    Y            :", rot.Y())
-            #print("    Z            :", rot.Z())
-            #print("    W            :", rot.W())
-            #tran = trans.TranslationPart()
-            #print("    translation  :", tran)
-            #print("    X            :", tran.X())
-            #print("    Y            :", tran.Y())
-            #print("    Z            :", tran.Z())
+            # trans = loc.Transformation()
+            # print("    FINAL loc    :")
+            # print("    tran form    :", trans.Form())
+            # rot = trans.GetRotation()
+            # print("    rotation     :", rot)
+            # print("    X            :", rot.X())
+            # print("    Y            :", rot.Y())
+            # print("    Z            :", rot.Z())
+            # print("    W            :", rot.W())
+            # tran = trans.TranslationPart()
+            # print("    translation  :", tran)
+            # print("    X            :", tran.X())
+            # print("    Y            :", tran.Y())
+            # print("    Z            :", tran.Z())
             c = Quantity_Color(
                 0.5, 0.5, 0.5, Quantity_TOC_RGB)  # default color
             colorSet = False
@@ -219,8 +227,8 @@ def read_step_file_with_names_colors(filename):
     def _get_shapes():
         labels = TDF_LabelSequence()
         shape_tool.GetFreeShapes(labels)
-        #global cnt
-        #cnt += 1
+        # global cnt
+        # cnt += 1
 
         print()
         print("Number of shapes at root :", labels.Length())

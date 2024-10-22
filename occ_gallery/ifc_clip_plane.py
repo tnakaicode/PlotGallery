@@ -25,6 +25,7 @@ from OCC.Core.Graphic3d import Graphic3d_ClipPlane
 from OCC.Display.SimpleGui import init_display
 
 try:
+    # pip install ifcopenshell
     import ifcopenshell
     import ifcopenshell.geom
 except ModuleNotFoundError:
