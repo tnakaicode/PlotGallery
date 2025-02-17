@@ -35,10 +35,11 @@ from PyQt5.QtWidgets import (
 
 
 class InputDialog(QDialog):
-    def init(self):
-        super().init()
+    def __init__(self):
+        super().__init__()
         self.setWindowTitle("Enter Parameters")
 
+        self.layout = QFormLayout()
         self.radius_input = QLineEdit("5.0")
         self.height_input = QLineEdit("20.0")
         self.turns_input = QLineEdit("5")
@@ -69,8 +70,8 @@ class InputDialog(QDialog):
 
 
 class HelixRibbonApp(QMainWindow):
-    def init(self):
-        super().init()
+    def __init__(self):
+        super().__init__()
         self.setWindowTitle("Helix Ribbon on Cylinder")
         self.setGeometry(100, 100, 800, 600)
 
@@ -158,9 +159,9 @@ class HelixRibbonApp(QMainWindow):
         step_writer.Transfer(compound, STEPControl_AsIs)
 
         # Write to file
-        status = step_writer.Write("exported_model.step")
+        status = step_writer.Write("core_geometry_helix_1.step")
         if status == IFSelect_RetDone:
-            print("STEP file exported successfully: exported_model.step")
+            print("STEP file exported successfully: core_geometry_helix_1.step")
         else:
             print("Failed to export STEP file.")
 
@@ -235,7 +236,7 @@ class HelixRibbonApp(QMainWindow):
         self.display.FitAll()
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainWin = HelixRibbonApp()
     mainWin.show()
