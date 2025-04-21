@@ -32,7 +32,8 @@ starting_point = math_Vector(1, nb_variables, 0.0)
 #starting_point.Set(1, 1.0)  # x = 0
 starting_point.Set(1, 1, math_Vector(1, 1, 10.0))  # x = 0
 starting_point.Set(1, 2, math_Vector(1, 2, 11.0))  # y = 0
-print(starting_point.Value(1))
+print()
+print(starting_point.Min())
 print(f"初期点: x = {starting_point.Value(1).GetValue()}, y = {starting_point.Value(2)}")
 
 # 関数のインスタンス
