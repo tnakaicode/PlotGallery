@@ -16,10 +16,10 @@ def linear_tension_example():
 
     # Fill the vector and matrix with random values
     for i in range(vec_b.Lower(), vec_b.Upper() + 1):
-        vec_b.SetValue(i, np.random.rand())
+        vec_b.Set(i, np.random.rand())
     for i in range(mat.LowerRow(), mat.UpperRow() + 1):
         for j in range(mat.LowerCol(), mat.UpperCol() + 1):
-            mat.SetValue(i, j, np.random.rand())
+            mat.Set(i, j, np.random.rand())
 
     # Perform operations
     gradient = linear_tension.Gradient(2, vec_b)
@@ -42,7 +42,7 @@ def sparse_matrix_example():
 
     # Fill vec_b with random values
     for i in range(vec_b.Lower(), vec_b.Upper() + 1):
-        vec_b.SetValue(i, np.random.rand())
+        vec_b.Set(i, np.random.rand())
 
     # Solve the sparse matrix equation (dummy example, no actual matrix setup here)
     sparse_matrix.Solve(vec_b, vec_x)
@@ -64,7 +64,7 @@ def list_of_vectors_example():
     for i in range(3):
         vec = math_Vector(1, 5)  # Create a vector of size 5
         for j in range(vec.Lower(), vec.Upper() + 1):
-            vec.SetValue(j, np.random.rand())  # Fill with random values
+            vec.Set(j, np.random.rand())  # Fill with random values
         list_of_vectors.Append(vec)
 
     # Iterate through the list and print the vectors
@@ -91,8 +91,14 @@ def h_assembly_table_example():
         print(f"Error accessing Array2: {e}")
 
 
-# Run examples
 if __name__ == "__main__":
+    print(help(math_Vector.Set))
+
+    vec = math_Vector(1, 5)  # インデックス範囲が1から5のベクトルを作成
+    vec.Init(0.0)  # すべての要素を0.0で初期化
+    for i in range(vec.Lower(), vec.Upper() + 1):  # インデックスは1-based
+        print(f"vec[{i}] = {vec.Value(i)}")
+
     # print("Running Linear Tension Example:")
     # linear_tension_example()
 
