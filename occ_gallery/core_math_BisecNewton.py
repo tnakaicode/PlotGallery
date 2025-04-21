@@ -7,13 +7,15 @@ class MyFunction(math_FunctionWithDerivative):
         #super(MyFunction, self).__init__()  # 親クラスの初期化を呼び出す
         pass
         
-    def Value(self, x):
+    def Value(self, x, f):
         # 関数 f(x) = x^2 - 4
-        return x**2 - 4
+        f[0] = x**2 - 4  # f[0] に値を設定
+        return True
 
-    def Derivative(self, x):
+    def Derivative(self, x, df):
         # 関数の導関数 f'(x) = 2x
-        return 2 * x
+        df[0] = 2 * x  # df[0] に値を設定
+        return True
 
 # 初期化
 tolerance = 1e-8
@@ -28,7 +30,7 @@ initial_guess = 2.0  # 初期推定値
 F = MyFunction()
 
 # 解を求める
-solver.Perform(F, x_min, x_max, initial_guess)
+solver.Perform(MyFunction, x_min, x_max, initial_guess)
 
 # 結果を取得
 if solver.IsDone():
