@@ -1,4 +1,4 @@
-from OCC.Core.math import math_BFGS, math_Vector
+from OCC.Core.math import math_BFGS, math_Vector, math_BissecNewton
 from OCC.Core.gp import gp_Pnt
 
 # 定義する関数とその勾配
