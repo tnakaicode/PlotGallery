@@ -11,6 +11,7 @@ from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
 from OCC.Core.ShapeAnalysis import ShapeAnalysis_Wire
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_WIRE
+from OCC.Core.TopoDS import TopoDS_Wire
 from OCC.Extend.DataExchange import read_step_file, write_step_file
 from OCC.Display.SimpleGui import init_display
 
@@ -31,10 +32,14 @@ def polygon2d_to_wire_on_surface(surface, uv_points, close=True):
     return wire_maker.Wire()
 
 
-def is_wire_closed_and_oriented(wire, surface):
+def is_wire_closed_and_oriented(wire=TopoDS_Wire()):
     saw = ShapeAnalysis_Wire()
+    wire = wire.Oriented(1)
     saw.Load(wire)
-    print("Wireの向き:", saw.CheckOrder(), saw.CheckOuterBound())
+    api = saw.WireData().WireAPIMake()
+    print("Wireの向き:", api.Orientation())
+    print("Wireの向き付け可能性:", api.Orientable())
+    print("Wireの閉じ:", api.Closed())
 
 
 def extract_outer_and_inner_wires(face):
@@ -84,7 +89,8 @@ wire_hole2 = polygon2d_to_wire_on_surface(bspline_surface, hole2)
 # --- Face作成（外環＋穴1）---
 face = BRepBuilderAPI_MakeFace(bspline_surface, 1e-6).Face()
 
-print("hole1の向き:", is_wire_closed_and_oriented(wire_hole1, bspline_surface))
+is_wire_closed_and_oriented(wire_hole1)
+is_wire_closed_and_oriented(wire_hole1.Reversed())
 face_builder = BRepBuilderAPI_MakeFace(bspline_surface, 1e-6)
 face_builder.Add(wire_hole1.Reversed())
 face_with_hole = face_builder.Face()
