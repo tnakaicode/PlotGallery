@@ -9,6 +9,9 @@ from OCC.Core.TColgp import TColgp_Array2OfPnt
 from OCC.Core.GeomAbs import GeomAbs_G2
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
 from OCC.Core.ShapeAnalysis import ShapeAnalysis_Wire
+from OCC.Core.TopExp import TopExp_Explorer
+from OCC.Core.TopAbs import TopAbs_WIRE
+from OCC.Extend.DataExchange import read_step_file, write_step_file
 from OCC.Display.SimpleGui import init_display
 
 
@@ -32,6 +35,23 @@ def is_wire_closed_and_oriented(wire, surface):
     saw = ShapeAnalysis_Wire()
     saw.Load(wire)
     print("Wireの向き:", saw.CheckOrder(), saw.CheckOuterBound())
+
+
+def extract_outer_and_inner_wires(face):
+    outer_wire = None
+    inner_wires = []
+    exp = TopExp_Explorer(face, TopAbs_WIRE)
+    while exp.More():
+        wire = exp.Current()
+        # ワイヤの向きを確認
+        saw = ShapeAnalysis_Wire()
+        saw.Load(wire)
+        if saw.Orientation():  # 外環と判定
+            outer_wire = wire
+        else:  # 内環と判定
+            inner_wires.append(wire)
+        exp.Next()
+    return outer_wire, inner_wires
 
 
 display, start_display, *_ = init_display()
@@ -58,7 +78,7 @@ hole1 = [(0.1, 0.1), (0.6, 0.3), (0.4, 0.5), (0.3, 0.7)]
 wire_hole1 = polygon2d_to_wire_on_surface(bspline_surface, hole1)
 
 # --- 内環ワイヤ（穴2：hole1と一部重なる）---
-hole2 = [(0.4, 0.4), (0.6, 0.4), (0.6, 0.6), (0.4, 0.6)]
+hole2 = [(0.4, 0.4), (0.6, 0.5), (0.6, 0.6), (0.4, 0.6)]
 wire_hole2 = polygon2d_to_wire_on_surface(bspline_surface, hole2)
 
 # --- Face作成（外環＋穴1）---
@@ -76,18 +96,31 @@ face_with_hole = face_builder.Face()
 # face_with_hole = fr.Current()
 
 # --- FaceRestrictorでさらにhole2を追加 ---
-fr = BRepAlgo_FaceRestrictor()
-fr.Init(face_with_hole, True, True)
-fr.Add(wire_hole2)
-fr.Perform()
-trimmed = fr.Current()
+fr1 = BRepAlgo_FaceRestrictor()
+fr1.Init(face_with_hole, True, True)
+fr1.Add(wire_hole2.Reversed())
+fr1.Perform()
+trimmed1 = fr1.Current()
+write_step_file(trimmed1, "core_geometry_face_trimmed1.step")
+
+fr2 = BRepBuilderAPI_MakeFace(face_with_hole, wire_hole2)
+fr2.Add(wire_hole2.Reversed())
+trimmed2 = fr2.Face()
+write_step_file(trimmed2, "core_geometry_face_trimmed2.step")
+
+fr3 = BRepBuilderAPI_MakeFace(face_with_hole)
+fr3.Add(wire_hole2)
+trimmed3 = fr3.Face()
+write_step_file(trimmed3, "core_geometry_face_trimmed3.step")
 
 # display.DisplayShape(face, color="RED", transparency=0.5, update=True)
 display.DisplayShape(face_with_hole, transparency=0.5, update=True)
 # display.DisplayShape(wire_outer, color="RED", update=True)
 # display.DisplayShape(wire_hole1, color="BLUE1", update=True)
 # display.DisplayShape(wire_hole2, color="GREEN", update=True)
-# display.DisplayShape(trimmed, color="YELLOW", transparency=0.2, update=True)
+# display.DisplayShape(trimmed1, color="YELLOW", transparency=0.2, update=True)
+display.DisplayShape(trimmed2, color="BLUE1", transparency=0.2, update=True)
+# display.DisplayShape(trimmed3, color="GREEN", transparency=0.2, update=True)
 
 print("FaceRestrictorでhole1とhole2が重なった部分の処理を確認してください。")
 print("外環はCCW（反時計回り）、内環はCW（時計回り）")
