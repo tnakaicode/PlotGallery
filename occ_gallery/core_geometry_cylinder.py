@@ -2,8 +2,8 @@ import numpy as np
 from math import pi
 from OCC.Core.gp import gp_Pnt2d, gp_Circ2d, gp_Ax2d, gp_Dir2d
 from OCC.Core.GCE2d import GCE2d_MakeSegment, GCE2d_MakeCircle
-from OCC.Core.TColgp import TColgp_Array1OfPnt2d
-from OCC.Core.Geom2dAPI import Geom2dAPI_PointsToBSpline
+from OCC.Core.TColgp import TColgp_Array1OfPnt2d, TColgp_HArray1OfPnt2d
+from OCC.Core.Geom2dAPI import Geom2dAPI_PointsToBSpline, Geom2dAPI_Interpolate
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeFace
 from OCC.Core.Geom import Geom_CylindricalSurface
 from OCC.Core.gp import gp_Ax3
@@ -76,11 +76,14 @@ def uv_spline_to_wire_on_surface(surface, uv_points):
     戻り値: TopoDS_Wire
     """
     # UV空間上の点列をSplineに変換
-    array = TColgp_Array1OfPnt2d(1, len(uv_points) + 1)
+    array = TColgp_Array1OfPnt2d(1, len(uv_points))
     for i, (u, v) in enumerate(uv_points, start=1):
         array.SetValue(i, gp_Pnt2d(u, v))  # Uを周期的に扱う
-    array.SetValue(len(uv_points) + 1, array.Value(1))
-    spline_2d = Geom2dAPI_PointsToBSpline(array).Curve()
+    harray = TColgp_HArray1OfPnt2d(array)
+    curve_builder = Geom2dAPI_Interpolate(harray, True, 0.1E-6)
+    curve_builder.Perform()
+    spline_2d = curve_builder.Curve()
+    
 
     # SplineをSurface上のエッジに変換
     edge = BRepBuilderAPI_MakeEdge(spline_2d, surface).Edge()
@@ -114,6 +117,10 @@ print("Wireの向き:", wire.Orientation())
 center_uv = (pi, 0)  # UV空間上の円の中心
 radius = 2          # UV空間上の円の半径
 wire_circle = uv_circle_to_wire_on_surface(cylinder, center_uv, radius)
+face_builder = BRepBuilderAPI_MakeFace(cylinder, wire_circle.Reversed(), True)
+face_builder.Build()
+face_circle = face_builder.Face()
+write_step_file(face_circle, "core_geometry_cylinder_circle.step")
 
 # UV空間上のSplineをSurface上のWireに変換
 uv_points = [
@@ -121,7 +128,7 @@ uv_points = [
     (pi / 3, 2),
     (pi, 3),
     (7 * pi / 4, 2),
-    (2 * pi - pi / 5, 1)
+    (2 * pi + pi / 5, 1)
 ]
 wire_spline = uv_spline_to_wire_on_surface(cylinder, uv_points)
 
@@ -135,13 +142,15 @@ face_builder = BRepBuilderAPI_MakeFace(face)
 face_builder.Add(wire_circle.Reversed())
 face_trimmed = face_builder.Face()
 
-# write_step_file(face_trimmed, "core_geometry_cylinder_trimmed.step")
+face_trimmed = BRepBuilderAPI_MakeFace(cylinder, wire_spline, True).Face()
+write_step_file(face_trimmed, "core_geometry_cylinder_trimmed.step")
 
 display.DisplayShape(wire, update=True)
 display.DisplayShape(wire_circle, update=True)
 display.DisplayShape(wire_spline, color="GREEN", update=True)
 display.DisplayShape(face, transparency=0.5)
-display.DisplayShape(face_trimmed, color="BLUE1", transparency=0.5)
+display.DisplayShape(face_circle, color="BLUE1", transparency=0.5)
+#display.DisplayShape(face_trimmed, color="BLUE1", transparency=0.5)
 
 display.FitAll()
 start_display()
