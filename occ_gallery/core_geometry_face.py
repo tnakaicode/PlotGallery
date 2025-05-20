@@ -10,7 +10,7 @@ from OCC.Core.GeomAbs import GeomAbs_G2
 from OCC.Core.BRepAlgo import BRepAlgo_FaceRestrictor
 from OCC.Core.ShapeAnalysis import ShapeAnalysis_Wire
 from OCC.Core.TopExp import TopExp_Explorer
-from OCC.Core.TopAbs import TopAbs_WIRE
+from OCC.Core.TopAbs import TopAbs_WIRE, TopAbs_Orientation
 from OCC.Core.TopoDS import TopoDS_Wire
 from OCC.Extend.DataExchange import read_step_file, write_step_file
 from OCC.Display.SimpleGui import init_display
@@ -48,13 +48,7 @@ def extract_outer_and_inner_wires(face):
     exp = TopExp_Explorer(face, TopAbs_WIRE)
     while exp.More():
         wire = exp.Current()
-        # ワイヤの向きを確認
-        saw = ShapeAnalysis_Wire()
-        saw.Load(wire)
-        if saw.Orientation():  # 外環と判定
-            outer_wire = wire
-        else:  # 内環と判定
-            inner_wires.append(wire)
+        print("Wireの向き:", wire.Orientation())
         exp.Next()
     return outer_wire, inner_wires
 
@@ -95,6 +89,11 @@ face_builder = BRepBuilderAPI_MakeFace(bspline_surface, 1e-6)
 face_builder.Add(wire_hole1.Reversed())
 face_with_hole = face_builder.Face()
 
+print("hole1の向き:", wire_hole1.Orientation())
+print("hole1の向き:", wire_hole1.Reversed().Orientation())
+extract_outer_and_inner_wires(face)
+extract_outer_and_inner_wires(face_with_hole)
+
 # fr = BRepAlgo_FaceRestrictor()
 # fr.Init(face, True, True)
 # fr.Add(wire_hole1)
@@ -125,7 +124,7 @@ display.DisplayShape(face_with_hole, transparency=0.5, update=True)
 # display.DisplayShape(wire_hole1, color="BLUE1", update=True)
 # display.DisplayShape(wire_hole2, color="GREEN", update=True)
 # display.DisplayShape(trimmed1, color="YELLOW", transparency=0.2, update=True)
-display.DisplayShape(trimmed2, color="BLUE1", transparency=0.2, update=True)
+# display.DisplayShape(trimmed2, color="BLUE1", transparency=0.2, update=True)
 # display.DisplayShape(trimmed3, color="GREEN", transparency=0.2, update=True)
 
 print("FaceRestrictorでhole1とhole2が重なった部分の処理を確認してください。")
