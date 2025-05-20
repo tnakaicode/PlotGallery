@@ -76,9 +76,10 @@ def uv_spline_to_wire_on_surface(surface, uv_points):
     戻り値: TopoDS_Wire
     """
     # UV空間上の点列をSplineに変換
-    array = TColgp_Array1OfPnt2d(1, len(uv_points))
+    array = TColgp_Array1OfPnt2d(1, len(uv_points) + 1)
     for i, (u, v) in enumerate(uv_points, start=1):
-        array.SetValue(i, gp_Pnt2d(u % (2 * pi), v))  # Uを周期的に扱う
+        array.SetValue(i, gp_Pnt2d(u, v))  # Uを周期的に扱う
+    array.SetValue(len(uv_points) + 1, array.Value(1))
     spline_2d = Geom2dAPI_PointsToBSpline(array).Curve()
 
     # SplineをSurface上のエッジに変換
@@ -116,11 +117,11 @@ wire_circle = uv_circle_to_wire_on_surface(cylinder, center_uv, radius)
 
 # UV空間上のSplineをSurface上のWireに変換
 uv_points = [
-    (0, 1),
-    (pi / 2, 2),
+    (pi / 5, 1),
+    (pi / 3, 2),
     (pi, 3),
-    (3 * pi / 2, 2),
-    (2 * pi, 1)
+    (7 * pi / 4, 2),
+    (2 * pi - pi / 5, 1)
 ]
 wire_spline = uv_spline_to_wire_on_surface(cylinder, uv_points)
 
@@ -138,7 +139,7 @@ face_trimmed = face_builder.Face()
 
 display.DisplayShape(wire, update=True)
 display.DisplayShape(wire_circle, update=True)
-display.DisplayShape(wire_spline, update=True)
+display.DisplayShape(wire_spline, color="GREEN", update=True)
 display.DisplayShape(face, transparency=0.5)
 display.DisplayShape(face_trimmed, color="BLUE1", transparency=0.5)
 
