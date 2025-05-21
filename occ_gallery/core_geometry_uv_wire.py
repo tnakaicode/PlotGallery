@@ -20,6 +20,7 @@ from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_Make
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_EDGE
 from OCC.Core.TopoDS import topods
+from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Extend.DataExchange import read_step_file, write_step_file
 from OCC.Display.SimpleGui import init_display
 
@@ -100,27 +101,34 @@ def uv_spline_to_wire_on_surface(surface, uv_points):
 
 def surface_wire_to_uv_wire(face, wire):
     """
-    Surface上のWireをUV平面上のWireに変換する関数
-    surface: Geom_Surface (例: Geom_CylindricalSurface)
-    wire: TopoDS_Wire (Surface上のWire)
-    戻り値: TopoDS_Wire (UV平面上のWire)
+    Function to convert a Wire on a Surface to a Wire in the UV plane.
+    face: TopoDS_Face (Face containing the Surface)
+    wire: TopoDS_Wire (Wire on the Surface)
+    Returns: TopoDS_Wire (Wire in the UV plane)
     """
-    # UV平面上のエッジを格納するリスト
+    # List to store edges in the UV plane
     uv_edges = []
 
-    # Wire内のエッジを取得
+    # Retrieve edges within the Wire
     explorer = TopExp_Explorer(wire, TopAbs_EDGE)
     while explorer.More():
         edge = topods.Edge(explorer.Current())
-        # Surface上のエッジをUV空間の曲線に変換
-        curve_2d, first, last = BRep_Tool.CurveOnSurface(edge, face, True)
-        trimmed_curve = Geom2d_TrimmedCurve(curve_2d, first, last)
-        # UV空間上のエッジを作成
-        uv_edge = BRepBuilderAPI_MakeWire(trimmed_curve).Edge()
-        uv_edges.append(uv_edge)
+        # Convert the edge on the Surface to a curve in UV space
+        first = 0.0
+        last = 1.0
+        is_stored = True  # Using Python's bool instead of theIsStored
+
+        # Correctly call BRep_Tool.CurveOnSurface
+        curve_2d, first, last = BRep_Tool.CurveOnSurface(edge, face, is_stored)
+
+        if curve_2d is not None:
+            trimmed_curve = Geom2d_TrimmedCurve(curve_2d, first, last)
+            # Create an edge in UV space
+            uv_edge = BRepBuilderAPI_MakeEdge(trimmed_curve).Edge()
+            uv_edges.append(uv_edge)
         explorer.Next()
 
-    # UV平面上のWireを作成
+    # Create a Wire in the UV plane
     wire_maker = BRepBuilderAPI_MakeWire()
     for uv_edge in uv_edges:
         wire_maker.Add(uv_edge)
