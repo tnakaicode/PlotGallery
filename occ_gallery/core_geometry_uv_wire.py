@@ -9,7 +9,7 @@ from OCC.Core.Geom import Geom_CylindricalSurface
 from OCC.Core.Geom import Geom_SphericalSurface
 from OCC.Core.Geom import Geom_BSplineSurface
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
-from OCC.Core.Geom2d import Geom2d_TrimmedCurve
+from OCC.Core.Geom2d import Geom2d_TrimmedCurve, Geom2d_Curve
 from OCC.Core.Geom2dAPI import Geom2dAPI_PointsToBSpline, Geom2dAPI_Interpolate
 from OCC.Core.GCE2d import GCE2d_MakeSegment, GCE2d_MakeCircle
 from OCC.Core.TColgp import TColgp_Array2OfPnt
@@ -114,12 +114,10 @@ def surface_wire_to_uv_wire(face, wire):
     while explorer.More():
         edge = topods.Edge(explorer.Current())
         # Convert the edge on the Surface to a curve in UV space
-        first = 0.0
-        last = 1.0
-        is_stored = True  # Using Python's bool instead of theIsStored
+        curve_2d = True  # Using Python's bool instead of theIsStored
 
         # Correctly call BRep_Tool.CurveOnSurface
-        curve_2d, first, last = BRep_Tool.CurveOnSurface(edge, face, is_stored)
+        first, last = BRep_Tool.CurveOnSurface(edge, face, curve_2d)
 
         if curve_2d is not None:
             trimmed_curve = Geom2d_TrimmedCurve(curve_2d, first, last)
