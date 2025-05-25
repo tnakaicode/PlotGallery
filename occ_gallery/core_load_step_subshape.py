@@ -118,14 +118,14 @@ def read_step_file_names(filename: str):
                     color_tool.SetInstanceColor(shape, 2, c)
 
                     n = c.Name(c.Red(), c.Green(), c.Blue())
-                    print(
-                        "    shape color Name & RGB: ",
-                        c,
-                        n,
-                        c.Red(),
-                        c.Green(),
-                        c.Blue(),
-                    )
+                    # print(
+                    #    "    shape color Name & RGB: ",
+                    #    c,
+                    #    n,
+                    #    c.Red(),
+                    #    c.Green(),
+                    #    c.Blue(),
+                    # )
 
             shape_disp = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
             if shape_disp not in output_shapes:
