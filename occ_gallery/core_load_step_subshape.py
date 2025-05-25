@@ -25,7 +25,7 @@ reader.SetNameMode(True)
 reader.SetLayerMode(True)
 stepname = pathlib.Path(r"output.step")
 
-filename = str(stepname)
+filename = "./assets/models/as1-oc-214.stp"
 status = reader.ReadFile(filename)
 
 if status:
