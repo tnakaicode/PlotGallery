@@ -45,3 +45,5 @@ if root_labels.Length() > 0:
     sub_labels = TDF_LabelSequence()
     shape_tool.GetSubShapes(root_label, sub_labels)
     print(sub_labels.Length())
+
+read_step_file_with_names_colors(filename)
