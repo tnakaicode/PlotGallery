@@ -31,14 +31,8 @@ def sample_points_on_wire(wire: TopoDS_Wire, n: int):
 def minimal_surface_from_wires_minimal_like(
     wire1: TopoDS_Wire, wire2: TopoDS_Wire, n: int = 100, m: int = 30, shrink_ratio=0.5
 ):
-    # 2つのワイヤから極小曲面近似（三角形メッシュ）を生成
     pts1 = sample_points_on_wire(wire1, n)
     pts2 = sample_points_on_wire(wire2, n)
-    # 法線方向（大雑把にワイヤ中心線方向）
-    center1 = np.mean([[p.X(), p.Y(), p.Z()] for p in pts1], axis=0)
-    center2 = np.mean([[p.X(), p.Y(), p.Z()] for p in pts2], axis=0)
-    axis = center2 - center1
-    axis = axis / np.linalg.norm(axis)
     # 曲面点リスト
     grid = []
     for k in range(m):
@@ -46,17 +40,19 @@ def minimal_surface_from_wires_minimal_like(
         # cosh型で中央を引き込む補間
         s = (np.cosh((t - 0.5) * 2) - np.cosh(1)) / (np.cosh(0) - np.cosh(1))
         ring = []
+        # 断面ごとの中心
+        center = (1 - t) * np.mean(
+            [[p.X(), p.Y(), p.Z()] for p in pts1], axis=0
+        ) + t * np.mean([[p.X(), p.Y(), p.Z()] for p in pts2], axis=0)
         for i in range(n):
             p1 = np.array([pts1[i].X(), pts1[i].Y(), pts1[i].Z()])
             p2 = np.array([pts2[i].X(), pts2[i].Y(), pts2[i].Z()])
-            p = (
-                (1 - t) * p1
-                + t * p2
-                + axis * s * shrink_ratio * np.linalg.norm(p2 - p1) * 0.5
-            )
+            p = (1 - t) * p1 + t * p2
+            # 中心方向に引き込む
+            p = p + (center - p) * s * shrink_ratio
             ring.append(gp_Pnt(*p))
         grid.append(ring)
-    # メッシュ状に三角形面を生成
+    # メッシュ状に三角形面を生成（以下同じ）
     edges = []
     for k in range(m - 1):
         for i in range(n):
@@ -79,7 +75,6 @@ def minimal_surface_from_wires_minimal_like(
                     BRepBuilderAPI_MakeEdge(p4, p1).Edge(),
                 ).Wire()
             )
-    # Sewingでシェル化
     sewing = BRepBuilderAPI_Sewing()
     for w in edges:
         face = BRepBuilderAPI_MakeFace(w)
@@ -110,7 +105,7 @@ if __name__ == "__main__":
 
     # 極小曲面近似
     shell = minimal_surface_from_wires_minimal_like(
-        wire1, wire2, n=100, m=100, shrink_ratio=0.7
+        wire1, wire2, n=100, m=100, shrink_ratio=0.5
     )
 
     # 表示
