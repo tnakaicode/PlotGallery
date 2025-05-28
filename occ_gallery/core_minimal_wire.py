@@ -115,7 +115,8 @@ def minimal_surface_from_wires_minimal_like(
 
 def minimal_surface_on_single_wire(wire: TopoDS_Wire, n: int = 100, return_area=False):
     """
-    1つのWireに張る極小曲面近似（三角形ファン）を生成
+    1つのWireに張る極小曲面近似（三角形ファン or 平面）を生成
+    平面上のWireなら平面、立体的なWireなら重心ファン
     Args:
         wire (TopoDS_Wire): 閉じたワイヤ
         n (int): サンプリング点数
@@ -125,39 +126,74 @@ def minimal_surface_on_single_wire(wire: TopoDS_Wire, n: int = 100, return_area=
         area (float, optional): 面積
     """
     pts = sample_points_on_wire(wire, n)
-    # 重心
-    center = np.mean([[p.X(), p.Y(), p.Z()] for p in pts], axis=0)
-    center_pnt = gp_Pnt(*center)
-    edges = []
-    area = 0.0
-    for i in range(n):
-        i_next = (i + 1) % n
-        p1 = pts[i]
-        p2 = pts[i_next]
-        # 三角形ワイヤ
-        wire_tri = BRepBuilderAPI_MakeWire(
-            BRepBuilderAPI_MakeEdge(p1, p2).Edge(),
-            BRepBuilderAPI_MakeEdge(p2, center_pnt).Edge(),
-            BRepBuilderAPI_MakeEdge(center_pnt, p1).Edge(),
-        ).Wire()
-        edges.append(wire_tri)
+    # 平面判定: 最小二乗平面を求め、全点の距離が小さければ平面とみなす
+    coords = np.array([[p.X(), p.Y(), p.Z()] for p in pts])
+    centroid = coords.mean(axis=0)
+    uu, dd, vv = np.linalg.svd(coords - centroid)
+    normal = vv[-1]
+    # 各点から平面への距離
+    dists = np.abs((coords - centroid) @ normal)
+    max_dist = np.max(dists)
+    tol = 1e-6  # 許容誤差
+    if max_dist < tol:
+        # 平面上なら、その平面に張る
+        from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+
+        face = BRepBuilderAPI_MakeFace(wire).Face()
         # 面積計算
-        v1 = np.array([p2.X() - p1.X(), p2.Y() - p1.Y(), p2.Z() - p1.Z()])
-        v2 = np.array(
-            [center_pnt.X() - p1.X(), center_pnt.Y() - p1.Y(), center_pnt.Z() - p1.Z()]
-        )
-        area += 0.5 * np.linalg.norm(np.cross(v1, v2))
-    # Sewingでシェル化
-    sewing = BRepBuilderAPI_Sewing()
-    for w in edges:
-        face = BRepBuilderAPI_MakeFace(w)
-        sewing.Add(face.Face())
-    sewing.Perform()
-    shell = sewing.SewedShape()
-    if return_area:
-        return shell, area
+        area = 0.0
+        for i in range(n):
+            i_next = (i + 1) % n
+            p1 = coords[i]
+            p2 = coords[i_next]
+            v1 = p2 - centroid
+            v2 = coords[i] - centroid
+            # 三角形面積
+            area += 0.5 * np.linalg.norm(
+                np.cross(p2 - centroid, coords[i_next] - centroid)
+            )
+        if return_area:
+            return face, area
+        else:
+            return face
     else:
-        return shell
+        # 立体的なWire→重心ファン
+        center = centroid
+        center_pnt = gp_Pnt(*center)
+        edges = []
+        area = 0.0
+        for i in range(n):
+            i_next = (i + 1) % n
+            p1 = pts[i]
+            p2 = pts[i_next]
+            # 三角形ワイヤ
+            wire_tri = BRepBuilderAPI_MakeWire(
+                BRepBuilderAPI_MakeEdge(p1, p2).Edge(),
+                BRepBuilderAPI_MakeEdge(p2, center_pnt).Edge(),
+                BRepBuilderAPI_MakeEdge(center_pnt, p1).Edge(),
+            ).Wire()
+            edges.append(wire_tri)
+            # 面積計算
+            v1 = np.array([p2.X() - p1.X(), p2.Y() - p1.Y(), p2.Z() - p1.Z()])
+            v2 = np.array(
+                [
+                    center_pnt.X() - p1.X(),
+                    center_pnt.Y() - p1.Y(),
+                    center_pnt.Z() - p1.Z(),
+                ]
+            )
+            area += 0.5 * np.linalg.norm(np.cross(v1, v2))
+        # Sewingでシェル化
+        sewing = BRepBuilderAPI_Sewing()
+        for w in edges:
+            face = BRepBuilderAPI_MakeFace(w)
+            sewing.Add(face.Face())
+        sewing.Perform()
+        shell = sewing.SewedShape()
+        if return_area:
+            return shell, area
+        else:
+            return shell
 
 
 # --- 使用例 ---
