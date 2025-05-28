@@ -40,6 +40,25 @@ normals = np.outer(1 - (z + d / 2) / d, n0) + np.outer((z + d / 2) / d, n_vec)
 normals = normals / np.linalg.norm(normals, axis=1)[:, None]
 theta = np.linspace(0, 2 * np.pi, n)
 
+
+def get_radius_for_disk(center, normal, disk_center, disk_normal, R):
+    # 曲面断面の中心(center)・法線(normal)と、円盤の中心・法線(disk_center, disk_normal)が与えられたとき
+    # その断面上で「円盤の中心から半径R」になる点までの距離を返す
+    # 断面法線と円盤法線が一致していればr=R
+    # ずれている場合は、断面中心から円盤面までの距離を使って補正
+    # 断面中心から円盤面までの距離
+    v = np.array(disk_center) - np.array(center)
+    h = np.dot(v, disk_normal)
+    # 断面法線と円盤法線のなす角
+    cos_theta = np.dot(normal, disk_normal)
+    # 断面上で円盤と交わる円の半径
+    if abs(cos_theta) < 1e-8:
+        # ほぼ直交の場合
+        return R
+    r = np.sqrt(max(R**2 - (h / cos_theta) ** 2, 0))
+    return r
+
+
 # 曲面点リスト
 points = []
 for i in range(n):
