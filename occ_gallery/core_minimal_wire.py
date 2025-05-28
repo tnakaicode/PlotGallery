@@ -113,6 +113,53 @@ def minimal_surface_from_wires_minimal_like(
         return shell
 
 
+def minimal_surface_on_single_wire(wire: TopoDS_Wire, n: int = 100, return_area=False):
+    """
+    1つのWireに張る極小曲面近似（三角形ファン）を生成
+    Args:
+        wire (TopoDS_Wire): 閉じたワイヤ
+        n (int): サンプリング点数
+        return_area (bool): Trueなら面積も返す
+    Returns:
+        shell (TopoDS_Shape): 曲面シェル
+        area (float, optional): 面積
+    """
+    pts = sample_points_on_wire(wire, n)
+    # 重心
+    center = np.mean([[p.X(), p.Y(), p.Z()] for p in pts], axis=0)
+    center_pnt = gp_Pnt(*center)
+    edges = []
+    area = 0.0
+    for i in range(n):
+        i_next = (i + 1) % n
+        p1 = pts[i]
+        p2 = pts[i_next]
+        # 三角形ワイヤ
+        wire_tri = BRepBuilderAPI_MakeWire(
+            BRepBuilderAPI_MakeEdge(p1, p2).Edge(),
+            BRepBuilderAPI_MakeEdge(p2, center_pnt).Edge(),
+            BRepBuilderAPI_MakeEdge(center_pnt, p1).Edge(),
+        ).Wire()
+        edges.append(wire_tri)
+        # 面積計算
+        v1 = np.array([p2.X() - p1.X(), p2.Y() - p1.Y(), p2.Z() - p1.Z()])
+        v2 = np.array(
+            [center_pnt.X() - p1.X(), center_pnt.Y() - p1.Y(), center_pnt.Z() - p1.Z()]
+        )
+        area += 0.5 * np.linalg.norm(np.cross(v1, v2))
+    # Sewingでシェル化
+    sewing = BRepBuilderAPI_Sewing()
+    for w in edges:
+        face = BRepBuilderAPI_MakeFace(w)
+        sewing.Add(face.Face())
+    sewing.Perform()
+    shell = sewing.SewedShape()
+    if return_area:
+        return shell, area
+    else:
+        return shell
+
+
 # --- 使用例 ---
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
@@ -137,6 +184,10 @@ if __name__ == "__main__":
     shell = minimal_surface_from_wires_minimal_like(
         wire1, wire2, n=100, m=100, shrink_ratio=0.4
     )
+
+    shell1, area = minimal_surface_on_single_wire(wire1, n=100, return_area=True)
+    print(f"面積: {area:.4f}")
+    display.DisplayShape(shell1, update=True)
 
     # 表示
     display.DisplayShape(wire1, color="red")
