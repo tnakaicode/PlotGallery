@@ -88,13 +88,13 @@ def minimal_surface_from_wires_minimal_like(
 if __name__ == "__main__":
     # 例として2つの円ワイヤを生成
     from OCC.Core.gp import gp_Pnt, gp_Dir, gp_Ax2
-    from OCC.Core.GC import GC_MakeCircle
+    from OCC.Core.GC import GC_MakeCircle, GC_MakeEllipse
     from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire
 
     n = 100
     # 下円
     ax2_1 = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1))
-    circle1 = GC_MakeCircle(ax2_1, 1.0).Value()
+    circle1 = GC_MakeEllipse(ax2_1, 1.0, 0.2).Value()
     edge1 = BRepBuilderAPI_MakeEdge(circle1).Edge()
     wire1 = BRepBuilderAPI_MakeWire(edge1).Wire()
     # 上円（ずらして傾ける例）
