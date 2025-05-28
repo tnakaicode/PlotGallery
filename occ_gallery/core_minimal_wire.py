@@ -128,7 +128,7 @@ if __name__ == "__main__":
     edge1 = BRepBuilderAPI_MakeEdge(circle1).Edge()
     wire1 = BRepBuilderAPI_MakeWire(edge1).Wire()
     # 上円（ずらして傾ける例）
-    ax2_2 = gp_Ax2(gp_Pnt(0.5, 0.5, 2.0), gp_Dir(0.2, 0.2, 1.0))
+    ax2_2 = gp_Ax2(gp_Pnt(0.5, 0.5, 2.0), gp_Dir(0.2, 0.2, 1.0), gp_Dir(0, 1, 0))
     circle2 = GC_MakeCircle(ax2_2, 1.0).Value()
     edge2 = BRepBuilderAPI_MakeEdge(circle2).Edge()
     wire2 = BRepBuilderAPI_MakeWire(edge2).Wire()
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
     # 表示
     display.DisplayShape(wire1, color="red")
-    display.DisplayShape(wire2, color="blue")
+    display.DisplayShape(wire2, color="blue1")
     display.DisplayShape(shell, update=True)
     display.FitAll()
     start_display()
