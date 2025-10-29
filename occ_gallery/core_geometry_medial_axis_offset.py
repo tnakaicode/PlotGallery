@@ -74,7 +74,7 @@ def create_offsets(face, nr_of_counters, distance_between_contours):
     for wi in TopologyExplorer(face).wires():
         offset.AddWire(wi)
 
-    for i in range(nr_of_counters):
+    for i in range(-10, nr_of_counters):
         offset.Perform(-distance_between_contours * i)
         if offset.IsDone():
             yield offset.Shape()
