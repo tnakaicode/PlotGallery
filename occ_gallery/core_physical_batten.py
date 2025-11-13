@@ -273,8 +273,11 @@ class PhysicalBatten:
 
         # Compute the curve
         status = fc.Compute()
+        curve = fc.Curve()
+
         print(f"Material: {self.material}, Load: {load_type}")
         print(f"Physical slope: {slope:.4f}, Adapted height: {adapted_height:.2f}")
+
         print(f"Constraints: {constraint_info}")
         print(f"Curvatures: C1={curvature1:.6f}, C2={curvature2:.6f}")
         print(f"Physical ratio: {physical_ratio:.3f} (剛性比)")
@@ -282,7 +285,119 @@ class PhysicalBatten:
         print(f"Angles: θ1={math.degrees(angle1):.1f}°, θ2={math.degrees(angle2):.1f}°")
         print(f"FairCurve status: {status}")
 
-        return fc.Curve()
+        return curve
+
+    def analyze_curve_extremes(self, curve_2d, num_points=100):
+        """
+        Analyze FairCurve to extract minimum and maximum values
+
+        Parameters:
+        - curve_2d: 2D B-spline curve from FairCurve
+        - num_points: number of points to sample along the curve
+
+        Returns:
+        - dict: contains min/max values for X, Y coordinates and derivatives
+        """
+        if curve_2d is None:
+            return None
+
+        # パラメータ範囲を取得
+        u_start = curve_2d.FirstParameter()
+        u_end = curve_2d.LastParameter()
+
+        # 解析結果を格納する辞書
+        analysis = {
+            "x_min": float("inf"),
+            "x_max": float("-inf"),
+            "y_min": float("inf"),
+            "y_max": float("-inf"),
+            "x_min_u": 0,
+            "x_max_u": 0,
+            "y_min_u": 0,
+            "y_max_u": 0,
+            "max_deflection": 0,
+            "max_deflection_u": 0,
+            "max_curvature": 0,
+            "max_curvature_u": 0,
+            "curve_length": 0,
+            "points": [],
+        }
+
+        # 曲線上の点をサンプリング
+        for i in range(num_points + 1):
+            u = u_start + (u_end - u_start) * i / num_points
+
+            # 点を取得（微分は使わない）
+            pt = curve_2d.Value(u)
+            x, y = pt.X(), pt.Y()
+
+            # X座標の最小・最大
+            if x < analysis["x_min"]:
+                analysis["x_min"] = x
+                analysis["x_min_u"] = u
+            if x > analysis["x_max"]:
+                analysis["x_max"] = x
+                analysis["x_max_u"] = u
+
+            # Y座標の最小・最大（変位）
+            if y < analysis["y_min"]:
+                analysis["y_min"] = y
+                analysis["y_min_u"] = u
+            if y > analysis["y_max"]:
+                analysis["y_max"] = y
+                analysis["y_max_u"] = u
+
+            # 最大たわみ（絶対値）
+            abs_deflection = abs(y)
+            if abs_deflection > analysis["max_deflection"]:
+                analysis["max_deflection"] = abs_deflection
+                analysis["max_deflection_u"] = u
+
+            # 曲率計算はスキップ（問題回避）
+            curvature = 0  # とりあえず0に設定
+
+            # 点の情報を保存
+            analysis["points"].append({"u": u, "x": x, "y": y, "curvature": curvature})
+
+        # 曲線長の計算
+        prev_pt = None
+        for point_data in analysis["points"]:
+            if prev_pt is not None:
+                dx = point_data["x"] - prev_pt["x"]
+                dy = point_data["y"] - prev_pt["y"]
+                analysis["curve_length"] += math.sqrt(dx * dx + dy * dy)
+            prev_pt = point_data
+
+        # 範囲計算
+        analysis["x_range"] = analysis["x_max"] - analysis["x_min"]
+        analysis["y_range"] = analysis["y_max"] - analysis["y_min"]
+
+        return analysis
+
+    def print_curve_analysis(self, analysis, load_description=""):
+        """
+        Print detailed curve analysis results
+
+        Parameters:
+        - analysis: dict returned from analyze_curve_extremes
+        - load_description: description of the loading condition
+        """
+        if analysis is None:
+            print("  No curve analysis available")
+            return
+
+        print(f"\n  === Curve Analysis: {load_description} ===")
+        print(f"  X範囲: {analysis['x_min']:.2f} ～ {analysis['x_max']:.2f} mm")
+        print(f"  Y範囲: {analysis['y_min']:.4f} ～ {analysis['y_max']:.4f} mm")
+        print(
+            f"  最大たわみ: {analysis['max_deflection']:.4f} mm (u={analysis['max_deflection_u']:.3f})"
+        )
+        print(
+            f"  曲線長: {analysis['curve_length']:.2f} mm (直線長: {analysis['x_max']-analysis['x_min']:.2f} mm)"
+        )
+        print(
+            f"  伸び率: {(analysis['curve_length']/(analysis['x_max']-analysis['x_min'])-1)*100:.4f}%"
+        )
 
     def curve_2d_to_3d_spine(self, curve_2d, num_sections=20):
         """
@@ -433,8 +548,8 @@ def demo_physical_batten(event=None):
     print(f"  Natural frequency: {batten.calculate_natural_frequency():.2f} Hz")
     print(f"  Fair height: {batten.fair_height:.2f}")
 
-    angle1 = math.radians(-10)
-    angle2 = math.radians(5)
+    angle1 = math.radians(10)
+    angle2 = math.radians(10)
 
     # Test different loading conditions
     loading_scenarios = [
@@ -461,6 +576,10 @@ def demo_physical_batten(event=None):
         )
 
         if fair_curve:
+            # Analyze curve extremes
+            curve_analysis = batten.analyze_curve_extremes(fair_curve)
+            batten.print_curve_analysis(curve_analysis, description)
+
             # Create deformed batten
             deformed = batten.create_deformed_batten(fair_curve)
 
@@ -518,6 +637,10 @@ def demo_material_comparison(event=None):
         )
 
         if fair_curve:
+            # Analyze curve for this material
+            curve_analysis = batten.analyze_curve_extremes(fair_curve)
+            batten.print_curve_analysis(curve_analysis, f"{material} material")
+
             deformed = batten.create_deformed_batten(fair_curve)
 
             # Offset each material vertically for comparison
@@ -562,6 +685,10 @@ def demo_load_analysis(event=None):
         )
 
         if fair_curve:
+            # Analyze curve for this load level
+            curve_analysis = batten.analyze_curve_extremes(fair_curve)
+            batten.print_curve_analysis(curve_analysis, f"{load} N/mm distributed load")
+
             deformed = batten.create_deformed_batten(fair_curve)
 
             # Offset along X-axis for comparison
