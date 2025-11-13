@@ -46,7 +46,7 @@ display, start_display, add_menu, add_function_to_menu = init_display()
 class PhysicalBatten:
     """Physical batten simulation class"""
 
-    def __init__(self, length=120.0, width=20.0, thickness=2.0):
+    def __init__(self, length=120.0, width=20.0, thickness=2.0, material="steel"):
         """
         Initialize physical batten parameters
 
@@ -54,30 +54,106 @@ class PhysicalBatten:
         - length: batten length (mm)
         - width: batten width (mm)
         - thickness: batten thickness (mm)
+        - material: material type ("steel", "aluminum", "wood", "carbon_fiber")
         """
         self.length = length
         self.width = width
         self.thickness = thickness
+        self.material = material
 
         # Physical material properties
-        self.young_modulus = 200000.0  # Steel: 200 GPa
+        self.young_modulus, self.density = self.get_material_properties(material)
         self.poisson_ratio = 0.3
+
+        # Physical geometry properties
+        self.moment_inertia = self.calculate_moment_inertia()
+        self.bending_rigidity = self.young_modulus * self.moment_inertia
+        self.mass_per_length = self.density * self.width * self.thickness / 1e9  # kg/mm
 
         # FairCurve parameters
         self.fair_height = self.calculate_fair_height()
 
+    def get_material_properties(self, material):
+        """Get material properties (Young's modulus in MPa, density in kg/m³)"""
+        materials = {
+            "steel": (200000.0, 7850.0),
+            "aluminum": (70000.0, 2700.0),
+            "wood": (12000.0, 600.0),
+            "carbon_fiber": (230000.0, 1600.0),
+            "brass": (100000.0, 8500.0),
+            "titanium": (110000.0, 4500.0),
+        }
+        return materials.get(material, materials["steel"])
+
+    def calculate_moment_inertia(self):
+        """Calculate moment of inertia for rectangular cross-section"""
+        return (self.width * self.thickness**3) / 12.0
+
     def calculate_fair_height(self):
         """
         Convert physical thickness to FairCurve height parameter
-        Based on bending rigidity: EI = E * (b*t^3)/12
+        Based on bending rigidity: EI = E * I
         """
-        # Moment of inertia for rectangular cross-section
-        moment_inertia = (self.width * self.thickness**3) / 12.0
-        bending_rigidity = self.young_modulus * moment_inertia
-
         # Normalize to FairCurve scale (empirical scaling)
-        fair_height = math.sqrt(bending_rigidity / 1000000.0)
+        fair_height = math.sqrt(self.bending_rigidity / 1000000.0)
         return max(fair_height, 10.0)  # Minimum value for stability
+
+    def calculate_physical_slope(self, load_type="gravity", applied_load=None):
+        """
+        Calculate physical slope parameter based on loading conditions
+
+        Parameters:
+        - load_type: "gravity", "point_load", "distributed_load", "thermal"
+        - applied_load: applied load magnitude (N or N/mm)
+
+        Returns:
+        - slope: FairCurve slope parameter
+        """
+        if load_type == "gravity":
+            # Self-weight deflection
+            weight_per_length = self.mass_per_length * 9.81  # N/mm
+            # Maximum deflection for simply supported beam under uniform load
+            max_deflection = (5 * weight_per_length * self.length**4) / (
+                384 * self.bending_rigidity
+            )
+            slope = max_deflection / self.length
+
+        elif load_type == "point_load" and applied_load:
+            # Point load at center
+            max_deflection = (applied_load * self.length**3) / (
+                48 * self.bending_rigidity
+            )
+            slope = max_deflection / self.length
+
+        elif load_type == "distributed_load" and applied_load:
+            # Distributed load (N/mm)
+            max_deflection = (5 * applied_load * self.length**4) / (
+                384 * self.bending_rigidity
+            )
+            slope = max_deflection / self.length
+
+        elif load_type == "thermal" and applied_load:
+            # Thermal expansion/contraction
+            # applied_load = temperature change (°C)
+            thermal_expansion = 12e-6  # Steel thermal expansion coefficient
+            thermal_strain = thermal_expansion * applied_load
+            slope = thermal_strain * self.length / 1000.0
+
+        else:
+            # Default minimal slope
+            slope = 0.001
+
+        # Normalize and limit slope for FairCurve stability
+        normalized_slope = slope * 1000.0  # Scale factor
+        return max(min(normalized_slope, 0.8), 0.001)  # Clamp between 0.001 and 0.8
+
+    def calculate_natural_frequency(self):
+        """Calculate first natural frequency of the batten (Hz)"""
+        # First mode natural frequency for simply supported beam
+        freq = (math.pi**2 / (2 * self.length**2)) * math.sqrt(
+            self.bending_rigidity / self.mass_per_length
+        )
+        return freq
 
     def create_original_batten(self):
         """Create the original straight batten as a Box"""
@@ -89,17 +165,25 @@ class PhysicalBatten:
         ).Shape()
         return box
 
-    def calculate_fair_curve(self, angle1=0.0, angle2=0.0, slope=0.0):
+    def calculate_fair_curve(
+        self, angle1=0.0, angle2=0.0, slope=None, load_type="gravity", applied_load=None
+    ):
         """
-        Calculate FairCurve based on end constraints
+        Calculate FairCurve based on end constraints and physical loading
 
         Parameters:
         - angle1: angle at start point (radians)
         - angle2: angle at end point (radians)
-        - slope: global slope parameter
+        - slope: manual slope override, if None uses physical calculation
+        - load_type: type of loading for slope calculation
+        - applied_load: magnitude of applied load
         """
         pt1 = gp_Pnt2d(0.0, 0.0)
         pt2 = gp_Pnt2d(self.length, 0.0)
+
+        # Calculate physical slope if not provided
+        if slope is None:
+            slope = self.calculate_physical_slope(load_type, applied_load)
 
         # Create FairCurve
         fc = FairCurve_MinimalVariation(pt1, pt2, self.fair_height, slope)
@@ -111,6 +195,8 @@ class PhysicalBatten:
 
         # Compute the curve
         status = fc.Compute()
+        print(f"Material: {self.material}, Load: {load_type}")
+        print(f"Physical slope: {slope:.4f}, Fair height: {self.fair_height:.2f}")
         print(f"FairCurve status: {status}")
 
         if fc.Curve() is not None:
@@ -246,85 +332,153 @@ class PhysicalBatten:
 
 
 def demo_physical_batten(event=None):
-    """Demo function showing physical batten bending simulation"""
+    """Demo function showing physical batten bending simulation with different loadings"""
     display.EraseAll()
 
-    # Create batten instance
-    batten = PhysicalBatten(length=120.0, width=15.0, thickness=3.0)
+    # Create batten instance with specific material
+    batten = PhysicalBatten(length=120.0, width=15.0, thickness=3.0, material="steel")
 
     print(f"Batten properties:")
+    print(f"  Material: {batten.material}")
     print(f"  Dimensions: {batten.length} x {batten.width} x {batten.thickness} mm")
+    print(f"  Young's modulus: {batten.young_modulus} MPa")
+    print(f"  Bending rigidity: {batten.bending_rigidity:.2e} N⋅mm²")
+    print(f"  Mass per length: {batten.mass_per_length:.6f} kg/mm")
+    print(f"  Natural frequency: {batten.calculate_natural_frequency():.2f} Hz")
     print(f"  Fair height: {batten.fair_height:.2f}")
 
     # Show original straight batten
     original = batten.create_original_batten()
-    display.DisplayShape(original, color="blue", transparency=0.7)
+    display.DisplayShape(original, color="BLUE1", transparency=0.8)
 
-    # Animate bending with different angles
-    angle_range = np.linspace(-30, 30, 15)  # degrees
+    # Test different loading conditions
+    loading_scenarios = [
+        ("gravity", None, "Self-weight deflection"),
+        ("point_load", 50.0, "50N point load at center"),
+        ("distributed_load", 0.5, "0.5 N/mm distributed load"),
+        ("thermal", 100.0, "100°C temperature rise"),
+    ]
 
-    for i, angle_deg in enumerate(angle_range):
-        angle_rad = math.radians(angle_deg)
-        slope = 0.1 + i * 0.02  # gradually increase slope
+    angle1 = math.radians(10)
+    angle2 = math.radians(-15)
 
-        # Calculate fair curve
+    colors = ["RED", "GREEN", "ORANGE", "PURPLE"]
+
+    for i, (load_type, load_value, description) in enumerate(loading_scenarios):
+        print(f"\n--- {description} ---")
+
+        # Calculate fair curve with physical loading
         fair_curve = batten.calculate_fair_curve(
-            angle1=angle_rad, angle2=-angle_rad * 0.7, slope=slope  # asymmetric bending
+            angle1=angle1, angle2=angle2, load_type=load_type, applied_load=load_value
         )
 
         if fair_curve:
             # Create deformed batten
             deformed = batten.create_deformed_batten(fair_curve)
 
-            # Display with color indicating deformation level
-            color_intensity = abs(angle_deg) / 30.0
-            red_component = int(255 * color_intensity)
-            color = f"rgb({red_component}, {100}, {255 - red_component})"
+            # Offset each scenario for comparison
+            transform = gp_Trsf()
+            transform.SetTranslation(gp_Vec(0, i * 30, 0))
+            transformed = BRepBuilderAPI_Transform(deformed, transform).Shape()
 
-            display.EraseAll()
-            display.DisplayShape(original, color="lightblue", transparency=0.8)
-            display.DisplayShape(deformed, color="red", transparency=0.3)
+            display.DisplayShape(transformed, color=colors[i], transparency=0.4)
 
             # Display 2D curve for reference
-            pl = Geom_Plane(gp_Pln(gp_Pnt(0, 0, -10), gp_Dir(0, 0, 1)))
+            pl = Geom_Plane(gp_Pln(gp_Pnt(0, i * 30, -10), gp_Dir(0, 0, 1)))
             curve_edge = BRepBuilderAPI_MakeEdge(fair_curve, pl).Edge()
-            display.DisplayShape(curve_edge, color="green")
+            display.DisplayShape(curve_edge, color=colors[i])
 
-            print(f"Angle: {angle_deg:.1f}°, Slope: {slope:.3f}")
-            time.sleep(0.5)
-
-    print("Physical batten simulation completed!")
+    display.FitAll()
+    print("\nPhysical batten simulation completed!")
 
 
 def demo_material_comparison(event=None):
-    """Compare different material thicknesses"""
+    """Compare different materials under same loading"""
     display.EraseAll()
 
-    thicknesses = [1.0, 2.0, 4.0, 8.0]  # mm
-    colors = ["red", "orange", "yellow", "green"]
+    materials = ["steel", "aluminum", "wood", "carbon_fiber"]
+    colors = ["GRAY", "LIGHTBLUE", "BROWN", "BLACK"]
 
-    angle = math.radians(20)  # 20 degree bend
+    angle = math.radians(15)
+    load_type = "distributed_load"
+    applied_load = 1.0  # N/mm
 
-    for i, thickness in enumerate(thicknesses):
-        batten = PhysicalBatten(length=120.0, width=15.0, thickness=thickness)
+    print("Material comparison under 1.0 N/mm distributed load:")
+    print("-" * 60)
 
-        # Calculate bending with same angle
+    for i, material in enumerate(materials):
+        batten = PhysicalBatten(
+            length=120.0, width=15.0, thickness=3.0, material=material
+        )
+
+        print(f"\n{material.upper()}:")
+        print(f"  Young's modulus: {batten.young_modulus} MPa")
+        print(f"  Density: {batten.density} kg/m³")
+        print(f"  Bending rigidity: {batten.bending_rigidity:.2e} N⋅mm²")
+        print(f"  Natural frequency: {batten.calculate_natural_frequency():.2f} Hz")
+
+        # Calculate bending with physical loading
         fair_curve = batten.calculate_fair_curve(
-            angle1=angle, angle2=-angle * 0.5, slope=0.1
+            angle1=angle,
+            angle2=-angle * 0.7,
+            load_type=load_type,
+            applied_load=applied_load,
         )
 
         if fair_curve:
             deformed = batten.create_deformed_batten(fair_curve)
 
-            # Offset each batten vertically for comparison
+            # Offset each material vertically for comparison
             transform = gp_Trsf()
-            transform.SetTranslation(gp_Vec(0, 0, i * 20))
+            transform.SetTranslation(gp_Vec(0, 0, i * 25))
+            transformed = BRepBuilderAPI_Transform(deformed, transform).Shape()
+
+            display.DisplayShape(transformed, color=colors[i], transparency=0.6)
+
+    display.FitAll()
+    print("\nMaterial comparison completed!")
+
+
+def demo_load_analysis(event=None):
+    """Analyze different load magnitudes"""
+    display.EraseAll()
+
+    batten = PhysicalBatten(
+        length=120.0, width=15.0, thickness=2.0, material="aluminum"
+    )
+
+    # Test different load magnitudes
+    loads = [0.1, 0.5, 1.0, 2.0, 5.0]  # N/mm
+    colors = ["LIGHTGREEN", "YELLOW", "ORANGE", "RED", "DARKRED"]
+
+    angle1 = math.radians(5)
+    angle2 = math.radians(-5)
+
+    print("Load analysis - Distributed load effect:")
+    print("-" * 40)
+
+    for i, load in enumerate(loads):
+        print(f"\nLoad: {load} N/mm")
+
+        fair_curve = batten.calculate_fair_curve(
+            angle1=angle1,
+            angle2=angle2,
+            load_type="distributed_load",
+            applied_load=load,
+        )
+
+        if fair_curve:
+            deformed = batten.create_deformed_batten(fair_curve)
+
+            # Offset along X-axis for comparison
+            transform = gp_Trsf()
+            transform.SetTranslation(gp_Vec(i * 140, 0, 0))
             transformed = BRepBuilderAPI_Transform(deformed, transform).Shape()
 
             display.DisplayShape(transformed, color=colors[i], transparency=0.5)
-            print(f"Thickness {thickness}mm: Fair height = {batten.fair_height:.2f}")
 
-    print("Material comparison completed!")
+    display.FitAll()
+    print("\nLoad analysis completed!")
 
 
 def exit_demo(event=None):
@@ -336,5 +490,6 @@ if __name__ == "__main__":
     add_menu("Physical Batten")
     add_function_to_menu("Physical Batten", demo_physical_batten)
     add_function_to_menu("Physical Batten", demo_material_comparison)
+    add_function_to_menu("Physical Batten", demo_load_analysis)
     add_function_to_menu("Physical Batten", exit_demo)
     start_display()
