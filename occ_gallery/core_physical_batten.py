@@ -252,37 +252,37 @@ class PhysicalBatten:
         fc.SetAngle2(angle2)
         fc.SetFreeSliding(True)
 
+        # 端点での曲率設定（物理的に意味のある値）
+        curvature1 = slope / (self.length * 0.25)  # 入力端曲率
+        curvature2 = -slope / (self.length * 0.25)  # 出力端曲率（反対方向）
+        fc.SetCurvature1(curvature1)
+        fc.SetCurvature2(curvature2)
+
+        # 物理比率設定（材料の柔軟性を表現）
+        # 高い値 = より剛い, 低い値 = より柔らかい
+        # SetPhysicalRatioは厳しい範囲制限があるため、より安全な範囲を使用
+        physical_ratio = self.bending_rigidity / 10000000.0  # より小さなスケール
+        physical_ratio = max(0.01, min(physical_ratio, 1.0))  # 安全な範囲に制限
+
+        fc.SetPhysicalRatio(physical_ratio)
+
+        # 滑動係数設定（変形の滑らかさ）
+        sliding_factor = 1.0 + slope  # 変形量に応じて調整
+        sliding_factor = max(0.5, min(sliding_factor, 3.0))  # 範囲制限
+        fc.SetSlidingFactor(sliding_factor)
+
         # Compute the curve
         status = fc.Compute()
         print(f"Material: {self.material}, Load: {load_type}")
         print(f"Physical slope: {slope:.4f}, Adapted height: {adapted_height:.2f}")
         print(f"Constraints: {constraint_info}")
+        print(f"Curvatures: C1={curvature1:.6f}, C2={curvature2:.6f}")
+        print(f"Physical ratio: {physical_ratio:.3f} (剛性比)")
+        print(f"Sliding factor: {sliding_factor:.3f} (滑らかさ)")
+        print(f"Angles: θ1={math.degrees(angle1):.1f}°, θ2={math.degrees(angle2):.1f}°")
         print(f"FairCurve status: {status}")
 
-        if fc.Curve() is not None:
-            return fc.Curve()
-        else:
-            print("  FairCurve failed - trying with reduced slope")
-            # Fallback: try with reduced slope
-            fallback_slope = slope * 0.5
-            fc_fallback = FairCurve_MinimalVariation(
-                pt1, pt2, adapted_height * 1.5, fallback_slope
-            )
-            fc_fallback.SetConstraintOrder1(1)
-            fc_fallback.SetConstraintOrder2(1)
-            fc_fallback.SetAngle1(angle1 * 0.8)  # Reduce angles too
-            fc_fallback.SetAngle2(angle2 * 0.8)
-            fc_fallback.SetFreeSliding(True)
-
-            fallback_status = fc_fallback.Compute()
-            print(
-                f"  Fallback attempt with slope {fallback_slope:.4f}: {fallback_status}"
-            )
-
-            if fc_fallback.Curve() is not None:
-                return fc_fallback.Curve()
-
-        return None
+        return fc.Curve()
 
     def curve_2d_to_3d_spine(self, curve_2d, num_sections=20):
         """
