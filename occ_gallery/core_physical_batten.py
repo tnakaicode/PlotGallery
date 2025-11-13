@@ -417,7 +417,12 @@ def demo_physical_batten(event=None):
     display.EraseAll()
 
     # Create batten instance with specific material
-    batten = PhysicalBatten(length=120.0, width=15.0, thickness=3.0, material="steel")
+    length = 120.0
+    width = 15.0
+    thikness = 3.0
+    batten = PhysicalBatten(
+        length=length, width=width, thickness=thikness, material="steel"
+    )
 
     print(f"Batten properties:")
     print(f"  Material: {batten.material}")
@@ -428,21 +433,23 @@ def demo_physical_batten(event=None):
     print(f"  Natural frequency: {batten.calculate_natural_frequency():.2f} Hz")
     print(f"  Fair height: {batten.fair_height:.2f}")
 
-    # Show original straight batten
-    original = batten.create_original_batten()
-    display.DisplayShape(original, color="BLUE1", transparency=0.8)
+    angle1 = math.radians(-10)
+    angle2 = math.radians(5)
 
     # Test different loading conditions
     loading_scenarios = [
         ("gravity", None, "Self-weight deflection"),
         ("thermal", 100.0, "100°C temperature rise"),
+        ("thermal", 500.0, "500°C extreme thermal load (slope>0.05)"),
         ("point_load", 50.0, "50N point load at center"),
+        ("point_load", 200.0, "200N large point load (slope>0.05)"),
         ("distributed_load", 0.5, "0.5 N/mm distributed load"),
+        ("distributed_load", 2.0, "2.0 N/mm large distributed load (slope>0.05)"),
     ]
 
-    angle1 = math.radians(10)
-    angle2 = math.radians(10)
-
+    # Show original straight batten
+    original = batten.create_original_batten()
+    display.DisplayShape(original, color="BLUE1", transparency=0.8)
     colors = ["RED", "GREEN", "YELLOW", "BLACK"]
 
     for i, (load_type, load_value, description) in enumerate(loading_scenarios):
@@ -459,15 +466,19 @@ def demo_physical_batten(event=None):
 
             # Offset each scenario for comparison
             transform = gp_Trsf()
-            transform.SetTranslation(gp_Vec(0, 0, i * 30))
+            transform.SetTranslation(
+                gp_Vec(0, 0, i * 25)
+            )  # 間隔を狭めて全ケースが見やすく
             transformed = BRepBuilderAPI_Transform(deformed, transform).Shape()
 
-            display.DisplayShape(transformed, color=colors[i], transparency=0.4)
+            # 色をリング（循環）使用
+            color = colors[i % len(colors)]
+            display.DisplayShape(transformed, color=color, transparency=0.4)
 
             # Display 2D curve for reference
-            pl = Geom_Plane(gp_Pln(gp_Pnt(0, -10, i * 30), gp_Dir(0, 0, 1)))
+            pl = Geom_Plane(gp_Pln(gp_Pnt(0, -10, i * 25), gp_Dir(0, 0, 1)))
             curve_edge = BRepBuilderAPI_MakeEdge(fair_curve, pl).Edge()
-            display.DisplayShape(curve_edge, color=colors[i])
+            display.DisplayShape(curve_edge, color=color)
 
     display.FitAll()
     print("\nPhysical batten simulation completed!")
@@ -514,7 +525,9 @@ def demo_material_comparison(event=None):
             transform.SetTranslation(gp_Vec(0, 0, i * 25))
             transformed = BRepBuilderAPI_Transform(deformed, transform).Shape()
 
-            display.DisplayShape(transformed, color=colors[i], transparency=0.6)
+            # 色を循環使用
+            color = colors[i % len(colors)]
+            display.DisplayShape(transformed, color=color, transparency=0.6)
 
     display.FitAll()
     print("\nMaterial comparison completed!")
@@ -556,7 +569,9 @@ def demo_load_analysis(event=None):
             transform.SetTranslation(gp_Vec(i * 140, 0, 0))
             transformed = BRepBuilderAPI_Transform(deformed, transform).Shape()
 
-            display.DisplayShape(transformed, color=colors[i], transparency=0.5)
+            # 色を循環使用
+            color = colors[i % len(colors)]
+            display.DisplayShape(transformed, color=color, transparency=0.5)
 
     display.FitAll()
     print("\nLoad analysis completed!")
