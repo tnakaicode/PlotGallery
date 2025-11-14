@@ -503,41 +503,42 @@ def demo_cantilever_optimization(event=None):
     
     print("=== Cantilever Beam I-Beam Optimization ===")
     
-    morphing = AdvancedFairCurveMorphing(length=200.0, material="aluminum")
+    morphing = AdvancedFairCurveMorphing(length=180.0, material="aluminum")
     
     # Calculate optimized fair curve for cantilever
     curve_2d = morphing.calculate_optimized_fair_curve("cantilever_beam")
     
     if curve_2d:
-        # I-beam section configuration
+        # I-beam section configuration with better dimensions
         section_config = {
             "type": "I_beam",
             "params": {
-                "flange_width": 40.0,
-                "height": 50.0,
-                "flange_thickness": 8.0,
-                "web_thickness": 6.0
+                "flange_width": 25.0,
+                "height": 30.0,
+                "flange_thickness": 4.0,
+                "web_thickness": 3.0
             },
             "morphing_mode": "cantilever_optimization"
         }
         
         # Create morphing sections
-        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 30)
+        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 20)
         
         # Create solid
         solid = morphing.create_morphing_solid(sections)
         
         if solid:
-            display.DisplayShape(solid, color="GOLD", transparency=0.3)
+            display.DisplayShape(solid, transparency=0.2)
             
-            # Display some representative sections
-            for i in range(0, len(sections), 5):
-                display.DisplayShape(sections[i], color="RED")
+            # Display key sections
+            for i in [0, len(sections)//3, 2*len(sections)//3, -1]:
+                if i < len(sections):
+                    display.DisplayShape(sections[i], color="RED")
         
         # Display the curve
-        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -30, 0), gp_Dir(0, 0, 1)))
+        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -40, 0), gp_Dir(0, 0, 1)))
         curve_edge = BRepBuilderAPI_MakeEdge(curve_2d, pl).Edge()
-        display.DisplayShape(curve_edge, color="BLUE")
+        display.DisplayShape(curve_edge, color="BLUE1")
     
     display.FitAll()
 
@@ -545,37 +546,37 @@ def demo_cantilever_optimization(event=None):
 def demo_arch_bridge_optimization(event=None):
     """Demo: Arch bridge with hollow rectangular optimization"""
     
-    print("=== Arch Bridge Hollow Rectangular Optimization ===")
+    print("=== Arch Bridge Rectangular Optimization ===")
     
-    morphing = AdvancedFairCurveMorphing(length=300.0, material="steel")
+    morphing = AdvancedFairCurveMorphing(length=220.0, material="steel")
     
     # Calculate arch bridge curve
     curve_2d = morphing.calculate_optimized_fair_curve("arch_bridge")
     
     if curve_2d:
-        # Hollow rectangular section
+        # Rectangular section (simpler than hollow)
         section_config = {
-            "type": "hollow_rect",
+            "type": "rectangle",
             "params": {
-                "outer_width": 60.0,
-                "outer_height": 40.0,
-                "wall_thickness": 8.0
+                "width": 25.0,
+                "height": 15.0
             },
             "morphing_mode": "structural_optimization"
         }
         
-        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 35)
+        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 22)
         solid = morphing.create_morphing_solid(sections)
         
         if solid:
-            display.DisplayShape(solid, color="DARKGREEN", transparency=0.4)
+            display.DisplayShape(solid, transparency=0.2)
             
-            # Show sections at quarter points
+            # Show sections at key points
             for i in [0, len(sections)//4, len(sections)//2, 3*len(sections)//4, -1]:
-                display.DisplayShape(sections[i], color="YELLOW")
+                if i < len(sections):
+                    display.DisplayShape(sections[i], color="YELLOW")
         
         # Display curve
-        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -40, 0), gp_Dir(0, 0, 1)))
+        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -30, 0), gp_Dir(0, 0, 1)))
         curve_edge = BRepBuilderAPI_MakeEdge(curve_2d, pl).Edge()
         display.DisplayShape(curve_edge, color="BLACK")
     
@@ -587,7 +588,7 @@ def demo_turbine_blade_optimization(event=None):
     
     print("=== Turbine Blade Aerodynamic Optimization ===")
     
-    morphing = AdvancedFairCurveMorphing(length=250.0, material="titanium")
+    morphing = AdvancedFairCurveMorphing(length=160.0, material="titanium")
     
     # Calculate turbine blade curve
     curve_2d = morphing.calculate_optimized_fair_curve("turbine_blade")
@@ -597,26 +598,27 @@ def demo_turbine_blade_optimization(event=None):
         section_config = {
             "type": "ellipse",
             "params": {
-                "radius_major": 25.0,
-                "radius_minor": 12.0
+                "radius_major": 15.0,
+                "radius_minor": 6.0
             },
             "morphing_mode": "aerodynamic_optimization"
         }
         
-        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 40)
+        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 18)
         solid = morphing.create_morphing_solid(sections)
         
         if solid:
-            display.DisplayShape(solid, color="PURPLE", transparency=0.2)
+            display.DisplayShape(solid, transparency=0.1)
             
-            # Show every 8th section
-            for i in range(0, len(sections), 8):
-                display.DisplayShape(sections[i], color="CYAN")
+            # Show key sections
+            for i in range(0, len(sections), 4):
+                if i < len(sections):
+                    display.DisplayShape(sections[i])
         
         # Display curve
         pl = Geom_Plane(gp_Pln(gp_Pnt(0, -20, 0), gp_Dir(0, 0, 1)))
         curve_edge = BRepBuilderAPI_MakeEdge(curve_2d, pl).Edge()
-        display.DisplayShape(curve_edge, color="MAGENTA")
+        display.DisplayShape(curve_edge)
     
     display.FitAll()
 
@@ -626,46 +628,45 @@ def demo_multi_section_comparison(event=None):
     
     print("=== Multi-Section Type Comparison ===")
     
-    morphing = AdvancedFairCurveMorphing(length=180.0, material="carbon_fiber")
+    morphing = AdvancedFairCurveMorphing(length=140.0, material="carbon_fiber")
     
     # Base curve
     curve_2d = morphing.calculate_optimized_fair_curve("simply_supported")
     
     if curve_2d:
         section_types = [
-            ("rectangle", {"width": 25.0, "height": 15.0}),
-            ("ellipse", {"radius_major": 18.0, "radius_minor": 10.0}),
-            ("T_beam", {"flange_width": 30.0, "height": 25.0, "flange_thickness": 4.0, "web_thickness": 3.0})
+            ("rectangle", {"width": 18.0, "height": 10.0}, None),
+            ("ellipse", {"radius_major": 12.0, "radius_minor": 6.0}, "BLUE1"),
+            ("T_beam", {"flange_width": 16.0, "height": 14.0, "flange_thickness": 2.5, "web_thickness": 2.0}, "GREEN")
         ]
         
-        colors = ["ORANGE", "LIGHTBLUE", "LIGHTGREEN"]
-        
-        for i, (section_type, params) in enumerate(section_types):
+        for i, (section_type, params, color) in enumerate(section_types):
             section_config = {
                 "type": section_type,
                 "params": params,
                 "morphing_mode": "structural_optimization"
             }
             
-            sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 25)
+            sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 15)
             solid = morphing.create_morphing_solid(sections)
             
             if solid:
                 # Offset each type
                 transform = gp_Trsf()
-                transform.SetTranslation(gp_Vec(0, i * 80, 0))
+                transform.SetTranslation(gp_Vec(0, i * 50, 0))
                 transformed = BRepBuilderAPI_Transform(solid, transform).Shape()
                 
-                display.DisplayShape(transformed, color=colors[i], transparency=0.3)
+                display.DisplayShape(transformed, color=color, transparency=0.3)
                 
-                # Show first and last sections
-                if len(sections) > 1:
-                    for j in [0, -1]:
-                        sect_transform = BRepBuilderAPI_Transform(sections[j], transform).Shape()
-                        display.DisplayShape(sect_transform, color=colors[i])
+                # Show end sections
+                if len(sections) > 2:
+                    for j in [0, len(sections)//2, -1]:
+                        if j < len(sections):
+                            sect_transform = BRepBuilderAPI_Transform(sections[j], transform).Shape()
+                            display.DisplayShape(sect_transform, color=color)
         
         # Display base curve
-        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -30, 0), gp_Dir(0, 0, 1)))
+        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -20, 0), gp_Dir(0, 0, 1)))
         curve_edge = BRepBuilderAPI_MakeEdge(curve_2d, pl).Edge()
         display.DisplayShape(curve_edge, color="BLACK")
     
@@ -677,12 +678,12 @@ def demo_thermal_adaptation(event=None):
     
     print("=== Thermal Expansion Adaptive Morphing ===")
     
-    morphing = AdvancedFairCurveMorphing(length=160.0, material="steel")
+    morphing = AdvancedFairCurveMorphing(length=120.0, material="steel")
     
     # Create curves at different "temperatures"
     temperature_conditions = [
-        ("20°C", "simply_supported", "BLUE"),
-        ("200°C", "cantilever_beam", "ORANGE"), 
+        ("20°C", "simply_supported", "BLUE1"),
+        ("200°C", "cantilever_beam", None), 
         ("500°C", "arch_bridge", "RED")
     ]
     
@@ -691,25 +692,71 @@ def demo_thermal_adaptation(event=None):
         
         if curve_2d:
             section_config = {
-                "type": "hollow_rect",
+                "type": "rectangle",
                 "params": {
-                    "outer_width": 20.0 + i * 5,  # Thermal expansion
-                    "outer_height": 12.0 + i * 3,
-                    "wall_thickness": 3.0 + i * 1
+                    "width": 15.0 + i * 3,  # Thermal expansion
+                    "height": 10.0 + i * 2
                 },
                 "morphing_mode": "thermal_adaptation"
             }
             
-            sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 20)
+            sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 12)
             solid = morphing.create_morphing_solid(sections)
             
             if solid:
                 transform = gp_Trsf()
-                transform.SetTranslation(gp_Vec(0, 0, i * 50))
+                transform.SetTranslation(gp_Vec(0, 0, i * 35))
                 transformed = BRepBuilderAPI_Transform(solid, transform).Shape()
                 
-                display.DisplayShape(transformed, color=color, transparency=0.4)
+                display.DisplayShape(transformed, color=color, transparency=0.3)
+                
+                # Show key sections
+                if len(sections) > 4:
+                    for j in [0, len(sections)//2, -1]:
+                        sect_transform = BRepBuilderAPI_Transform(sections[j], transform).Shape()
+                        display.DisplayShape(sect_transform, color=color)
+                        
                 print(f"Generated thermal condition: {temp}")
+    
+    display.FitAll()
+
+
+def demo_simple_clear_display(event=None):
+    """Demo: Simple clear display with one structure"""
+    
+    print("\n=== Simple Clear Display ===")
+    
+    morphing = AdvancedFairCurveMorphing(length=100.0, material="steel")
+    curve_2d = morphing.calculate_optimized_fair_curve("cantilever_beam")
+    
+    if curve_2d:
+        section_config = {
+            "type": "rectangle",
+            "params": {
+                "width": 15.0,
+                "height": 8.0
+            },
+            "morphing_mode": "cantilever_optimization"
+        }
+        
+        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 10)
+        solid = morphing.create_morphing_solid(sections)
+        
+        if solid:
+            display.DisplayShape(solid, transparency=0.1)
+            print("✅ Solid created and displayed successfully!")
+            
+            # Show all sections clearly
+            for i, section in enumerate(sections):
+                if i % 2 == 0:  # Every other section
+                    display.DisplayShape(section, color="RED")
+        
+        # Display curve
+        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -20, 0), gp_Dir(0, 0, 1)))
+        curve_edge = BRepBuilderAPI_MakeEdge(curve_2d, pl).Edge()
+        display.DisplayShape(curve_edge, color="BLUE1")
+        
+        print(f"Displayed {len(sections)} sections along FairCurve")
     
     display.FitAll()
 
@@ -721,10 +768,10 @@ def exit_demo(event=None):
 
 if __name__ == "__main__":
     add_menu("Advanced FairCurve Morphing")
-    
-    demo_cantilever_optimization()
     demo_arch_bridge_optimization()
-    demo_turbine_blade_optimization()
+    demo_cantilever_optimization()
     demo_multi_section_comparison()
+    demo_simple_clear_display()
     demo_thermal_adaptation()
+    demo_turbine_blade_optimization()
     start_display()
