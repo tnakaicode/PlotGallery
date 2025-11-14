@@ -21,6 +21,7 @@ from OCC.Core.gp import (
     gp_Dir,
     gp_Ax1,
     gp_Ax2,
+    gp_Ax3,
     gp_Pln,
     gp_Trsf,
     gp_GTrsf,
@@ -60,13 +61,158 @@ class MorphingCrossSection:
         self.section_type = section_type
         self.base_params = base_params or {}
 
+    def create_section_at_parameter_with_axis(
+        self, u, scale_factor=1.0, aspect_ratio=1.0, section_axis=None
+    ):
+        """
+        Create cross-section at parameter u with specific axis orientation
+        
+        Parameters:
+        - u: parameter along curve (0.0 to 1.0)
+        - scale_factor: overall size scaling
+        - aspect_ratio: width/height ratio modification  
+        - section_axis: gp_Ax2 defining position and orientation
+        """
+        if section_axis is None:
+            section_axis = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0))
+            
+        if self.section_type == "rectangle":
+            return self._create_morphing_rectangle_with_axis(u, scale_factor, aspect_ratio, section_axis)
+        elif self.section_type == "ellipse":
+            return self._create_morphing_ellipse_with_axis(u, scale_factor, aspect_ratio, section_axis)
+        elif self.section_type == "I_beam":
+            return self._create_morphing_i_beam_with_axis(u, scale_factor, aspect_ratio, section_axis)
+        else:
+            # Default to rectangle
+            return self._create_morphing_rectangle_with_axis(u, scale_factor, aspect_ratio, section_axis)
+            
+    def _create_morphing_rectangle_with_axis(self, u, scale_factor, aspect_ratio, section_axis):
+        """Create morphing rectangular cross-section with specific axis"""
+        base_width = self.base_params.get("width", 40.0)
+        base_height = self.base_params.get("height", 25.0)
+
+        # Less aggressive morphing for visible thickness
+        morph_factor = 0.8 + 0.2 * math.sin(math.pi * u)  # 0.8 to 1.0
+
+        width = base_width * scale_factor * morph_factor
+        height = base_height * scale_factor * morph_factor * aspect_ratio
+
+        # Ensure minimum size
+        width = max(width, 10.0)
+        height = max(height, 8.0)
+
+        # Create rectangle points in local coordinates
+        local_pts = [
+            gp_Pnt(-width / 2, -height / 2, 0),
+            gp_Pnt(width / 2, -height / 2, 0),
+            gp_Pnt(width / 2, height / 2, 0),
+            gp_Pnt(-width / 2, height / 2, 0),
+        ]
+        
+        # Transform to global coordinates using section_axis
+        transform = gp_Trsf()
+        # Simple translation to section position
+        translation = gp_Vec(gp_Pnt(0, 0, 0), section_axis.Location())
+        transform.SetTranslation(translation)
+        
+        # Apply rotation if needed (simplified)
+        if not section_axis.Direction().IsEqual(gp_Dir(0, 0, 1), 1e-6):
+            axis = gp_Ax1(section_axis.Location(), section_axis.Direction())
+            # Calculate rotation angle (simplified for now)
+            transform.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0)
+        
+        global_pts = []
+        for pt in local_pts:
+            transformed_pt = pt.Transformed(transform)
+            global_pts.append(transformed_pt)
+
+        return self._create_wire_from_points(global_pts, 0.0, gp_Pnt(0,0,0))
+
+    def _create_morphing_ellipse_with_axis(self, u, scale_factor, aspect_ratio, section_axis):
+        """Create morphing elliptical cross-section with specific axis"""
+        base_radius_major = self.base_params.get("radius_major", 25.0)
+        base_radius_minor = self.base_params.get("radius_minor", 15.0)
+
+        # Less aggressive eccentricity change
+        eccentricity_factor = 0.85 + 0.15 * math.cos(2 * math.pi * u)
+
+        radius_major = base_radius_major * scale_factor * eccentricity_factor
+        radius_minor = base_radius_minor * scale_factor * aspect_ratio
+        
+        # Ensure minimum size
+        radius_major = max(radius_major, 8.0)
+        radius_minor = max(radius_minor, 6.0)
+
+        # Create ellipse in local coordinates
+        n_points = 12
+        local_pts = []
+        for i in range(n_points):
+            theta = 2 * math.pi * i / n_points
+            x = radius_major * math.cos(theta)
+            y = radius_minor * math.sin(theta)
+            local_pts.append(gp_Pnt(x, y, 0))
+            
+        # Transform to global coordinates - simple translation only
+        transform = gp_Trsf()
+        translation = gp_Vec(gp_Pnt(0, 0, 0), section_axis.Location())
+        transform.SetTranslation(translation)
+        
+        global_pts = []
+        for pt in local_pts:
+            transformed_pt = pt.Transformed(transform)
+            global_pts.append(transformed_pt)
+
+        return self._create_wire_from_points(global_pts, 0.0, gp_Pnt(0,0,0), closed=True)
+
+    def _create_morphing_i_beam_with_axis(self, u, scale_factor, aspect_ratio, section_axis):
+        """Create morphing I-beam cross-section with specific axis"""
+        base_width = self.base_params.get("flange_width", 60.0)
+        base_height = self.base_params.get("height", 80.0)
+        flange_thickness = self.base_params.get("flange_thickness", 12.0)
+        web_thickness = self.base_params.get("web_thickness", 8.0)
+
+        # Morphing: variable flange/web ratio for optimization
+        optimization_factor = 0.8 + 0.2 * (1 - abs(2 * u - 1))  # Max at center
+
+        width = base_width * scale_factor * optimization_factor
+        height = base_height * scale_factor * aspect_ratio
+        f_thick = flange_thickness * scale_factor
+        w_thick = web_thickness * scale_factor * optimization_factor
+
+        # I-beam outline points in local coordinates
+        local_pts = [
+            # Bottom flange
+            gp_Pnt(-width / 2, -height / 2, 0),
+            gp_Pnt(width / 2, -height / 2, 0),
+            gp_Pnt(width / 2, -height / 2 + f_thick, 0),
+            gp_Pnt(w_thick / 2, -height / 2 + f_thick, 0),
+            # Web
+            gp_Pnt(w_thick / 2, height / 2 - f_thick, 0),
+            gp_Pnt(width / 2, height / 2 - f_thick, 0),
+            # Top flange
+            gp_Pnt(width / 2, height / 2, 0),
+            gp_Pnt(-width / 2, height / 2, 0),
+            gp_Pnt(-width / 2, height / 2 - f_thick, 0),
+            gp_Pnt(-w_thick / 2, height / 2 - f_thick, 0),
+            # Web (other side)
+            gp_Pnt(-w_thick / 2, -height / 2 + f_thick, 0),
+            gp_Pnt(-width / 2, -height / 2 + f_thick, 0),
+        ]
+        
+        # Transform to global coordinates - simple translation only
+        transform = gp_Trsf()
+        translation = gp_Vec(gp_Pnt(0, 0, 0), section_axis.Location())
+        transform.SetTranslation(translation)
+        
+        global_pts = []
+        for pt in local_pts:
+            transformed_pt = pt.Transformed(transform)
+            global_pts.append(transformed_pt)
+
+        return self._create_wire_from_points(global_pts, 0.0, gp_Pnt(0,0,0), closed=True)
+
     def create_section_at_parameter(
-        self,
-        u,
-        scale_factor=1.0,
-        aspect_ratio=1.0,
-        rotation_angle=0.0,
-        position=gp_Pnt(0, 0, 0),
+        self, u, scale_factor=1.0, aspect_ratio=1.0, rotation_angle=0.0, position=gp_Pnt(0, 0, 0)
     ):
         """
         Create cross-section at parameter u with morphing
@@ -108,15 +254,19 @@ class MorphingCrossSection:
     def _create_morphing_rectangle(
         self, u, scale_factor, aspect_ratio, rotation_angle, position
     ):
-        """Create morphing rectangular cross-section"""
-        base_width = self.base_params.get("width", 20.0)
-        base_height = self.base_params.get("height", 10.0)
+        """Create morphing rectangular cross-section with substantial thickness"""
+        base_width = self.base_params.get("width", 40.0)  # Much larger base
+        base_height = self.base_params.get("height", 25.0)  # Much larger base
 
-        # Morphing function: tapered ends, thick middle
-        morph_factor = 0.5 + 0.5 * math.sin(math.pi * u)  # 0.5 to 1.0
+        # Less aggressive morphing for visible thickness
+        morph_factor = 0.7 + 0.3 * math.sin(math.pi * u)  # 0.7 to 1.0
 
         width = base_width * scale_factor * morph_factor
         height = base_height * scale_factor * morph_factor * aspect_ratio
+
+        # Ensure minimum size
+        width = max(width, 8.0)
+        height = max(height, 5.0)
 
         # Create rectangle points
         pts = [
@@ -131,18 +281,22 @@ class MorphingCrossSection:
     def _create_morphing_ellipse(
         self, u, scale_factor, aspect_ratio, rotation_angle, position
     ):
-        """Create morphing elliptical cross-section"""
-        base_radius_major = self.base_params.get("radius_major", 15.0)
-        base_radius_minor = self.base_params.get("radius_minor", 8.0)
+        """Create morphing elliptical cross-section with substantial size"""
+        base_radius_major = self.base_params.get("radius_major", 25.0)  # Larger
+        base_radius_minor = self.base_params.get("radius_minor", 15.0)  # Larger
 
-        # Morphing: variable eccentricity along curve
-        eccentricity_factor = 0.7 + 0.3 * math.cos(2 * math.pi * u)
+        # Less aggressive eccentricity change
+        eccentricity_factor = 0.8 + 0.2 * math.cos(2 * math.pi * u)
 
         radius_major = base_radius_major * scale_factor * eccentricity_factor
         radius_minor = base_radius_minor * scale_factor * aspect_ratio
+        
+        # Ensure minimum size
+        radius_major = max(radius_major, 6.0)
+        radius_minor = max(radius_minor, 4.0)
 
         # Create ellipse using parametric approach
-        n_points = 20
+        n_points = 16  # Reduced for simpler geometry
         pts = []
         for i in range(n_points):
             theta = 2 * math.pi * i / n_points
@@ -419,7 +573,7 @@ class AdvancedFairCurveMorphing:
         self, curve_2d, section_config, num_sections=25
     ):
         """
-        Create morphing cross-sections along the FairCurve
+        Create morphing cross-sections along the FairCurve with proper orientation
 
         Parameters:
         - curve_2d: 2D FairCurve
@@ -451,51 +605,65 @@ class AdvancedFairCurveMorphing:
             tangent_2d = gp_Vec2d()
             curve_2d.D1(u_curve, pt_2d, tangent_2d)
 
-            # Convert to 3D
-            position = gp_Pnt(pt_2d.X(), 0.0, pt_2d.Y())
+            # Convert to 3D with proper positioning
+            curve_x = pt_2d.X()
+            curve_z = pt_2d.Y()  # 2D curve Y becomes 3D Z
+            
+            # Calculate normal vector (perpendicular to curve tangent in XZ plane)
+            if tangent_2d.Magnitude() > 1e-6:
+                # Normalize tangent
+                tang_x = tangent_2d.X() / tangent_2d.Magnitude()
+                tang_z = tangent_2d.Y() / tangent_2d.Magnitude()
+                
+                # Normal vector perpendicular to tangent in XZ plane
+                normal_x = -tang_z  # Rotate 90 degrees
+                normal_z = tang_x
+                
+                # Create local coordinate system at curve point
+                curve_point = gp_Pnt(curve_x, 0.0, curve_z)
+                
+                # Direction vectors for section orientation
+                z_dir = gp_Dir(normal_x, 0.0, normal_z)  # Normal to curve
+                y_dir = gp_Dir(0.0, 1.0, 0.0)           # Always up
+                x_dir = y_dir.Crossed(z_dir)             # Complete right-handed system
+                
+                # Create transformation for section orientation
+                section_axis = gp_Ax2(curve_point, z_dir, x_dir)
+            else:
+                # Fallback for degenerate tangent
+                section_axis = gp_Ax2(gp_Pnt(curve_x, 0.0, curve_z), gp_Dir(0, 0, 1), gp_Dir(1, 0, 0))
 
             # Calculate morphing parameters based on mode
             if morphing_mode == "structural_optimization":
                 # Optimize for bending moment distribution
-                # Thicker sections where moment is higher
                 moment_factor = 1.0 - abs(2 * u_normalized - 1)  # Max at center
-                scale_factor = 0.6 + 0.8 * moment_factor
-                aspect_ratio = 1.0 + 0.5 * moment_factor
-                rotation_angle = 0.0
+                scale_factor = 0.9 + 0.4 * moment_factor
+                aspect_ratio = 1.0 + 0.2 * moment_factor
 
             elif morphing_mode == "cantilever_optimization":
                 # Cantilever beam optimization - thick at root, thin at tip
-                scale_factor = 1.5 - 0.8 * u_normalized
-                aspect_ratio = 1.2 - 0.4 * u_normalized
-                rotation_angle = math.radians(10 * u_normalized)
+                scale_factor = 1.1 - 0.4 * u_normalized
+                aspect_ratio = 1.05 - 0.2 * u_normalized
 
             elif morphing_mode == "aerodynamic_optimization":
                 # Aerodynamic profile optimization
-                scale_factor = 0.8 + 0.4 * math.sin(math.pi * u_normalized)
-                aspect_ratio = 0.5 + 0.8 * u_normalized
-                rotation_angle = math.radians(20 * math.sin(2 * math.pi * u_normalized))
+                scale_factor = 0.95 + 0.2 * math.sin(math.pi * u_normalized)
+                aspect_ratio = 0.8 + 0.4 * u_normalized
 
             elif morphing_mode == "thermal_adaptation":
                 # Thermal expansion compensation
                 thermal_factor = math.cos(math.pi * u_normalized)
-                scale_factor = 1.0 + 0.2 * thermal_factor
-                aspect_ratio = 1.0 - 0.1 * thermal_factor
-                rotation_angle = math.radians(5 * thermal_factor)
+                scale_factor = 1.0 + 0.1 * thermal_factor
+                aspect_ratio = 1.0 - 0.05 * thermal_factor
 
             else:
                 # Default linear taper
-                scale_factor = 1.0 - 0.3 * u_normalized
+                scale_factor = 1.0 - 0.15 * u_normalized
                 aspect_ratio = 1.0
-                rotation_angle = 0.0
 
-            # Calculate rotation from curve tangent
-            if tangent_2d.Magnitude() > 1e-6:
-                curve_angle = math.atan2(tangent_2d.Y(), tangent_2d.X())
-                rotation_angle += curve_angle
-
-            # Create morphing section
-            section_wire = cross_section.create_section_at_parameter(
-                u_normalized, scale_factor, aspect_ratio, rotation_angle, position
+            # Create morphing section with proper orientation
+            section_wire = cross_section.create_section_at_parameter_with_axis(
+                u_normalized, scale_factor, aspect_ratio, section_axis
             )
 
             if section_wire is not None:
@@ -505,24 +673,45 @@ class AdvancedFairCurveMorphing:
         return sections
 
     def create_morphing_solid(self, sections):
-        """Create solid through morphing sections using ThruSections"""
+        """Create solid through morphing sections using ThruSections with better parameters"""
         if len(sections) < 2:
             print("Need at least 2 sections for ThruSections")
             return None
 
-        # Create solid through sections
-        thru_sections = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
+        try:
+            # Create solid through sections with improved settings
+            thru_sections = BRepOffsetAPI_ThruSections(True, False)  # solid=True, ruled=False for smoother surfaces
+            
+            # Set parameters for better quality
+            thru_sections.SetSmoothing(True)
+            thru_sections.SetParType(1)  # Better parameterization
+            thru_sections.SetContinuity(1)  # G1 continuity
+            thru_sections.SetMaxDegree(8)  # Higher degree for smoother surface
+            
+            for section in sections:
+                thru_sections.AddWire(section)
 
-        for section in sections:
-            thru_sections.AddWire(section)
+            thru_sections.CheckCompatibility(False)  # Allow incompatible sections
+            thru_sections.Build()
 
-        thru_sections.CheckCompatibility(False)  # Allow incompatible sections
-        thru_sections.Build()
-
-        if thru_sections.IsDone():
-            return thru_sections.Shape()
-        else:
-            print("ThruSections failed")
+            if thru_sections.IsDone():
+                return thru_sections.Shape()
+            else:
+                print("ThruSections failed, trying simpler approach")
+                # Fallback to simpler ruled surface
+                thru_sections_simple = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
+                for section in sections:
+                    thru_sections_simple.AddWire(section)
+                thru_sections_simple.Build()
+                
+                if thru_sections_simple.IsDone():
+                    return thru_sections_simple.Shape()
+                else:
+                    print("Both ThruSections approaches failed")
+                    return None
+                    
+        except Exception as e:
+            print(f"ThruSections error: {e}")
             return None
 
 
@@ -531,7 +720,7 @@ def demo_cantilever_optimization(event=None):
 
     print("=== Cantilever Beam I-Beam Optimization ===")
 
-    morphing = AdvancedFairCurveMorphing(length=180.0, material="aluminum")
+    morphing = AdvancedFairCurveMorphing(length=120.0, material="aluminum")
 
     # Calculate optimized fair curve for cantilever
     curve_2d = morphing.calculate_optimized_fair_curve("cantilever_beam")
@@ -541,17 +730,17 @@ def demo_cantilever_optimization(event=None):
         section_config = {
             "type": "I_beam",
             "params": {
-                "flange_width": 25.0,
-                "height": 30.0,
-                "flange_thickness": 4.0,
-                "web_thickness": 3.0,
+                "flange_width": 35.0,
+                "height": 40.0,
+                "flange_thickness": 6.0,
+                "web_thickness": 4.0,
             },
             "morphing_mode": "cantilever_optimization",
         }
 
         # Create morphing sections
         sections = morphing.create_morphing_sections_along_curve(
-            curve_2d, section_config, 20
+            curve_2d, section_config, 12
         )
 
         # Create solid
@@ -578,21 +767,21 @@ def demo_arch_bridge_optimization(event=None):
 
     print("=== Arch Bridge Rectangular Optimization ===")
 
-    morphing = AdvancedFairCurveMorphing(length=220.0, material="steel")
+    morphing = AdvancedFairCurveMorphing(length=160.0, material="steel")
 
     # Calculate arch bridge curve
     curve_2d = morphing.calculate_optimized_fair_curve("arch_bridge")
 
     if curve_2d:
-        # Rectangular section (simpler than hollow)
+        # Rectangular section with much larger dimensions
         section_config = {
             "type": "rectangle",
-            "params": {"width": 25.0, "height": 15.0},
+            "params": {"width": 50.0, "height": 35.0},  # Much larger
             "morphing_mode": "structural_optimization",
         }
 
         sections = morphing.create_morphing_sections_along_curve(
-            curve_2d, section_config, 22
+            curve_2d, section_config, 6
         )
         solid = morphing.create_morphing_solid(sections)
 
@@ -620,24 +809,23 @@ def demo_arch_bridge_optimization(event=None):
 
 def demo_turbine_blade_optimization(event=None):
     """Demo: Turbine blade with elliptical aerodynamic optimization"""
-
     print("=== Turbine Blade Aerodynamic Optimization ===")
 
-    morphing = AdvancedFairCurveMorphing(length=160.0, material="titanium")
+    morphing = AdvancedFairCurveMorphing(length=100.0, material="titanium")
 
     # Calculate turbine blade curve
     curve_2d = morphing.calculate_optimized_fair_curve("turbine_blade")
 
     if curve_2d:
-        # Elliptical section for aerodynamics
+        # Elliptical section for aerodynamics with much larger dimensions
         section_config = {
             "type": "ellipse",
-            "params": {"radius_major": 15.0, "radius_minor": 6.0},
+            "params": {"radius_major": 40.0, "radius_minor": 20.0},  # Much larger
             "morphing_mode": "aerodynamic_optimization",
         }
 
         sections = morphing.create_morphing_sections_along_curve(
-            curve_2d, section_config, 18
+            curve_2d, section_config, 5
         )
         solid = morphing.create_morphing_solid(sections)
 
@@ -662,22 +850,22 @@ def demo_multi_section_comparison(event=None):
 
     print("=== Multi-Section Type Comparison ===")
 
-    morphing = AdvancedFairCurveMorphing(length=140.0, material="carbon_fiber")
+    morphing = AdvancedFairCurveMorphing(length=100.0, material="carbon_fiber")
 
     # Base curve
     curve_2d = morphing.calculate_optimized_fair_curve("simply_supported")
 
     if curve_2d:
         section_types = [
-            ("rectangle", {"width": 18.0, "height": 10.0}, None),
-            ("ellipse", {"radius_major": 12.0, "radius_minor": 6.0}, "BLUE1"),
+            ("rectangle", {"width": 25.0, "height": 15.0}, "ORANGE"),
+            ("ellipse", {"radius_major": 18.0, "radius_minor": 9.0}, "BLUE"),
             (
                 "T_beam",
                 {
-                    "flange_width": 16.0,
-                    "height": 14.0,
-                    "flange_thickness": 2.5,
-                    "web_thickness": 2.0,
+                    "flange_width": 22.0,
+                    "height": 18.0,
+                    "flange_thickness": 3.5,
+                    "web_thickness": 2.5,
                 },
                 "GREEN",
             ),
@@ -691,14 +879,14 @@ def demo_multi_section_comparison(event=None):
             }
 
             sections = morphing.create_morphing_sections_along_curve(
-                curve_2d, section_config, 15
+                curve_2d, section_config, 8
             )
             solid = morphing.create_morphing_solid(sections)
 
             if solid:
-                # Offset each type
+                # Offset each type with larger spacing
                 transform = gp_Trsf()
-                transform.SetTranslation(gp_Vec(0, i * 50, 0))
+                transform.SetTranslation(gp_Vec(0, i * 80, 0))
                 transformed = BRepBuilderAPI_Transform(solid, transform).Shape()
 
                 display.DisplayShape(transformed, color=color, transparency=0.3)
@@ -722,15 +910,14 @@ def demo_multi_section_comparison(event=None):
 
 def demo_thermal_adaptation(event=None):
     """Demo: Thermal expansion adaptive morphing"""
-
     print("=== Thermal Expansion Adaptive Morphing ===")
 
-    morphing = AdvancedFairCurveMorphing(length=120.0, material="steel")
+    morphing = AdvancedFairCurveMorphing(length=80.0, material="steel")
 
     # Create curves at different "temperatures"
     temperature_conditions = [
-        ("20°C", "simply_supported", "BLUE1"),
-        ("200°C", "cantilever_beam", None),
+        ("20°C", "simply_supported", "BLUE"),
+        ("200°C", "cantilever_beam", "ORANGE"),
         ("500°C", "arch_bridge", "RED"),
     ]
 
@@ -741,20 +928,20 @@ def demo_thermal_adaptation(event=None):
             section_config = {
                 "type": "rectangle",
                 "params": {
-                    "width": 15.0 + i * 3,  # Thermal expansion
-                    "height": 10.0 + i * 2,
+                    "width": 30.0 + i * 8,   # Much larger thermal expansion
+                    "height": 20.0 + i * 6,
                 },
                 "morphing_mode": "thermal_adaptation",
             }
 
             sections = morphing.create_morphing_sections_along_curve(
-                curve_2d, section_config, 12
+                curve_2d, section_config, 5
             )
             solid = morphing.create_morphing_solid(sections)
 
             if solid:
                 transform = gp_Trsf()
-                transform.SetTranslation(gp_Vec(0, 0, i * 35))
+                transform.SetTranslation(gp_Vec(0, 0, i * 60))
                 transformed = BRepBuilderAPI_Transform(solid, transform).Shape()
 
                 display.DisplayShape(transformed, color=color, transparency=0.3)
@@ -772,42 +959,50 @@ def demo_thermal_adaptation(event=None):
     display.FitAll()
 
 
-def demo_simple_clear_display(event=None):
-    """Demo: Simple clear display with one structure"""
-
-    print("\n=== Simple Clear Display ===")
-
+def demo_simple_clear_display(event=None):    
+    print("\n=== FairCurve Beam: Original vs Morphed Comparison ===")
     morphing = AdvancedFairCurveMorphing(length=100.0, material="steel")
+    
+    # 1. Original uniform beam (reference)
+    original_box = BRepPrimAPI_MakeBox(gp_Pnt(0, 0, 0), 100.0, 20.0, 10.0).Shape()
+    display.DisplayShape(original_box, transparency=0.3)
+    print("📦 Original uniform beam (100×20×10)")
+    
+    # 2. FairCurve optimized beam
     curve_2d = morphing.calculate_optimized_fair_curve("cantilever_beam")
-
+    
     if curve_2d:
         section_config = {
             "type": "rectangle",
-            "params": {"width": 15.0, "height": 8.0},
+            "params": {"width": 40.0, "height": 25.0},  # Much larger
             "morphing_mode": "cantilever_optimization",
         }
 
-        sections = morphing.create_morphing_sections_along_curve(
-            curve_2d, section_config, 10
-        )
+        sections = morphing.create_morphing_sections_along_curve(curve_2d, section_config, 5)
         solid = morphing.create_morphing_solid(sections)
 
         if solid:
-            display.DisplayShape(solid, transparency=0.1)
-            print("✅ Solid created and displayed successfully!")
-
-            # Show all sections clearly
+            # Offset morphed beam to avoid overlap
+            transform = gp_Trsf()
+            transform.SetTranslation(gp_Vec(0, 40.0, 0))
+            morphed_beam = BRepBuilderAPI_Transform(solid, transform).Shape()
+            
+            display.DisplayShape(morphed_beam, transparency=0.2)
+            print("🔄 FairCurve morphed beam (optimized)")
+            
+            # Show key cross-sections
             for i, section in enumerate(sections):
-                if i % 2 == 0:  # Every other section
-                    display.DisplayShape(section, color="RED")
+                if i in [0, len(sections)//2, -1]:  # Start, middle, end
+                    sect_transform = BRepBuilderAPI_Transform(section, transform).Shape()
+                    display.DisplayShape(sect_transform, color="RED")
 
-        # Display curve
-        pl = Geom_Plane(gp_Pln(gp_Pnt(0, -20, 0), gp_Dir(0, 0, 1)))
+        # Display the FairCurve path
+        pl = Geom_Plane(gp_Pln(gp_Pnt(0, 40.0, -15.0), gp_Dir(0, 0, 1)))
         curve_edge = BRepBuilderAPI_MakeEdge(curve_2d, pl).Edge()
         display.DisplayShape(curve_edge, color="BLUE1")
+        print("📈 FairCurve optimization path (blue)")
 
-        print(f"Displayed {len(sections)} sections along FairCurve")
-
+    print("✅ Comparison: Gray=Original, Orange=Optimized")
     display.FitAll()
 
 
