@@ -45,9 +45,9 @@ def make_bspline_surface(nx=10, ny=10):
     arr = TColgp_Array2OfPnt(1, nx, 1, ny)
     for i in range(1, nx + 1):
         for j in range(1, ny + 1):
-            x = (i - 1) * 1 - (nx - 1) * 1
-            y = (j - 1) * 1 - (ny - 1) * 1
-            z = 0.01 * math.sin((i - 1) * 1) * math.cos((j - 1) * 1)
+            x = (i - 1) / nx
+            y = (j - 1) / ny
+            z = 0.1 * math.sin(x * 3) * math.cos(y * 5)
             arr.SetValue(i, j, gp_Pnt(x, y, z))
 
     api = GeomAPI_PointsToBSplineSurface(arr, 3, 3, GeomAbs_G2, 1e-6)
@@ -166,8 +166,8 @@ if __name__ == "__main__":
 
     # make a face from full surface
     base_face = BRepBuilderAPI_MakeFace(surf, 1e-6).Face()
-    
-    from OCCUtils.Construct import make_polygon
+
+    from OCCUtils.Construct import make_polygon, make_wire, make_face
 
     # define a polygon in planar XY (unit coordinates) and create planar wire
     # We'll create the polygon in a plane and project it onto the surface.
@@ -179,42 +179,41 @@ if __name__ == "__main__":
         gp_Pnt(0.25, 0.7, 0),
     ]
     planar_wire = make_polygon(planar_poly, closed=True)
-    display.DisplayShape(base_face, color="BLUE1", transparency=0.6)
-    display.DisplayShape(planar_wire, color="RED", update=True)
-
     # project planar wire onto the BSpline surface (along +Z)
     # BRepProj_Projection expects TopoDS shapes; pass the created base_face
     wire_on_surf = project_wire_to_surface(planar_wire, base_face, gp_Dir(0, 0, 1))
 
+    from OCC.Core.gp import gp_Circ
+
+    wire_cir1 = make_wire(
+        BRepBuilderAPI_MakeEdge(
+            gp_Circ(gp_Ax2(gp_Pnt(0.5, 0.5, 0), gp_Dir(0, 0, 1)), 0.1)
+        ).Edge()
+    )
+    wire_cir1_on_surf = project_wire_to_surface(wire_cir1, base_face, gp_Dir(0, 0, 1))
+
+    holed_face = BRepBuilderAPI_MakeFace(base_face, wire_cir1_on_surf).Face()
+
     # try face restrictor to trim
     fr = BRepAlgo_FaceRestrictor()
-    fr.Init(base_face, True, True)
+    fr.Init(holed_face, False, True)
     fr.Add(wire_on_surf)
     fr.Perform()
 
     if fr.IsDone() and fr.More():
         result_face = fr.Current()
 
-    # If FaceRestrictor failed, attempt to build a trimmed face directly
-    # by creating a Face from the surface and the wire (some OCC versions
-    # accept this overload). This ensures the wire is a boundary of the face
-    # before meshing.
-    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-
-    trimmed = BRepBuilderAPI_MakeFace(surf, wire_on_surf, True)
-    if trimmed.IsDone():
-        result_face = trimmed.Face()
-        print("Created trimmed face via BRepBuilderAPI_MakeFace(surf, wire)")
-
     # display
     display.DisplayShape(base_face, color="BLUE1", transparency=0.6)
+    display.DisplayShape(planar_wire, color="RED", update=True)
     display.DisplayShape(wire_on_surf, color="RED")
-    display.DisplayShape(result_face, color="GREEN", transparency=0.5)
+    display.DisplayShape(holed_face, color="YELLOW", transparency=0.5)
+    # display.DisplayShape(result_face, color="GREEN", transparency=0.5)
 
     # sample wires
     target_per_edge = 16
     wires_pts = [(wire_on_surf, [])]
-    exp = TopExp_Explorer(wire_on_surf, TopAbs_EDGE)
+    exp = TopExp_Explorer(holed_face, TopAbs_EDGE)
     while exp.More():
         e = topods.Edge(exp.Current())
         wires_pts[0][1].extend(sample_edge_uniform(e, target_per_edge))
