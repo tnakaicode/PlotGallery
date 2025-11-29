@@ -24,7 +24,11 @@ from OCC.Core.BRepLib import breplib
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeSolid
 from OCC.Core.TopAbs import TopAbs_SHELL
-
+from OCC.Core.TopExp import TopExp_Explorer
+from OCC.Core.TopAbs import TopAbs_WIRE
+from OCC.Core.TopoDS import topods
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakeOffsetShape
+from OCC.Core.BRepOffset import BRepOffset_Skin
 import math
 import numpy as np
 from OCC.Core.TopExp import TopExp_Explorer
@@ -46,7 +50,7 @@ def make_bspline_surface(nx=20, ny=20):
             x = (i - 1) / (nx - 1)
             y = (j - 1) / (ny - 1)
             # stronger oscillation and amplitude
-            z = 0.2 * math.sin(x * 8.0) * math.cos(y * 6.0)
+            z = 0.2 * math.sin(math.pi * x * 2.0) * math.cos(math.pi * y * 1.0)
             arr.SetValue(i, j, gp_Pnt(x * 200.0, y * 200.0, z * 80.0))
 
     api = GeomAPI_PointsToBSplineSurface(arr, 4, 4, GeomAbs_G2, 1e-6)
@@ -186,6 +190,7 @@ def points_to_poly_wire(pts):
     wb.Build()
     return wb.Wire()
 
+
 def offset_face_using_makeoffsetshape(shape, offset=-10.0, tol=1e-3):
     # shape can be a TopoDS_Shape (e.g., Face or Shell); use MakeOffsetShape.PerformByJoin
     offset_api = BRepOffsetAPI_MakeOffsetShape()
@@ -195,6 +200,7 @@ def offset_face_using_makeoffsetshape(shape, offset=-10.0, tol=1e-3):
         shape, offset, tol, BRepOffset_Skin, False, False, GeomAbs_Arc
     )
     return offset_api
+
 
 def build_solid_from_faces(face0, face1, tol=1e-6):
     """Given two TopoDS_Face objects (original and offset), build a connecting
@@ -246,12 +252,14 @@ def build_solid_from_faces(face0, face1, tol=1e-6):
 
     return solid, loft_shell
 
+
 if __name__ == "__main__":
     # Initialize viewer and display results
     display, start_display, add_menu, add_function_to_menu = init_display()
 
     print("STEP: start building BSpline surface")
     surf = make_bspline_surface()
+    display.DisplayShape(surf, transparency=0.5)
     print("STEP: BSpline surface built")
 
     print("STEP: trimming surface with polygon")
@@ -263,11 +271,6 @@ if __name__ == "__main__":
 
     # Try to offset the trimmed TopoDS_Face directly with BRepOffsetAPI_MakeOffsetShape
     # and obtain an offset geometry (prefer topology-preserving offset).
-    from OCC.Core.TopExp import TopExp_Explorer
-    from OCC.Core.TopAbs import TopAbs_WIRE
-    from OCC.Core.TopoDS import topods
-    from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakeOffsetShape
-    from OCC.Core.BRepOffset import BRepOffset_Skin
 
     # find outer wire of the trimmed face (for display)
     exp = TopExp_Explorer(face, TopAbs_WIRE)
@@ -280,14 +283,16 @@ if __name__ == "__main__":
     offset_distance = 20.0
     offset_api = BRepOffsetAPI_MakeOffsetShape()
     # Parameters: shape, offset, tol, skin, remove, join, mode
-    offset_api.PerformByJoin(face, offset_distance, 1e-3, BRepOffset_Skin, False, False, GeomAbs_Arc)
+    offset_api.PerformByJoin(
+        face, offset_distance, 1e-3, BRepOffset_Skin, False, False, GeomAbs_Arc
+    )
     offset_api.Build()
     print("STEP: offset_api.IsDone() ->", offset_api.IsDone())
     off_shape = offset_api.Shape()
     display.DisplayShape(off_shape)
-    
+
     solid, loft_shell = build_solid_from_faces(face, off_shape, tol=1e-3)
-    display.DisplayShape(solid, update=True, color="RED", transparency=0.3)
+    display.DisplayShape(solid, update=True, transparency=0.3)
 
     display.FitAll()
     start_display()
