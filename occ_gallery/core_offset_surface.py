@@ -6,15 +6,15 @@ This script tries to be robust across typical PythonOCC installs.
 import sys
 import math
 
+from OCC.Display.SimpleGui import init_display
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.Geom import Geom_OffsetSurface
 from OCC.Core.TColgp import TColgp_Array2OfPnt
 from OCC.Core.gp import gp_Pnt
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.Display.SimpleGui import init_display
 from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.TopAbs import TopAbs_WIRE, TopAbs_SHELL, TopAbs_EDGE
-from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet
+from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet, BRepFilletAPI_MakeChamfer
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeSolid
 
@@ -26,7 +26,7 @@ def make_bspline_surface(nx=6, ny=6):
         u = (i - 1) / (nx - 1)
         for j in range(1, ny + 1):
             v = (j - 1) / (ny - 1)
-            z = 0.15 * math.sin(math.pi * u * 1.2) * math.sin(math.pi * v * 1.5)
+            z = 0.15 * math.sin(math.pi * u * 1.5) * math.sin(math.pi * v * 1)
             t.SetValue(i, j, gp_Pnt(u, v, z))
     builder = GeomAPI_PointsToBSplineSurface(t)
     surf = builder.Surface()
@@ -116,6 +116,34 @@ def apply_fillet(solid, radius=0.02):
     return fillet.Shape()
 
 
+def get_edges_from_face(face):
+    """Return a list of TopoDS_Edge objects belonging to the given face."""
+    exp = TopExp_Explorer(face, TopAbs_EDGE)
+    edges = []
+    while exp.More():
+        edges.append(exp.Current())
+        exp.Next()
+    return edges
+
+
+def apply_chamfer(solid, edges, distance=0.02):
+    """Apply chamfer of given distance to provided edges on the solid and return the modified shape."""
+    chamfer = BRepFilletAPI_MakeChamfer(solid)
+    for e in edges:
+        chamfer.Add(distance, e)
+    chamfer.Build()
+    return chamfer.Shape()
+
+
+def apply_fillet(solid, edges, distance=0.02):
+    """Apply fillet of given distance to provided edges on the solid and return the modified shape."""
+    fillet = BRepFilletAPI_MakeFillet(solid)
+    for e in edges:
+        fillet.Add(distance, e)
+    fillet.Build()
+    return fillet.Shape()
+
+
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -132,18 +160,27 @@ if __name__ == "__main__":
     solid, loft_shell = build_solid_from_faces(face0, face1)
 
     # display original surface (blue), offset surface (green), loft (yellow) and solid (red)
-    display.DisplayShape(face0, update=True, transparency=0.5, color="BLUE1")
-    display.DisplayShape(face1, update=True, transparency=0.5, color="GREEN")
+    # display.DisplayShape(face0, update=True, transparency=0.5, color="BLUE1")
+    # display.DisplayShape(face1, update=True, transparency=0.5, color="GREEN")
     # if loft_shell is not None:
     #    display.DisplayShape(loft_shell, update=True, transparency=0.6, color="YELLOW")
 
     filleted = None
     if solid is not None:
-        # apply fillet to the solid edges
-        filleted = apply_fillet(solid, radius=0.02)
-        # display original solid (red, transparent) and filleted solid (magenta)
+        # apply chamfer to bottom face edges (face0), then fillet to top face edges (face1)
+        bottom_edges = get_edges_from_face(face0)
+        top_edges = get_edges_from_face(face1)
+
+        # chamfer bottom edges first
+        solid_chamfered = apply_chamfer(solid, bottom_edges, distance=0.02)
+
+        # then fillet top edges on the chamfered solid
+        # note: we use the original top_edges collected from face1
+        solid_filleted = apply_fillet(solid_chamfered, top_edges, distance=0.02)
+
+        # display original solid (red, transparent), chamfered+filleted result (magenta)
         # display.DisplayShape(solid, update=True, transparency=0.6, color="RED")
-        display.DisplayShape(filleted, update=True, transparency=0.8)
+        display.DisplayShape(solid_filleted, update=True, transparency=0.5)
 
     display.FitAll()
     start_display()
