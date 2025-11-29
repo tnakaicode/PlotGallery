@@ -13,7 +13,8 @@ from OCC.Core.gp import gp_Pnt
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.TopExp import TopExp_Explorer
-from OCC.Core.TopAbs import TopAbs_WIRE, TopAbs_SHELL
+from OCC.Core.TopAbs import TopAbs_WIRE, TopAbs_SHELL, TopAbs_EDGE
+from OCC.Core.BRepFilletAPI import BRepFilletAPI_MakeFillet
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeSolid
 
@@ -99,6 +100,22 @@ def build_solid_from_faces(face0, face1, tol=1e-6):
     return solid, loft_shell
 
 
+def apply_fillet(solid, radius=0.02):
+    """Apply a fillet of given radius to all edges of the solid and return the filleted solid."""
+    fillet = BRepFilletAPI_MakeFillet(solid)
+    exp_e = TopExp_Explorer(solid, TopAbs_EDGE)
+    edges = []
+    while exp_e.More():
+        edges.append(exp_e.Current())
+        exp_e.Next()
+
+    for e in edges:
+        fillet.Add(radius, e)
+
+    fillet.Build()
+    return fillet.Shape()
+
+
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -117,10 +134,16 @@ if __name__ == "__main__":
     # display original surface (blue), offset surface (green), loft (yellow) and solid (red)
     display.DisplayShape(face0, update=True, transparency=0.5, color="BLUE1")
     display.DisplayShape(face1, update=True, transparency=0.5, color="GREEN")
-    if loft_shell is not None:
-        display.DisplayShape(loft_shell, update=True, transparency=0.6, color="YELLOW")
+    # if loft_shell is not None:
+    #    display.DisplayShape(loft_shell, update=True, transparency=0.6, color="YELLOW")
+
+    filleted = None
     if solid is not None:
-        display.DisplayShape(solid, update=True, transparency=0.0, color="RED")
+        # apply fillet to the solid edges
+        filleted = apply_fillet(solid, radius=0.02)
+        # display original solid (red, transparent) and filleted solid (magenta)
+        # display.DisplayShape(solid, update=True, transparency=0.6, color="RED")
+        display.DisplayShape(filleted, update=True, transparency=0.8)
 
     display.FitAll()
     start_display()
