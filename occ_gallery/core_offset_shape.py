@@ -1,9 +1,12 @@
 # Example: create a BSpline surface, trim by polygon and offset using BRepOffsetAPI_MakeOffsetShape
 # Uses absolute imports and displays results in the OCC viewer
 
-from OCC.Core.gp import gp_Pnt, gp_Pnt2d, gp_Vec
+from OCC.Core.gp import gp_Pnt, gp_Pnt2d, gp_Vec, gp_Dir
+from OCC.Core.TColgp import TColgp_Array2OfPnt
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.Geom import Geom_BSplineSurface
+from OCC.Core.GeomAbs import GeomAbs_G2
+from OCC.Core.GCE2d import GCE2d_MakeSegment
 from OCC.Core.BRepBuilderAPI import (
     BRepBuilderAPI_MakeEdge,
     BRepBuilderAPI_MakeWire,
@@ -20,46 +23,24 @@ from OCC.Core.BRepLib import breplib
 
 import math
 
-display, start_display, add_menu, add_function_to_menu = init_display()
 
+def make_bspline_surface(nx=10, ny=10):
+    """Build a bspline surface from a grid of points (portable GeomAPI usage)."""
+    arr = TColgp_Array2OfPnt(1, nx, 1, ny)
+    for i in range(1, nx + 1):
+        for j in range(1, ny + 1):
+            x = (i - 1) / (nx - 1)
+            y = (j - 1) / (ny - 1)
+            z = 0.05 * math.sin(x * 3.0) * math.cos(y * 5.0)
+            arr.SetValue(i, j, gp_Pnt(x * 200.0, y * 200.0, z * 40.0))
 
-def make_bspline_surface(nx=6, ny=6, sx=200.0, sy=200.0, amp=40.0):
-    # Create a grid of points in XY and give them a Z-wave for a curved surface
-    pts = []
-    for j in range(ny):
-        row = []
-        y = sy * j / (ny - 1)
-        for i in range(nx):
-            x = sx * i / (nx - 1)
-            z = amp * math.sin(math.pi * x / sx) * math.cos(math.pi * y / sy)
-            row.append(gp_Pnt(x, y, z))
-        pts.append(row)
-
-    # Flatten points into two lists for PointsToBSplineSurface: list per U and V
-    # The GeomAPI expects a sequence of points; we provide as a simple list in U-major order
-    pts_list = []
-    for j in range(ny):
-        for i in range(nx):
-            pts_list.append(pts[j][i])
-
-    builder = GeomAPI_PointsToBSplineSurface()
-    (
-        builder.Init(
-            nx, ny, pts_list, 3, 3, GeomAPI_PointsToBSplineSurface.Modulus(), False
-        )
-        if False
-        else None
-    )
-    # Simpler: use GeomAPI_PointsToBSplineSurface with signature (points, nx, ny, uDegree, vDegree)
-    # but pythonOCC exposes a convenience constructor through GeomAPI_PointsToBSplineSurface().
-    # To avoid over-complicating, create a Geom_BSplineSurface by fitting using GeomAPI
+    api = GeomAPI_PointsToBSplineSurface(arr, 3, 3, GeomAbs_G2, 1e-6)
     try:
-        gpb = GeomAPI_PointsToBSplineSurface()
-        gpb.Init(nx, ny, pts_list, 3, 3)
-        surf = gpb.Surface()
+        api.Interpolate(arr)
     except Exception:
-        # Fallback: create a simple planar BSpline via control points arrangement
-        surf = Geom_BSplineSurface()
+        # some pythonocc versions already build the surface on construction
+        pass
+    surf = api.Surface()
     return surf
 
 
@@ -123,16 +104,14 @@ if __name__ == "__main__":
     surf = make_bspline_surface()
     face = trim_surface_with_polygon(surf)
 
-    # Display original face
+    # Initialize viewer and display results
+    display, start_display, add_menu, add_function_to_menu = init_display()
+
     display.DisplayShape(face)
 
-    # Apply offset
-    try:
-        offset_api = offset_face_using_makeoffsetshape(face, offset=-20.0)
-        off_shape = offset_api.Shape()
-        display.DisplayShape(off_shape)
-    except Exception as e:
-        print("Offset failed:", e)
+    offset_api = offset_face_using_makeoffsetshape(face, offset=-20.0)
+    off_shape = offset_api.Shape()
+    display.DisplayShape(off_shape)
 
     display.FitAll()
     start_display()
