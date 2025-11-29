@@ -26,7 +26,7 @@ def make_bspline_surface(nx=6, ny=6):
         u = (i - 1) / (nx - 1)
         for j in range(1, ny + 1):
             v = (j - 1) / (ny - 1)
-            z = 0.15 * math.sin(math.pi * u * 1.5) * math.sin(math.pi * v * 1)
+            z = 0.15 * math.sin(math.pi * u * 2.1) * math.sin(math.pi * v * 1)
             t.SetValue(i, j, gp_Pnt(u, v, z))
     builder = GeomAPI_PointsToBSplineSurface(t)
     surf = builder.Surface()
@@ -147,10 +147,10 @@ def apply_fillet(solid, edges, distance=0.02):
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
-    surf = make_bspline_surface(6, 6)
+    surf = make_bspline_surface(10, 10)
 
     # create an offset surface (positive offset along surface normal)
-    offset_val = 0.12
+    offset_val = 0.1
     off_surf = Geom_OffsetSurface(surf, offset_val)
 
     # make faces
@@ -160,8 +160,8 @@ if __name__ == "__main__":
     solid, loft_shell = build_solid_from_faces(face0, face1)
 
     # display original surface (blue), offset surface (green), loft (yellow) and solid (red)
-    # display.DisplayShape(face0, update=True, transparency=0.5, color="BLUE1")
-    # display.DisplayShape(face1, update=True, transparency=0.5, color="GREEN")
+    display.DisplayShape(face0, update=True, transparency=0.5, color="BLUE1")
+    display.DisplayShape(face1, update=True, transparency=0.5, color="GREEN")
     # if loft_shell is not None:
     #    display.DisplayShape(loft_shell, update=True, transparency=0.6, color="YELLOW")
 
@@ -172,15 +172,15 @@ if __name__ == "__main__":
         top_edges = get_edges_from_face(face1)
 
         # chamfer bottom edges first
-        solid_chamfered = apply_chamfer(solid, bottom_edges, distance=0.02)
+        #solid_chamfered = apply_chamfer(solid, bottom_edges, distance=0.02)
 
         # then fillet top edges on the chamfered solid
         # note: we use the original top_edges collected from face1
-        solid_filleted = apply_fillet(solid_chamfered, top_edges, distance=0.02)
+        #solid_filleted = apply_fillet(solid_chamfered, top_edges, distance=0.02)
 
         # display original solid (red, transparent), chamfered+filleted result (magenta)
-        # display.DisplayShape(solid, update=True, transparency=0.6, color="RED")
-        display.DisplayShape(solid_filleted, update=True, transparency=0.5)
+        display.DisplayShape(solid, update=True, transparency=0.6)
+        #display.DisplayShape(solid_filleted, update=True, transparency=0.2)
 
     display.FitAll()
     start_display()
