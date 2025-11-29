@@ -101,17 +101,68 @@ def offset_face_using_makeoffsetshape(shape, offset=-10.0, tol=1e-3):
 
 
 if __name__ == "__main__":
-    surf = make_bspline_surface()
-    face = trim_surface_with_polygon(surf)
-
     # Initialize viewer and display results
     display, start_display, add_menu, add_function_to_menu = init_display()
 
+    print("STEP: start building BSpline surface")
+    surf = make_bspline_surface()
+    print("STEP: BSpline surface built")
+
+    print("STEP: trimming surface with polygon")
+    face = trim_surface_with_polygon(surf)
+    print("STEP: trim finished. face created")
+
+    print("STEP: displaying original face")
     display.DisplayShape(face)
 
-    offset_api = offset_face_using_makeoffsetshape(face, offset=-20.0)
-    off_shape = offset_api.Shape()
-    display.DisplayShape(off_shape)
+    # Instead of invoking the low-level offset API (which can crash on trimmed
+    # faces/complex topology), build a loft between the face's outer wire and
+    # a translated copy of that wire. Sew the result and try to make a solid.
+    from OCC.Core.TopExp import TopExp_Explorer
+    from OCC.Core.TopAbs import TopAbs_WIRE
+    from OCC.Core.TopoDS import topods
+    from OCC.Core.gp import gp_Trsf, gp_Vec
+    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Transform
+    from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing, BRepBuilderAPI_MakeSolid
+
+    # find outer wire of the trimmed face
+    exp = TopExp_Explorer(face, TopAbs_WIRE)
+    if not exp.More():
+        raise RuntimeError("No wire found on face to loft")
+    wire0 = topods.Wire(exp.Current())
+
+    # create a translated copy of the wire (offset in global Z)
+    offsetZ = 20.0
+    trsf = gp_Trsf()
+    trsf.SetTranslation(gp_Vec(0.0, 0.0, offsetZ))
+    tfx = BRepBuilderAPI_Transform(wire0, trsf, True)
+    wire1 = topods.Wire(tfx.Shape())
+    display.DisplayShape(wire1)
+
+    print("STEP: building thru-sections loft between original and translated wire")
+    sect = BRepOffsetAPI_ThruSections(True, False, 1e-6)
+    sect.AddWire(wire0)
+    sect.AddWire(wire1)
+    sect.Build()
+    loft = sect.Shape()
+    display.DisplayShape(loft)
+
+    print("STEP: sewing loft")
+    sew = BRepBuilderAPI_Sewing(1e-6)
+    sew.Add(loft)
+    sew.Perform()
+    sewed = sew.SewedShape()
+    display.DisplayShape(sewed)
+
+    print("STEP: try to make solid from sewed shell")
+    ms = BRepBuilderAPI_MakeSolid()
+    ms.Add(sewed)
+    ms.Build()
+    print("STEP: MakeSolid IsDone ->", ms.IsDone())
+    if ms.IsDone():
+        solid = ms.Solid()
+        display.DisplayShape(solid)
 
     display.FitAll()
     start_display()
