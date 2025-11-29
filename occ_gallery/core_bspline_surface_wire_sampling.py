@@ -37,6 +37,8 @@ from OCC.Core.TopAbs import TopAbs_WIRE, TopAbs_EDGE
 from OCC.Core.TopoDS import topods
 from OCC.Core.BRepAdaptor import BRepAdaptor_Curve
 from OCC.Core.GCPnts import GCPnts_UniformAbscissa
+from OCC.Core.gp import gp_Circ
+from OCCUtils.Construct import make_polygon, make_wire, make_face
 from OCC.Display.SimpleGui import init_display
 
 
@@ -167,8 +169,6 @@ if __name__ == "__main__":
     # make a face from full surface
     base_face = BRepBuilderAPI_MakeFace(surf, 1e-6).Face()
 
-    from OCCUtils.Construct import make_polygon, make_wire, make_face
-
     # define a polygon in planar XY (unit coordinates) and create planar wire
     # We'll create the polygon in a plane and project it onto the surface.
     planar_poly = [
@@ -182,9 +182,6 @@ if __name__ == "__main__":
     # project planar wire onto the BSpline surface (along +Z)
     # BRepProj_Projection expects TopoDS shapes; pass the created base_face
     wire_on_surf = project_wire_to_surface(planar_wire, base_face, gp_Dir(0, 0, 1))
-
-    from OCC.Core.gp import gp_Circ
-
     wire_cir1 = make_wire(
         BRepBuilderAPI_MakeEdge(
             gp_Circ(gp_Ax2(gp_Pnt(0.5, 0.5, 0), gp_Dir(0, 0, 1)), 0.1)
