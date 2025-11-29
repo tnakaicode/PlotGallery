@@ -21,7 +21,7 @@ def make_bspline_surface(nx=6, ny=6):
         u = (i - 1) / (nx - 1)
         for j in range(1, ny + 1):
             v = (j - 1) / (ny - 1)
-            z = 0.15 * math.sin(math.pi * u) * math.sin(math.pi * v)
+            z = 0.15 * math.sin(math.pi * u * 0.9) * math.sin(math.pi * v * 0.8)
             t.SetValue(i, j, gp_Pnt(u, v, z))
     builder = GeomAPI_PointsToBSplineSurface(t)
     surf = builder.Surface()
@@ -45,6 +45,8 @@ def make_face_from_surface(surf):
 
 
 if __name__ == "__main__":
+    display, start_display, add_menu, add_function_to_menu = init_display()
+
     surf = make_bspline_surface(6, 6)
 
     # create an offset surface (positive offset along surface normal)
@@ -54,12 +56,6 @@ if __name__ == "__main__":
     # make faces
     face0 = make_face_from_surface(surf)
     face1 = make_face_from_surface(off_surf)
-
-    if face0 is None or face1 is None:
-        print("Failed to build faces from surfaces. Faces are required for display.")
-        sys.exit(1)
-
-    display, start_display, add_menu, add_function_to_menu = init_display()
 
     # display original surface (blue) and offset surface (green)
     display.DisplayShape(face0, update=True, transparency=0.5, color="BLUE1")
