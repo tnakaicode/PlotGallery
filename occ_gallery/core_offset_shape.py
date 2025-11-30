@@ -50,7 +50,7 @@ def make_bspline_surface(nx=20, ny=20):
             x = (i - 1) / (nx - 1)
             y = (j - 1) / (ny - 1)
             # stronger oscillation and amplitude
-            z = 0.2 * math.sin(math.pi * x * 2.0) * math.cos(math.pi * y * 1.0)
+            z = 0.2 * math.sin(math.pi * x * 4.5) * math.cos(math.pi * y * 1.0)
             arr.SetValue(i, j, gp_Pnt(x * 200.0, y * 200.0, z * 80.0))
 
     api = GeomAPI_PointsToBSplineSurface(arr, 4, 4, GeomAbs_G2, 1e-6)
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     display.DisplayShape(wire0)
 
     print("STEP: attempting BRepOffsetAPI_MakeOffsetShape.PerformByJoin on the face")
-    offset_distance = 20.0
+    offset_distance = 5.0
     offset_api = BRepOffsetAPI_MakeOffsetShape()
     # Parameters: shape, offset, tol, skin, remove, join, mode
     offset_api.PerformByJoin(
