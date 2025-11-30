@@ -84,12 +84,20 @@ def sample_circle(center, R, angle_start, angle_end, n=120):
     return pts
 
 
-def connect_line_arc_with_clothoid(line_end, line_dir, arc_center, arc_R, arc_start_angle, arc_end_angle):
+def connect_line_arc_with_clothoid(
+    line_end, line_dir, arc_center, arc_R, arc_start_angle, arc_end_angle
+):
     # compute arc tangent direction at start angle
-    ta = np.array([-math.sin(arc_start_angle), math.cos(arc_start_angle)])  # tangent for CCW orientation
+    ta = np.array(
+        [-math.sin(arc_start_angle), math.cos(arc_start_angle)]
+    )  # tangent for CCW orientation
+
     # compute signed angle from line_dir to arc tangent
     def signed_angle(v_from, v_to):
-        a = math.atan2(v_from[0]*v_to[1] - v_from[1]*v_to[0], v_from[0]*v_to[0] + v_from[1]*v_to[1])
+        a = math.atan2(
+            v_from[0] * v_to[1] - v_from[1] * v_to[0],
+            v_from[0] * v_to[0] + v_from[1] * v_to[1],
+        )
         return a
 
     v0 = np.array([line_dir[0], line_dir[1]])
@@ -104,62 +112,117 @@ def connect_line_arc_with_clothoid(line_end, line_dir, arc_center, arc_R, arc_st
     if abs(k1) < 1e-12:
         raise ValueError("Arc radius too large or zero curvature")
 
-    # compute required clothoid length L from delta_theta = 0.5 * k1 * L
-    L = 2.0 * delta_theta / k1
-    if L <= 0:
-        # if L <= 0, flip orientation (try alternative sign)
-        L = abs(L)
+    # Solve for phi (new arc start angle) so that the clothoid end lies on the
+    # circle (position match) while L is chosen to satisfy tangent continuity:
+    #   delta_theta(phi) = 0.5 * k1 * L  -> L = 2 * delta_theta(phi) / k1
+    # We'll perform a 1D Newton solve for phi using the scalar residual:
+    #   g(phi) = radial(phi) . (P_clothoid_end(phi) - arc_center) - R = 0
+    # where P_clothoid_end depends on L which depends on phi.
 
-    a = k1 / L  # curvature rate
+    def delta_theta_for_phi(phi):
+        ta_phi = np.array([-math.sin(phi), math.cos(phi)])
+        return signed_angle(v0, ta_phi)
 
-    # sample clothoid in local frame
+    def clothoid_end_given_L(L):
+        if L <= 1e-9:
+            return np.array([line_end[0], line_end[1]])
+        a_local = k1 / L
+        pts2d_local = sample_clothoid(a_local, L, n=600, k0=0.0, theta0=0.0)
+        end_local = pts2d_local[-1]
+        start_angle = math.atan2(line_dir[1], line_dir[0])
+        ca = math.cos(start_angle)
+        sa = math.sin(start_angle)
+        x = ca * end_local[0] - sa * end_local[1] + line_end[0]
+        y = sa * end_local[0] + ca * end_local[1] + line_end[1]
+        return np.array([x, y])
+
+    def g(phi):
+        dt = delta_theta_for_phi(phi)
+        Lphi = 2.0 * dt / k1
+        if Lphi <= 1e-9:
+            Lphi = 1e-9
+        Pcl = clothoid_end_given_L(Lphi)
+        radial = np.array([math.cos(phi), math.sin(phi)])
+        return float(np.dot(radial, (Pcl - arc_center)) - arc_R)
+
+    # initial guess for phi: use original arc start angle so solution stays
+    # close to the original arc orientation when possible
+    phi = float(arc_start_angle)
+    # Newton iterations
+    for it in range(40):
+        gv = g(phi)
+        eps = 1e-6
+        gvp = g(phi + eps)
+        dg = (gvp - gv) / eps
+        if abs(dg) < 1e-12:
+            break
+        dphi = -gv / dg
+        phi += dphi
+        if abs(dphi) < 1e-9:
+            break
+
+    # compute final L from phi
+    dt_final = delta_theta_for_phi(phi)
+    L = max(1e-9, 2.0 * dt_final / k1)
+    a = k1 / L
+
+    # sample clothoid with solved parameters
     pts2d = sample_clothoid(a, L, n=600, k0=0.0, theta0=0.0)
-    # rotate+translate to place start at line_end with orientation along line_dir
     start_angle = math.atan2(line_dir[1], line_dir[0])
     pts3d = rotate_translate_pts2d(pts2d, (line_end[0], line_end[1]), start_angle)
 
-    # clothoid end point
-    end_pt = pts3d[-1, 0:2]
-
-    # compute new arc start angle so that arc start point equals clothoid end
-    vec = end_pt - np.array(arc_center)
-    new_arc_start = math.atan2(vec[1], vec[0])
-
-    # sample arc from new_arc_start to arc_end_angle adjusted by same delta (keep arc sweep length)
-    # compute sweep preserving original sweep direction and length
-    # original sweep
-    orig_sweep = (arc_end_angle - arc_start_angle)
-    # choose new end = new_start + orig_sweep
+    # prepare arc based on solved phi
+    new_arc_start = float(phi)
+    # compute and normalize original sweep to [-pi, pi] to preserve signed direction
+    orig_sweep = arc_end_angle - arc_start_angle
+    orig_sweep = ((orig_sweep + math.pi) % (2.0 * math.pi)) - math.pi
     new_arc_end = new_arc_start + orig_sweep
-
     arc_pts = sample_circle(arc_center, arc_R, new_arc_start, new_arc_end, n=200)
 
-    # make poly wires
-    # Ensure numerical coincidence: if sampled arc start differs from clothoid end,
-    # force exact match to avoid tiny gaps in display/topology.
+    # snap to exact coincidence for display/topology
     end_pt_vec = np.array([pts3d[-1, 0], pts3d[-1, 1]])
-    arc_start_vec = np.array([arc_pts[0, 0], arc_pts[0, 1]])
-    diff = np.linalg.norm(end_pt_vec - arc_start_vec)
-    if diff > 1e-6:
-        # snap first arc sample to clothoid end, and snap clothoid last point to arc start
-        arc_pts[0, 0] = float(end_pt_vec[0])
-        arc_pts[0, 1] = float(end_pt_vec[1])
-        pts3d[-1, 0] = float(end_pt_vec[0])
-        pts3d[-1, 1] = float(end_pt_vec[1])
+    arc_pts[0, 0] = float(end_pt_vec[0])
+    arc_pts[0, 1] = float(end_pt_vec[1])
 
     # Build a shared TopoDS_Vertex for exact topological connection
     from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeVertex
+
     shared_pnt = gp_Pnt(float(pts3d[-1, 0]), float(pts3d[-1, 1]), 0.0)
     shared_vert = BRepBuilderAPI_MakeVertex(shared_pnt).Vertex()
 
     # Make wires reusing the shared vertex at the last index of clothoid and first of arc
-    clothoid_wire = make_poly_wire_from_points_3d_with_shared(shared_vert, pts3d, shared_index=len(pts3d) - 1)
-    arc_wire = make_poly_wire_from_points_3d_with_shared(shared_vert, arc_pts, shared_index=0)
+    clothoid_wire = make_poly_wire_from_points_3d_with_shared(
+        shared_vert, pts3d, shared_index=len(pts3d) - 1
+    )
+    arc_wire = make_poly_wire_from_points_3d_with_shared(
+        shared_vert, arc_pts, shared_index=0
+    )
+
+    # diagnostics
+    clothoid_end = np.array([pts3d[-1, 0], pts3d[-1, 1]])
+    arc_start_pt = np.array([arc_pts[0, 0], arc_pts[0, 1]])
+    pos_err = np.linalg.norm(clothoid_end - arc_start_pt)
+    # tangent at clothoid end (local): theta_end_local = 0.5 * a * L**2
+    theta_end_local = 0.5 * a * L * L
+    theta_clothoid = start_angle + theta_end_local
+    # arc tangent at phi
+    ta_phi = np.array([-math.sin(phi), math.cos(phi)])
+    theta_arc_tan = math.atan2(ta_phi[1], ta_phi[0])
+    ang_err = abs(
+        ((theta_clothoid - theta_arc_tan + math.pi) % (2 * math.pi)) - math.pi
+    )
+    print(
+        f"SOLVE: phi={phi:.6f} rad ({math.degrees(phi):.2f} deg), L={L:.6f}, pos_err={pos_err:.6e}, ang_err={ang_err:.6e}"
+    )
+    print(f"  arc_center={arc_center}, R={arc_R}")
+    print(
+        f"  orig_sweep={orig_sweep:.6f} rad ({math.degrees(orig_sweep):.2f} deg), new_arc_start={new_arc_start:.6f} rad ({math.degrees(new_arc_start):.2f} deg), new_arc_end={new_arc_end:.6f} rad ({math.degrees(new_arc_end):.2f} deg)"
+    )
 
     return clothoid_wire, arc_wire, pts3d, arc_center, new_arc_start, new_arc_end
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # example geometry
     line_end = np.array([0.0, 0.0])
     line_dir = np.array([1.0, 0.0])  # along +x
@@ -168,20 +231,23 @@ if __name__ == '__main__':
     arc_start_angle = math.radians(160)
     arc_end_angle = math.radians(300)
 
-    clothoid_wire, arc_wire, pts3d, center, a_start, a_end = connect_line_arc_with_clothoid(
-        line_end, line_dir, arc_center, arc_R, arc_start_angle, arc_end_angle
+    clothoid_wire, arc_wire, pts3d, center, a_start, a_end = (
+        connect_line_arc_with_clothoid(
+            line_end, line_dir, arc_center, arc_R, arc_start_angle, arc_end_angle
+        )
     )
 
     display, start_display, _, _ = init_display()
-    display.DisplayShape(clothoid_wire, update=True, color='BLUE')
-    display.DisplayShape(arc_wire, update=True, color='GREEN')
+    display.DisplayShape(clothoid_wire, update=True, color="BLUE")
+    display.DisplayShape(arc_wire, update=True, color="GREEN")
     # show line as short segment before clothoid
     from OCC.Core.gp import gp_Pnt
     from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+
     p0 = gp_Pnt(line_end[0] - 40 * line_dir[0], line_end[1] - 40 * line_dir[1], 0)
     p1 = gp_Pnt(line_end[0], line_end[1], 0)
     e = BRepBuilderAPI_MakeEdge(p0, p1).Edge()
-    display.DisplayShape(e, update=True, color='RED')
+    display.DisplayShape(e, update=True, color="RED")
 
     display.FitAll()
     start_display()
