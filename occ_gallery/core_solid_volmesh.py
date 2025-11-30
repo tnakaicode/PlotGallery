@@ -487,7 +487,11 @@ if __name__ == "__main__":
             print("In-memory skfem mesh ready for analysis (no files written)")
             # --- run a simple 3D linear elasticity self-weight analysis ---
             from skfem import Basis, ElementVector, ElementTetP1, asm, solve, condense
-            from skfem.models.elasticity import linear_elasticity, lame_parameters, linear_stress
+            from skfem.models.elasticity import (
+                linear_elasticity,
+                lame_parameters,
+                linear_stress,
+            )
             from skfem import LinearForm, BilinearForm
             from skfem.helpers import dot, sym_grad
 
@@ -508,7 +512,9 @@ if __name__ == "__main__":
             @LinearForm
             def lf(v, w):
                 # constant body force
-                return body_force[0] * v[0] + body_force[1] * v[1] + body_force[2] * v[2]
+                return (
+                    body_force[0] * v[0] + body_force[1] * v[1] + body_force[2] * v[2]
+                )
 
             print("Assembling elasticity system...")
             A = asm(weak, vbasis)
@@ -525,20 +531,24 @@ if __name__ == "__main__":
             print("Solving linear system...")
             u = solve(*condense(A, fvec, D=D))
             # recover full vector with condensed values
-            from skfem import condense as _condense
+            from skfem import condense
+
             # expand reduced solution `u` into full DOF vector using complement dofs
             # compute free DOF indices as complement of Dirichlet dofs
             all_dofs = np.arange(vbasis.N)
             D_arr = np.asarray(D, dtype=int).flatten()
             interior = np.setdiff1d(all_dofs, D_arr)
-            print("reduced solution length (u):", getattr(u, 'shape', getattr(u, '__len__', lambda: 'unknown')()))
+            print(
+                "reduced solution length (u):",
+                getattr(u, "shape", getattr(u, "__len__", lambda: "unknown")()),
+            )
             print("interior dofs length:", interior.size)
             ufull = np.zeros(vbasis.N)
             # if u length matches interior, assign; if u matches full, just take it
             try:
-                if getattr(u, 'shape', None) and u.shape[0] == interior.size:
+                if getattr(u, "shape", None) and u.shape[0] == interior.size:
                     ufull[interior] = u
-                elif getattr(u, 'shape', None) and u.shape[0] == vbasis.N:
+                elif getattr(u, "shape", None) and u.shape[0] == vbasis.N:
                     ufull = u
                 else:
                     # attempt to flatten and assign conservatively
@@ -553,25 +563,26 @@ if __name__ == "__main__":
                 raise
 
             print("Elastic solve complete. Computing von Mises at nodal points...")
-            print("ufull length:", getattr(ufull, 'shape', getattr(ufull, '__len__', lambda: 'unknown')()))
-            try:
-                print("vbasis N:", vbasis.N)
-            except Exception:
-                pass
+            print(
+                "ufull length:",
+                getattr(ufull, "shape", getattr(ufull, "__len__", lambda: "unknown")()),
+            )
+            print("vbasis N:", vbasis.N)
             # compute stress tensor via C(sym_grad(u)) and project — attempt element-wise projection
             C = linear_stress(*lame_parameters(E, nu))
-            # create a DG basis for stress projection (may raise if element not present)
+            # create a DG basis for stress projection (raise if ElementTetDG unavailable)
             try:
                 from skfem import ElementTetDG
-                dg = vbasis.with_element(ElementTetDG(ElementTetP1()))
-            except Exception:
-                # fallback: reuse nodal basis (less accurate)
-                dg = vbasis
+            except Exception as e:
+                raise ImportError(
+                    "ElementTetDG not available in this skfem installation; install a skfem version that provides ElementTetDG to perform DG stress projection"
+                ) from e
+            dg = vbasis.with_element(ElementTetDG(ElementTetP1()))
 
             # build nodal displacement array (shape (3, n_nodes)) from `ufull` robustly
             # skfem vector basis has vbasis.N == 3 * n_nodes
             ufarr = np.asarray(ufull).ravel()
-            n_nodes = getattr(vbasis.mesh, 'p', None)
+            n_nodes = getattr(vbasis.mesh, "p", None)
             if n_nodes is None:
                 # fallback to skfem_mesh
                 n_nodes = skfem_mesh.p.shape[1]
@@ -600,55 +611,51 @@ if __name__ == "__main__":
                 # if interpolate returned extra dims (e.g., (3, n, m)), try to squeeze
                 u_nodal = np.squeeze(u_nodal)
             if u_nodal.ndim != 2 or u_nodal.shape[0] != 3:
-                raise RuntimeError(f"Unexpected u_nodal shape after construction: {u_nodal.shape}")
+                raise RuntimeError(
+                    f"Unexpected u_nodal shape after construction: {u_nodal.shape}"
+                )
 
-            # attempt to obtain a skfem Function view for stress evaluation
-            u_func = None
-            try:
-                u_func = vbasis.interpolate(ufull)
-            except Exception:
-                u_func = None
-
-            # compute strain -> stress and von Mises per component using u_func if available
+            # obtain a skfem Function view for stress evaluation (let errors propagate)
             from skfem.helpers import sym_grad
-            if u_func is not None:
-                try:
-                    stress = C(sym_grad(u_func))
-                except Exception:
-                    stress = None
-            else:
-                stress = None
-            # approximate von Mises at nodes (compute from stress components if available)
-            try:
-                sxx = stress[0, 0]
-                syy = stress[1, 1]
-                szz = stress[2, 2]
-                sxy = stress[0, 1]
-                syz = stress[1, 2]
-                sxz = stress[0, 2]
-                von = np.sqrt(0.5 * ((sxx - syy) ** 2 + (syy - szz) ** 2 + (szz - sxx) ** 2 + 6.0 * (sxy ** 2 + syz ** 2 + sxz ** 2)))
-            except Exception:
-                von = None
+
+            u_func = vbasis.interpolate(ufull)
+            stress = C(sym_grad(u_func))
+            # stress expected to be a 3x3 array-like per node/element; compute von Mises
+            sxx = stress[0, 0]
+            syy = stress[1, 1]
+            szz = stress[2, 2]
+            sxy = stress[0, 1]
+            syz = stress[1, 2]
+            sxz = stress[0, 2]
+            von = np.sqrt(
+                0.5
+                * (
+                    (sxx - syy) ** 2
+                    + (syy - szz) ** 2
+                    + (szz - sxx) ** 2
+                    + 6.0 * (sxy**2 + syz**2 + sxz**2)
+                )
+            )
 
             if von is not None:
                 vnod = von
                 print("von Mises: min", float(np.min(vnod)), "max", float(np.max(vnod)))
-                # compute nodal displacement magnitudes and report maximum
-                try:
-                    un = np.asarray(u_nodal)
-                    disp_mag = np.sqrt(un[0, :] ** 2 + un[1, :] ** 2 + un[2, :] ** 2)
-                    imax = int(np.argmax(disp_mag))
-                    max_disp = float(disp_mag[imax])
-                    # node coordinates from the mesh
-                    try:
-                        pcoords = skfem_mesh.p[:, imax]
-                        node_coord = (float(pcoords[0]), float(pcoords[1]), float(pcoords[2]))
-                    except Exception:
-                        node_coord = None
-
-                    print("Max displacement:", max_disp, "m at node index", imax, "coord:", node_coord)
-                except Exception as _e:
-                    print("Error computing max displacement:", _e)
+                # compute nodal displacement magnitudes and report maximum (let errors raise)
+                un = np.asarray(u_nodal)
+                disp_mag = np.sqrt(un[0, :] ** 2 + un[1, :] ** 2 + un[2, :] ** 2)
+                imax = int(np.argmax(disp_mag))
+                max_disp = float(disp_mag[imax])
+                # node coordinates from the mesh
+                pcoords = skfem_mesh.p[:, imax]
+                node_coord = (float(pcoords[0]), float(pcoords[1]), float(pcoords[2]))
+                print(
+                    "Max displacement:",
+                    max_disp,
+                    "m at node index",
+                    imax,
+                    "coord:",
+                    node_coord,
+                )
             else:
                 print("von Mises could not be computed with current projection method.")
 
