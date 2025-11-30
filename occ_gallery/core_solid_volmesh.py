@@ -45,6 +45,8 @@ from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
+from OCC.Core.TopoDS import TopoDS_Compound
+from OCC.Core.BRep import BRep_Builder
 
 
 def wire_moved(wire, x=0, y=0, z=0, deg=0):
@@ -104,12 +106,22 @@ def make_shape_box(length=100.0):
 
 
 def write_step(shape, filename):
-    print(shape)
+    print("Original shape:", shape)
+    # Apply sewing with larger tolerance to unify overlapping edges and faces
+    sew = BRepBuilderAPI_Sewing(1e-4)  # increased tolerance
+    sew.SetMinTolerance(1e-6)
+    sew.SetMaxTolerance(1e-3)
+    sew.Add(shape)
+    sew.Perform()
+    sewed_shape = sew.SewedShape()
+    print("Sewed shape:", sewed_shape)
+
     writer = STEPControl_Writer()
-    writer.Transfer(shape, STEPControl_AsIs)
+    writer.Transfer(sewed_shape, STEPControl_AsIs)
     status = writer.Write(filename)
     if status != IFSelect_RetDone:
         raise RuntimeError(f"STEP write failed: status={status}")
+    return sewed_shape
 
 
 def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, size=100.0):
@@ -132,77 +144,75 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, size=100.0):
     if len(ents3) == 0 and len(ents2) > 0:
         # collect surface tags
         surface_tags = [tag for (dim, tag) in ents2]
-        print(f"gmsh: no 3D entities found, attempting to build volume from {len(surface_tags)} surfaces")
+        print(
+            f"gmsh: no 3D entities found, attempting to build volume from {len(surface_tags)} surfaces"
+        )
         # create a surface loop and a volume (may fail if orientations are inconsistent)
         sl = gmsh.model.occ.addSurfaceLoop(surface_tags)
         vol = gmsh.model.occ.addVolume([sl])
         print(f"gmsh: created volume {vol} from surface loop {sl}")
         gmsh.model.occ.synchronize()
 
+    # Set mesh tolerance and size parameters
+    gmsh.option.setNumber("Geometry.Tolerance", 1e-4)
+    gmsh.option.setNumber("Geometry.ToleranceBoolean", 1e-4)
+    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-6)
+    gmsh.option.setNumber("Mesh.Algorithm", 6)  # Frontal-Delaunay for 2D
+    gmsh.option.setNumber("Mesh.Algorithm3D", 1)  # Delaunay for 3D
+
     if mesh_size is not None:
         gmsh.option.setNumber("Mesh.CharacteristicLengthMin", mesh_size)
         gmsh.option.setNumber("Mesh.CharacteristicLengthMax", mesh_size)
 
-    # NOTE: avoid automatic fallback geometry construction here — prefer to
-    # let the user see the import/meshing error and adjust source geometry.
-
     print("gmsh: generating 3D mesh (this may take a moment)")
+
+    # First generate 2D mesh
+    gmsh.model.mesh.generate(2)
+
+    # Remove duplicate elements on surfaces to fix overlapping facets
+    for dim, tag in ents2:
+        # Get all triangular elements for this surface
+        elem_types, elem_tags, elem_node_tags = gmsh.model.mesh.getElements(dim, tag)
+        for i, etype in enumerate(elem_types):
+            if len(elem_tags[i]) == 0:
+                continue
+            # Check if this is a triangle element type (type 2)
+            if etype == 2:  # 3-node triangle
+                nodes_flat = list(elem_node_tags[i])
+                etags = list(elem_tags[i])
+                num_nodes = 3
+                # Build triangle->element_tag map
+                tri_to_tag = {}
+                for j in range(len(etags)):
+                    start = j * num_nodes
+                    tri_nodes = tuple(
+                        sorted(
+                            [
+                                int(nodes_flat[start]),
+                                int(nodes_flat[start + 1]),
+                                int(nodes_flat[start + 2]),
+                            ]
+                        )
+                    )
+                    if tri_nodes in tri_to_tag:
+                        # Duplicate found - remove the duplicate element
+                        print(
+                            f"gmsh: removing duplicate triangle {tri_nodes} (element {etags[j]}) on surface {tag}"
+                        )
+                        gmsh.model.mesh.removeElements(dim, tag, [int(etags[j])])
+                    else:
+                        tri_to_tag[tri_nodes] = etags[j]
+
+    # Now try 3D mesh generation
     try:
         gmsh.model.mesh.generate(3)
+        print("gmsh: 3D mesh generation succeeded")
     except Exception as e:
-        print("gmsh: mesh generation failed with exception:", e)
-        # Diagnostic: inspect 2D surface meshes for duplicated facets
-        try:
-            print("gmsh: running surface diagnostics...")
-            node_tags_all, node_coords_all, _ = gmsh.model.mesh.getNodes()
-            # build node coord map
-            node_map = {int(node_tags_all[i]): (node_coords_all[3 * i], node_coords_all[3 * i + 1], node_coords_all[3 * i + 2]) for i in range(len(node_tags_all))}
-            for (dim, tag) in ents2:
-                print(f"--- Surface dim={dim} tag={tag} diagnostics ---")
-                try:
-                    types_s, elemTags_s, nodeTags_s = gmsh.model.mesh.getElements(2, tag)
-                except Exception as e2:
-                    print(f"  could not get elements for surface {tag}:", e2)
-                    continue
-                tri_count = {}
-                # iterate element types on this surface
-                for ii, etype in enumerate(types_s):
-                    etags = elemTags_s[ii]
-                    nodes_flat = nodeTags_s[ii]
-                    props = gmsh.model.mesh.getElementProperties(etype)
-                    num_nodes = props[3]
-                    for j in range(len(etags)):
-                        start = j * num_nodes
-                        elem_nodes = [int(n) for n in nodes_flat[start:start + num_nodes]]
-                        if num_nodes == 3:
-                            key = tuple(sorted(elem_nodes))
-                            tri_count[key] = tri_count.get(key, 0) + 1
-                        else:
-                            # for non-triangle (e.g., quads), split into triangles for diagnostics
-                            if num_nodes == 4:
-                                a, b, c, d = elem_nodes
-                                tris = [tuple(sorted((a, b, c))), tuple(sorted((a, c, d)))]
-                                for key in tris:
-                                    tri_count[key] = tri_count.get(key, 0) + 1
-                duplicates = {tri:cnt for tri,cnt in tri_count.items() if cnt > 1}
-                if duplicates:
-                    print(f"  Found {len(duplicates)} duplicated triangle(s) on surface {tag} - showing up to 10:")
-                    for idx, (tri, cnt) in enumerate(duplicates.items()):
-                        if idx >= 10:
-                            break
-                        print(f"    tri nodes={tri} duplicated {cnt} times")
-                        for nt in tri:
-                            coord = node_map.get(nt)
-                            print(f"      node {nt}: {coord}")
-                else:
-                    print(f"  No duplicated triangles found on surface {tag}")
-        except Exception as diag_e:
-            print("gmsh: diagnostic step failed:", diag_e)
-        # Re-raise original exception to preserve behavior
-        raise
-    # write using MSH v2 format for better compatibility with mesh readers
-    gmsh.write(out_msh, mshVersion=2)
-    print(f"gmsh: wrote volume mesh to {out_msh} (MSH v2)")
+        print(f"gmsh: 3D mesh generation failed: {e}")
+        print("gmsh: mesh remains 2D only")
+    # write mesh file
+    gmsh.write(out_msh)
+    print(f"gmsh: wrote mesh to {out_msh}")
 
     # collect nodes and elements directly from gmsh model for downstream use
     node_tags, node_coords, _ = gmsh.model.mesh.getNodes()
@@ -228,7 +238,9 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, size=100.0):
         elems = []
         for j in range(len(etags)):
             start = j * num_nodes_per_elem
-            elems.append([int(n) for n in nodes_flat[start:start + num_nodes_per_elem]])
+            elems.append(
+                [int(n) for n in nodes_flat[start : start + num_nodes_per_elem]]
+            )
         elements.append((int(etype), etags, elems))
 
     gmsh.finalize()
@@ -252,9 +264,11 @@ if __name__ == "__main__":
     td = tempfile.mkdtemp(prefix="occ2gmsh_")
     stepfile = os.path.join(td, "shape.step")
     print(f"Writing STEP to {stepfile}")
-    write_step(shape, stepfile)
+    sewed_shape = write_step(shape, stepfile)
 
-    coords, elements = run_gmsh_on_step(stepfile, out_msh, mesh_size=mesh_size, size=size)
+    coords, elements = run_gmsh_on_step(
+        stepfile, out_msh, mesh_size=mesh_size, size=size
+    )
 
     # Build triangle list for display. `coords` maps node tag -> (x,y,z).
     tris = []
@@ -286,6 +300,29 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("Mesh contained no triangle or tetra elements")
 
+    # Build and display internal edges from tetra elements so volume mesh is visible
+    if len(tets) > 0:
+        # collect unique edges
+        edge_set = set()
+        for tet in tets:
+            a, b, c, d = [int(x) for x in tet]
+            edges = [(a, b), (a, c), (a, d), (b, c), (b, d), (c, d)]
+            for e in edges:
+                edge_set.add(tuple(sorted(e)))
+
+        builder = BRep_Builder()
+        comp = TopoDS_Compound()
+        builder.MakeCompound(comp)
+        for e in edge_set:
+            n0, n1 = e
+            p0c = coords[n0]
+            p1c = coords[n1]
+            p0 = gp_Pnt(p0c[0], p0c[1], p0c[2])
+            p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
+            ed = make_edge(p0, p1)
+            builder.Add(comp, ed)
+        display.DisplayShape(comp, update=True)
+
     for tri in tris:
         t0, t1, t2 = int(tri[0]), int(tri[1]), int(tri[2])
         p0c = coords[t0]
@@ -295,8 +332,8 @@ if __name__ == "__main__":
         p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
         p2 = gp_Pnt(p2c[0], p2c[1], p2c[2])
         f = make_face(make_polygon([p0, p1, p2], True))
-        display.DisplayShape(f, transparency=0.5)
-    display.DisplayShape(shape, transparency=0.5)
+        # display.DisplayShape(f, transparency=0.5)
+    # display.DisplayShape(shape, transparency=0.5)
 
     display.FitAll()
     display.View.Dump("core_solid_volmesh_occ.png")
