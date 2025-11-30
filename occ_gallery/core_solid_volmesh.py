@@ -72,8 +72,8 @@ def make_shape_box(length=100.0):
 
     pts2 = [
         gp_Pnt(-2.5, -1.5, 0),
-        gp_Pnt(3.5, -1.5, 0),
-        gp_Pnt(3.5, 1.5, 0),
+        gp_Pnt(7.5, -1.5, 0),
+        gp_Pnt(7.5, 1.5, 0),
         gp_Pnt(-2.5, 1.5, 0),
     ]
     wire_rec2 = make_polygon(pts2, True)
@@ -81,17 +81,20 @@ def make_shape_box(length=100.0):
     edge_cir1 = make_edge(gp_Circ(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 0.3))
     wire_cir1 = make_wire(edge_cir1)
 
-    edge_cir2 = make_edge(gp_Elips(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 0.2, 0.15))
+    edge_cir2 = make_edge(gp_Elips(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 1.2, 0.8))
     wire_cir2 = make_wire(edge_cir2)
+
+    edge_cir3 = make_edge(gp_Elips(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 2.5, 1.2))
+    wire_cir3 = make_wire(edge_cir3)
 
     thru_section1 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
     thru_section1.AddWire(wire_moved(wire_rec1, 0, 0, 0, 0))
-    thru_section1.AddWire(wire_moved(wire_rec2, 0, length, 0, 10))
+    thru_section1.AddWire(wire_moved(wire_cir3, 0, length, 0, 0))
     solid_shape1 = thru_section1.Shape()
 
     thru_section2 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
     thru_section2.AddWire(wire_moved(wire_cir1, 0.0, 0, 0, 0))
-    thru_section2.AddWire(wire_moved(wire_cir2, 0.5, length, 0, 0))
+    thru_section2.AddWire(wire_moved(wire_cir2, 1.0, length, 0, 0))
     solid_shape2 = thru_section2.Shape()
 
     thru_section3 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
@@ -106,7 +109,7 @@ def make_shape_box(length=100.0):
     cut_op = BRepAlgoAPI_Cut(solid_shape1, solid_shape2)
     cut_op.Build()
     solid_shape = cut_op.Shape()
-    return solid_shape
+    return solid_shape1
 
 
 def write_step(shape, filename):
@@ -502,8 +505,8 @@ if __name__ == "__main__":
             nu = 0.3
             rho = 7800.0  # kg/m3
             g = 9.81  # m/s2
-            # gravity along negative Y as requested
-            body_force = rho * g * np.array([0.0, -1.0, 0.0])
+            # gravity along negative Z (user requested)
+            body_force = rho * g * np.array([0.0, 0.0, -1.0])
 
             # setup vector basis on the tetra mesh
             vbasis = Basis(skfem_mesh, ElementVector(ElementTetP1()))
@@ -670,26 +673,23 @@ if __name__ == "__main__":
                     d0 = u_nodal[:, i0].copy()
                     d1 = u_nodal[:, i1].copy()
                     d2 = u_nodal[:, i2].copy()
-                    # d0[1] *= 10.0**4
-                    # d1[1] *= 10.0**4
-                    # d2[1] *= 10.0**4
                     p0c = coords[t0]
                     p1c = coords[t1]
                     p2c = coords[t2]
                     p0d = gp_Pnt(
-                        p0c[0] + float(d0[0]),
-                        p0c[1] + float(d0[1]),
-                        p0c[2] + float(d0[2]),
+                        p0c[0] + float(d0[0]) * 1000,
+                        p0c[1] + float(d0[1]) * 1000,
+                        p0c[2] + float(d0[2]) * 1000,
                     )
                     p1d = gp_Pnt(
-                        p1c[0] + float(d1[0]),
-                        p1c[1] + float(d1[1]),
-                        p1c[2] + float(d1[2]),
+                        p1c[0] + float(d1[0]) * 1000,
+                        p1c[1] + float(d1[1]) * 1000,
+                        p1c[2] + float(d1[2]) * 1000,
                     )
                     p2d = gp_Pnt(
-                        p2c[0] + float(d2[0]),
-                        p2c[1] + float(d2[1]),
-                        p2c[2] + float(d2[2]),
+                        p2c[0] + float(d2[0]) * 1000,
+                        p2c[1] + float(d2[1]) * 1000,
+                        p2c[2] + float(d2[2]) * 1000,
                     )
                     fd = make_face(make_polygon([p0d, p1d, p2d], True))
                     deformed_tri_shapes.append(fd)
