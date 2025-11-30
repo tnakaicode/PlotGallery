@@ -71,12 +71,20 @@ def make_shape_box(length=100.0):
     wire_rec1 = make_polygon(pts1, True)
 
     pts2 = [
-        gp_Pnt(-2.5, -1.5, 0),
-        gp_Pnt(7.5, -1.5, 0),
-        gp_Pnt(7.5, 1.5, 0),
-        gp_Pnt(-2.5, 1.5, 0),
+        gp_Pnt(-1.5, -1.0, 0),
+        gp_Pnt(1.5, -1.0, 0),
+        gp_Pnt(1.5, 1.0, 0),
+        gp_Pnt(-1.5, 1.0, 0),
     ]
     wire_rec2 = make_polygon(pts2, True)
+
+    pts3 = [
+        gp_Pnt(-1.0, -0.8, 0),
+        gp_Pnt(1.0, -0.8, 0),
+        gp_Pnt(1.0, 0.8, 0),
+        gp_Pnt(-1.0, 0.8, 0),
+    ]
+    wire_rec3 = make_polygon(pts3, True)
 
     edge_cir1 = make_edge(gp_Circ(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 0.3))
     wire_cir1 = make_wire(edge_cir1)
@@ -89,12 +97,14 @@ def make_shape_box(length=100.0):
 
     thru_section1 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
     thru_section1.AddWire(wire_moved(wire_rec1, 0, 0, 0, 0))
-    thru_section1.AddWire(wire_moved(wire_cir3, 0, length, 0, 0))
+    thru_section1.AddWire(wire_moved(wire_rec2, 0, length * 2 / 5, 0, 0))
+    thru_section1.AddWire(wire_moved(wire_rec2, 0, length * 4 / 5, 0, 0))
+    thru_section1.AddWire(wire_moved(wire_rec3, 0, length, 0, 0))
     solid_shape1 = thru_section1.Shape()
 
     thru_section2 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
     thru_section2.AddWire(wire_moved(wire_cir1, 0.0, 0, 0, 0))
-    thru_section2.AddWire(wire_moved(wire_cir2, 1.0, length, 0, 0))
+    thru_section2.AddWire(wire_moved(wire_cir1, 0.0, length, 0, 0))
     solid_shape2 = thru_section2.Shape()
 
     thru_section3 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
@@ -109,7 +119,7 @@ def make_shape_box(length=100.0):
     cut_op = BRepAlgoAPI_Cut(solid_shape1, solid_shape2)
     cut_op.Build()
     solid_shape = cut_op.Shape()
-    return solid_shape1
+    return solid_shape
 
 
 def write_step(shape, filename):
@@ -718,13 +728,13 @@ if __name__ == "__main__":
             p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
             ed = make_edge(p0, p1)
             builder.Add(comp, ed)
-        display.DisplayShape(comp, update=True)
+        # display.DisplayShape(comp, update=True, transparency=0.7)
 
         # display deformed surface (if prepared): BLUE1
         if deformed_tri_shapes:
             for idx, shp in enumerate(deformed_tri_shapes):
                 # display without immediate update for speed, set color to BLUE1
-                display.DisplayShape(shp, color="BLUE1", update=False)
+                display.DisplayShape(shp, color="BLUE1", update=False, transparency=0.5)
             # final update
             # display.View.Redraw()
 
@@ -737,9 +747,9 @@ if __name__ == "__main__":
         p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
         p2 = gp_Pnt(p2c[0], p2c[1], p2c[2])
         f = make_face(make_polygon([p0, p1, p2], True))
-        display.DisplayShape(p0)
-        display.DisplayShape(p1)
-        display.DisplayShape(p2)
+        # display.DisplayShape(p0)
+        # display.DisplayShape(p1)
+        # display.DisplayShape(p2)
         # display.DisplayShape(f, transparency=0.5)
     display.DisplayShape(shape, transparency=0.5)
 
