@@ -87,7 +87,7 @@ def make_shape_box(length=100.0):
 
     thru_section2 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
     thru_section2.AddWire(wire_moved(wire_cir1, 0.0, 0, 0, 0))
-    thru_section2.AddWire(wire_moved(wire_cir1, 0.5, length, 0, 0))
+    thru_section2.AddWire(wire_moved(wire_cir2, 0.5, length, 0, 0))
     solid_shape2 = thru_section2.Shape()
 
     thru_section3 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
@@ -165,43 +165,37 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
         gmsh.option.setNumber("Mesh.CharacteristicLengthMax", mesh_size)
 
     # --- Local refinement around smallest curve (assumed the hole) ---
-    try:
-        curves = gmsh.model.getEntities(1)
-        if len(curves) > 0:
-            # pick the curve with smallest bounding-box extent (likely the hole)
-            best = None
-            best_extent = None
-            for dim, tag in curves:
-                try:
-                    bb = gmsh.model.getBoundingBox(dim, tag)
-                except Exception:
-                    continue
-                extent = max(bb[3] - bb[0], bb[4] - bb[1], bb[5] - bb[2])
-                if best is None or extent < best_extent:
-                    best = tag
-                    best_extent = extent
-            if best is not None:
-                hole_curve = best
-                print(
-                    f"gmsh: selected curve {hole_curve} for local refinement (extent {best_extent})"
-                )
-                dist_field = gmsh.model.mesh.field.add("Distance")
-                gmsh.model.mesh.field.setNumbers(dist_field, "CurvesList", [hole_curve])
-                thresh = gmsh.model.mesh.field.add("Threshold")
-                gmsh.model.mesh.field.setNumber(thresh, "InField", dist_field)
-                # use provided local params if present in globals
-                ls_min = globals().get("local_size_min", 0.05)
-                ld_min = globals().get("local_dist_min", 0.05)
-                ld_max = globals().get("local_dist_max", 1.0)
-                gmsh.model.mesh.field.setNumber(thresh, "SizeMin", ls_min)
-                gmsh.model.mesh.field.setNumber(
-                    thresh, "SizeMax", mesh_size if mesh_size is not None else 0.5
-                )
-                gmsh.model.mesh.field.setNumber(thresh, "DistMin", ld_min)
-                gmsh.model.mesh.field.setNumber(thresh, "DistMax", ld_max)
-                gmsh.model.mesh.field.setAsBackgroundMesh(thresh)
-    except Exception as ex:
-        print("gmsh: local refinement field setup failed:", ex)
+    curves = gmsh.model.getEntities(1)
+    if len(curves) > 0:
+        # pick the curve with smallest bounding-box extent (likely the hole)
+        best = None
+        best_extent = None
+        for dim, tag in curves:
+            bb = gmsh.model.getBoundingBox(dim, tag)
+            extent = max(bb[3] - bb[0], bb[4] - bb[1], bb[5] - bb[2])
+            if best is None or extent < best_extent:
+                best = tag
+                best_extent = extent
+        if best is not None:
+            hole_curve = best
+            print(
+                f"gmsh: selected curve {hole_curve} for local refinement (extent {best_extent})"
+            )
+            dist_field = gmsh.model.mesh.field.add("Distance")
+            gmsh.model.mesh.field.setNumbers(dist_field, "CurvesList", [hole_curve])
+            thresh = gmsh.model.mesh.field.add("Threshold")
+            gmsh.model.mesh.field.setNumber(thresh, "InField", dist_field)
+            # use provided local params if present in globals
+            ls_min = globals().get("local_size_min", 0.05)
+            ld_min = globals().get("local_dist_min", 0.05)
+            ld_max = globals().get("local_dist_max", 1.0)
+            gmsh.model.mesh.field.setNumber(thresh, "SizeMin", ls_min)
+            gmsh.model.mesh.field.setNumber(
+                thresh, "SizeMax", mesh_size if mesh_size is not None else 0.5
+            )
+            gmsh.model.mesh.field.setNumber(thresh, "DistMin", ld_min)
+            gmsh.model.mesh.field.setNumber(thresh, "DistMax", ld_max)
+            gmsh.model.mesh.field.setAsBackgroundMesh(thresh)
 
     print("gmsh: generating 3D mesh (this may take a moment)")
 
@@ -268,69 +262,61 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
                 (p0[2] + p1[2] + p2[2]) / 3.0,
             )
             # export OCC faces that contain this centroid in their bounding box
-            try:
-                from OCC.Core.Bnd import Bnd_Box
-                from OCC.Core.BRepBndLib import brepbndlib_Add
-                from OCC.Core.TopoDS import topods_Face
-                from OCC.Core.TopExp import TopExp_Explorer
-                from OCC.Core.TopAbs import TopAbs_FACE
-                from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_AsIs
-                from OCC.Core.IFSelect import IFSelect_RetDone
+            from OCC.Core.Bnd import Bnd_Box
+            from OCC.Core.BRepBndLib import brepbndlib_Add
+            from OCC.Core.TopoDS import topods_Face
+            from OCC.Core.TopExp import TopExp_Explorer
+            from OCC.Core.TopAbs import TopAbs_FACE
+            from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_AsIs
+            from OCC.Core.IFSelect import IFSelect_RetDone
 
-                exp = TopExp_Explorer(occ_shape, TopAbs_FACE)
-                faces_to_export = []
-                idx = 0
-                while exp.More():
-                    f = topods_Face(exp.Current())
-                    bb = Bnd_Box()
-                    brepbndlib_Add(f, bb)
-                    xmin, ymin, zmin, xmax, ymax, zmax = bb.Get()
-                    x, y, z = centroid
-                    if (
-                        xmin - 1e-8 <= x <= xmax + 1e-8
-                        and ymin - 1e-8 <= y <= ymax + 1e-8
-                        and zmin - 1e-8 <= z <= zmax + 1e-8
-                    ):
-                        faces_to_export.append((idx, f))
-                    idx += 1
-                    exp.Next()
-                if len(faces_to_export) > 0:
-                    # build compound of candidate faces and write STEP
-                    from OCC.Core.TopoDS import TopoDS_Compound
-                    from OCC.Core.BRep import BRep_Builder
+            exp = TopExp_Explorer(occ_shape, TopAbs_FACE)
+            faces_to_export = []
+            idx = 0
+            while exp.More():
+                f = topods_Face(exp.Current())
+                bb = Bnd_Box()
+                brepbndlib_Add(f, bb)
+                xmin, ymin, zmin, xmax, ymax, zmax = bb.Get()
+                x, y, z = centroid
+                if (
+                    xmin - 1e-8 <= x <= xmax + 1e-8
+                    and ymin - 1e-8 <= y <= ymax + 1e-8
+                    and zmin - 1e-8 <= z <= zmax + 1e-8
+                ):
+                    faces_to_export.append((idx, f))
+                idx += 1
+                exp.Next()
+            if len(faces_to_export) > 0:
+                # build compound of candidate faces and write STEP
+                from OCC.Core.TopoDS import TopoDS_Compound
+                from OCC.Core.BRep import BRep_Builder
 
-                    builder = BRep_Builder()
-                    comp = TopoDS_Compound()
-                    builder.MakeCompound(comp)
-                    for ii, ff in faces_to_export:
-                        builder.Add(comp, ff)
-                    out_step = os.path.join(
-                        os.path.dirname(stepfile),
-                        f"gmsh_candidates_surface_{dup_tag}.step",
-                    )
-                    writer = STEPControl_Writer()
-                    writer.Transfer(comp, STEPControl_AsIs)
-                    status = writer.Write(out_step)
-                    if status == IFSelect_RetDone:
-                        print(f"Exported candidate faces to {out_step}")
-                    else:
-                        print("Failed to write candidate faces STEP")
+                builder = BRep_Builder()
+                comp = TopoDS_Compound()
+                builder.MakeCompound(comp)
+                for ii, ff in faces_to_export:
+                    builder.Add(comp, ff)
+                out_step = os.path.join(
+                    os.path.dirname(stepfile), f"gmsh_candidates_surface_{dup_tag}.step"
+                )
+                writer = STEPControl_Writer()
+                writer.Transfer(comp, STEPControl_AsIs)
+                status = writer.Write(out_step)
+                if status == IFSelect_RetDone:
+                    print(f"Exported candidate faces to {out_step}")
                 else:
-                    print(
-                        "No OCC faces found whose bbox contains the duplicate triangle centroid"
-                    )
-            except Exception as ex:
-                print("Error during OCC face export:", ex)
+                    raise RuntimeError("Failed to write candidate faces STEP")
+            else:
+                raise RuntimeError(
+                    "No OCC faces found whose bbox contains the duplicate triangle centroid"
+                )
         else:
             print("occ_shape not provided; cannot export candidate OCC faces")
 
     # Now try 3D mesh generation
-    try:
-        gmsh.model.mesh.generate(3)
-        print("gmsh: 3D mesh generation succeeded")
-    except Exception as e:
-        print(f"gmsh: 3D mesh generation failed: {e}")
-        print("gmsh: mesh remains 2D only")
+    gmsh.model.mesh.generate(3)
+    print("gmsh: 3D mesh generation succeeded")
     # write mesh file
     gmsh.write(out_msh)
     print(f"gmsh: wrote mesh to {out_msh}")
@@ -424,6 +410,38 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("Mesh contained no triangle or tetra elements")
 
+    # Try to build an in-memory skfem MeshTet (no intermediate files)
+    def try_make_skfem_mesh(coords_map, tets_list):
+        # build contiguous node list and mapping
+        node_tags = sorted(coords_map.keys())
+        tag_to_idx = {tag: i for i, tag in enumerate(node_tags)}
+        nodes = np.array([coords_map[tag] for tag in node_tags], dtype=float)
+
+        # build tet index array
+        tets_idx = np.array(
+            [[tag_to_idx[int(n)] for n in tet] for tet in tets_list], dtype=int
+        )
+
+        # import skfem MeshTet — let ImportError propagate if missing
+        from skfem import MeshTet
+
+        # skfem.MeshTet expects nodes as shape (3, n_points) and elems as (4, n_elems)
+        # transpose our arrays to match that convention and let errors propagate
+        mesh = MeshTet(nodes.T, tets_idx.T)
+        print(
+            "skfem MeshTet created with nodes.shape",
+            nodes.T.shape,
+            "tets.shape",
+            tets_idx.T.shape,
+        )
+        return mesh
+
+    skfem_mesh = None
+    if len(tets) > 0:
+        skfem_mesh = try_make_skfem_mesh(coords, tets)
+        if skfem_mesh is not None:
+            print("In-memory skfem mesh ready for analysis (no files written)")
+
     display.EraseAll()
     # Build and display internal edges from tetra elements so volume mesh is visible
     if len(tets) > 0:
@@ -446,7 +464,7 @@ if __name__ == "__main__":
             p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
             ed = make_edge(p0, p1)
             builder.Add(comp, ed)
-        display.DisplayShape(comp, update=True)
+        #display.DisplayShape(comp, update=True)
 
     for tri in tris:
         t0, t1, t2 = int(tri[0]), int(tri[1]), int(tri[2])
@@ -457,8 +475,11 @@ if __name__ == "__main__":
         p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
         p2 = gp_Pnt(p2c[0], p2c[1], p2c[2])
         f = make_face(make_polygon([p0, p1, p2], True))
+        display.DisplayShape(p0)
+        display.DisplayShape(p1)
+        display.DisplayShape(p2)
         # display.DisplayShape(f, transparency=0.5)
-    # display.DisplayShape(shape, transparency=0.5)
+    display.DisplayShape(shape, transparency=0.5)
 
     display.FitAll()
     display.View.Dump("core_solid_volmesh_occ.png")
