@@ -12,7 +12,9 @@ import math
 import numpy as np
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge, BRepBuilderAPI_MakeWire
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeVertex
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeWire
 
 
 def sample_clothoid(a, length, n=400, k0=0.0, theta0=0.0):
@@ -185,7 +187,6 @@ def connect_line_arc_with_clothoid(
     arc_pts[0, 1] = float(end_pt_vec[1])
 
     # Build a shared TopoDS_Vertex for exact topological connection
-    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeVertex
 
     shared_pnt = gp_Pnt(float(pts3d[-1, 0]), float(pts3d[-1, 1]), 0.0)
     shared_vert = BRepBuilderAPI_MakeVertex(shared_pnt).Vertex()
@@ -241,8 +242,6 @@ if __name__ == "__main__":
     display.DisplayShape(clothoid_wire, update=True, color="BLUE")
     display.DisplayShape(arc_wire, update=True, color="GREEN")
     # show line as short segment before clothoid
-    from OCC.Core.gp import gp_Pnt
-    from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 
     p0 = gp_Pnt(line_end[0] - 40 * line_dir[0], line_end[1] - 40 * line_dir[1], 0)
     p1 = gp_Pnt(line_end[0], line_end[1], 0)
