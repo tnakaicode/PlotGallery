@@ -124,7 +124,7 @@ def write_step(shape, filename):
     return sewed_shape
 
 
-def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, size=100.0):
+def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
     import gmsh
 
     gmsh.initialize()
@@ -164,24 +164,63 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, size=100.0):
         gmsh.option.setNumber("Mesh.CharacteristicLengthMin", mesh_size)
         gmsh.option.setNumber("Mesh.CharacteristicLengthMax", mesh_size)
 
+    # --- Local refinement around smallest curve (assumed the hole) ---
+    try:
+        curves = gmsh.model.getEntities(1)
+        if len(curves) > 0:
+            # pick the curve with smallest bounding-box extent (likely the hole)
+            best = None
+            best_extent = None
+            for dim, tag in curves:
+                try:
+                    bb = gmsh.model.getBoundingBox(dim, tag)
+                except Exception:
+                    continue
+                extent = max(bb[3] - bb[0], bb[4] - bb[1], bb[5] - bb[2])
+                if best is None or extent < best_extent:
+                    best = tag
+                    best_extent = extent
+            if best is not None:
+                hole_curve = best
+                print(
+                    f"gmsh: selected curve {hole_curve} for local refinement (extent {best_extent})"
+                )
+                dist_field = gmsh.model.mesh.field.add("Distance")
+                gmsh.model.mesh.field.setNumbers(dist_field, "CurvesList", [hole_curve])
+                thresh = gmsh.model.mesh.field.add("Threshold")
+                gmsh.model.mesh.field.setNumber(thresh, "InField", dist_field)
+                # use provided local params if present in globals
+                ls_min = globals().get("local_size_min", 0.05)
+                ld_min = globals().get("local_dist_min", 0.05)
+                ld_max = globals().get("local_dist_max", 1.0)
+                gmsh.model.mesh.field.setNumber(thresh, "SizeMin", ls_min)
+                gmsh.model.mesh.field.setNumber(
+                    thresh, "SizeMax", mesh_size if mesh_size is not None else 0.5
+                )
+                gmsh.model.mesh.field.setNumber(thresh, "DistMin", ld_min)
+                gmsh.model.mesh.field.setNumber(thresh, "DistMax", ld_max)
+                gmsh.model.mesh.field.setAsBackgroundMesh(thresh)
+    except Exception as ex:
+        print("gmsh: local refinement field setup failed:", ex)
+
     print("gmsh: generating 3D mesh (this may take a moment)")
 
-    # First generate 2D mesh
+    # First generate 2D mesh for surface diagnostics
     gmsh.model.mesh.generate(2)
 
-    # Remove duplicate elements on surfaces to fix overlapping facets
+    # Detect duplicate triangles but do NOT remove them (non-destructive).
+    # Instead, log duplicates and export the corresponding OCC face(s) for inspection.
+    duplicates_found = []
     for dim, tag in ents2:
-        # Get all triangular elements for this surface
         elem_types, elem_tags, elem_node_tags = gmsh.model.mesh.getElements(dim, tag)
         for i, etype in enumerate(elem_types):
             if len(elem_tags[i]) == 0:
                 continue
-            # Check if this is a triangle element type (type 2)
-            if etype == 2:  # 3-node triangle
+            # triangle element type is 2 in gmsh
+            if etype == 2:
                 nodes_flat = list(elem_node_tags[i])
                 etags = list(elem_tags[i])
                 num_nodes = 3
-                # Build triangle->element_tag map
                 tri_to_tag = {}
                 for j in range(len(etags)):
                     start = j * num_nodes
@@ -195,13 +234,95 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, size=100.0):
                         )
                     )
                     if tri_nodes in tri_to_tag:
-                        # Duplicate found - remove the duplicate element
                         print(
-                            f"gmsh: removing duplicate triangle {tri_nodes} (element {etags[j]}) on surface {tag}"
+                            f"gmsh: duplicate triangle {tri_nodes} found on surface {tag}"
                         )
-                        gmsh.model.mesh.removeElements(dim, tag, [int(etags[j])])
+                        duplicates_found.append((tag, tri_nodes))
                     else:
                         tri_to_tag[tri_nodes] = etags[j]
+
+    # If duplicates exist, export a STEP with candidate OCC faces for manual inspection
+    if len(duplicates_found) > 0:
+        print(
+            f"gmsh: {len(duplicates_found)} duplicated triangle(s) detected. Exporting candidate faces."
+        )
+        # use the first duplicate triangle as representative
+        if occ_shape is not None:
+            dup_tag, tri = duplicates_found[0]
+            # compute centroid of triangle
+            n0, n1, n2 = tri
+            node_tags, node_coords, _ = gmsh.model.mesh.getNodes()
+            coord_map = {}
+            for idx, tagid in enumerate(node_tags):
+                coord_map[int(tagid)] = (
+                    node_coords[3 * idx],
+                    node_coords[3 * idx + 1],
+                    node_coords[3 * idx + 2],
+                )
+            p0 = coord_map[n0]
+            p1 = coord_map[n1]
+            p2 = coord_map[n2]
+            centroid = (
+                (p0[0] + p1[0] + p2[0]) / 3.0,
+                (p0[1] + p1[1] + p2[1]) / 3.0,
+                (p0[2] + p1[2] + p2[2]) / 3.0,
+            )
+            # export OCC faces that contain this centroid in their bounding box
+            try:
+                from OCC.Core.Bnd import Bnd_Box
+                from OCC.Core.BRepBndLib import brepbndlib_Add
+                from OCC.Core.TopoDS import topods_Face
+                from OCC.Core.TopExp import TopExp_Explorer
+                from OCC.Core.TopAbs import TopAbs_FACE
+                from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_AsIs
+                from OCC.Core.IFSelect import IFSelect_RetDone
+
+                exp = TopExp_Explorer(occ_shape, TopAbs_FACE)
+                faces_to_export = []
+                idx = 0
+                while exp.More():
+                    f = topods_Face(exp.Current())
+                    bb = Bnd_Box()
+                    brepbndlib_Add(f, bb)
+                    xmin, ymin, zmin, xmax, ymax, zmax = bb.Get()
+                    x, y, z = centroid
+                    if (
+                        xmin - 1e-8 <= x <= xmax + 1e-8
+                        and ymin - 1e-8 <= y <= ymax + 1e-8
+                        and zmin - 1e-8 <= z <= zmax + 1e-8
+                    ):
+                        faces_to_export.append((idx, f))
+                    idx += 1
+                    exp.Next()
+                if len(faces_to_export) > 0:
+                    # build compound of candidate faces and write STEP
+                    from OCC.Core.TopoDS import TopoDS_Compound
+                    from OCC.Core.BRep import BRep_Builder
+
+                    builder = BRep_Builder()
+                    comp = TopoDS_Compound()
+                    builder.MakeCompound(comp)
+                    for ii, ff in faces_to_export:
+                        builder.Add(comp, ff)
+                    out_step = os.path.join(
+                        os.path.dirname(stepfile),
+                        f"gmsh_candidates_surface_{dup_tag}.step",
+                    )
+                    writer = STEPControl_Writer()
+                    writer.Transfer(comp, STEPControl_AsIs)
+                    status = writer.Write(out_step)
+                    if status == IFSelect_RetDone:
+                        print(f"Exported candidate faces to {out_step}")
+                    else:
+                        print("Failed to write candidate faces STEP")
+                else:
+                    print(
+                        "No OCC faces found whose bbox contains the duplicate triangle centroid"
+                    )
+            except Exception as ex:
+                print("Error during OCC face export:", ex)
+        else:
+            print("occ_shape not provided; cannot export candidate OCC faces")
 
     # Now try 3D mesh generation
     try:
@@ -252,7 +373,10 @@ if __name__ == "__main__":
 
     # --- User-editable parameters (no CLI allowed) ---
     out_msh = "core_solid_volmesh.msh"  # output mesh filename
-    mesh_size = 5.0  # target characteristic length for mesh
+    mesh_size = 1.0  # global target characteristic length for mesh (reduced)
+    local_size_min = 0.2  # min element size near hole
+    local_dist_min = 1.0
+    local_dist_max = 1.5
     size = 10.0  # shape size parameter
     # -------------------------------------------------
 
@@ -267,7 +391,7 @@ if __name__ == "__main__":
     sewed_shape = write_step(shape, stepfile)
 
     coords, elements = run_gmsh_on_step(
-        stepfile, out_msh, mesh_size=mesh_size, size=size
+        stepfile, out_msh, mesh_size=mesh_size, occ_shape=sewed_shape
     )
 
     # Build triangle list for display. `coords` maps node tag -> (x,y,z).
@@ -300,6 +424,7 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("Mesh contained no triangle or tetra elements")
 
+    display.EraseAll()
     # Build and display internal edges from tetra elements so volume mesh is visible
     if len(tets) > 0:
         # collect unique edges
