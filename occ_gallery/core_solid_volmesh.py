@@ -17,10 +17,13 @@ Behavior:
 
 """
 
+import numpy as np
 import os
 import tempfile
 import sys
+import meshio
 
+from OCC.Display.SimpleGui import init_display
 from OCC.Core.BRepPrimAPI import (
     BRepPrimAPI_MakeBox,
     BRepPrimAPI_MakeCylinder,
@@ -28,11 +31,76 @@ from OCC.Core.BRepPrimAPI import (
 )
 from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_AsIs
 from OCC.Core.IFSelect import IFSelect_RetDone
+from OCCUtils.Construct import make_face, make_polygon, make_edge, make_wire
+from OCC.Core.gp import (
+    gp_Pnt,
+    gp_Ax3,
+    gp_Dir,
+    gp_Ax1,
+    gp_Trsf,
+    gp_Circ,
+    gp_Ax2,
+    gp_Elips,
+)
+from OCC.Core.TopLoc import TopLoc_Location
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut
 
 
-def make_shape_box(size=100.0):
-    # simple box solid
-    return BRepPrimAPI_MakeBox(size, size * 0.6, size * 0.4).Shape()
+def wire_moved(wire, x=0, y=0, z=0, deg=0):
+    axis = gp_Ax3(gp_Pnt(x, y, z), gp_Dir(0, 1, 0), gp_Dir(1, 0, 0))
+    axis.Rotate(gp_Ax1(axis.Location(), axis.Direction()), np.deg2rad(deg))
+    trsf = gp_Trsf()
+    trsf.SetTransformation(axis, gp_Ax3())
+    return wire.Located(TopLoc_Location(trsf))
+
+
+def make_shape_box(length=100.0):
+    pts1 = [
+        gp_Pnt(-2.5, -1.5, 0),
+        gp_Pnt(2.5, -1.5, 0),
+        gp_Pnt(2.5, 1.5, 0),
+        gp_Pnt(-2.5, 1.5, 0),
+    ]
+    wire_rec1 = make_polygon(pts1, True)
+
+    pts2 = [
+        gp_Pnt(-2.5, -1.5, 0),
+        gp_Pnt(3.5, -1.5, 0),
+        gp_Pnt(3.5, 1.5, 0),
+        gp_Pnt(-2.5, 1.5, 0),
+    ]
+    wire_rec2 = make_polygon(pts2, True)
+
+    edge_cir1 = make_edge(gp_Circ(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 0.3))
+    wire_cir1 = make_wire(edge_cir1)
+
+    edge_cir2 = make_edge(gp_Elips(gp_Ax2(gp_Pnt(), gp_Dir(0, 0, 1)), 0.2, 0.15))
+    wire_cir2 = make_wire(edge_cir2)
+
+    thru_section1 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
+    thru_section1.AddWire(wire_moved(wire_rec1, 0, 0, 0, 0))
+    thru_section1.AddWire(wire_moved(wire_rec2, 0, length, 0, 10))
+    solid_shape1 = thru_section1.Shape()
+
+    thru_section2 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
+    thru_section2.AddWire(wire_moved(wire_cir1, -0.5, 0, 0, 0))
+    thru_section2.AddWire(wire_moved(wire_cir1, -0.5, length, 0, 0))
+    solid_shape2 = thru_section2.Shape()
+
+    thru_section3 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
+    thru_section3.AddWire(wire_moved(wire_cir1, +1.0, 1, 0, 0))
+    thru_section3.AddWire(wire_moved(wire_cir2, +1.0, length - 1, 0, 0))
+    solid_shape3 = thru_section3.Shape()
+
+    fuse_op = BRepAlgoAPI_Fuse(solid_shape2, solid_shape3)
+    fuse_op.Build()
+    fused_shape = fuse_op.Shape()
+
+    cut_op = BRepAlgoAPI_Cut(solid_shape1, fused_shape)
+    cut_op.Build()
+    solid_shape = cut_op.Shape()
+    return solid_shape1
 
 
 def write_step(shape, filename):
@@ -70,7 +138,7 @@ if __name__ == "__main__":
     size = 100.0  # shape size parameter
     # -------------------------------------------------
 
-    shape = make_shape_box(size=size)
+    shape = make_shape_box(length=size)
 
     td = tempfile.mkdtemp(prefix="occ2gmsh_")
     stepfile = os.path.join(td, "shape.step")
@@ -80,11 +148,6 @@ if __name__ == "__main__":
     run_gmsh_on_step(stepfile, out_msh, mesh_size=mesh_size)
 
     # --- read generated mesh and display boundary with pythonOCC ---
-    import meshio
-
-    from OCC.Display.SimpleGui import init_display
-    from OCCUtils.Construct import make_face, make_polygon
-    from OCC.Core.gp import gp_Pnt
 
     print("Reading generated mesh for display:", out_msh)
     mesh = meshio.read(out_msh)
@@ -112,7 +175,7 @@ if __name__ == "__main__":
         p1 = gp_Pnt(float(pts[i1, 0]), float(pts[i1, 1]), float(pts[i1, 2]))
         p2 = gp_Pnt(float(pts[i2, 0]), float(pts[i2, 1]), float(pts[i2, 2]))
         f = make_face(make_polygon([p0, p1, p2], True))
-        display.DisplayShape(f, update=False, color="LIGHT_GREY")
+        display.DisplayShape(f, transparency=0.5)
 
     display.FitAll()
     start_display()
