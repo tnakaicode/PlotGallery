@@ -45,6 +45,7 @@ from OCC.Core.gp import (
 from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Sewing
 
 
 def wire_moved(wire, x=0, y=0, z=0, deg=0):
@@ -84,8 +85,8 @@ def make_shape_box(length=100.0):
     solid_shape1 = thru_section1.Shape()
 
     thru_section2 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
-    thru_section2.AddWire(wire_moved(wire_cir1, -0.5, 0, 0, 0))
-    thru_section2.AddWire(wire_moved(wire_cir1, -0.5, length, 0, 0))
+    thru_section2.AddWire(wire_moved(wire_cir1, 0.0, 0, 0, 0))
+    thru_section2.AddWire(wire_moved(wire_cir1, 0.5, length, 0, 0))
     solid_shape2 = thru_section2.Shape()
 
     thru_section3 = BRepOffsetAPI_ThruSections(True, True)  # solid=True, ruled=True
@@ -97,13 +98,14 @@ def make_shape_box(length=100.0):
     fuse_op.Build()
     fused_shape = fuse_op.Shape()
 
-    cut_op = BRepAlgoAPI_Cut(solid_shape1, fused_shape)
+    cut_op = BRepAlgoAPI_Cut(solid_shape1, solid_shape2)
     cut_op.Build()
     solid_shape = cut_op.Shape()
-    return solid_shape1
+    return solid_shape
 
 
 def write_step(shape, filename):
+    print(shape)
     writer = STEPControl_Writer()
     writer.Transfer(shape, STEPControl_AsIs)
     status = writer.Write(filename)
@@ -120,6 +122,24 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None):
     gmsh.merge(stepfile)
     gmsh.model.occ.synchronize()
 
+    # Report entities found in the merged model for diagnostics
+    ents3 = gmsh.model.getEntities(3)
+    ents2 = gmsh.model.getEntities(2)
+    print("gmsh: entities dim=3:", ents3)
+    print("gmsh: entities dim=2:", ents2)
+
+    # If no 3D entities (volumes) were imported, try to construct a volume
+    # from the imported surface entities by creating a surface loop and volume.
+    if len(ents3) == 0 and len(ents2) > 0:
+        # collect surface tags
+        surface_tags = [tag for (dim, tag) in ents2]
+        print(f"gmsh: no 3D entities found, attempting to build volume from {len(surface_tags)} surfaces")
+        # create a surface loop and a volume (may fail if orientations are inconsistent)
+        sl = gmsh.model.occ.addSurfaceLoop(surface_tags)
+        vol = gmsh.model.occ.addVolume([sl])
+        print(f"gmsh: created volume {vol} from surface loop {sl}")
+        gmsh.model.occ.synchronize()
+
     if mesh_size is not None:
         gmsh.option.setNumber("Mesh.CharacteristicLengthMin", mesh_size)
         gmsh.option.setNumber("Mesh.CharacteristicLengthMax", mesh_size)
@@ -132,10 +152,12 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None):
 
 
 if __name__ == "__main__":
+    display, start_display, _, _ = init_display()
+
     # --- User-editable parameters (no CLI allowed) ---
     out_msh = "core_solid_volmesh.msh"  # output mesh filename
     mesh_size = 5.0  # target characteristic length for mesh
-    size = 100.0  # shape size parameter
+    size = 10.0  # shape size parameter
     # -------------------------------------------------
 
     shape = make_shape_box(length=size)
@@ -153,22 +175,26 @@ if __name__ == "__main__":
     mesh = meshio.read(out_msh)
     pts = mesh.points
 
-    tris = mesh.cells_dict["triangle"]
+    # If gmsh produced a volume mesh, extract boundary triangles from tets.
+    # Otherwise, if gmsh produced only a surface mesh, use the triangle cells directly.
+    tris = []
+    if "tetra" in mesh.cells_dict:
+        tets = mesh.cells_dict["tetra"]
 
-    # build boundary from tetra cells
-    tets = mesh.cells_dict["tetra"]
+        face_counts = {}
+        faces = [(0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)]
+        for tet in tets:
+            tet = [int(x) for x in tet]
+            for i, j, k in faces:
+                tri = tuple(sorted((tet[i], tet[j], tet[k])))
+                face_counts[tri] = face_counts.get(tri, 0) + 1
+        bfaces = [tri for tri, count in face_counts.items() if count == 1]
+        tris = bfaces
+    elif "triangle" in mesh.cells_dict:
+        tris = [tuple(int(x) for x in tri) for tri in mesh.cells_dict["triangle"]]
+    else:
+        raise RuntimeError("Mesh contains neither 'tetra' nor 'triangle' cells")
 
-    face_counts = {}
-    faces = [(0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)]
-    for tet in tets:
-        tet = [int(x) for x in tet]
-        for i, j, k in faces:
-            tri = tuple(sorted((tet[i], tet[j], tet[k])))
-            face_counts[tri] = face_counts.get(tri, 0) + 1
-    bfaces = [tri for tri, count in face_counts.items() if count == 1]
-    tris = bfaces
-
-    display, start_display, _, _ = init_display()
     for tri in tris:
         i0, i1, i2 = int(tri[0]), int(tri[1]), int(tri[2])
         p0 = gp_Pnt(float(pts[i0, 0]), float(pts[i0, 1]), float(pts[i0, 2]))
@@ -176,6 +202,7 @@ if __name__ == "__main__":
         p2 = gp_Pnt(float(pts[i2, 0]), float(pts[i2, 1]), float(pts[i2, 2]))
         f = make_face(make_polygon([p0, p1, p2], True))
         display.DisplayShape(f, transparency=0.5)
+    display.DisplayShape(shape, transparency=0.5)
 
     display.FitAll()
     start_display()
