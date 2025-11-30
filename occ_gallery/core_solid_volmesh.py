@@ -481,6 +481,8 @@ if __name__ == "__main__":
         return mesh
 
     skfem_mesh = None
+    # container for shapes of the deformed surface triangles (populated after solve)
+    deformed_tri_shapes = None
     if len(tets) > 0:
         skfem_mesh = try_make_skfem_mesh(coords, tets)
         if skfem_mesh is not None:
@@ -656,6 +658,41 @@ if __name__ == "__main__":
                     "coord:",
                     node_coord,
                 )
+                # prepare deformed triangle faces (amplify Y component by 1000x)
+                deformed_tri_shapes = []
+                node_tags_sorted = sorted(coords.keys())
+                tag_to_idx = {tag: i for i, tag in enumerate(node_tags_sorted)}
+                for tri in tris:
+                    t0, t1, t2 = int(tri[0]), int(tri[1]), int(tri[2])
+                    i0 = tag_to_idx[t0]
+                    i1 = tag_to_idx[t1]
+                    i2 = tag_to_idx[t2]
+                    d0 = u_nodal[:, i0].copy()
+                    d1 = u_nodal[:, i1].copy()
+                    d2 = u_nodal[:, i2].copy()
+                    # d0[1] *= 10.0**4
+                    # d1[1] *= 10.0**4
+                    # d2[1] *= 10.0**4
+                    p0c = coords[t0]
+                    p1c = coords[t1]
+                    p2c = coords[t2]
+                    p0d = gp_Pnt(
+                        p0c[0] + float(d0[0]),
+                        p0c[1] + float(d0[1]),
+                        p0c[2] + float(d0[2]),
+                    )
+                    p1d = gp_Pnt(
+                        p1c[0] + float(d1[0]),
+                        p1c[1] + float(d1[1]),
+                        p1c[2] + float(d1[2]),
+                    )
+                    p2d = gp_Pnt(
+                        p2c[0] + float(d2[0]),
+                        p2c[1] + float(d2[1]),
+                        p2c[2] + float(d2[2]),
+                    )
+                    fd = make_face(make_polygon([p0d, p1d, p2d], True))
+                    deformed_tri_shapes.append(fd)
             else:
                 print("von Mises could not be computed with current projection method.")
 
@@ -682,6 +719,14 @@ if __name__ == "__main__":
             ed = make_edge(p0, p1)
             builder.Add(comp, ed)
         display.DisplayShape(comp, update=True)
+
+        # display deformed surface (if prepared): BLUE1
+        if deformed_tri_shapes:
+            for idx, shp in enumerate(deformed_tri_shapes):
+                # display without immediate update for speed, set color to BLUE1
+                display.DisplayShape(shp, color="BLUE1", update=False)
+            # final update
+            # display.View.Redraw()
 
     for tri in tris:
         t0, t1, t2 = int(tri[0]), int(tri[1]), int(tri[2])
