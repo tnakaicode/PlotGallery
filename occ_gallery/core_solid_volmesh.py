@@ -481,6 +481,111 @@ if __name__ == "__main__":
         skfem_mesh = try_make_skfem_mesh(coords, tets)
         if skfem_mesh is not None:
             print("In-memory skfem mesh ready for analysis (no files written)")
+            # --- run a simple 3D linear elasticity self-weight analysis ---
+            from skfem import Basis, ElementVector, ElementTetP1, asm, solve, condense
+            from skfem.models.elasticity import linear_elasticity, lame_parameters, linear_stress
+            from skfem import LinearForm, BilinearForm
+            from skfem.helpers import dot, sym_grad
+
+            # material and loading
+            E = 2.1e11  # Pa (steel-like)
+            nu = 0.3
+            rho = 7800.0  # kg/m3
+            g = 9.81  # m/s2
+            # gravity along negative Y as requested
+            body_force = rho * g * np.array([0.0, -1.0, 0.0])
+
+            # setup vector basis on the tetra mesh
+            vbasis = Basis(skfem_mesh, ElementVector(ElementTetP1()))
+
+            # elasticity weak form
+            weak = linear_elasticity(*lame_parameters(E, nu))
+
+            @LinearForm
+            def lf(v, w):
+                # constant body force
+                return body_force[0] * v[0] + body_force[1] * v[1] + body_force[2] * v[2]
+
+            print("Assembling elasticity system...")
+            A = asm(weak, vbasis)
+            fvec = asm(lf, vbasis)
+
+            # apply clamped BC at the y==0 face (cantilever at start of geometry)
+            tol = 1e-6
+            clamped = vbasis.get_dofs(lambda x: x[1] <= tol).flatten()
+            D = clamped
+
+            print(f"Dirichlet DOFs (clamped) count: {D.size}")
+
+            # solve
+            print("Solving linear system...")
+            u = solve(*condense(A, fvec, D=D))
+            # recover full vector with condensed values
+            from skfem import condense as _condense
+            # expand reduced solution `u` into full DOF vector using complement dofs
+            # compute free DOF indices as complement of Dirichlet dofs
+            all_dofs = np.arange(vbasis.N)
+            D_arr = np.asarray(D, dtype=int).flatten()
+            interior = np.setdiff1d(all_dofs, D_arr)
+            print("reduced solution length (u):", getattr(u, 'shape', getattr(u, '__len__', lambda: 'unknown')()))
+            print("interior dofs length:", interior.size)
+            ufull = np.zeros(vbasis.N)
+            # if u length matches interior, assign; if u matches full, just take it
+            try:
+                if getattr(u, 'shape', None) and u.shape[0] == interior.size:
+                    ufull[interior] = u
+                elif getattr(u, 'shape', None) and u.shape[0] == vbasis.N:
+                    ufull = u
+                else:
+                    # attempt to flatten and assign conservatively
+                    uarr = np.asarray(u).ravel()
+                    if uarr.size == interior.size:
+                        ufull[interior] = uarr
+                    elif uarr.size == vbasis.N:
+                        ufull = uarr
+                    else:
+                        raise ValueError("Unexpected solution vector size")
+            except Exception:
+                raise
+
+            print("Elastic solve complete. Computing von Mises at nodal points...")
+            print("ufull length:", getattr(ufull, 'shape', getattr(ufull, '__len__', lambda: 'unknown')()))
+            try:
+                print("vbasis N:", vbasis.N)
+            except Exception:
+                pass
+            # compute stress tensor via C(sym_grad(u)) and project — attempt element-wise projection
+            C = linear_stress(*lame_parameters(E, nu))
+            # create a DG basis for stress projection (may raise if element not present)
+            try:
+                from skfem import ElementTetDG
+                dg = vbasis.with_element(ElementTetDG(ElementTetP1()))
+            except Exception:
+                # fallback: reuse nodal basis (less accurate)
+                dg = vbasis
+
+            # interpolate displacement solution to nodal values
+            u_nodal = vbasis.interpolate(ufull)
+            # compute strain -> stress and von Mises per component (use helpers)
+            from skfem.helpers import sym_grad
+            stress = C(sym_grad(u_nodal))
+            # approximate von Mises at nodes (compute from stress components if available)
+            try:
+                sxx = stress[0, 0]
+                syy = stress[1, 1]
+                szz = stress[2, 2]
+                sxy = stress[0, 1]
+                syz = stress[1, 2]
+                sxz = stress[0, 2]
+                von = np.sqrt(0.5 * ((sxx - syy) ** 2 + (syy - szz) ** 2 + (szz - sxx) ** 2 + 6.0 * (sxy ** 2 + syz ** 2 + sxz ** 2)))
+            except Exception:
+                von = None
+
+            if von is not None:
+                vnod = von
+                print("von Mises: min", float(np.min(vnod)), "max", float(np.max(vnod)))
+            else:
+                print("von Mises could not be computed with current projection method.")
 
     display.EraseAll()
     # Build and display internal edges from tetra elements so volume mesh is visible
