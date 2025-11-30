@@ -22,6 +22,10 @@ import os
 import tempfile
 import sys
 
+# Unit scaling: currently set to meters (no scale). If you later edit
+# coordinates that are in mm, change this to 1e-3 to convert mm->m.
+UNIT_SCALE = 1.0
+
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.BRepPrimAPI import (
     BRepPrimAPI_MakeBox,
@@ -564,11 +568,56 @@ if __name__ == "__main__":
                 # fallback: reuse nodal basis (less accurate)
                 dg = vbasis
 
-            # interpolate displacement solution to nodal values
-            u_nodal = vbasis.interpolate(ufull)
-            # compute strain -> stress and von Mises per component (use helpers)
+            # build nodal displacement array (shape (3, n_nodes)) from `ufull` robustly
+            # skfem vector basis has vbasis.N == 3 * n_nodes
+            ufarr = np.asarray(ufull).ravel()
+            n_nodes = getattr(vbasis.mesh, 'p', None)
+            if n_nodes is None:
+                # fallback to skfem_mesh
+                n_nodes = skfem_mesh.p.shape[1]
+            else:
+                n_nodes = vbasis.mesh.p.shape[1]
+
+            u_nodal = None
+            try:
+                if ufarr.size == 3 * n_nodes:
+                    # try ordering [ux0,uy0,uz0, ux1,uy1,uz1, ...]
+                    try:
+                        u_nodal = ufarr.reshape((n_nodes, 3)).T
+                    except Exception:
+                        u_nodal = ufarr.reshape((3, n_nodes))
+                elif ufarr.size == vbasis.N:
+                    u_nodal = ufarr.reshape((3, n_nodes))
+                else:
+                    # last resort: use interpolate (may return unexpected shape)
+                    u_nodal = vbasis.interpolate(ufull)
+            except Exception as e:
+                raise RuntimeError(f"Failed to construct nodal displacement array: {e}")
+
+            # ensure u_nodal is a numpy array with shape (3, n_nodes)
+            u_nodal = np.asarray(u_nodal)
+            if u_nodal.ndim != 2 or u_nodal.shape[0] != 3:
+                # if interpolate returned extra dims (e.g., (3, n, m)), try to squeeze
+                u_nodal = np.squeeze(u_nodal)
+            if u_nodal.ndim != 2 or u_nodal.shape[0] != 3:
+                raise RuntimeError(f"Unexpected u_nodal shape after construction: {u_nodal.shape}")
+
+            # attempt to obtain a skfem Function view for stress evaluation
+            u_func = None
+            try:
+                u_func = vbasis.interpolate(ufull)
+            except Exception:
+                u_func = None
+
+            # compute strain -> stress and von Mises per component using u_func if available
             from skfem.helpers import sym_grad
-            stress = C(sym_grad(u_nodal))
+            if u_func is not None:
+                try:
+                    stress = C(sym_grad(u_func))
+                except Exception:
+                    stress = None
+            else:
+                stress = None
             # approximate von Mises at nodes (compute from stress components if available)
             try:
                 sxx = stress[0, 0]
@@ -584,6 +633,22 @@ if __name__ == "__main__":
             if von is not None:
                 vnod = von
                 print("von Mises: min", float(np.min(vnod)), "max", float(np.max(vnod)))
+                # compute nodal displacement magnitudes and report maximum
+                try:
+                    un = np.asarray(u_nodal)
+                    disp_mag = np.sqrt(un[0, :] ** 2 + un[1, :] ** 2 + un[2, :] ** 2)
+                    imax = int(np.argmax(disp_mag))
+                    max_disp = float(disp_mag[imax])
+                    # node coordinates from the mesh
+                    try:
+                        pcoords = skfem_mesh.p[:, imax]
+                        node_coord = (float(pcoords[0]), float(pcoords[1]), float(pcoords[2]))
+                    except Exception:
+                        node_coord = None
+
+                    print("Max displacement:", max_disp, "m at node index", imax, "coord:", node_coord)
+                except Exception as _e:
+                    print("Error computing max displacement:", _e)
             else:
                 print("von Mises could not be computed with current projection method.")
 
