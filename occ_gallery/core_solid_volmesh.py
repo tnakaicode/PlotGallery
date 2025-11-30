@@ -78,3 +78,41 @@ if __name__ == "__main__":
     write_step(shape, stepfile)
 
     run_gmsh_on_step(stepfile, out_msh, mesh_size=mesh_size)
+
+    # --- read generated mesh and display boundary with pythonOCC ---
+    import meshio
+
+    from OCC.Display.SimpleGui import init_display
+    from OCCUtils.Construct import make_face, make_polygon
+    from OCC.Core.gp import gp_Pnt
+
+    print("Reading generated mesh for display:", out_msh)
+    mesh = meshio.read(out_msh)
+    pts = mesh.points
+
+    tris = mesh.cells_dict["triangle"]
+
+    # build boundary from tetra cells
+    tets = mesh.cells_dict["tetra"]
+
+    face_counts = {}
+    faces = [(0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)]
+    for tet in tets:
+        tet = [int(x) for x in tet]
+        for i, j, k in faces:
+            tri = tuple(sorted((tet[i], tet[j], tet[k])))
+            face_counts[tri] = face_counts.get(tri, 0) + 1
+    bfaces = [tri for tri, count in face_counts.items() if count == 1]
+    tris = bfaces
+
+    display, start_display, _, _ = init_display()
+    for tri in tris:
+        i0, i1, i2 = int(tri[0]), int(tri[1]), int(tri[2])
+        p0 = gp_Pnt(float(pts[i0, 0]), float(pts[i0, 1]), float(pts[i0, 2]))
+        p1 = gp_Pnt(float(pts[i1, 0]), float(pts[i1, 1]), float(pts[i1, 2]))
+        p2 = gp_Pnt(float(pts[i2, 0]), float(pts[i2, 1]), float(pts[i2, 2]))
+        f = make_face(make_polygon([p0, p1, p2], True))
+        display.DisplayShape(f, update=False, color="LIGHT_GREY")
+
+    display.FitAll()
+    start_display()
