@@ -124,7 +124,9 @@ def write_step(shape, filename):
     return sewed_shape
 
 
-def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
+def run_gmsh_on_step(
+    stepfile, out_msh, mesh_size=None, occ_shape=None, surface_only=False
+):
     import gmsh
 
     gmsh.initialize()
@@ -197,9 +199,8 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
             gmsh.model.mesh.field.setNumber(thresh, "DistMax", ld_max)
             gmsh.model.mesh.field.setAsBackgroundMesh(thresh)
 
-    print("gmsh: generating 3D mesh (this may take a moment)")
-
     # First generate 2D mesh for surface diagnostics
+    print("gmsh: generating 2D surface mesh (for diagnostics)")
     gmsh.model.mesh.generate(2)
 
     # Detect duplicate triangles but do NOT remove them (non-destructive).
@@ -264,7 +265,6 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
             # export OCC faces that contain this centroid in their bounding box
             from OCC.Core.Bnd import Bnd_Box
             from OCC.Core.BRepBndLib import brepbndlib_Add
-            from OCC.Core.TopoDS import topods_Face
             from OCC.Core.TopExp import TopExp_Explorer
             from OCC.Core.TopAbs import TopAbs_FACE
             from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_AsIs
@@ -274,7 +274,8 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
             faces_to_export = []
             idx = 0
             while exp.More():
-                f = topods_Face(exp.Current())
+                # use the explorer's current shape directly (it's a face)
+                f = exp.Current()
                 bb = Bnd_Box()
                 brepbndlib_Add(f, bb)
                 xmin, ymin, zmin, xmax, ymax, zmax = bb.Get()
@@ -314,7 +315,40 @@ def run_gmsh_on_step(stepfile, out_msh, mesh_size=None, occ_shape=None):
         else:
             print("occ_shape not provided; cannot export candidate OCC faces")
 
+    if surface_only:
+        # User requested only surface mesh: write and return surface elements
+        gmsh.write(out_msh)
+        print(f"gmsh: wrote surface mesh to {out_msh}")
+        # collect nodes and elements directly from gmsh model for downstream use
+        node_tags, node_coords, _ = gmsh.model.mesh.getNodes()
+        # build tag->coord mapping
+        coords = {}
+        for i, tag in enumerate(node_tags):
+            x = node_coords[3 * i]
+            y = node_coords[3 * i + 1]
+            z = node_coords[3 * i + 2]
+            coords[int(tag)] = (float(x), float(y), float(z))
+
+        types, elem_tags, elem_node_tags = gmsh.model.mesh.getElements()
+        elements = []
+        for i, etype in enumerate(types):
+            etags = elem_tags[i]
+            nodes_flat = elem_node_tags[i]
+            props = gmsh.model.mesh.getElementProperties(etype)
+            num_nodes_per_elem = props[3]
+            elems = []
+            for j in range(len(etags)):
+                start = j * num_nodes_per_elem
+                elems.append(
+                    [int(n) for n in nodes_flat[start : start + num_nodes_per_elem]]
+                )
+            elements.append((int(etype), etags, elems))
+
+        gmsh.finalize()
+        return coords, elements
+
     # Now try 3D mesh generation
+    print("gmsh: generating 3D mesh (this may take a moment)")
     gmsh.model.mesh.generate(3)
     print("gmsh: 3D mesh generation succeeded")
     # write mesh file
@@ -359,10 +393,11 @@ if __name__ == "__main__":
 
     # --- User-editable parameters (no CLI allowed) ---
     out_msh = "core_solid_volmesh.msh"  # output mesh filename
-    mesh_size = 1.0  # global target characteristic length for mesh (reduced)
-    local_size_min = 0.2  # min element size near hole
-    local_dist_min = 1.0
-    local_dist_max = 1.5
+    mesh_size = 0.5  # global target characteristic length for mesh (reduced)
+    # tighten local refinement around the hole (non-destructive)
+    local_size_min = 0.5  # min element size near hole
+    local_dist_min = 0.5
+    local_dist_max = 2.0
     size = 10.0  # shape size parameter
     # -------------------------------------------------
 
@@ -376,8 +411,13 @@ if __name__ == "__main__":
     print(f"Writing STEP to {stepfile}")
     sewed_shape = write_step(shape, stepfile)
 
+    # run gmsh: request volume mesh (tetrahedralization of solid)
     coords, elements = run_gmsh_on_step(
-        stepfile, out_msh, mesh_size=mesh_size, occ_shape=sewed_shape
+        stepfile,
+        out_msh,
+        mesh_size=mesh_size,
+        occ_shape=sewed_shape,
+        surface_only=False,
     )
 
     # Build triangle list for display. `coords` maps node tag -> (x,y,z).
@@ -464,7 +504,7 @@ if __name__ == "__main__":
             p1 = gp_Pnt(p1c[0], p1c[1], p1c[2])
             ed = make_edge(p0, p1)
             builder.Add(comp, ed)
-        #display.DisplayShape(comp, update=True)
+        display.DisplayShape(comp, update=True)
 
     for tri in tris:
         t0, t1, t2 = int(tri[0]), int(tri[1]), int(tri[2])
